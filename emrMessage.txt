@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?><!--
+!_errcode:error;errdesc:error|javax.servlet.ServletException|Map 파일 선택을 위한 파라메터 값을 지정하지 않았습니다. (submit_id)|javax.servlet.ServletException: Map 파일 선택을 위한 파라메터 값을 지정하지 않았습니다. (submit_id)|phis.nuframe.web.mapper.WebMapperAction.execute() at line 134 in WebMapperAction.java;type:status;source:1605509110382;|
+-->
+<root><resultKM error="yes" type="status" clear="true" description="error|javax.servlet.ServletException|Map 파일 선택을 위한 파라메터 값을 지정하지 않았습니다. (submit_id)|javax.servlet.ServletException: Map 파일 선택을 위한 파라메터 값을 지정하지 않았습니다. (submit_id)|phis.nuframe.web.mapper.WebMapperAction.execute() at line 134 in WebMapperAction.java" updateinstance="false" source="1605509110382"/></root>
