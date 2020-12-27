@@ -1,0 +1,16 @@
+{"message":"Will not be logged in either transport!","level":"info","timestamp":"2020-12-20 19:26:29"}
+{"message":"Will be logged in both transports!","level":"info","timestamp":"2020-12-20 19:26:29"}
+{"message":"What rolls down stairs","level":"info","timestamp":"2020-12-20 19:26:29"}
+{"message":"alone or in pairs,","level":"info","timestamp":"2020-12-20 19:26:29"}
+{"message":"and over your neighbors dog?","level":"info","timestamp":"2020-12-20 19:26:29"}
+{"message":"Whats great for a snack,","level":"warn","timestamp":"2020-12-20 19:26:29"}
+{"message":"And fits on your back?","level":"info","timestamp":"2020-12-20 19:26:29"}
+{"message":"Its log, log, log","level":"error","timestamp":"2020-12-20 19:26:29"}
+{"message":"Will not be logged in either transport!","level":"\u001b[32minfo\u001b[39m","timestamp":"2020-12-20 19:30:43"}
+{"message":"Will be logged in both transports!","level":"\u001b[32minfo\u001b[39m","timestamp":"2020-12-20 19:30:43"}
+{"message":"What rolls down stairs","level":"\u001b[32minfo\u001b[39m","timestamp":"2020-12-20 19:30:43"}
+{"message":"alone or in pairs,","level":"\u001b[32minfo\u001b[39m","timestamp":"2020-12-20 19:30:43"}
+{"message":"and over your neighbors dog?","level":"\u001b[32minfo\u001b[39m","timestamp":"2020-12-20 19:30:43"}
+{"message":"Whats great for a snack,","level":"\u001b[33mwarn\u001b[39m","timestamp":"2020-12-20 19:30:44"}
+{"message":"And fits on your back?","level":"\u001b[32minfo\u001b[39m","timestamp":"2020-12-20 19:30:44"}
+{"message":"Its log, log, log","level":"\u001b[31merror\u001b[39m","timestamp":"2020-12-20 19:30:44"}

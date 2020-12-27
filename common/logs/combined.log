@@ -1,0 +1,10 @@
+{"message":"Register Daniel Duuch with email daniel.duuch@greatmail.com","level":"debug","timestamp":"2020-12-20 19:50:20","label":"winston2.js","metadata":{"name":"Daniel Duuch","email":"daniel.duuch@greatmail.com","password":"myGreatPassword"}}
+{"message":"Register Daniel Duuch with email daniel.duuch@greatmail.com","level":"debug","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{"name":"Daniel Duuch","email":"daniel.duuch@greatmail.com","password":"myGreatPassword"}}
+{"message":"Will not be logged in either transport!","level":"info","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"Will be logged in both transports!","level":"info","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"What rolls down stairs","level":"info","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"alone or in pairs,","level":"info","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"and over your neighbors dog?","level":"info","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"Whats great for a snack,","level":"warn","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"And fits on your back?","level":"info","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
+{"message":"Its log, log, log","level":"error","timestamp":"2020-12-20 19:50:45","label":"log_test.js","metadata":{}}
