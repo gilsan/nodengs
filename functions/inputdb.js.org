@@ -1,0 +1,69 @@
+// select  id, locus, locations, variant_effect, gmaf, phred_qual_score, type,info, krgdb_622_lukemia, krgdb_1100_leukemia from filtered_raw_tsv
+//  select  id, locus, locations, variant_effect, gmaf, phred_qual_score, type,info, krgdb_622_lukemia, krgdb_1100_leukemia from filtered_raw_tsv where type != 'REF' and info != 'HS'
+//  select   count(*) as cnt from filtered_raw_tsv where type != 'REF' and info != 'HS' 
+
+const mariadb  = require('mariadb');
+
+var pool = mariadb.createPool({
+  host     : '127.0.0.1', //db접속 주소
+  user     : 'wirex', //db접속id
+  password : 'wirex', //db접속pw
+  database : 'sainthospital', //db명
+   connectionLimit: 200
+});
+
+exports.inputdb = ( 
+           locus,genotype,filter,ref,observed_allele,
+           type,no_call_reason,genes,locations,length,
+		   info, variant_id,variant_name,frequency,strand,exon,
+           transcript,coding,amino_acid_change,variant_effect, phylop,
+		   sift,grantham,polyphen,fathmm, pfam,
+		   dbsnp,dgv,maf,emaf,amaf,
+		   gmaf,ucsc_common_snps,exac_laf,exac_eaaf,exac_oaf,
+		   exac_efaf, exac_saaf,exac_enfaf,exac_aaf,exac_gaf,
+		   cosmic,omim,gene_ontology,drugbank,clinvar,
+		   allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
+		   ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
+		   loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID ) => {
+          console.log('inputdb: ', locus);
+		const sql =`insert into filtered_raw_tsv (		   
+           locus,genotype,filter,ref,observed_allele,
+           type,no_call_reason,genes,locations,length,
+		   info, variant_id,variant_name,frequency,strand,exon,
+           transcript,coding,amino_acid_change,variant_effect, phylop,
+		   sift,grantham,polyphen,fathmm, pfam,
+		   dbsnp,dgv,maf,emaf,amaf,
+		   gmaf,ucsc_common_snps,exac_laf,exac_eaaf,exac_oaf,
+		   exac_efaf, exac_saaf,exac_enfaf,exac_aaf,exac_gaf,
+		   cosmic,omim,gene_ontology,drugbank,clinvar,
+		   allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
+		   ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
+		   loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID ) 
+          values ( 
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+          ?,?,?,?,?,
+		  ?,?,?,?,?,?,
+		  ?,?,?,?,?,?,?,?)`;
+
+       const params = [locus,genotype, filter ,ref,observed_allele,type,no_call_reason,genes,locations,length,info,variant_id,variant_name,frequency,strand,exon,transcript,coding,amino_acid_change,variant_effect,phylop,sift,grantham,polyphen,fathmm,pfam,dbsnp,dgv,maf,emaf,amaf,gmaf,ucsc_common_snps,exac_laf,exac_eaaf,exac_oaf,exac_efaf,exac_saaf,exac_enfaf,exac_aaf,exac_gaf,cosmic,omim,gene_ontology,drugbank,clinvar,allele_coverage,allele_ratio,p_value,phred_qual_score,coverage,ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,loc1,loc2,loc3,loc4,loc5,loc6,loc7,testedID];
+	 
+      pool.getConnection()
+         .then(conn => {    
+             conn.query(sql, params)
+              .then((rows) => {
+                  console.log('필터삽입결과', rows);  
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        });
+    
+}
