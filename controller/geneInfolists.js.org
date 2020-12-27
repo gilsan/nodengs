@@ -1,0 +1,257 @@
+// 유전자 정보로 필요사항 가져오기
+
+const express = require('express');
+const router = express.Router();
+const mariadb = require('mariadb');
+
+    const pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+      rowsAsArray: true
+    });
+
+// In-House Mutation
+ exports.getMutationInfoLists = (req,res, next) => {
+
+    const gene =  req.body.gene;	 
+	const nucleotide_change = req.body.coding;
+  //   console.log('Mutation 찻기:', gene);
+	 const sql ="select functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id from mutation where gene=?  and nucleotide_change =? order by id desc limit 1";
+	 const params = [gene,nucleotide_change];
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				// console.log('getGeneInfolists', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ }
+
+ exports.getGeneExist = (req,res,next) => {
+    //  select  count(*) as count from mutation where gene= 'SETD2'  and amino_acid_change = 'p.Tyr380fs'
+
+    const id   =  req.body.id;
+    const gene =  req.body.gene;
+	const nucleotide_change = req.body.coding;
+   console.log('getGeneExist: ', id, gene, nucleotide_change);
+	 const sql ="select  count(*) as count from mutation where gene=?  and nucleotide_change =? order by desc limit 1";
+    // console.log('getGeneExist', sql + ' ' + gene + '  ' + nucleotide_change);
+	 const params = [gene,nucleotide_change];
+     /*
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				  
+				  rows = [id, ...rows[0],gene, nucleotide_change];
+				 // console.log('getGeneExist', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+		*/
+ }
+
+
+ exports.addGeneToMutation = (req, res, next) => {
+	const patientName     = req.body.name;
+	const patientID       = req.body.patientID;
+    const gene            = req.body.gene;	
+	const transcript      = req.body.transcript;
+	const nucleotide_change = req.body.coding;
+	const cosmicID        = req.body.cosmicID;
+  // console.log('addGeneToMutation',patientName,patientID,gene,transcript,nucleotide_change, cosmicID); 
+	 const sql ="insert into mutation (patient_name, register_number,gene,transcript, amino_acid_change, cosmic_id) values(?,?,?,?,?,?)";
+	 const params = [patientName,patientID,gene,transcript,nucleotide_change, cosmicID];
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				//  console.log('addGeneToMutation', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ };
+
+// In house Comments
+ exports.getCommentInfoLists = (req, res, next) => {
+    const gene   = req.body.gene;
+	const type   = req.body.type;
+	const sql ="select gene, comment, reference from comments where gene=? and type=?";
+	const params = [ gene, type ];
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				  console.log('Comments: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ };
+
+ exports.getCommentInfoCount = (req, res, next) => {
+    const gene   = req.body.gene;
+	const type   = req.body.type;
+	const sql ="select  count(*) as count from comments where gene=? and type=?";
+	const params = [ gene, type ];
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				//  console.log('Comments Count: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ };
+
+
+// In house Artifacts
+ exports.getArtifactInfoLists = (req, res, next) => {
+    const gene              = req.body.gene;
+	const coding            = req.body.coding;
+	const sql ="select  transcript, amino_acid_change from artifacts where genses=? and coding=?";
+	const params = [ gene, coding ];   
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				 // console.log('Artifacts List: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+
+ };
+
+ exports.insertArtifacts = (req, res,next) => {
+    const genes = req.body.gene;
+	const locat = req.body.loc2;
+	const exon  = req.body.exon;
+	const transcript = req.body.transcript;
+	const coding = req.body.coding;
+	const amion_acid_change = req.body.aminoAcidChange;
+
+    const sql = "insert into artifacts (genes, location, exon,transcript,coding, amino_acid_change) values( ?,?,?,?,?,?)";
+	const params = [ genes, locat, exon, transcript,coding, amino_acid_change ];
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				//  console.log('Artifacts Insert: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ }
+
+ exports.getArtifactsInfoCount = (req, res, next) => {
+    const gene              = req.body.gene;
+	const coding            = req.body.coding;
+	const sql ="select   count(*) as count from artifacts where genes=? and coding=?";
+	const params = [ gene, coding ];   
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				//  console.log('Artifacts  Count: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+
+ };
+
+
+// In-House benign
+ exports.benignInfolists = (req, res, next) => {
+    const gene              = req.body.gene;
+	const coding            = req.body.coding;
+
+	const sql ="select  transcript, amino_acid_change from benign where genes=? and coding=?";
+	const params = [ gene, coding ];   
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				//  console.log('Benign List: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ };
+
+
+ exports.insertBenign = (req,res,next) => {
+    const genes = req.body.gene;
+	const locat = req.body.loc2;
+	const exon  = req.body.exon;
+	const transcript = req.body.transcript;
+	const coding = req.body.coding;
+	const amion_acid_change = req.body.aminoAcidChange;
+
+    const sql = "insert into benign (genes, location, exon,transcript,coding, amino_acid_change) values( ?,?,?,?,?,?)";
+	const params = [ genes, locat, exon, transcript,coding, amino_acid_change ];
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				//  console.log('Benign Insert: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ }
+
+  exports.benignInfoCount = (req, res, next) => {
+    const gene              = req.body.gene;
+	const coding            = req.body.coding;
+
+	const sql ="select  count(*) as count from benign where genes=? and coding=?";
+	const params = [ gene, coding ];   
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {
+				 // console.log('Benign  Count: ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+
+ };

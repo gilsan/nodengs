@@ -1,0 +1,71 @@
+const express = require('express');
+
+const router = express.Router();
+
+const mariadb = require('mariadb');
+// const pool = require('./config');
+    const pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+    });
+   
+ function getFormatDate(date){
+                    var year = date.getFullYear();
+                    var month = (1 + date.getMonth());
+                    month = month >= 10 ? month : '0' + month;
+                    var day = date.getDate();
+                    day = day >= 10 ? day : '0' + day;
+                    return year + '-' + month + '-' + day;
+    }
+
+ exports.getLists = (req,res, next) => {
+	  
+	 const  now = new Date();
+     const today = getFormatDate(now);
+     const sql ="select * from testedPatientInfo where left(createDate, 10) = '" + today + "'";
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql)
+              .then((rows) => {
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+}
+
+exports.patientSearch = (req, res,next) => {
+
+   const start =  req.body.start;
+   let end   =  req.body.end;
+
+   const  now = new Date();
+   const today = getFormatDate(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = new Date(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today;
+   }
+
+ 
+   const sql = "select * from testedPatientInfo where left(createDate, 10) >= '" + start + "' and left(createDate, 10) = '" + end + "'";
+   
+   pool.getConnection()
+         .then(conn => {    
+             conn.query(sql)
+              .then((rows) => {
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+}
+
+ 

@@ -1,0 +1,9 @@
+
+    const mariadb = require('mariadb');
+    exports.pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+    });

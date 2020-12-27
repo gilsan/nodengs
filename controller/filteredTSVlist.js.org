@@ -1,0 +1,30 @@
+// 검사자 필털이된 리스트 가져오기
+
+const express = require('express');
+const router = express.Router();
+const mariadb = require('mariadb');
+
+    const pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+    });
+
+ exports.getTSVLists = (req,res, next) => {
+
+    const testedID =  req.query.testedID;
+ 
+	 const sql ="select * from filtered_raw_tsv where testedID = '" + testedID + "'";
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql)
+              .then((rows) => {
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+ }

@@ -1,0 +1,69 @@
+const express = require('express');
+
+const router = express.Router();
+
+const mariadb = require('mariadb');
+// const pool = require('./config');
+    const pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+    });
+
+ exports.saveMutation = (req,res, next) => {
+	  
+     const patient_name      = req.body.name;
+	 const register_number   = req.body.patientID;
+     const gene              = req.body.gene;
+     const functional_impact = req.body.functionalImpact;
+     const transcript        = req.body.transcript;
+     const exon_intro        = req.body.exonIntro;
+     const nucleotide_change = req.body.nucleotideChange;
+     const amino_acid_change = req.body.aminoAcidChange;
+     const zygosity          = req.body.zygosity;
+     const vaf               = req.body.vafPercent;
+     const reference         = req.body.references;
+     const cosmic_id         = req.body.cosmicID;
+console.log(patient_name,register_number,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id);
+
+     const sql ="insert into mutation (patient_name,register_number,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+     const params = [patient_name,register_number,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id];
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql, params)
+              .then((rows) => {
+				// console.log('mutation save ', rows);
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+}
+
+exports.updateMutation = (req, res, next) => {
+
+}
+
+exports.deleteMutation = (req, res, next) => {
+  
+     const id = req.body.id;
+
+     const sql = "delete from mutation where id=?";
+	 const params = [id];
+
+     pool.getConnection()
+         .then(conn => {    
+             conn.query(sql)
+              .then((rows) => {
+                  res.json(rows);
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        }); 
+
+}

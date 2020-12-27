@@ -1,0 +1,37 @@
+const express = require('express');
+const { v4: uuidv4 } = require('uuid');
+const router = express.Router();
+
+const mariadb = require('mariadb');
+// const pool = require('./config');
+    const pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+    });
+
+exports.login = (req,res, next) => {
+  const user     = req.body.user;
+  const password = req.body.password;
+
+  const uuid = uuidv4();
+
+  console.log('uuid:', uuid);
+
+  const sql= `select count(*) as count from users where user = ? and password = ?`;
+  params = [ user, password ];
+
+       pool.getConnection()
+         .then(conn => {    
+             conn.query(sql,params)
+              .then((rows) => {				  
+				 // console.log('getGeneExist', rows);				 
+                  res.json({response: 'OK'});
+				  conn.end();
+              }) 
+        }).catch(err => {
+            console.log('not connect');	        
+        });    
+}
