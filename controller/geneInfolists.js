@@ -142,7 +142,7 @@ const  messageHandler = async (req) => {
     const gene   = req.body.gene;
     const type   = req.body.type;
     
-	  let sql ="select gene, comment, reference ";
+	  let sql ="select gene, comment, reference, variant_id ";
     sql = sql + " from comments ";
     sql = sql + " where gene=@gene ";
     sql = sql + " and type=@type";
