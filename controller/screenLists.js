@@ -525,6 +525,8 @@ const deleteHandler = async (specimenNo) => {
      const specimenNo    = req.body.specimenNo;
      const chron         = req.body.chron
 
+     let resultPatient = selectPatient(specimenNo);
+     
      const result = messageHandler3(specimenNo, '3');
      result.then(data => {
         res.json({message: 'EMR 전송 상태 갱신 했습니다.'})
@@ -647,8 +649,8 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
     prescription_date = data[0].prescription_date;
   });
 
-  const resultLog = messageHandlerStat_log(name, patientID, prescription_date);
-  resultLog.then(data => {
+  const result = messageHandlerStat_log(pathologyNum, name, patientID, prescription_date);
+  result.then(data => {
     console.log('[screenList][558][finishPathologyScreen]',data); 
     //  res.json({message: 'SUCCESS'});
   }) 
