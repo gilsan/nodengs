@@ -1,0 +1,474 @@
+{"message":"Will not be logged in either transport!","level":"info","timestamp":"2020-12-20 19:33:43"}
+{"message":"Will be logged in both transports!","level":"info","timestamp":"2020-12-20 19:33:43"}
+{"message":"What rolls down stairs","level":"info","timestamp":"2020-12-20 19:33:43"}
+{"message":"alone or in pairs,","level":"info","timestamp":"2020-12-20 19:33:43"}
+{"message":"and over your neighbors dog?","level":"info","timestamp":"2020-12-20 19:33:43"}
+{"message":"Whats great for a snack,","level":"warn","timestamp":"2020-12-20 19:33:43"}
+{"message":"And fits on your back?","level":"info","timestamp":"2020-12-20 19:33:43"}
+{"message":"Its log, log, log","level":"error","timestamp":"2020-12-20 19:33:43"}
+{"message":"[163][pathologyReportInsert][messageHandler] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[73][pathologyReportInsert][extraction][dnarna]","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[74][pathologyReportInsert][extraction][management]S20-025382","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[75][pathologyReportInsert][extraction][keyblock]15","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[76][pathologyReportInsert][extraction][organ]16","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[78][pathologyReportInsert][extraction][diagnosis]17","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[79][pathologyReportInsert][extraction][msiscore]2.49","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[80][pathologyReportInsert][extraction][tumorburden]9.44","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[80][pathologyReportInsert][extraction][tumorcellpercentage]50","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[81][pathologyReportInsert][patientinfo][examin]21101622_이미리","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[82][pathologyReportInsert][patientinfo][recheck]21800989_송인혜","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[83][pathologyReportInsert][patientinfo][screenstatus]1","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = ERBB2","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbC","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = ERBB2","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbC","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = TP53","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbC","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = TP53","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbC","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = RECQL4","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = AURKA","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = TPMT","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = AURKA","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:36:14"}
+{"message":"[488][pathologyReportInsert][MutationCnt]  req.body[object Object]","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[163][pathologyReportInsert][messageHandler] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[73][pathologyReportInsert][extraction][dnarna]FFPE","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[74][pathologyReportInsert][extraction][management]S20-025382","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[75][pathologyReportInsert][extraction][keyblock]157","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[76][pathologyReportInsert][extraction][organ]167","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[78][pathologyReportInsert][extraction][diagnosis]177","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[79][pathologyReportInsert][extraction][msiscore]","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[80][pathologyReportInsert][extraction][tumorburden]","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[80][pathologyReportInsert][extraction][tumorcellpercentage]5","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[81][pathologyReportInsert][patientinfo][examin]21101622_이미리","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[82][pathologyReportInsert][patientinfo][recheck]21800989_송인혜","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[83][pathologyReportInsert][patientinfo][screenstatus]2","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = ERBB2","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = ERBB2","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = TP53","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = TP53","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = RECQL4","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = AURKA","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = TPMT","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008577","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = AURKA","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbP","level":"info","timestamp":"2020-12-20 19:37:09"}
+{"message":"[163][pathologyReportInsert][messageHandler] pathology_num= M20-008579","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[73][pathologyReportInsert][extraction][dnarna]","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[74][pathologyReportInsert][extraction][management]M20-008579","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[75][pathologyReportInsert][extraction][keyblock]","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[76][pathologyReportInsert][extraction][organ]","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[78][pathologyReportInsert][extraction][diagnosis]","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[79][pathologyReportInsert][extraction][msiscore]2.39","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[80][pathologyReportInsert][extraction][tumorburden]5.67","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[80][pathologyReportInsert][extraction][tumorcellpercentage]30","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[81][pathologyReportInsert][patientinfo][examin]21201094_백상현","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[82][pathologyReportInsert][patientinfo][recheck]21300990_강준","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[83][pathologyReportInsert][patientinfo][screenstatus]1","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = BRCA2","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbC","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  gene = ERBB2","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)","level":"info","timestamp":"2020-12-20 19:41:56"}
+{"message":"[37][pathologyReportInsert][MutationCnt]  report_gbC","level":"info","timestamp":"2020-12-20 19:41:56"}
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008578
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]S20-025383
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]12
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]13
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]14
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]2.49
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]9.44
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]50
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]10405461_황삼노
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]황삼노_10405461
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]1
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TP53
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TPMT
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = RECQL4
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [488][pathologyReportInsert][MutationCnt]  req.body[object Object]
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008578
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]FFPE
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]S20-025383
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]122
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]132
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]142
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]5
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]10405461_황삼노
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]황삼노_10405461
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TP53
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TPMT
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = RECQL4
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [488][pathologyReportInsert][MutationCnt]  req.body[object Object]
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]FFPE
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]M20-008579
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]test1
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]test2
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]test3
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]3
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008578
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]S20-025383
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]12
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]13
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]14
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]2.49
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]9.44
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]50
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]10405461_황삼노
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]황삼노_10405461
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]1
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TP53
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TPMT
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = RECQL4
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [488][pathologyReportInsert][MutationCnt]  req.body[object Object]
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008578
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]FFPE
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]S20-025383
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]121
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]131
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]141
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]5
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]10405461_황삼노
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]황삼노_10405461
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TP53
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = TPMT
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = RECQL4
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008578
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbP
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]M20-008579
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]TEST1
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]TEST2
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]TEST3
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]2.39
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]5.67
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]30
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]1
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]M20-008579
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]2.39
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]5.67
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]30
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]1
+undefined info [undefined]: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= 
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]13
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]15
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]16
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]17
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]14%
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]20800531_김태은
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]94610197_이아원
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]1
+undefined info [undefined]: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+undefined info [undefined]: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+undefined info [undefined]: [73][pathologyReportInsert][extraction][dnarna]
+undefined info [undefined]: [74][pathologyReportInsert][extraction][management]M20-008579
+undefined info [undefined]: [75][pathologyReportInsert][extraction][keyblock]
+undefined info [undefined]: [76][pathologyReportInsert][extraction][organ]
+undefined info [undefined]: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+undefined info [undefined]: [78][pathologyReportInsert][extraction][diagnosis]
+undefined info [undefined]: [79][pathologyReportInsert][extraction][msiscore]2.39
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorburden]5.67
+undefined info [undefined]: [80][pathologyReportInsert][extraction][tumorcellpercentage]30
+undefined info [undefined]: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+undefined info [undefined]: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+undefined info [undefined]: [83][pathologyReportInsert][patientinfo][screenstatus]1
+undefined info [undefined]: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+undefined info [undefined]: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 20:53:22 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= 
+2020-12-20 20:53:22 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 20:53:22 [32minfo[39m: [74][pathologyReportInsert][extraction][management]
+2020-12-20 20:53:22 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]12
+2020-12-20 20:53:22 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]12
+2020-12-20 20:53:22 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]12
+2020-12-20 20:53:22 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]12
+2020-12-20 20:53:22 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]
+2020-12-20 20:53:22 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]
+2020-12-20 20:53:22 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]12%
+2020-12-20 20:53:22 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]none_
+2020-12-20 20:53:22 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]_none
+2020-12-20 20:53:22 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 20:53:22 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+2020-12-20 20:54:20 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= 
+2020-12-20 20:54:20 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 20:54:20 [32minfo[39m: [74][pathologyReportInsert][extraction][management]
+2020-12-20 20:54:20 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]
+2020-12-20 20:54:20 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]
+2020-12-20 20:54:20 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]
+2020-12-20 20:54:20 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]
+2020-12-20 20:54:20 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]
+2020-12-20 20:54:20 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]
+2020-12-20 20:54:20 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]
+2020-12-20 20:54:20 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]none_
+2020-12-20 20:54:20 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]_none
+2020-12-20 20:54:20 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 20:54:20 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 

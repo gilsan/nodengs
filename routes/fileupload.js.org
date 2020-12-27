@@ -1,0 +1,185 @@
+/*
+
+fileupload: file: [
+{
+	"fieldname":"userfiles","originalname":"test_file_143.txt","encoding":"7bit","mimetype":"text/plain","destination":"uploads/","filename":"test_file_143.txt","path":"uploads/test_file_143.txt","size":60}][1] ==============
+*/
+
+const fs = require('fs');
+const express = require('express');
+const mariadb = require('mariadb');
+const router = express.Router();
+ 
+const inputDB        = require('../controlDB/inputdb');
+  const main_mod     = require('../functions/main');
+  const loadData_mod = require('../functions/readData');
+ 
+
+var multer = require('multer');
+ 
+    const pool = mariadb.createPool({
+      host     : '127.0.0.1', //db접속 주소
+      user     : 'wirex', //db접속id
+      password : 'wirex', //db접속pw
+      database : 'sainthospital', //db명
+      connectionLimit: 50,
+    });
+
+
+
+let dirPath = '';
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+		
+      const year = new Date().getFullYear();
+      const month = new Date().getMonth() + 1;
+      const day = new Date().getDate();
+	 // console.log(year, month, day);
+      if (month < 10) {
+         thisMonth = '0' + month;
+      }
+
+      if (day < 10) {
+        thisDay = '0' + day;
+      }
+	  if (month < 10) {             
+		if (day < 10) {
+			  dirPath = 'uploads/'+ year + '/' + thisMonth + '/' + thisDay;
+		} else {
+              dirPath = 'uploads/'+ year + '/' + thisMonth + '/' + day;
+		}
+	  } else {
+  		if (day < 10) {
+			  dirPath = 'uploads/'+ year + '/' + month + '/' + thisDay;
+		} else {
+			  dirPath = 'uploads/'+ year + '/' + month + '/' + day;
+		}
+	  }
+
+           
+      let isDirExists = fs.existsSync(dirPath) && fs.lstatSync(dirPath).isDirectory();
+    //  console.log('directory: ', isDirExists, dirPath);
+      if (!isDirExists){
+          fs.mkdirSync( dirPath, { recursive: true });
+      }
+
+     // cb(null, 'uploads/');
+	    cb(null,  dirPath); 
+    },
+    filename: function (req, file, cb) {
+	 cb(null, file.originalname)
+    }
+})
+  
+ 
+var upload = multer({ storage: storage, limits: { fileSize : 3 *1024 * 1000 * 1000, fieldSize: 3 *1024 * 1000 * 1000, fieldNameSize: 1000  } }).array('userfiles', 10);
+
+router.post('/upload', function (req, res) {
+    upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+          // A Multer error occurred when uploading.
+          return res.status(500).json(err);
+        } else if (err) {
+          // An unknown error occurred when uploading.
+          return res.status(500).json(err);
+        }
+
+        
+        let uploadedFiles = [];
+		let today ='';
+
+        for(let item of req.files) {
+            uploadedFiles.push({filename: item.originalname});
+ 
+		   // 검체번호로 testedPatientInfo update 함
+		     const testedID = req.body.testedID;
+       
+           // 금일 날자와 검체번호로 존재 하는지 조사.
+           const year1  = new Date().getFullYear();
+           const month1 = new Date().getMonth() + 1;
+           const day1   = new Date().getDate();
+	       // console.log(year, month, day);
+           if (month1 < 10) {
+              thismonth = '0' + month1;
+            }
+
+            if (day1 < 10) {
+                thisday = '0' + day1;
+            }
+
+	       if (month1 < 10) {
+              
+		        if (day1 < 10) {
+			      today = year1 + '-' + thismonth + '-' + thisday;
+		      } else {
+                  today = year1 + '-' + thismonth + '-' + day1;
+			  }
+	       } else {
+  		      if (day1 < 10) {
+			        today = year1 + '-' + month1 + '-' + thisday;
+		    } else {
+			      today = year1 + '-' + month1 + '-' + day1;
+		    }
+	     }
+       ///////////////////////////////////////////////////////////////////////////////////////////////////////  
+		 const qry=`select count(*) as count from filtered_raw_tsv where testedID=? and left(createdate,10)=?`;
+		 const param = [testedID, today];
+		 console.log('업로드', testedID, today);
+          pool.query(qry,param)
+			  .then( rows => {
+               const count = parseInt(rows[0].count,10);
+              
+			   console.log('시험용', count);
+			   if (count > 0) {
+				   
+                  const qry=`delete from filtered_raw_tsv where testedID=? and left(createdate,10)=?`;
+                  const param2 = [testedID, today];
+				  pool.query(qry, param2)
+					  .then(row => {
+                      console.log('이전것 삭제', row);
+					  conn.release();
+				  }).catch(err => console.log);				 
+			   }  
+       /////////////////////////////////////////////////////////////////////////////////////////////
+	      console.log('Next...');
+          const query = `update testedPatientInfo set tsvFilteredFilename=?, tsvFilteredStatus=?,tsvFilteredDate=now()   where testedNum=?`;
+		  const parameters = [item.originalname, '처리완료', testedID];
+           
+         pool.query(query, parameters)
+			 .then(rows => {
+			     console.log('testedPatientInfo 완료: ', rows);
+				 conn.release();
+		      })
+			 .catch(err => console.log);
+          
+		 // 화일 jinTsvUpload 테이블에 등록
+         const sql ="insert into jinTsvUpload (filename, path, testedID) values (?,?,?)";
+		 const params = [ item.originalname, dirPath, testedID];
+		 
+         pool.query(sql, params)
+			 .then(rows => {
+			     console.log('jinTsvUpload 완료: ' , rows);
+				 conn.release();
+		      })
+			 .catch(err => console.log);		  
+          
+		  const surfix = item.originalname.split('.');
+		  if ( surfix[1] === 'tsv') {
+			  console.log('필터링한 화일', surfix, item.originalname);
+             // var data = loadData(item.path);
+             //  inputDB.registerDB(item.path);
+		     main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
+		  }	
+      /////////////////////////////////////////////////////////////////////////////////////////////			  
+             conn.release();
+		  })
+		  .catch(err => console.log);
+      /////////////////////////////////////////////////
+	 
+        }  // End of For Loop
+        // Everything went fine.
+        res.json({progress: 100, files: uploadedFiles});
+    })
+});
+
+module.exports = router;

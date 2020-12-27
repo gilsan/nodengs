@@ -1,0 +1,118 @@
+2020-12-20 20:55:25 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= 
+2020-12-20 20:55:25 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 20:55:25 [32minfo[39m: [74][pathologyReportInsert][extraction][management]
+2020-12-20 20:55:25 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]13
+2020-12-20 20:55:25 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]
+2020-12-20 20:55:25 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]
+2020-12-20 20:55:25 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]
+2020-12-20 20:55:25 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]
+2020-12-20 20:55:25 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]
+2020-12-20 20:55:25 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]
+2020-12-20 20:55:25 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]null
+2020-12-20 20:55:25 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]null
+2020-12-20 20:55:25 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 20:55:25 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+2020-12-20 20:56:19 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 20:56:19 [32minfo[39m: [74][pathologyReportInsert][extraction][management]S20-025380
+2020-12-20 20:56:19 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]12
+2020-12-20 20:56:19 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]13
+2020-12-20 20:56:19 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+2020-12-20 20:56:19 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]14
+2020-12-20 20:56:19 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]2.49
+2020-12-20 20:56:19 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]9.44
+2020-12-20 20:56:19 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]50
+2020-12-20 20:56:19 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]none_
+2020-12-20 20:56:19 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]_none
+2020-12-20 20:56:19 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 20:56:19 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = TP53
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.Gln192Ter
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I57V)
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbP
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = RECQL4
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(?)
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbP
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = TPMT
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(Y240C)
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbP
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008575
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = AURKA
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(F31I)
+2020-12-20 20:56:19 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbP
+2020-12-20 21:02:09 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+2020-12-20 21:02:09 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 21:02:09 [32minfo[39m: [74][pathologyReportInsert][extraction][management]M20-008579
+2020-12-20 21:02:09 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]TEST1
+2020-12-20 21:02:09 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]TEST2
+2020-12-20 21:02:09 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+2020-12-20 21:02:09 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]TEST3
+2020-12-20 21:02:09 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]2.39
+2020-12-20 21:02:09 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]5.67
+2020-12-20 21:02:09 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]30
+2020-12-20 21:02:09 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+2020-12-20 21:02:09 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+2020-12-20 21:02:09 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 21:02:09 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+2020-12-20 21:02:09 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 21:06:39 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+2020-12-20 21:06:39 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 21:06:39 [32minfo[39m: [74][pathologyReportInsert][extraction][management]M20-008579
+2020-12-20 21:06:39 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]
+2020-12-20 21:06:39 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]
+2020-12-20 21:06:39 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+2020-12-20 21:06:39 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]
+2020-12-20 21:06:39 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]2.39
+2020-12-20 21:06:39 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]5.67
+2020-12-20 21:06:39 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]30
+2020-12-20 21:06:39 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+2020-12-20 21:06:39 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+2020-12-20 21:06:39 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 21:06:39 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+2020-12-20 21:06:39 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 21:07:56 [32minfo[39m: [163][pathologyReportInsert][messageHandler] pathology_num= M20-008579
+2020-12-20 21:07:57 [32minfo[39m: [73][pathologyReportInsert][extraction][dnarna]
+2020-12-20 21:07:57 [32minfo[39m: [74][pathologyReportInsert][extraction][management]M20-008579
+2020-12-20 21:07:57 [32minfo[39m: [75][pathologyReportInsert][extraction][keyblock]
+2020-12-20 21:07:57 [32minfo[39m: [76][pathologyReportInsert][extraction][organ]
+2020-12-20 21:07:57 [32minfo[39m: [77][pathologyReportInsert][extraction][tumortype]Non-Small Cell Lung Cancer
+2020-12-20 21:07:57 [32minfo[39m: [78][pathologyReportInsert][extraction][diagnosis]
+2020-12-20 21:07:57 [32minfo[39m: [79][pathologyReportInsert][extraction][msiscore]2.39
+2020-12-20 21:07:57 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorburden]5.67
+2020-12-20 21:07:57 [32minfo[39m: [80][pathologyReportInsert][extraction][tumorcellpercentage]30
+2020-12-20 21:07:57 [32minfo[39m: [81][pathologyReportInsert][patientinfo][examin]21201094_백상현
+2020-12-20 21:07:57 [32minfo[39m: [82][pathologyReportInsert][patientinfo][recheck]21300990_강준
+2020-12-20 21:07:57 [32minfo[39m: [83][pathologyReportInsert][patientinfo][screenstatus]1
+2020-12-20 21:07:57 [32minfo[39m: [249][pathologyReportInsert][patientinfo][sql]update patientinfo_path 			   set dna_rna_ext = @dnarna, management = @management, 			   key_block = @keyblock, 			tumor_cell_per = @tumorcellpercentage, 			   organ = @organ, tumor_type = @tumortype, 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck 	  where  pathology_num = @pathology_num 
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = BRCA2
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(T587R)
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] pathology_num= M20-008579
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  gene = ERBB2
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt] amino_acid_change =p.(I655V)
+2020-12-20 21:07:57 [32minfo[39m: [37][pathologyReportInsert][MutationCnt]  report_gbC
