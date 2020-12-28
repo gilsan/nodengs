@@ -30,9 +30,15 @@ const mutationInfoRouter        = require('./routes/mutationInfoList');
 const geneExistRouter       = require('./routes/geneExist');
 const addGeneInfoRouter     = require('./routes/addGeneToMutation');
 
+// 사용자 관리
+const manageUsersRouter      = require('./routes/manageUsersRouter');
+
+// inhouse 
 const commentsRouter        = require('./routes/commentsRouter');
 const artifactsRouter       = require('./routes/artifactsRouter');
 const benignRouter          = require('./routes/benignRouter');
+const mutationRouter        = require('./routes/mutationRouter');
+
 const commentsCountRouter   = require('./routes/commentsCountRouter');
 const artifactsCountRouter  = require('./routes/artifactsCountRouter');
 const benignCountRouter     = require('./routes/benignCountRouter');
@@ -41,8 +47,6 @@ const benignInsertRouter    = require('./routes/benignInsertRouter');
 
 const geneCommentRouter     = require('./routes/geneCommentRouter');
 const savedFilePathRouter   = require('./routes/savedFilePathRouter');
-// Mutation 등록
-const mutationRouter        = require('./routes/mutationRouter');
 
 const searchpatientRouter   = require('./routes/searchRouter');
 const searchpatientDiagRouter   = require('./routes/searchRouter_diag');
