@@ -2,45 +2,69 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
+const dbConfigMssql = require('./dbconfig-mssql.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
+ 
 
-const  messageHandler = async (req) => {
-  await poolConnect; // ensures that the pool has been created
+const  listHandler = async (user_id) => {
+  await poolConnect;   
+  const sql= `select id, user_id  from users \
+         where user_id = @user_id`; 
+
+	console.error('SQL-->', sql);	
+
+  try {
+      const request = pool.request()
+        .input('user_id', mssql.VarChar, user_id) // id 
+      const result = await request.query(sql)
+      console.dir(result);
+      const data = result.recordset[0];
+      return data;
+  } catch (err) {
+      console.error('SQL error', err);
+  }
+}
+    
+
+const  insertHandler = async (req) => {
+  await poolConnect;   
+  const user_id     = req.body.user_id;
   
-  const user     = req.body.user;
-  const password = req.body.password;
+  const password	= req.body.password;
+  const user_nm     = req.body.user_nm;
+  const dept		= req.body.dept;
+  const part		= req.body.part;
+  const uuid		= uuidv4();
+ 
 
-  const uuid = uuidv4();
-
- // console.log('uuid:', uuid);
-
-  const sql = "insert into users (user_id, pwd, uuid)   "
-  sql = sql + " values(@user, @password, @uuid)";
+  const sql = "insert into users ( "
+			  +"	id			"
+			  +"	,user_id		"
+			  +"	,password	"
+			  +"	,user_nm		"
+			  +"	,user_gb		"
+			  +"	,dept		"
+			  +"	,uuid		"
+			  +"	,reg_date	"
+			  +"	,login_date	"
+			  +"	,pickselect	"
+			  +"	,part		"
+			  +"	,approved ) " 
+			  +" values((select isnull(max(id),0)+1 from users) "
+			  +" , @user_id, @password, @user_nm, 'U',  @dept "
+			  +" , @uuid, getdate(), null, null, @part, 'N') "; 
        
   try {
       const request = pool.request()
-        .input('user', mssql.VarChar, user)
+        .input('user_id', mssql.VarChar, user_id)
         .input('password', mssql.VarChar, password)
-        .input('uuid', mssql.VarChar, uuid); // or: new sql.Request(pool1)
+		.input('user_nm', mssql.NVarChar, user_nm)
+        .input('uuid', mssql.VarChar, uuid) 
+        .input('dept', mssql.VarChar, dept)
+        .input('part', mssql.VarChar, part); 
       const result = await request.query(sql)
-     // console.dir( result);
+      console.dir( result);
       
       return result;
   } catch (err) {
@@ -49,12 +73,21 @@ const  messageHandler = async (req) => {
 }
 
 exports.register = (req,res, next) => {
-  const result = messageHandler(req);
-  result.then(data => {
-
-     console.log(json.stringfy());
-     res.json(data);
-  })
-  .catch( err  => res.sendStatus(500)); 
+  
+  const user_id    = req.body.user_id;  
+  const result  = listHandler(user_id);
+  result.then(data => {     
+    	 if (data != undefined) { 
+			 res.json({message: 'DUPID'});
+		 }else{ 
+			console.error('register->>>>>>step1');
+			const regist = insertHandler(req);
+			regist.then(data => {  
+				console.error('register->>>>>>step2');
+				res.json({message: 'success'});
+			})
+			.catch( err  => res.sendStatus(500)); 
+		}   
+  }).catch( err  => res.sendStatus(500)); 
 
 }
