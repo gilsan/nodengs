@@ -221,3 +221,57 @@ exports.updateExaminer = (req, res, next) => {
     }). err( err => console.log('[219][patinetslist_path][err] ', err));
 }
 
+
+
+// 병리 "수정" 버튼 누르면 screenstatus 상태를 변경
+const resetscreenstatusPath = async (pathologyNum, seq) =>{
+    await poolConnect; // ensures that the pool has been created
+
+    console.log('==[257][resetscreenstatus]', pathologyNum, seq);
+    sql =`update patientInfo_path set screenstatus=@seq where pathology_Num=@pathologyNum`;
+    try {
+
+        const request = pool.request()
+                 .input('seq', mssql.VarChar, seq)
+                 .input('pathologyNum', mssql.VarChar, pathologyNum);
+        const result = await request.query(sql);       
+                 return result;        
+      
+    } catch(err) {
+        console.error('SQL error', err);
+    }
+}
+
+exports.resetScreenStatusPath = (req, res, next) => {
+    let pathologyNum = req.body.pathologyNum.trim();
+    let num        = req.body.num;
+    console.log('=== [271][patientslist_path] ', pathologyNum);
+    const result = resetscreenstatusPath(pathologyNum, num);
+    result.then(data => {
+         res.json({message: "SUCCESS"});
+    });   
+}
+
+//병리의 screenstatus 상태 알애내기
+const getscreenstatusPath = async (pathologyNum) =>{
+    await poolConnect; // ensures that the pool has been created
+    sql =`select  screenstatus from patientInfo_path where pathology_Num=@pathologyNum`;
+    try {
+        const request = pool.request()
+                 .input('pathologyNum', mssql.VarChar, pathologyNum);
+        const result = await request.query(sql);       
+                 return result.recordset[0];             
+    } catch(err) {
+        console.error('SQL error', err);
+    }
+}
+
+exports.getScreenStatusPath = (req, res, next) => {
+    let pathologyNum = req.body.pathologyNum.trim();
+    console.log('=== [283][patientslist_path] ', pathologyNum);
+    const result = getscreenstatusPath(pathologyNum);
+    result.then(data => {
+         res.json(data);
+    });    
+}
+
