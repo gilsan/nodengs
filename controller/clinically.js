@@ -24,7 +24,9 @@ const poolConnect = pool.connect();
 const  clinicallyInsertHandler = async (pathologyNum, clinically) => {
     await poolConnect; // ensures that the pool has been created
     let result2;
+    console.log('[27][clinically]', pathologyNum);
     const query = "delete from clinically where  pathologyNum = @pathologyNum ";
+    console.log('[27][clinically]', query);
     
     try {
         const request = pool.request()
@@ -42,6 +44,7 @@ const  clinicallyInsertHandler = async (pathologyNum, clinically) => {
         
         clinically.forEach( async (item) => {
             const clinically = item;
+            console.log('[51][clinically]', pathologyNum, clinically);
             const qry = "insert into clinically (pathologyNum, clinically) values(@pathologyNum, @clinically)"; 
             try {
                 const request = pool.request()
