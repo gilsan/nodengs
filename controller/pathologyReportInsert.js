@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
+const { data } = require('../common/winston');
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -28,45 +29,25 @@ const config = {
 const pool = new mssql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
-// Mutation coount Check
-//const MutationCntMessageHandler  = async (pathology_num, gene, amino_acid_change, report_gb ) => {
-function MutationCntMessageHandler(pathology_num, gene, amino_acid_change, report_gb ) {
-	//await poolConnect; // ensures that the pool has been created
+const sleep = (ms) => {
+	return new Promise(resolve=>{
+		setTimeout(resolve,ms)
+	})
+}
 
-	logger.info("[37][pathologyReportInsert][MutationCnt] pathology_num= " +  pathology_num);
-	logger.info("[37][pathologyReportInsert][MutationCnt]  gene = " +  gene);
-	logger.info("[37][pathologyReportInsert][MutationCnt] amino_acid_change =" +  amino_acid_change);
-	logger.info("[37][pathologyReportInsert][MutationCnt]  report_gb" + report_gb); 
-	
-  //insert Query 생성
-  let sql2 = "select count(1)  as cnt from report_mutation \
-					where  pathology_num = @pathology_num \
-					and  gene = @gene \
-					and  amino_acid_change = @amino_acid_change\
-					and  report_gb = @report_gb";
-
-	logger.info("[49][MutationCnt] sql=" + sql2);
-	
-  try {
-	const request = pool.request()
-		.input('pathology_num', mssql.VarChar, pathology_num)
-		.input('gene', mssql.VarChar, gene)
-		.input('amino_acid_change', mssql.VarChar, amino_acid_change)
-		.input('report_gb', mssql.VarChar, report_gb); 
-		
-	const result = request.query(sql2);
-	
-	let data  = result.recordset[0];
-	
-	logger.info("[62][pathologyReportInsert][MutationCnt]=" + JSON.stringify( data));
-
-	return JSON.stringify( data);
-	
-	//return result;
-  } catch (err) {
-	logger.error('[68][MutatonCnt]SQL error=' + JSON.stringify(	err));
-	return -1;
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+function nvl(st, defaultStr){
+    
+  console.log('st=', st);
+  if(st === undefined || st == null || st == "") {
+      st = defaultStr ;
   }
+      
+  return st ;
 }
 
 // fusion coount Check
@@ -77,7 +58,7 @@ const fusionCntMessageHandler = async (pathology_num, gene, report_gb ) => {
 	logger.info("[75][FusionCnt] report_gb=" + report_gb);
 	logger.info("[75][FusionCnt] gene =" + gene);
 	
-  //insert Query 생성
+  //select Query 생성
   let sql2 = "select count(1)  as cnt from report_fusion \
 			where  pathology_num = @pathology_num \
 			and  gene = @gene \
@@ -116,7 +97,7 @@ const  amplificationCntMessageHandler = async (pathology_num, gene, estimated_co
 	logger.info("[amplification] estimated_copy_num=" + estimated_copy_num);
 	logger.info("[amplificaion] report_gb=" + report_gb);
 
-	  //insert Query 생성
+	  //select Query 생성
 	  const sql = "select count(1) as cnt from report_amplification \
 	               where pathology_num = @pathology_num \
 				   and report_gb = @report_gb \
@@ -143,6 +124,53 @@ const  amplificationCntMessageHandler = async (pathology_num, gene, estimated_co
 	  } // try end
 }
 
+
+const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
+	await poolConnect; // ensures that the pool has been created
+
+	let gene              = mutation.gene;
+	let amino_acid_change = mutation.aminoAcidChange;
+	let nucleotide_change = mutation.nucleotideChange;
+	let variant_allele_frequency = mutation.variantAlleleFrequency;
+	let variant_id       = mutation.ID;
+	let tier             = mutation.tier;
+
+	logger.info("[289][mutation] pathology_num=" + pathology_num);
+	logger.info("[289][mutation] gene=" + gene);
+	logger.info("[289][mutation] nucleotide_change=" + nucleotide_change);
+	logger.info("[289][mutation] amino_acid_change=" + amino_acid_change);
+	logger.info("[289][mutation] variant_allele_frequency=" + variant_allele_frequency);
+	logger.info("[289][mutation] variant_id=" + variant_id);
+	logger.info("[289][mutation] tier=" + tier);
+
+	//select Query 생성
+	let sql2 = "insert_mutation";
+
+	logger.info("[49][MutationCnt] sql=" + sql2);
+
+	try {
+		const request = pool.request()
+			.input('pathology_num', mssql.VarChar(300), pathology_num)
+			.input('report_gb', mssql.VarChar(1), report_gb)
+			.input('gene', mssql.VarChar(100), gene) 
+			.input('amino_acid_change', mssql.VarChar(100), amino_acid_change) 
+			.input('nucleotide_change', mssql.VarChar(100), nucleotide_change) 
+			.input('variant_allele_frequency', mssql.VarChar(100), variant_allele_frequency) 
+			.input('variant_id', mssql.VarChar(100), variant_id)
+			.input('tier', mssql.VarChar(10), tier)
+			.input('note', mssql.VarChar(10), '')
+			.output('TOTALCNT', mssql.int, 0); 
+			
+		const resultMC = await request.execute(sql2);
+		
+		logger.info("[275]resultMC=" + JSON.stringify(resultMC));
+		
+		return resultMC;
+	} catch (err) {
+		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+	} // try end
+}
+
 // 병리 Clinically 결과지 입력/수정/삭제
 const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 
@@ -150,8 +178,6 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 	logger.info("[254][mutation] data=" + JSON.stringify( mutation));
 	logger.info("[254[mutation] length=" + mutation.length);
 	logger.info("[254[mutation] report_gb=" + report_gb);
-  
-	let resultCnt;
    
 	//insert Query 생성
 	let sql2 = "delete from report_mutation where  pathology_num = @pathology_num ";
@@ -170,182 +196,87 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 	  logger.error('SQL error=' + JSON.stringify(err));
 	}
   
-	let cnt = 0;
+	let resultCnt;
 	if (mutation_length > 0)
 	{
-	  //for 루프를 돌면서 Mutation 카운트 만큼       //Mutation Count
-	  for (let i = 0; i < mutation_length ; i++)
+	  mutation.forEach (item => 
 	  {
-		  let gene              = mutation[i].gene;
-		  let amino_acid_change = mutation[i].aminoAcidChange;
-		  let nucleotide_change = mutation[i].nucleotideChange;
-		  let variant_allele_frequency = mutation[i].variantAlleleFrequency;
-		  let variant_id       = mutation[i].ID;
-		  let tier             = mutation[i].tier;
-		  
-		  logger.info("[289][mutation C] pathology_num=" + pathology_num);
-		  logger.info("[289][mutation C] gene=" + gene);
-		  logger.info("[289][mutation C] nucleotide_change=" + nucleotide_change);
-		  logger.info("[289][mutation C] amino_acid_change=" + amino_acid_change);
-		  logger.info("[289][mutation C] report_gb=" + report_gb);
-  
-		  console.log("[296]cnt=" , cnt);
-		  cnt += 1;
-  
-		  resultCnt = MutationCntMessageHandler(pathology_num, gene, amino_acid_change, report_gb);
-
-		  let dataCnt  = JSON.stringify(resultCnt); 
-  
-		  //resultCnt.then(data => {
-		  //try
-		  //{
-			//  logger.info('[301][mutationc] data =' + JSON.stringify(data));
-			  logger.info('[301][mutationc] data =' + resultCnt);
-			  // if ( data.cnt == 0)
-			  if ( dataCnt <= 0)
-			  {
-				  logger.info("[289][mutation C] pathology_num=" + pathology_num);
-				  logger.info("[289][mutation C] gene=" + gene);
-				  logger.info("[289][mutation C] nucleotide_change=" + nucleotide_change);
-				  logger.info("[289][mutation C] amino_acid_change=" + amino_acid_change);
-				  logger.info("[289][mutation C] variant_allele_frequency=" + variant_allele_frequency);
-				  logger.info("[289][mutation C] variant_id=" + variant_id);
-				  logger.info("[289][mutation C] tier=" + tier);
-		  
-				  //insert Query 생성
-				  let sql = "insert into report_mutation (pathology_num, report_date, \
-					  report_gb, gene, amino_acid_change,nucleotide_change, \
-					  variant_allele_frequency, variant_id, tier) \
-					  values(@pathology_num, getdate(), \
-						  @report_gb, @gene, @amino_acid_change, @nucleotide_change, \
-						  @variant_allele_frequency, @variant_id, @tier)";
-  
-				  logger.info('[312][pathologyReportInsert][mutation] sql=' + sql);
-					  
-				  try {
-					  const request = pool.request()
-						  .input('pathology_num', mssql.VarChar, pathology_num)
-						  .input('report_gb', mssql.VarChar, report_gb)
-						  .input('gene', mssql.VarChar, gene) 
-						  .input('amino_acid_change', mssql.VarChar, amino_acid_change) 
-						  .input('nucleotide_change', mssql.VarChar, nucleotide_change) 
-						  .input('variant_allele_frequency', mssql.VarChar, variant_allele_frequency) 
-						  .input('variant_id', mssql.VarChar, variant_id)
-						  .input('tier', mssql.VarChar, tier); 
-						  
-						  const resultMC = await request.query(sql)
-						  //const resultMC = request.query(sql)
-  
-						  logger.info("[336][mutation C] result=" + JSON.stringify(resultMC) );
-					  
-					  //return resultMC;
-				  } catch (err) {
-					  logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
-				  } // try end
-			  }  // if cnt end
-		  //}
-		  //catch(err) {
-		  //	logger.error('[338][mutation C]SQL error=' + JSON.stringify( err));
-		  //} // try end
-		  //}
-		//)
-		//.catch((err) => {
-		//  logger.error('[352][mutation C]SQL error=' + JSON.stringify(err));
-		//); //
-	  } // for end
+		resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
+		logger.info("[296]cnt=" , resultCnt);
+	
+	  }); // foreach end
 	}  //if end
+
+	return resultCnt; 
 }
 
 // 병리 Prevalent 결과지 입력/수정/삭제
-const  messageMutationPHandler = async (pathology_num, mutation, report_gb) => {
+const  messageMutationPHandler = async (pathology_num, mutationP, report_gb) => {
 
-	const mutation_length =  mutation.length;
-	logger.info("[254][mutation] data=" + JSON.stringify( mutation));
-	logger.info("[254[mutation] length=" + mutation.length);
-	logger.info("[254[mutation] report_gb=" + report_gb);
+	const mutation_length =  mutationP.length;
+	logger.info("[292][mutation p] data=" + JSON.stringify( mutationP));
+	logger.info("[292[mutation p] length=" + mutationP.length);
+	logger.info("[292[mutation p] report_gb=" + report_gb);
   
 	let cnt = 0;
 	let resultCnt = 0;
 	if (mutation_length > 0)
 	{
-	  //for 루프를 돌면서 Mutation 카운트 만큼       //Mutation Count
-	  for (let i = 0; i < mutation_length ; i++)
-	  {
-		  let gene              = mutation[i].gene;
-		  let amino_acid_change = mutation[i].aminoAcidChange;
-		  let nucleotide_change = mutation[i].nucleotideChange;
-		  let variant_allele_frequency = mutation[i].variantAlleleFrequency;
-		  let variant_id       = mutation[i].ID;
-		  let note             = mutation[i].note;
-		  
-		  logger.info("[289][mutation C] pathology_num=" + pathology_num);
-		  logger.info("[289][mutation C] gene=" + gene);
-		  logger.info("[289][mutation C] nucleotide_change=" + nucleotide_change);
-		  logger.info("[289][mutation C] amino_acid_change=" + amino_acid_change);
-		  logger.info("[289][mutation C] report_gb=" + report_gb);
-  
-		  console.log("[296]cnt=" , cnt);
-		  cnt += 1;
-  
-		  resultCnt = MutationCntMessageHandler(pathology_num, gene, amino_acid_change, report_gb);
-  
-		  resultCnt.then(data => {
-		  //try
-		  //{
-			  logger.info('[301][mutationc] data =' + JSON.stringify(data));
-			  if ( data.cnt == 0)
-			  {
-				  logger.info("[289][mutation C] pathology_num=" + pathology_num);
-				  logger.info("[289][mutation C] gene=" + gene);
-				  logger.info("[289][mutation C] nucleotide_change=" + nucleotide_change);
-				  logger.info("[289][mutation C] amino_acid_change=" + amino_acid_change);
-				  logger.info("[289][mutation C] variant_allele_frequency=" + variant_allele_frequency);
-				  logger.info("[289][mutation C] variant_id=" + variant_id);
-				  logger.info("[289][mutation C] note=" + note);
-		  
-				  //insert Query 생성
-				  let sql = "insert into report_mutation (pathology_num, report_date, \
-					  report_gb, gene, amino_acid_change,nucleotide_change, \
-					  variant_allele_frequency, variant_id, note) \
-					  values(@pathology_num, getdate(), \
-						  @report_gb, @gene, @amino_acid_change, @nucleotide_change, \
-						  @variant_allele_frequency, @variant_id, @note)";
-  
-				  logger.info('[312][pathologyReportInsert][mutation] sql=' + sql);
-					  
-				  try {
-					  const request = pool.request()
-						  .input('pathology_num', mssql.VarChar, pathology_num)
-						  .input('report_gb', mssql.VarChar, report_gb)
-						  .input('gene', mssql.VarChar, gene) 
-						  .input('amino_acid_change', mssql.VarChar, amino_acid_change) 
-						  .input('nucleotide_change', mssql.VarChar, nucleotide_change) 
-						  .input('variant_allele_frequency', mssql.VarChar, variant_allele_frequency) 
-						  .input('variant_id', mssql.VarChar, variant_id)
-						  .input('note', mssql.VarChar, note); 
-						  
-						  //const result = await request.query(sql)
-						  const resultMC = request.query(sql)
-  
-						  logger.info("[336][mutation C] result=" + JSON.stringify(resultMC) );
-					  
-					  return resultMC;
-				  } catch (err) {
-					  logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
-				  } // try end
-			  }  // if cnt end
-		  //}
-		  //catch(err) {
-		  //	logger.error('[338][mutation C]SQL error=' + JSON.stringify( err));
-		  //} // try end
-		  }
-		//)
-		//.catch((err) => {
-		//  logger.error('[352][mutation C]SQL error=' + JSON.stringify(err));
-		); //
-	  } // for end
+		//for 루프를 돌면서 Mutation 카운트 만큼       //Mutation Count
+	  	mutation.forEach (item => 
+		{
+		  resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
+		  logger.info("[296]cnt=" , resultCnt);
+	  	}); // foreach end
 	}  //if end
 }
+
+const amplificationSaveHandler = async (pathology_num, mutation, report_gb ) => {
+	await poolConnect; // ensures that the pool has been created
+
+	let gene              = mutation.gene;
+	let amino_acid_change = mutation.aminoAcidChange;
+	let nucleotide_change = mutation.nucleotideChange;
+	let variant_allele_frequency = mutation.variantAlleleFrequency;
+	let variant_id       = mutation.ID;
+	let tier             = mutation.tier;
+
+	logger.info("[289][mutation] pathology_num=" + pathology_num);
+	logger.info("[289][mutation] gene=" + gene);
+	logger.info("[289][mutation] nucleotide_change=" + nucleotide_change);
+	logger.info("[289][mutation] amino_acid_change=" + amino_acid_change);
+	logger.info("[289][mutation] variant_allele_frequency=" + variant_allele_frequency);
+	logger.info("[289][mutation] variant_id=" + variant_id);
+	logger.info("[289][mutation] tier=" + tier);
+
+	//select Query 생성
+	let sql2 = "insert_mutation";
+
+	logger.info("[49][MutationCnt] sql=" + sql2);
+
+	try {
+		const request = pool.request()
+			.input('pathology_num', mssql.VarChar(300), pathology_num)
+			.input('report_gb', mssql.VarChar(1), report_gb)
+			.input('gene', mssql.VarChar(100), gene) 
+			.input('amino_acid_change', mssql.VarChar(100), amino_acid_change) 
+			.input('nucleotide_change', mssql.VarChar(100), nucleotide_change) 
+			.input('variant_allele_frequency', mssql.VarChar(100), variant_allele_frequency) 
+			.input('variant_id', mssql.VarChar(100), variant_id)
+			.input('tier', mssql.VarChar(10), tier)
+			.input('note', mssql.VarChar(10), '')
+			.output('TOTALCNT', mssql.int, 0); 
+			
+		const resultMC = await request.execute(sql2);
+		
+		logger.info("[275]resultMC=" + JSON.stringify(resultMC));
+		
+		return resultMC;
+	} catch (err) {
+		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+	} // try end
+}
+
 
 // 병리 결과지 입력/수정/삭제
 const  messageAmplificationCHandler = async (pathology_num, amplification, report_gb) => {
@@ -553,6 +484,8 @@ const  messageFusionCHandler = async (pathology_num, fusion, report_gb) => {
 			let fusion_function   = fusion[i].functions;
 			let tier              = fusion[i].tier;
 
+			logger.info("[377][fusion C] tier=" + tier);
+			
 			resultCnt = fusionCntMessageHandler(pathology_num, gene, report_gb);
 
 		resultCnt.then(data => {
@@ -616,7 +549,10 @@ const  messageFusionPHandler = async (pathology_num, fusion, report_gb) => {
   	  let gene              = fusion[i].gene;
 	  let fusion_breakpoint = fusion[i].breakpoint;
 	  let fusion_function   = fusion[i].functions;
-	  let note              = fusion[i].note;
+	  //let note              = fusion[i].note;
+	  let tier              = fusion[i].tier;
+
+	  logger.info("[377][fusion p] tier=" + tier);
 
 	  resultCnt = fusionCntMessageHandler(pathology_num, gene, report_gb);
 
@@ -631,10 +567,10 @@ const  messageFusionPHandler = async (pathology_num, fusion, report_gb) => {
 		//insert Query 생성
 		const sql = "insert into report_fusion (pathology_num, report_date, \
 									report_gb, gene, fusion_breakpoint, \
-									fusion_function, note)  \
+									fusion_function, tier)  \
 						values(@pathology_num, getdate(), \
 								@report_gb, @gene, @fusion_breakpoint, \
-								@fusion_function, @note)";
+								@fusion_function, @tier)";
 		
 		console.log('[255][pathologyReportInsert][fusion]',sql);
 			
@@ -645,7 +581,7 @@ const  messageFusionPHandler = async (pathology_num, fusion, report_gb) => {
 				.input('gene', mssql.VarChar, gene)
 				.input('fusion_breakpoint', mssql.VarChar, fusion_breakpoint)
 				.input('fusion_function', mssql.VarChar, fusion_function)
-				.input('note', mssql.VarChar, note); 
+				.input('tier', mssql.VarChar, tier); 
 				
 				//const result = await request.query(sql)
 				const result = request.query(sql)
@@ -680,10 +616,10 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   logger.info( "[->][pathologyReportInsert][messageHandler] pathology_num= " +  pathology_num);
   
   let diagnosis = extraction.diagnosis;
-  let management = extraction.managementNum;
   let dnarna = ''
   let keyblock = '';
   let tumorcellpercentage = '';
+  let rel_pathology_num = patientinfo.rel_pathology_num;
   let organ = '';
   let tumortype = '';
   let msiscore = '';
@@ -730,12 +666,13 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   logger.info("[->][pathologyReportInsert][extraction][tumorcellpercentage]" + tumorcellpercentage);
   logger.info("[->][pathologyReportInsert][patientinfo][examin]" + examin);
   logger.info("[->][pathologyReportInsert][patientinfo][recheck]" +  recheck);
-  logger.info("[->][pathologyReportInsert][patientinfo][screenstatus]" + screenstatus);
+  logger.info("[->][pathologyReportInsert][patientinfo][screenstatus]" + screenstatus);  
+  logger.info("[->][pathologyReportInsert][patientinfo][rel_pathology_num]" +  rel_pathology_num);
   
   //insert Query 생성
   const sql_patient = "update patientinfo_path \
-			   set dna_rna_ext = @dnarna, management = @management, \
-			   key_block = @keyblock, \
+			   set dna_rna_ext = @dnarna,  \
+			   key_block = @keyblock, rel_pathology_num = @rel_pathology_num, \
 			tumor_cell_per = @tumorcellpercentage, \
 			   organ = @organ, tumor_type = @tumortype, \
 			   pathological_dx=@diagnosis, screenstatus = @screenstatus,\
@@ -748,17 +685,18 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 	  const request = pool.request()
 		  .input('dnarna', mssql.VarChar, dnarna)
 		  .input('management', mssql.VarChar, management) 
-		  .input('keyblock', mssql.VarChar, keyblock) 
+		  .input('rel_pathology_num', mssql.VarChar, rel_pathology_num) 
+		  .input('keyblock', mssql.NVarChar, keyblock) 
 		  .input('tumorcellpercentage', mssql.VarChar, tumorcellpercentage) 
-		  .input('organ', mssql.VarChar, organ) 
+		  .input('organ', mssql.NVarChar, organ) 
 		  .input('tumortype', mssql.VarChar, tumortype)
-		  .input('diagnosis', mssql.VarChar, diagnosis)
-		  .input('pathology_num', mssql.VarChar, pathology_num)
+		  .input('diagnosis', mssql.NVarChar, diagnosis)
 		  .input('msiscore', mssql.VarChar, msiscore)
 		  .input('tumorburden', mssql.VarChar, tumorburden)
 		  .input('examin', mssql.NVarChar,examin)
 		  .input('recheck',mssql.NVarChar,recheck)
-		  .input('screenstatus',mssql.NVarChar,screenstatus);
+		  .input('screenstatus',mssql.NVarChar,screenstatus)
+		  .input('pathology_num', mssql.VarChar, pathology_num);
 		  
 	  const result = await request.query(sql_patient);
 	  
@@ -776,10 +714,14 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   // mutation handler
   let resultMc = messageMutationCHandler(pathology_num, mutation_c, report_gb);
 
+  logger.info("[361][messageMutationCHandler] data=" + JSON.stringify(resultMc)); 
+
+  /*
   resultMc.then(data2 => {
 	logger.info("[361][messageMutationCHandler] data=" + JSON.stringify(data2)); 
 
-  }); 
+  });
+  */ 
   
   // amplification handler
   resultMc = messageAmplificationCHandler(pathology_num, amplification_c, report_gb);
