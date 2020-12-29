@@ -50,81 +50,6 @@ function nvl(st, defaultStr){
   return st ;
 }
 
-// fusion coount Check
-const fusionCntMessageHandler = async (pathology_num, gene, report_gb ) => {
-	await poolConnect; // ensures that the pool has been created
-
-	console.log("[75][pathologyReportInsert][fusionCnt] pathology_num= " + pathology_num);
-	logger.info("[75][FusionCnt] report_gb=" + report_gb);
-	logger.info("[75][FusionCnt] gene =" + gene);
-	
-  //select Query 생성
-  let sql2 = "select count(1)  as cnt from report_fusion \
-			where  pathology_num = @pathology_num \
-			and  gene = @gene \
-			and  report_gb = @report_gb";
-
-	logger.info(sql2);
-	
-  try {
-	const request = pool.request()
-		.input('pathology_num', mssql.VarChar, pathology_num)
-		.input('gene', mssql.VarChar, gene)
-		.input('report_gb', mssql.VarChar, report_gb); 
-		
-	const result = await request.query(sql2);
-
-	const data  = result.recordset[0];
-
-	logger.info("data=" + JSON.stringify( data));
-	return data;
-	
-	//return result;
-  } catch (err) {
-	logger.error('SQL error=' + JSON.stringify( err));
-	return "{'cnt':'-1'}";
-  }
-
-}
-
-
-// amplification  coount Check
-const  amplificationCntMessageHandler = async (pathology_num, gene, estimated_copy_num, report_gb ) => {
-	await poolConnect; // ensures that the pool has been created
-
-	logger.info("[109][pathologyReportInsert][amplification] pathology_num=" +  pathology_num) ;
-	logger.info("[amplificatio]gene =" + gene);
-	logger.info("[amplification] estimated_copy_num=" + estimated_copy_num);
-	logger.info("[amplificaion] report_gb=" + report_gb);
-
-	  //select Query 생성
-	  const sql = "select count(1) as cnt from report_amplification \
-	               where pathology_num = @pathology_num \
-				   and report_gb = @report_gb \
-				   and estimated_copy_num = @estimated_copy_num ";
-	  
-	  logger.info('[196][pathologyReportInsert][amplification] sql=' + sql);
-		   
-	  try {
-		  const request = pool.request()
-			.input('pathology_num', mssql.VarChar, pathology_num)
-			.input('report_gb', mssql.VarChar, report_gb)
-			.input('gene', mssql.VarChar, gene)
-			.input('estimated_copy_num', mssql.VarChar, estimated_copy_num); 
-			
-		  const result = await request.query(sql)
-		  
-		  const data  = result.recordset[0];
-
-		  logger.info("[132][pathologyReportInsert][amplification]=" + JSON.stringify( data));
-
-		  return data;
-	  } catch (err) {
-		  logger.error('SQL error=' + JSON.stringify(err));
-	  } // try end
-}
-
-
 const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	await poolConnect; // ensures that the pool has been created
 
@@ -161,9 +86,19 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 			.input('note', mssql.VarChar(10), '')
 			.output('TOTALCNT', mssql.int, 0); 
 			
-		const resultMC = await request.execute(sql2);
-		
-		logger.info("[275]resultMC=" + JSON.stringify(resultMC));
+		let resultMC;
+		await request.execute(sql2, (err, recordset, returnValue) => {
+			if (err)
+			{
+				logger.info ("[268][amplification]err message=" + err.message);
+			}
+
+			logger.info("[268][amplication]recordset="+ recordset);
+			logger.info("[268][amplication]returnValue="+ returnValue);
+
+			resultMC = returnValue;
+			logger.info("[275]resultMC=" + JSON.stringify(resultMC));
+		});
 		
 		return resultMC;
 	} catch (err) {
