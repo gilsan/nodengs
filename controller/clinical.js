@@ -25,7 +25,9 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
     await poolConnect; // ensures that the pool has been created
     let result;
    
+    console.log('[28][clinicaldata]', pathologyNum);
     let sql = "delete from clinical where  pathologyNum = @pathologyNum ";
+    console.log('[30][clinicaldata]', sql);
 
     try {
         const request = pool.request()
