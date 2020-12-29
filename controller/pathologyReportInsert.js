@@ -144,7 +144,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	logger.info("[289][mutation] tier=" + tier);
 
 	//select Query 생성
-	let sql2 = "insert_mutation";
+	let sql2 = "insert_report_mutation";
 
 	logger.info("[49][MutationCnt] sql=" + sql2);
 
@@ -223,7 +223,7 @@ const  messageMutationPHandler = async (pathology_num, mutationP, report_gb) => 
 	if (mutation_length > 0)
 	{
 		//for 루프를 돌면서 Mutation 카운트 만큼       //Mutation Count
-	  	mutation.forEach (item => 
+	  	mutationP.forEach (item => 
 		{
 		  resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
 		  logger.info("[296]cnt=" , resultCnt);
@@ -231,52 +231,58 @@ const  messageMutationPHandler = async (pathology_num, mutationP, report_gb) => 
 	}  //if end
 }
 
-const amplificationSaveHandler = async (pathology_num, mutation, report_gb ) => {
+const amplificationSaveHandler = async (pathology_num, amplification, report_gb ) => {
 	await poolConnect; // ensures that the pool has been created
 
-	let gene              = mutation.gene;
-	let amino_acid_change = mutation.aminoAcidChange;
-	let nucleotide_change = mutation.nucleotideChange;
-	let variant_allele_frequency = mutation.variantAlleleFrequency;
-	let variant_id       = mutation.ID;
-	let tier             = mutation.tier;
-
-	logger.info("[289][mutation] pathology_num=" + pathology_num);
-	logger.info("[289][mutation] gene=" + gene);
-	logger.info("[289][mutation] nucleotide_change=" + nucleotide_change);
-	logger.info("[289][mutation] amino_acid_change=" + amino_acid_change);
-	logger.info("[289][mutation] variant_allele_frequency=" + variant_allele_frequency);
-	logger.info("[289][mutation] variant_id=" + variant_id);
-	logger.info("[289][mutation] tier=" + tier);
+	let gene             = amplification.gene;
+	let region           = amplification.region;
+	let estimated_copy_num = amplification.copynumber;
+	let tier             = amplification.tier;
+	let note             = amplification.note;
+  
+	logger.info("[243][amplification] pathology_num=" + pathology_num);
+	logger.info("[243][amplification] report_gb=" + report_gb);
+	logger.info("[243][amplification] region=" + region);
+	logger.info("[243][amplification] estimated_copy_num=" + estimated_copy_num);
+	logger.info("[243][amplification] tier=" + tier);
+	logger.info("[243][amplification] note=" + note);
 
 	//select Query 생성
-	let sql2 = "insert_mutation";
+	let sql2 = "insert_report_amplification";
 
-	logger.info("[49][MutationCnt] sql=" + sql2);
+	logger.info("[252][amplification save] sql=" + sql2);
 
 	try {
 		const request = pool.request()
-			.input('pathology_num', mssql.VarChar(300), pathology_num)
-			.input('report_gb', mssql.VarChar(1), report_gb)
-			.input('gene', mssql.VarChar(100), gene) 
-			.input('amino_acid_change', mssql.VarChar(100), amino_acid_change) 
-			.input('nucleotide_change', mssql.VarChar(100), nucleotide_change) 
-			.input('variant_allele_frequency', mssql.VarChar(100), variant_allele_frequency) 
-			.input('variant_id', mssql.VarChar(100), variant_id)
-			.input('tier', mssql.VarChar(10), tier)
-			.input('note', mssql.VarChar(10), '')
+			.input('pathology_num', mssql.VarChar, pathology_num)
+			.input('report_gb', mssql.VarChar, report_gb)
+			.input('gene', mssql.VarChar, gene)
+			.input('region', mssql.VarChar, region) 
+			.input('estimated_copy_num', mssql.VarChar, estimated_copy_num)
+			.input('tier', mssql.VarChar, tier)
+			.input('note', mssql.VarChar, note)
 			.output('TOTALCNT', mssql.int, 0); 
 			
-		const resultMC = await request.execute(sql2);
+		let resultAc;
+		 	await request.execute(sql2, (err, recordset, returnValue) => {
+				if (err)
+				{
+					logger.info ("[268][amplification]err message=" + err.message);
+				}
+
+				logger.info("[268][amplication]recordset="+ recordset);
+				logger.info("[268][amplication]returnValue="+ returnValue);
+
+				resultAc = returnValue;
+			 });
 		
-		logger.info("[275]resultMC=" + JSON.stringify(resultMC));
+		logger.info("[275]resultAc=" + JSON.stringify(resultAc));
 		
-		return resultMC;
+		return resultAc;
 	} catch (err) {
 		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
 	} // try end
 }
-
 
 // 병리 결과지 입력/수정/삭제
 const  messageAmplificationCHandler = async (pathology_num, amplification, report_gb) => {
@@ -305,148 +311,91 @@ const  messageAmplificationCHandler = async (pathology_num, amplification, repor
 	  logger.error('[364][amplification] SQL error=' + JSON.stringify(err));
 	}
   
+	let resultCnt;
 	if (amplification_length > 0)
 	{
-	  logger.info("[378][amplification C] length=" + amplification.length);
-  
-		//for 루프를 돌면서 Amplification카운트 만큼       //Amplification Count
-	  for (let i = 0; i < amplification_length ; i++)
-	  {
-		let gene             = amplification[i].gene;
-		let region           = amplification[i].region;
-		let estimated_copy_num = amplification[i].copynumber;
-		let tier             = amplification[i].tier;
-		let note             = amplification[i].note;
-  
-		logger.info("[377][amplification] pathology_num=" + pathology_num);
-		logger.info("[377][amplification] region=" + region);
-		logger.info("[377][amplification] estimated_copy_num=" + estimated_copy_num);
-		logger.info("[377][amplification] tier=" + tier);
-		logger.info("[377][amplification] note=" + note);
-		//logger.info
-  
-		let resultCntAC = amplificationCntMessageHandler(pathology_num, gene, estimated_copy_num, report_gb);
-  
-		resultCntAC.then(data2 => {
-  
-		//console.log('[mutationc][268]', data);
-		if ( data2.cnt == 0)
-		{
-		  try
-		  {
-  
-		  //insert Query 생성
-		  const sql = "insert into report_amplification (pathology_num, report_date, \
-					  report_gb, gene, region, \
-					  estimated_copy_num, tier, note)   \
-					  values(@pathology_num, getdate(), \
-						  @report_gb, @gene, @region, \
-						  @estimated_copy_num, @tier, @note)";
-		  
-		  console.log('[196][pathologyReportInsert][amplification]',sql);
-			  
-		  try {
-			  const request = pool.request()
-				  .input('pathology_num', mssql.VarChar, pathology_num)
-				  .input('report_gb', mssql.VarChar, report_gb)
-				  .input('gene', mssql.VarChar, gene)
-				  .input('region', mssql.VarChar, region) 
-				  .input('estimated_copy_num', mssql.VarChar, estimated_copy_num)
-				  .input('tier', mssql.VarChar, tier)
-				  .input('note', mssql.VarChar, note); 
-				  
-			  //const result = await request.query(sql)
-			  const result = request.query(sql)
-			  
-			  return result;
-		  } catch (err) {
-			  console.error('SQL error', err);
-		  } // try end
-		} // try cnt end
-		catch(err) {
-			console.error('SQL error', err);
-		} // try end
-	  }
-		}); //
-	  } // for end
-  } // if  amplipication end
+		amplification.forEach (item => 
+	  	{
+			resultCnt = amplificationSaveHandler(pathology_num, item, report_gb);
+			logger.info("[296]cnt=" , resultCnt);
+	
+	  	}); // foreach end
+	}  //if end
+
+	return resultCnt; 
 }
 
 // 병리 결과지 입력/수정/삭제
-const  messageAmplificationPHandler = async (pathology_num, amplification, report_gb) => {
+const  messageAmplificationPHandler = async (pathology_num, amplificationP, report_gb) => {
 
-	const amplification_length =  amplification.length;
-	logger.info("[345][amplification P] amplification_p =" + JSON.stringify( amplification));
-	logger.info("[345][amplification P] length=" + amplification.length);
+	const amplification_length =  amplificationP.length;
+	logger.info("[345][amplification P] amplification_p =" + JSON.stringify( amplificationP));
+	logger.info("[345][amplification P] length=" + amplificationP.length);
 	logger.info("[347][amplification P] pathology_num=" + pathology_num );
 	logger.info("[347][amplification P] report_gb=" + report_gb );
 
 	let resultCnt;
 	if (amplification_length > 0)
 	{
-	  logger.info("[378][amplification P] length=" + amplification.length);
-  
-		//for 루프를 돌면서 Amplification카운트 만큼       //Amplification Count
-	  for (let i = 0; i < amplification_length ; i++)
-	  {
-		let gene             = amplification[i].gene;
-		let region           = amplification[i].region;
-		let estimated_copy_num = amplification[i].copynumber;
-		let tier             = amplification[i].tier;
-		let note             = amplification[i].note;
-  
-		logger.info("[377][amplification P] pathology_num=" + pathology_num);
-		logger.info("[377][amplification P] region=" + region);
-		logger.info("[377][amplification P] estimated_copy_num=" + estimated_copy_num);
-		logger.info("[377][amplification P] tier=" + tier);
-		logger.info("[377][amplification P] note=" + note);
-		//logger.info
-  
-		resultCnt = amplificationCntMessageHandler(pathology_num, gene, estimated_copy_num, report_gb);
-  
-		resultCnt.then(data2 => {
-  
-		//console.log('[mutationc][268]', data);
-		if ( data2.cnt == 0)
+		amplificationP.forEach (item => 
 		{
-		  try
-		  {
-  
-		  //insert Query 생성
-		  const sql = "insert into report_amplification (pathology_num, report_date, \
-					  report_gb, gene, region, \
-					  estimated_copy_num, tier, note)   \
-					  values(@pathology_num, getdate(), \
-						  @report_gb, @gene, @region, \
-						  @estimated_copy_num, @tier, @note)";
-		  
-		  console.log('[196][pathologyReportInsert][amplification]',sql);
-			  
-		  try {
-			  const request = pool.request()
-				  .input('pathology_num', mssql.VarChar, pathology_num)
-				  .input('report_gb', mssql.VarChar, report_gb)
-				  .input('gene', mssql.VarChar, gene)
-				  .input('region', mssql.VarChar, region) 
-				  .input('estimated_copy_num', mssql.VarChar, estimated_copy_num)
-				  .input('tier', mssql.VarChar, tier)
-				  .input('note', mssql.VarChar, note); 
-				  
-			  //const result = await request.query(sql)
-			  const result = request.query(sql)
-			  
-			  return result;
-		  } catch (err) {
-			  console.error('SQL error', err);
-		  } // try end
-		} // try cnt end
-		catch(err) {
-			console.error('SQL error', err);
-		} // try end
-	  }
-		}); //
-	  } // for end
+			resultCnt = amplificationSaveHandler(pathology_num, item, report_gb);
+			logger.info("[296]cnt=" , resultCnt);
+	
+		}); // foreach end
   } // if  amplipication end
+}
+
+const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
+	await poolConnect; // ensures that the pool has been created
+
+	let gene              = fusion.gene;
+	let fusion_breakpoint = fusion.breakpoint;
+	let fusion_function   = fusion.functions;
+	let tier              = fusion.tier;
+	let note              = fusion.note;
+  
+	logger.info("[243][fusion] pathology_num=" + pathology_num);
+	logger.info("[243][fusion] gene=" + gene);
+	logger.info("[243][fusion] fusion_breakpoint=" + fusion_breakpoint);
+	logger.info("[243][fusion] fusion_function=" + fusion_function);
+	logger.info("[243][fusion] report_gb=" + report_gb);
+
+	//select Query 생성
+	let sql2 = "insert_report_fusion";
+
+	logger.info("[252][fusion save] sql=" + sql2);
+
+	try {
+		const request = pool.request()
+			.input('pathology_num', mssql.VarChar, pathology_num)
+			.input('report_gb', mssql.VarChar, report_gb)
+			.input('gene', mssql.VarChar, gene)
+			.input('fusion_breakpoint', mssql.VarChar, fusion_breakpoint)
+			.input('fusion_function', mssql.VarChar, fusion_function)
+			.input('tier', mssql.VarChar, tier)
+			.input('note', mssql.VarChar, note)
+			.output('TOTALCNT', mssql.int, 0); 
+			
+		let resultFu;
+		 	await request.execute(sql2, (err, recordset, returnValue) => {
+				if (err)
+				{
+					logger.info ("[268][fusion]err message=" + err.message);
+				}
+
+				logger.info("[268][fusion]recordset="+ recordset);
+				logger.info("[268][fusion]returnValue="+ returnValue);
+
+				resultFu = returnValue;
+			 });
+		
+		logger.info("[275]resultFu=" + JSON.stringify(resultFu));
+		
+		return resultFu;
+	} catch (err) {
+		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+	} // try end
 }
 
 // 병리 fusion 결과지 입력/수정/삭제
@@ -476,128 +425,33 @@ const  messageFusionCHandler = async (pathology_num, fusion, report_gb) => {
 
 	if (fusion_length > 0)
 	{
-		//for 루프를 돌면서 fusion 카운트 만큼       
-		for (let i = 0; i < fusion_length; i++)
+		fusion.forEach (item => 
 		{
-			let gene              = fusion[i].gene;
-			let fusion_breakpoint = fusion[i].breakpoint;
-			let fusion_function   = fusion[i].functions;
-			let tier              = fusion[i].tier;
-
-			logger.info("[377][fusion C] tier=" + tier);
-			
-			resultCnt = fusionCntMessageHandler(pathology_num, gene, report_gb);
-
-		resultCnt.then(data => {
-
-		console.log('[mutationc][268]', data);
-		if ( data.cnt == 0)
-		{
-			try
-			{
-
-			//insert Query 생성
-			const sql = "insert into report_fusion (pathology_num, report_date, \
-										report_gb, gene, fusion_breakpoint, \
-										fusion_function, tier)  \
-							values(@pathology_num, getdate(), \
-									@report_gb, @gene, @fusion_breakpoint, \
-									@fusion_function, @tier)";
-			
-			console.log('[255][pathologyReportInsert][fusion]',sql);
-				
-			try {
-				const request = pool.request()
-					.input('pathology_num', mssql.VarChar, pathology_num)
-					.input('report_gb', mssql.VarChar, report_gb)
-					.input('gene', mssql.VarChar, gene)
-					.input('fusion_breakpoint', mssql.VarChar, fusion_breakpoint)
-					.input('fusion_function', mssql.VarChar, fusion_function)
-					.input('tier', mssql.VarChar, tier); 
-					
-					//const result = await request.query(sql)
-					const result = request.query(sql)
-				
-				return result;
-			} catch (err) {
-				console.error('SQL error', err);
-			}  // try end
-		} // try cnt end
-		catch(err) {
-			console.error('SQL error', err);
-		} // try end
-	  }
-	}); //
-   } // for end
- } //  if end
+			resultCnt = fusionSaveHandler(pathology_num, item, report_gb);
+			logger.info("[296]cnt=" , resultCnt);
+	
+		}); // foreach end
+ 	} //  if end
 
 }
 
 // 병리 fusion 결과지 입력/수정/삭제
-const  messageFusionPHandler = async (pathology_num, fusion, report_gb) => {
+const  messageFusionPHandler = async (pathology_num, fusionP, report_gb) => {
 
-  const fusion_length = fusion.length;
-  console.log("fusion=", fusion);
-  console.log("b=", fusion.length);
+  const fusion_length = fusionP.length;
+  console.log("fusion=", fusionP);
+  console.log("b=", fusionP.length);
   let resultCnt;
 
   if (fusion_length > 0)
   {
-  //for 루프를 돌면서 fusion 카운트 만큼       
-  for (let i = 0; i < fusion_length; i++)
-  {
-  	  let gene              = fusion[i].gene;
-	  let fusion_breakpoint = fusion[i].breakpoint;
-	  let fusion_function   = fusion[i].functions;
-	  //let note              = fusion[i].note;
-	  let tier              = fusion[i].tier;
-
-	  logger.info("[377][fusion p] tier=" + tier);
-
-	  resultCnt = fusionCntMessageHandler(pathology_num, gene, report_gb);
-
-	  resultCnt.then(data => {
-
-	  console.log('[fusionC][268]', data);
-	  if ( data.cnt == 0)
-	  {
-		try
+	fusionP.forEach (item => 
 		{
-
-		//insert Query 생성
-		const sql = "insert into report_fusion (pathology_num, report_date, \
-									report_gb, gene, fusion_breakpoint, \
-									fusion_function, tier)  \
-						values(@pathology_num, getdate(), \
-								@report_gb, @gene, @fusion_breakpoint, \
-								@fusion_function, @tier)";
-		
-		console.log('[255][pathologyReportInsert][fusion]',sql);
-			
-		try {
-			const request = pool.request()
-				.input('pathology_num', mssql.VarChar, pathology_num)
-				.input('report_gb', mssql.VarChar, report_gb)
-				.input('gene', mssql.VarChar, gene)
-				.input('fusion_breakpoint', mssql.VarChar, fusion_breakpoint)
-				.input('fusion_function', mssql.VarChar, fusion_function)
-				.input('tier', mssql.VarChar, tier); 
-				
-				//const result = await request.query(sql)
-				const result = request.query(sql)
-			
-			return result;
-		} catch (err) {
-			console.error('SQL error', err);
-		}  // try end
-	} // try cnt end
-	catch(err) {
-		console.error('SQL error', err);
-	} // try end
-  }
-	}); //
-   } // for end
- } //  if end
+			resultCnt = fusionSaveHandler(pathology_num, item, report_gb);
+			logger.info("[296]cnt=" , resultCnt);
+	
+		}); // foreach end
+  } //  if end
 
 }
 
@@ -619,7 +473,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   let dnarna = ''
   let keyblock = '';
   let tumorcellpercentage = '';
-  let rel_pathology_num = patientinfo.rel_pathology_num;
+  let rel_pathology_num = extraction.managementNum;
   let organ = '';
   let tumortype = '';
   let msiscore = '';
@@ -656,7 +510,6 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   let recheck = patientinfo.recheck; // 확인자 
 
   logger.info("[199][pathologyReportInsert][extraction][dnarna]" + dnarna);
-  logger.info("[->][pathologyReportInsert][extraction][management]" + management);
   logger.info("[->][pathologyReportInsert][extraction][keyblock]" + keyblock);
   logger.info("[->][pathologyReportInsert][extraction][organ]" + organ);
   logger.info("[->][pathologyReportInsert][extraction][tumortype]" + tumortype);
@@ -684,7 +537,6 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   try {
 	  const request = pool.request()
 		  .input('dnarna', mssql.VarChar, dnarna)
-		  .input('management', mssql.VarChar, management) 
 		  .input('rel_pathology_num', mssql.VarChar, rel_pathology_num) 
 		  .input('keyblock', mssql.NVarChar, keyblock) 
 		  .input('tumorcellpercentage', mssql.VarChar, tumorcellpercentage) 
@@ -698,12 +550,22 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		  .input('screenstatus',mssql.NVarChar,screenstatus)
 		  .input('pathology_num', mssql.VarChar, pathology_num);
 		  
-	  const result = await request.query(sql_patient);
+	  let result;
+	   await request.query(sql_patient, (err, recordset) => 
+	  	{
+			if (err)
+			{
+				logger.error("err=" + err.message);
+			}
+
+			result = recordset;
+		}
+		);
 	  
 	  logger.info("data", JSON.stringify(result));
 	  //return result;
   } catch (err) {
-	  logger.error('SQL error=' , JSON.stringify(err));
+	  logger.error('SQL error=' + err);
   }
   
   //1. Clinically significant boiomakers
