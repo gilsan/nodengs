@@ -36,6 +36,9 @@ app.use('/register', registerRouter);
 // 사용자 관리
 const manageUsersRouter      = require('./routes/manageUsersRouter');
 
+//통계 관리 
+const manageStatisticsRouter      = require('./routes/manageStatisticsRouter')
+
 // inhouse 
 const commentsRouter        = require('./routes/commentsRouter');
 const artifactsRouter       = require('./routes/artifactsRouter');
@@ -117,6 +120,11 @@ app.use('/loginPath', loginPathRouter);
 // 등록
 app.use('/register', registerRouter);
 
+// 사용자 정보 가져오기
+app.use('/manageUsers', manageUsersRouter); 
+
+// 통계 정보 가져오기
+app.use('/manageStatistics', manageStatisticsRouter); 
 
 // 환자목록 가져오기
 app.use('/patients', patientListRouter);
