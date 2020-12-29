@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
 const amlReportInsert = require('./amlReportInsert');
+const logger = require('../common/winston');
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -462,7 +463,7 @@ const deleteHandler = async (specimenNo) => {
     //insert Query 생성;    
     const qry ="delete report_detected_variants where specimenNo=@specimenNo";
             
-    console.log("sql",qry);
+    logger.info("[466][detected_variant] del sql=" + qry);
   
     try {
         const request = pool.request()
@@ -536,31 +537,9 @@ const deleteHandler = async (specimenNo) => {
      })
  }
 
- const selectPatient = async (pathologyNum) => {
-  await poolConnect; // ensures that the pool has been created
- 
-  let sql = "select isnull(name, '') name, isnull(patientID, '') patientID, \
-          isnull(prescription_date, '') prescription_date \
-     from [dbo].[patientinfo_path] \
-     where  pathology_num=@pathologyNum";
-
-  console.log("[544]sql selectPatient=",sql);
-  
-  try {
-      const request = pool.request()
-      .input('pathologyNum', mssql.VarChar, pathologyNum); 
-      const result = await request.query(sql)
-     // console.dir( result);
-      
-      return result.recordset[0];
-  } catch (err) {
-      console.error('SQL error', err);
-  }
-}
-
   // 병리 DB 저장 완료
   const  messageHandlerPathology = async (pathologyNum) => {
-    console.log('[screenList][501][finishPathologyScreen]',pathologyNum); 
+    logger.info('[screenList][501][finishPathologyScreen]pathologyNum=' +  pathologyNum); 
     let sql ="update [dbo].[patientinfo_path] \
             set screenstatus='1' \
             where pathology_num=@pathologyNum ";
@@ -579,7 +558,6 @@ const deleteHandler = async (specimenNo) => {
 
  }
 
-
 exports.finishPathologyScreen = (req, res, next) => {
     const pathologyNum = req.body.pathologyNum;
    
@@ -591,28 +569,39 @@ exports.finishPathologyScreen = (req, res, next) => {
     .catch( err  => res.sendStatus(500));
 }
 
-const messageHandlerStat_log = async (name, patientID, prescription_date) => {
-  console.log('[screenList][592][messageHandlerStat_log]',name, patientID, prescription_date);
-  
-  let sql ="insert into [dbo].[stat_Log] \
-          (name, patientID, accept_date, send_time) \
-          values (@name, @patientID, @prescription_date, getdate()) ";
+const messageHandlerStat_log = async (pathologyNum ) => {
+	await poolConnect; // ensures that the pool has been created
 
-  try {
-      const request = pool.request()
-          .input('name', mssql.VarChar, name)
-          .input('patientID', mssql.VarChar, patientID)
-          .input('prescription_date', mssql.VarChar, prescription_date); // or: new sql.Request(pool1)
-            
-      const result = await request.query(sql)
-      console.dir( result);
-      
-      return result;
-  } catch (err) {
-      console.error('SQL error', err);
-  }
-  
+	logger.info("[289][stat_log] pathology_num=" + pathologyNum);
 
+	//select Query 생성
+	let sql2 = "insert_stat_log_path";
+
+	logger.info("[603][stat_log] sql=" + sql2);
+
+	try {
+		const request = pool.request()
+			.input('pathologyNum', mssql.VarChar(300), pathologyNum)
+			.output('TOTALCNT', mssql.int, 0); 
+			
+		let resultSt;
+		await request.execute(sql2, (err, recordset, returnValue) => {
+			if (err)
+			{
+				logger.error("[268][stat_log]err message=" + err.message);
+			}
+
+			logger.info("[268][stat_log]recordset="+ recordset);
+			logger.info("[268][stat_log]returnValue="+ returnValue);
+
+			resultSt = returnValue;
+			logger.info("[275]resultSt=" + JSON.stringify(resultSt));
+		});
+		
+		return resultSt;
+	} catch (err) {
+		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+	} // try end
 }
 
 // 병리 EMR전송 완료
@@ -638,31 +627,15 @@ const  messageHandlerEMR = async (pathologyNum) => {
 }
 exports.finishPathologyEMRScreen = (req, res, next) => {
   const pathologyNum = req.body.pathologyNum;
-  console.log('[screenList][555][finishPathologyScreen]',pathologyNum);
+  logger.info('[screenList][653][finishPathologyScreen]',pathologyNum);
 
-  let name = "";
-  let patientID = "";
-  let prescription_date = "";
-
-  let resultPatient = selectPatient(pathologyNum);
-
-  resultPatient.then(data => {
-    name = data.name;
-    patientID = data.patientID;
-    prescription_date = data.prescription_date;
-  });
-
-  const resultLog = messageHandlerStat_log(name, patientID, prescription_date);
-  resultLog.then(data => {
-    console.log('[screenList][558][finishPathologyScreen]',data); 
+  const resultLog = messageHandlerStat_log(pathologyNum);
+  logger.info('[screenList][655][finishPathologyScreen]',resultLog); 
     //  res.json({message: 'SUCCESS'});
-  }) 
-  .catch( err  => res.sendStatus(500));
-
 
   const result = messageHandlerEMR(pathologyNum);
   result.then(data => {
-    console.log('[screenList][558][finishPathologyScreen]',data); 
+    console.log('[screenList][661][finishPathologyScreen]',data); 
       res.json({message: 'SUCCESS'});
   }) 
   .catch( err  => res.sendStatus(500));
