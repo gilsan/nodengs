@@ -99,14 +99,7 @@ const updateIRpath = async (filename, irpath, pathology_num) => {
 const updatePatient = async (pathology_num) => {
    await poolConnect;
    const sql ="update  patientinfo_path \
-                set key_block = '', \
-                pathological_dx = '', \
-                tumor_type = '', \
-                tumor_cell_per = '', \
-                organ = '', \
-                tumorburden = '', \
-                msiscore = '', \
-                screenstatus = '0'  \
+                set screenstatus = '0'  \
               where pathology_num=@pathology_num";
    console.log('[updatePatient] [104]', sql);
    try {
