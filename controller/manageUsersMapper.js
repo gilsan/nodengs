@@ -1,3 +1,4 @@
+// Beign 정보로 필요사항 가져오기 
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
@@ -12,7 +13,7 @@ const listHandler = async (req) => {
 	const startDay			= req.body.startDay; 
 	const endDay			= req.body.endDay;
 	
-	let sql ="select id, user_id, password, user_nm, user_gb, dept, login_date, ";
+	let sql ="select id, user_id, password, user_nm, user_gb, dept, CONVERT(CHAR(19), login_date, 120) login_date, isnull(approved,'N') approved ,";
 	sql = sql + " case when dept ='P' then 'Pathology' when dept ='D' then 'Diagnostic' else '' end dept_nm ,"
 	sql = sql + " case when user_gb  ='U' then 'User' when dept ='A' then 'Manager' else '' end user_gb_nm ,"
 	sql = sql + " uuid , reg_date pickselect, case when part ='T' then 'Tester' when part = 'D' then 'Doctor' end part_nm ";
@@ -134,10 +135,29 @@ const deleteHandler = async (req) => {
     }
  }
 
+ // approved
+const approvedHandler = async (req) => { 
+	const id				= req.body.id; 
+	const approved			= req.body.approved; 
 
-// List benign
- exports.listUsers = (req, res, next) => { 
-  //  console.log('[200][listBenign]');
+    let sql = "update users set approved = @approved  " ; 
+    sql = sql + "where id = @id"; 
+
+    try {
+        const request = pool.request()
+		  .input('id', mssql.VarChar, id)
+		  .input('approved', mssql.VarChar, approved );  
+        const result = await request.query(sql)
+        console.dir( result); 
+        return result;
+    } catch (err) {
+        console.error('SQL error', err);
+    }
+ }
+
+
+// List users
+ exports.listUsers = (req, res, next) => {  
     const result = listHandler(req);
     result.then(data => { 
           res.json(data);
@@ -145,7 +165,7 @@ const deleteHandler = async (req) => {
      .catch( err  => res.sendStatus(500));
  };
 
-// Benign Insert
+// users Insert
  exports.insertUsers = (req,res,next) => {
     const result = insertHandler(req);
     result.then(data => { 
@@ -154,9 +174,8 @@ const deleteHandler = async (req) => {
      .catch( err  => res.sendStatus(500));
  };
 
-// Benign Update
- exports.updateUsers = (req,res,next) => {
-  //  console.log('[200][updateBenign]');
+// users Update
+ exports.updateUsers = (req,res,next) => { 
 
 	const result = updateHandler(req);
     result.then(data => {
@@ -166,11 +185,21 @@ const deleteHandler = async (req) => {
 	
  };
 
-// Benign Delete
- exports.deleteUsers = (req,res,next) => {
-   // console.log('[200][deleteBenign]');
+// users Delete
+ exports.deleteUsers = (req,res,next) => { 
 
 	const result = deleteHandler(req);
+    result.then(data => { 
+          res.json(data);
+     })
+     .catch( err  => res.sendStatus(500));
+	
+ };
+
+// user approved
+ exports.approvedUsers= (req,res,next) => { 
+
+	const result = approvedHandler(req);
     result.then(data => { 
           res.json(data);
      })

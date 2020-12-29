@@ -67,13 +67,13 @@ const  insertHandler = async (req) => {
   console.log(patient_name,register_number,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id);
 
   let sql ="insert into mutation   ";
-  sql = sql + " (id, buccal,patient_name,register_number,  ";
+  sql = sql + " (buccal,patient_name,register_number,  ";
   sql = sql + " fusion,gene,functional_impact,transcript,  ";
   sql = sql + " exon_intro,nucleotide_change,  ";
   sql = sql + " amino_acid_change,zygosity,vaf,  ";
   sql = sql + " reference,cosmic_id,sift_polyphen_mutation_taster,buccal2,igv,sanger)   ";
-  sql = sql + " values ( (select isnull(max(id),0)+1 from mutation), ";
-  sql = sql + " @buccal, @patient_name, @register_number,  ";
+  sql = sql + " values ( ";   
+  sql = sql + " @buccal, @patient_name, @register_number, @fusion, ";
   sql = sql + " @gene, @functional_impact, @transcript,  ";
   sql = sql + " @exon_intro, @nucleotide_change,  ";
   sql = sql + " @amino_acid_change, @zygosity, @vaf,  ";

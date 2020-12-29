@@ -8,5 +8,6 @@ router.post('/list',   usersController.listUsers);
 router.post('/insert', usersController.insertUsers);
 router.post('/update', usersController.updateUsers);
 router.post('/delete', usersController.deleteUsers); 
+router.post('/approved', usersController.approvedUsers);
 
 module.exports = router;

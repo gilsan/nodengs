@@ -1,3 +1,4 @@
+// Beign 정보로 필요사항 가져오기 
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
