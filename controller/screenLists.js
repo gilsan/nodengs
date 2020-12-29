@@ -175,12 +175,17 @@ exports.patientLists = (req,res,next) => {
   const insertCommentHandler = async(specimenNo, comments) => {
   //for 루프를 돌면서 Commencts 만큼       //Commencts Count
   let commentResult;
+
+  console.log(comments);
+
   for (i = 0; i < comments.length; i++)
   {
 	  const gene       = comments[i].gene;
-      const variants    = comments[i].variants;
+      const variants    = comments[i].variant_id;
       const comment    = comments[i].comment;
       const reference  = comments[i].reference;
+
+      console.log('[188][comments] variants=', variants);
 
 	  //insert Query 생성
 	  const qry = "insert into report_comments (specimenNo, report_date, \
@@ -525,8 +530,6 @@ const deleteHandler = async (specimenNo) => {
      const specimenNo    = req.body.specimenNo;
      const chron         = req.body.chron
 
-     let resultPatient = selectPatient(specimenNo);
-     
      const result = messageHandler3(specimenNo, '3');
      result.then(data => {
         res.json({message: 'EMR 전송 상태 갱신 했습니다.'})
@@ -536,10 +539,10 @@ const deleteHandler = async (specimenNo) => {
  const selectPatient = async (pathologyNum) => {
   await poolConnect; // ensures that the pool has been created
  
-  let sql = "select isnull(name, '') name isnull(patientID, '') patientID \
-          ,isnull(prescription_date, '') prescription_date \
-  from [dbo].[patientinfo_diag] \
-    where  pathology_num=@pathologyNum";
+  let sql = "select isnull(name, '') name, isnull(patientID, '') patientID, \
+          isnull(prescription_date, '') prescription_date \
+     from [dbo].[patientinfo_path] \
+     where  pathology_num=@pathologyNum";
 
   console.log("[544]sql selectPatient=",sql);
   
@@ -549,7 +552,7 @@ const deleteHandler = async (specimenNo) => {
       const result = await request.query(sql)
      // console.dir( result);
       
-      return result.recordset;
+      return result.recordset[0];
   } catch (err) {
       console.error('SQL error', err);
   }
@@ -571,7 +574,7 @@ const deleteHandler = async (specimenNo) => {
        
        return result;
    } catch (err) {
-       console.error('SQL error', err);
+       console.error('[577]SQL error', err);
    }
 
  }
@@ -591,7 +594,7 @@ exports.finishPathologyScreen = (req, res, next) => {
 const messageHandlerStat_log = async (name, patientID, prescription_date) => {
   console.log('[screenList][592][messageHandlerStat_log]',name, patientID, prescription_date);
   
-  let sql ="insert inot [dbo].[stat_Log] \
+  let sql ="insert into [dbo].[stat_Log] \
           (name, patientID, accept_date, send_time) \
           values (@name, @patientID, @prescription_date, getdate()) ";
 
@@ -644,13 +647,13 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   let resultPatient = selectPatient(pathologyNum);
 
   resultPatient.then(data => {
-    name = data[0].name;
-    patientID = data[0].patientID;
-    prescription_date = data[0].prescription_date;
+    name = data.name;
+    patientID = data.patientID;
+    prescription_date = data.prescription_date;
   });
 
-  const result = messageHandlerStat_log(pathologyNum, name, patientID, prescription_date);
-  result.then(data => {
+  const resultLog = messageHandlerStat_log(name, patientID, prescription_date);
+  resultLog.then(data => {
     console.log('[screenList][558][finishPathologyScreen]',data); 
     //  res.json({message: 'SUCCESS'});
   }) 
