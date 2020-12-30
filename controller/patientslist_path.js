@@ -134,7 +134,7 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
         sql = sql +  " and pathology_num like '%" +  pathology + "%'";
     }
 
-    sql = sql + " order by prescription_date desc   ";
+    sql = sql + " order by prescription_date desc, pathology_num ";
    
     console.log("sql last=",sql);
     
