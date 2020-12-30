@@ -35,7 +35,7 @@ function findChar(findChar) {
 
 
 
- workbook.xlsx.readFile('../inhouseupload/mutation.xlsx').then( async (workbook) =>{
+ workbook.xlsx.readFile('../inhouseupload/mutation2.xlsx').then( async (workbook) =>{
   
    
     const worksheet = workbook.getWorksheet('Sheet1');
@@ -198,17 +198,27 @@ function findChar(findChar) {
                 .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster)
                 .input('buccal2', mssql.VarChar, buccal2);
                 
-              const result =  request.query(sql);
+              //let result =  '';
+              const result = request.query(sql); /*, (err, recordset) => {
+                    if (err)
+                    {
+                         console.log("err=", err.message);  
+                    }
+                    console.log("recordset=", recordset);
+
+                    result = recordset;
+               });*/
                 result.then(data => {
                     console.dir(data);
                 }).catch( err => console.log(err))
               
+               console.log("result=", result);
 
             }   catch(err) {
                 console.error('SQL error', err);
             }  
 			 
-		  } // end of if loop
+		} // end of if loop
 		        
         });	
 });
@@ -216,7 +226,7 @@ function findChar(findChar) {
  const inputdb = async (sql) => {
     const request = pool.request()
     .input('bauccal', mssql.VarChar,bauccal)
-    .input('patient_name', mssql.VarChar, patient_name)  
+    .input('patient_name', mssql.NVarChar, patient_name)  
     .input('register_number', mssql.VarChar, register_number)  
     .input('fusion', mssql.VarChar, fusion)
     .input('gene', mssql.VarChar, gene)  
