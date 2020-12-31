@@ -7,6 +7,8 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -36,22 +38,22 @@ const  filteredOrigindataMessageHandler = async (req) => {
   
   const pathologyNum  =  req.body.data[0].pathologyNum;
 
-  console.log("[51][filteredOriginData][pathologyNum]", pathologyNum);
+  logger.info("[51][filteredOriginData]pathologyNum="+ pathologyNum);
  
   //insert Query 생성
   let sql2 = "delete from filteredOriginData where  pathologyNum = @pathologyNum ";
 
-  console.log(sql2);
+  logger.info(sql2);
 	
   try {
-	const request = pool.request()
-		.input('pathologyNum', mssql.VarChar, pathologyNum); 
-		
-	const result = await request.query(sql2)
+    const request = pool.request()
+      .input('pathologyNum', mssql.VarChar, pathologyNum); 
+      
+    const result = await request.query(sql2)
 	
 	//return result;
   } catch (err) {
-	console.error('SQL error', err);
+	  logger.error('[del err]SQL error=' + err);
   }
 
   //insert Query 생성;
@@ -76,19 +78,19 @@ const  filteredOrigindataMessageHandler = async (req) => {
         const variantID  =  req.body.data[i].variantID;
         const variantName  =  req.body.data[i].variantName;
 
-        console.log("[51][filteredOriginData][aminoAcidChange]", aminoAcidChange);
-        console.log("[51][filteredOriginData][coding]", coding);
-        console.log("[51][filteredOriginData][comsmicID]", comsmicID);
-        console.log("[51][filteredOriginData][cytoband]", cytoband);
-        console.log("[51][filteredOriginData][frequency]", frequency);
-        console.log("[51][filteredOriginData][gene]", gene);
-        console.log("[51][filteredOriginData][locus]", locus);
-        console.log("[51][filteredOriginData][oncomine]", oncomine);
-        console.log("[51][filteredOriginData][pathologyNum]", pathologyNum);
-        console.log("[51][filteredOriginData][readcount]", readcount);
-        console.log("[51][filteredOriginData][type]", type);
-        console.log("[51][filteredOriginData][variantID]", variantID);
-        console.log("[51][filteredOriginData][variantName]", variantName);
+        logger.info("[51][filteredOriginData]aminoAcidChange=" + aminoAcidChange);
+        logger.info("[51][filteredOriginData]coding=" + coding);
+        logger.info("[51][filteredOriginData]comsmicID=" + comsmicID);
+        logger.info("[51][filteredOriginData]cytoband=" + cytoband);
+        logger.info("[51][filteredOriginData]frequency=" + frequency);
+        logger.info("[51][filteredOriginData]gene=" + gene);
+        logger.info("[51][filteredOriginData]locus=" + locus);
+        logger.info("[51][filteredOriginData]oncomine=" + oncomine);
+        logger.info("[51][filteredOriginData]pathologyNum=" + pathologyNum);
+        logger.info("[51][filteredOriginData]readcount=" + readcount);
+        logger.info("[51][filteredOriginData]type=" + type);
+        logger.info("[51][filteredOriginData]variantID=" + variantID);
+        logger.info("[51][filteredOriginData]variantName=" + variantName);
 
         const qry = "insert into filteredOriginData (aminoAcidChange, coding, comsmicID, cytoband, \
             frequency, gene, locus, oncomine, pathologyNum, readcount, type, \
@@ -97,7 +99,7 @@ const  filteredOrigindataMessageHandler = async (req) => {
               @frequency, @gene, @locus, @oncomine, @pathologyNum, @readcount, @type, \
             @variantID, @variantName, @OncomineVariant)";
           
-        // console.log("[109][filteredOriginData] sql",qry);
+        console.log("[109][filteredOriginData] sql=" + qry);
 
          try {
             const request = pool.request()
@@ -116,10 +118,13 @@ const  filteredOrigindataMessageHandler = async (req) => {
             .input('variantName', mssql.VarChar, variantName)
             .input('OncomineVariant', mssql.VarChar, OncomineVariant);
             
-             result = await request.query(qry, (error, result)=> {
-               console.log('[130][filteredOriginData][]', error);
-              // console.log(result);
-           });
+            result = await request.query(qry, (error, result)=> {
+              if (error)
+              {
+                  logger.error('[124][filteredOriginData][error= ' + error);
+              }
+              logger.info("result=" + result);
+            });
             
             //return result;
     
@@ -140,10 +145,9 @@ const  filteredOrigindataMessageHandler = async (req) => {
 //병리 filteredOrigindata 보고서 입력
 exports.filteredOrigindata = (req,res, next) => {
 
-console.log(req.body);
+  logger.info("[147][filteredOrigindata]req=" + JSON.stringify( req.body));
 
   const result = filteredOrigindataMessageHandler(req);
-
 
   result.then(data => {
 
@@ -162,7 +166,7 @@ const  filteredOrigindataMessageHandler2 = async (req) => {
 	
 	const pathologyNum = req.body.pathologyNum;
 
-	console.log('[150][select]pathologyNum',pathologyNum);
+	logger.info('[168][filteredOrigindata][select]pathologyNum=' + pathologyNum);
 
 	//insert Query 생성
 	const qry = "select aminoAcidChange, coding \
@@ -176,7 +180,7 @@ const  filteredOrigindataMessageHandler2 = async (req) => {
 				from filteredOriginData  \
 				where pathologyNum = @pathologyNum ";
 
-	console.log("sql",qry);
+	logger.info("[183][filteredOrigindata]select sql=" + qry);
 		   
 	try {
 		  const request = pool.request()
@@ -186,7 +190,7 @@ const  filteredOrigindataMessageHandler2 = async (req) => {
 		  
 		 return result.recordset;
 	} catch (err) {
-		  console.error('SQL error', err);
+		  logger.error('[filteredOrigindata] select error=' + err);
 	}
 }
    
@@ -196,7 +200,6 @@ exports.filteredOriginList = (req,res, next) => {
 console.log(req.body);
 
   const result = filteredOrigindataMessageHandler2(req);
-
 
   result.then(data => {
 
