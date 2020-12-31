@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
 //const amlReportInsert = require('./amlReportInsert');
 const config = {
     user: 'ngs',
@@ -30,6 +31,8 @@ const  messageHandler = async (req) => {
 
   const sql ="select * from [dbo].[report_detected_variants] where specimenNo=@specimenNo ";
 
+  logger.info("[report_detected_variants]select sql=" + sql);
+
   try {
       const request = pool.request()
         .input('specimenNo', mssql.VarChar, specimenNo); // or: new sql.Request(pool1)
@@ -38,7 +41,7 @@ const  messageHandler = async (req) => {
       
       return result.recordset;
   } catch (err) {
-      console.error('SQL error', err);
+      logger.error('[report_detected_variants]SQL error=' + err);
   }
 }
 
