@@ -17,8 +17,8 @@ const dailyRotateFileTransport = new transports.DailyRotateFile({
   level: "debug",
   filename: `${logDir}/%DATE%-smart-push.log`,
   datePattern: "YYYY-MM-DD-HH",
-  zippedArchive: true,
-  maxSize: "20m",
+  zippedArchive: false,
+  maxSize: "10m",
   maxFiles: "14d",
   format: format.combine(
     format.timestamp({
