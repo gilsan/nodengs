@@ -60,13 +60,7 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
                 .input('gene', mssql.VarChar, gene)
                 .input('tier', mssql.VarChar, tier);
     
-                result = await request.query(qry, (error, result)=> {
-                    if (error)
-                    {
-                        logger.error('[59][clinical][][error= ' + error);
-                    }
-                    logger.info("result=" + result);
-                });
+                result = await request.query(qry);
     
             } catch (err) {
                 logger.error('SQL error', err);
