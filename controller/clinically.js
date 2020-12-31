@@ -93,7 +93,7 @@ exports.clinicallydata = (req, res, next) => {
 
     	//insert Query 생성
     const qry = "select clinically  from clinically   where pathologyNum = @pathologyNum ";
-    logger.info("[95][clinicallySelectHandler]sql=" + sql );
+    logger.info("[95][clinicallySelectHandler]sql=" + qry );
     logger.info("[95][clinicallySelectHandler] pathologyNum" + pathologyNum);
     
     try {
@@ -101,13 +101,7 @@ exports.clinicallydata = (req, res, next) => {
         const request = pool.request()
             .input('pathologyNum', mssql.VarChar, pathologyNum);
 
-        const result = await request.query(qry, (error, result)=> {
-            if (error)
-            {
-                logger.error('[59][clinical][][error=' + error);
-            }
-            logger.info("result=" + result);
-        });
+        const result = await request.query(qry);
         return result.recordset; 
     }catch (err) {
         logger.error('[clinicallySelectHandler]error=' + err);
