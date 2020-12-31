@@ -28,8 +28,11 @@ const  commentMessageHandler = async (gene, type) => {
   await poolConnect; // ensures that the pool has been created
 
   logger.info("[30][getCommentLists]gene=" + gene );
+  logger.info("[30][getCommentLists]type=" + type );
   
   const sql ="select * from comments where gene = '" + gene + "' and type = '" + type + "'";
+
+  logger.info("[30][getCommentLists]sql=" + sql );
 
   try {
       const request = pool.request(); // or: new sql.Request(pool1)
@@ -38,7 +41,7 @@ const  commentMessageHandler = async (gene, type) => {
       
       return result.recordset;
   } catch (err) {
-      console.error('SQL error', err);
+      logger.error('[30][getCommentLists]error=' + err);
   }
 }
 
