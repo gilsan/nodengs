@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -25,9 +26,9 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
     await poolConnect; // ensures that the pool has been created
     let result;
    
-    console.log('[28][clinicaldata]', pathologyNum);
+    logger.info('[28][clinicaldata] pathologyNum=' +  pathologyNum);
     let sql = "delete from clinical where  pathologyNum = @pathologyNum ";
-    console.log('[30][clinicaldata]', sql);
+    logger.info('[30][clinicaldata] sql=', sql);
 
     try {
         const request = pool.request()
@@ -36,12 +37,12 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
         const result = await request.query(sql)       
         //return result;
       } catch (err) {
-        console.error('SQL error', err);
+        logger.error('[clinical]SQL error =' + err);
     } 
     
     const len = clinical.length;
 
-    console.log("[42][len]", len);
+    logger.info("[clinical][42]len=" + len);
      
     if (len > 0) {
         for (let i =0; i < len; i++) {
@@ -49,7 +50,7 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
             const frequency = clinical[i].frequency;
             const gene      = clinical[i].gene;
             const tier      = clinical[i].tier;
-            console.log('[49][clinicaldata]', pathologyNum,frequency,gene,tier);
+            logger.info( '[49][clinicaldata]' + pathologyNum  + " " + frequency + " " + gene + " " + tier);
             const qry = "insert into clinical (pathologyNum, frequency, gene, tier) values(@pathologyNum,  @frequency, @gene, @tier)"; 
             console.log('[51][clinicaldata]', qry);
             try {
@@ -60,12 +61,15 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
                 .input('tier', mssql.VarChar, tier);
     
                 result = await request.query(qry, (error, result)=> {
-                   console.log('=== [59][clinical][][error]\n',error);
-                   // console.log(result);
+                    if (error)
+                    {
+                        logger.error('[59][clinical][][error= ' + error);
+                    }
+                    logger.info("result=" + result);
                 });
     
             } catch (err) {
-                console.error('SQL error', err);
+                logger.error('SQL error', err);
             }
              
         }
@@ -107,7 +111,7 @@ exports.clinicaldata = (req, res, next) => {
           res.json({message: 'SUCCESS'});
      })
      .catch( err  => {
-         console.log('====== [105][clinical][err]', err);
+         logger.info('[105][clinical]err= ' + err);
         res.sendStatus(500);
      });
 
