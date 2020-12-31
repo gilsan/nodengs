@@ -16,7 +16,7 @@ const logFormat = format.printf(info => `${info.timestamp} ${info.level} [${info
 const dailyRotateFileTransport = new transports.DailyRotateFile({
   level: "debug",
   filename: `${logDir}/%DATE%-smart-push.log`,
-  datePattern: "YYYY-MM-DD",
+  datePattern: "YYYY-MM-DD-HH",
   zippedArchive: true,
   maxSize: "20m",
   maxFiles: "14d",
