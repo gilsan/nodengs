@@ -3,6 +3,8 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -24,7 +26,9 @@ const poolConnect = pool.connect();
 
 const  commentMessageHandler = async (gene, type) => {
   await poolConnect; // ensures that the pool has been created
- 
+
+  logger.info("[30][getCommentLists]gene=" + gene );
+  
   const sql ="select * from comments where gene = '" + gene + "' and type = '" + type + "'";
 
   try {
