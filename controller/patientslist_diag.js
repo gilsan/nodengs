@@ -146,6 +146,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo) => {
             ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
             ,isnull(sendEMRDate, '') sendEMRDate \
             ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
+            ,isnull (report_date, '') report_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             from [dbo].[patientinfo_diag] \
@@ -298,6 +299,41 @@ exports.getScreenStatus = (req, res, next) => {
     result.then(data => {
          res.json(data);
     });    
+}
+
+// EMR로 보낸 전송 횟수 기록
+const setEMRcount = async (specimenNo, sendEMR) => {
+    await poolConnect; // ensures that the pool has been created
+    let sql;
+    console.log('==[307][resetscreenstatus]', specimenNo, sendEMR);
+    if ( Number(sendEMR) === 1 ) {  // 검사보고일
+        sql =`update patientInfo_diag set sendEMR=@sendEMR , sendEMRDate=getdate(), report_date=getdate() where specimenNo=@specimenNo`;
+    } else if (Number(sendEMR) > 1 ) {  // 수정 보고일
+        sql =`update patientInfo_diag set sendEMR=@sendEMR , report_date=getdate() where specimenNo=@specimenNo`;
+    }
+    
+    try {
+        const request = pool.request()
+        .input('sendEMR', mssql.VarChar, sendEMR)
+        .input('specimenNo', mssql.VarChar, specimenNo);
+
+        const result = await request.query(sql);
+        return result;
+
+    } catch(err) {
+        console.error('[312][setEMRCount] SQL error', err);
+    }
+}
+
+exports.setEMRSendCount = (req, res, next) => {
+    const specimenNo = req.body.specimenNo.trim();
+    const sendEMR    = req.body.sendEMR;  // 전송 횟수
+
+    const result = setEMRcount(specimenNo, sendEMR);
+    result.then(data => {
+           console.log(data);
+           res.json({message: 'SUCCESS', count: sendEMR});
+    });
 }
 
 
