@@ -7,6 +7,9 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
+const { json } = require('body-parser');
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -34,32 +37,30 @@ const  tumorcellpercentageMessageHandler = async (req) => {
   
   const tumorcellpercentage = req.body.percentage;
   const pathologyNum  =  req.body.pathologyNum;
-  console.log('[37][tumorcellpercentageMessageHandler][messageHandler]',tumorcellpercentage, pathologyNum  );
+  logger.info('[37][tumorcellpercentageMessageHandler]tumorcellpercentage=' + tumorcellpercentage);
+  logger.info('[37][tumorcellpercentageMessageHandler]pathologyNum=' + pathologyNum  );
  
   //insert Query 생성
-  let sql2 = "delete from tumorcellpercentage where  pathologyNum = @pathologyNum ";
+  let sql2 = "delete from tumorcellpercentage where pathologyNum = @pathologyNum ";
 
-  console.log(sql2);
-	
+  logger.info('[45][tumorcellpercentageMessageHandler]delete sql=' + sql2  );
+ 
   try {
 	   const request = pool.request()
 		.input('pathologyNum', mssql.VarChar, pathologyNum); 
 		
-	const result = await request.query(sql2)
+	  const result = await request.query(sql2)
 	
-	//return result;
-  } catch (err) {
-	console.error('SQL error', err);
+	  //return result;
+    } catch (error) {
+	  logger.error('[55][tumorcellpercentageMessageHandler]err=' + error.message);
   }
-
-  console.log("e1", tumorcellpercentage);
-  console.log("e8", pathologyNum);
 
   //insert Query 생성;
   const qry = "insert into tumorcellpercentage (tumorcellpercentage, pathologyNum) \
 	         values(@tumorcellpercentage, @pathologyNum)";
 		   
-	console.log("sql",qry);
+  logger.info('[62][tumorcellpercentageMessageHandler]insert sql=' + qry  );
 
     try {
         const request = pool.request()
@@ -70,22 +71,24 @@ const  tumorcellpercentageMessageHandler = async (req) => {
         
         return result;
 
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+      logger.error('[74][tumorcellpercentageMessageHandler]insert error=' + error.message  );
     }
- 
-  
 }
    
 //병리 tumorcellpercentage
 exports.tumorcellpercentagedata = (req,res, next) => {
-  
+
+  logger.info('[82][tumorcellpercentageList]data=' + JSON.stringify(req.body) );
+
   const result = tumorcellpercentageMessageHandler(req);
   result.then(data => {
      res.json(data);
   })
-  .catch( err  => res.sendStatus(500)); 
-
+  .catch( error => {
+    logger.error('[86][tumorcellpercentageMessageHandler]insert err=' + error.message);  
+    res.sendStatus(500)
+  }); 
 }
 
 const  tumorcellpercentageMessageHandler2 = async (req) => {
@@ -93,12 +96,13 @@ const  tumorcellpercentageMessageHandler2 = async (req) => {
 	  	
 	const pathologyNum = req.body.pathologyNum;
 
-	console.log('[90][tumorcellpercentage]pathologyNum]',pathologyNum);
+	logger.info('[96][tumorcellpercentageMessageHandler2]pathologyNum=' + pathologyNum  );
 
 	//insert Query 생성
-	const qry = "select tumorcellpercentage  from tumorcellpercentage 	where pathologyNum = @pathologyNum ";
-	console.log("sql",qry);
-		   
+	const qry = "select tumorcellpercentage from tumorcellpercentage where pathologyNum = @pathologyNum ";
+  
+  logger.info('[101][tumorcellpercentageMessageHandler2]select qry=' + qry );
+ 
 	try {
 		  const request = pool.request()
 			.input('pathologyNum', mssql.VarChar, pathologyNum); 
@@ -106,24 +110,28 @@ const  tumorcellpercentageMessageHandler2 = async (req) => {
 		  const result = await request.query(qry);
 		  
 		 return result.recordset;
-	} catch (err) {
-		  console.error('SQL error', err);
+	} catch (error) {
+    logger.error('[111][tumorcellpercentageList]select error=' + error.message  );
 	}
 }
    
 //병리 filteredOriginData 보고서 조회
 exports.tumorcellpercentageList = (req,res, next) => {
 
-console.log(req.body);
-
+  logger.info('[118][tumorcellpercentageList]data=' + JSON.stringify(req.body) );
+ 
   const result = tumorcellpercentageMessageHandler2(req);
-
 
   result.then(data => {
 
      //console.log(json.stringfy());
      res.json(data);
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error  =>
+     {
+      logger.info('[130][tumorcellpercentageList]error=' + error.message  );
+       res.sendStatus(500)
+      }
+  ); 
 
 }
