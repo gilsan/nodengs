@@ -39,6 +39,13 @@ const manageUsersRouter      = require('./routes/manageUsersRouter');
 //통계 관리 
 const manageStatisticsRouter      = require('./routes/manageStatisticsRouter')
 
+//함수 관리 
+const manageFunctionsRouter      = require('./routes/manageFunctionsRouter');
+
+//함수 상세 
+const detailFunctionsRouter      = require('./routes/detailFunctionsRouter');
+
+
 // inhouse 
 const commentsRouter        = require('./routes/commentsRouter');
 const artifactsRouter       = require('./routes/artifactsRouter');
@@ -125,6 +132,12 @@ app.use('/manageUsers', manageUsersRouter);
 
 // 통계 정보 가져오기
 app.use('/manageStatistics', manageStatisticsRouter); 
+
+// 함수 정보 가져오기
+app.use('/manageFunctions', manageFunctionsRouter); 
+
+// 함수 상세 가져오기
+app.use('/detailFunctions', detailFunctionsRouter); 
 
 // 환자목록 가져오기
 app.use('/patients', patientListRouter);
