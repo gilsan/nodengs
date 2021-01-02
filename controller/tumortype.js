@@ -8,6 +8,8 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -31,50 +33,54 @@ const poolConnect = pool.connect();
 const  tumorMutationalBurdenMessageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   
-  console.log('[33][save][messageHandler]',req.body);
+  logger.info('[33][save][messageHandler]data=' + JSON.stringify( req.body));
     
   //입력 파라미터를 수신한다
   
   const tumortype = req.body.tumortype;
   const pathologyNum  =  req.body.pathologyNum;
   
-  console.log("e8", pathologyNum);
- 
+  logger.info('[33][save][messageHandler]pathologyNum=' + pathologyNum);
+  logger.info('[33][save][messageHandler]tumortype=' + tumortype);
+  
   //insert Query 생성
   let sql2 = "delete from tumortype where  pathologyNum = @pathologyNum ";
 
-  console.log(sql2);
-	
+  logger.info('[33][save][messageHandler]sql=' + sql2);
+  
   try {
-	const request = pool.request()
-		.input('pathologyNum', mssql.VarChar, pathologyNum); 
+	  const request = pool.request()
+		  .input('pathologyNum', mssql.VarChar, pathologyNum); 
 		
-	const result = await request.query(sql2)
+	  const result = await request.query(sql2, (error, result2)=> {
+      if (error)
+      {
+          logger.error('[58][tumortype]error= ' + error.message);
+      }
+      logger.info("[58][tumortype]result=" + JSON.stringify( result2))
+    });
 	
 	//return result;
   } catch (err) {
-	console.error('SQL error', err);
+	  logger.error('[tumortype]del error=' + err);
   }
-
-  console.log("e1", tumortype);
-  console.log("e8", pathologyNum);
 
   //insert Query 생성;
   const qry = "insert into tumortype (tumortype, pathologyNum) \
 	         values(@tumortype, @pathologyNum)";
-		   
-	console.log("sql",qry);
+  
+  logger.info('[33][save][messageHandler]qry=' + qry);
 
     try {
         const request = pool.request()
         .input('tumortype', mssql.VarChar, tumortype)
         .input('pathologyNum', mssql.VarChar, pathologyNum);
         
-        const result = await request.query(qry);
+        const result2 = await request.query(qry);
         
-        return result;
-    } catch (err) {
-        console.error('SQL error', err);
+        return result2;
+    } catch (error) {
+        logger.error('[58][tumortype] error=' + error.message);
     }
 }
    
@@ -95,13 +101,13 @@ const  tumorMutationalBurdenMessageHandler2 = async (req) => {
  
 	const pathologyNum = req.body.pathologyNum;
 
-	console.log('[150][select]pathologyNum',pathologyNum);
+	logger.info('[150][select]pathologyNum=' + pathologyNum);
 
 	//insert Query 생성
 	const qry = "select tumortype  from tumortype\
 				where pathologyNum = @pathologyNum ";
 
-	console.log("sql",qry);
+	logger.info("[116][tumortype]select sql=" + qry);
 		   
 	try {
 		  const request = pool.request()
@@ -111,17 +117,16 @@ const  tumorMutationalBurdenMessageHandler2 = async (req) => {
 		  
 		 return result.recordset;
 	} catch (err) {
-		  console.error('SQL error', err);
+		  logger.error('[127][tumortype select] error=' + err);
 	}
 }
    
 //병리 filteredOriginData 보고서 조회
 exports.tumortypeList = (req,res, next) => {
 
-console.log(req.body);
+  logger.info("[58][tumortype list]data=" + JSON.stringify( req.body));
 
   const result = tumorMutationalBurdenMessageHandler2(req);
-
 
   result.then(data => {
 
