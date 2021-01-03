@@ -1,8 +1,10 @@
 const express = require('express');
-
 const router = express.Router();
-
 const mssql = require('mssql');
+const config = require('./config.js');
+const logger = require('../common/winston');
+
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -18,6 +20,7 @@ const config = {
         encrypt:false
     }
 }
+*/
 
 const pool = new mssql.ConnectionPool(config);
 const poolConnect = pool.connect();
@@ -59,7 +62,6 @@ function getFormatDate3(date_str)
     return new Date(Number(sYear), Number(sMonth)-1, Number(sDate));
 }
 
-     
 /**
  * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
  * @param st           : 체크할 문자열
@@ -79,15 +81,15 @@ const  messageHandler = async (today) => {
     await poolConnect; // ensures that the pool has been created
    
     const sql ="select * from [dbo].[patientinfo_path] where left(prescription_date, 8) = '" + today + "'";
-   // console.log('[getDiagLists] ', sql);
+    logger.info("[81][patientinfo_path select]sql=" + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
       //  console.dir( result.recordset);
         
         return result.recordset;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error("[81][patientinfo_path select]err=" + error.message);    
     }
   }
 
@@ -101,31 +103,32 @@ const  messageHandler = async (today) => {
       //  console.log('[getDiagLists]', data);
         res.json(data);
      })
-     .catch( err  => res.sendStatus(500)); 
+     .catch( error  => {
+        logger.error("[104][patientinfo_path select]err=" + error.message);
+         res.sendStatus(500)
+     }); 
 }
-
 
 const messageHandler2 = async (start, end, patientID, pathology_num) => {
     await poolConnect; // ensures that the pool has been created
    
+    logger.info("[112][patientinfo_path select]start=" + start);
+    logger.info("[112][patientinfo_path select]end=" + end);
+    
     let sql = "select * from [dbo].[patientinfo_path] \
                where left(prescription_date, 8) >= '" + start + "' \
                and left(prescription_date, 8) <= '" + end + "' ";
 
-    console.log('qry start',start,end, patientID, pathology_num);
-
     let patient =  nvl(patientID, "");
-    console.log('patient 0');
     let pathology =  nvl(pathology_num, "");
 
-    console.log('patient 1');
-
+    logger.info("[112][patientinfo_path select]patient=" + patient);
+    logger.info("[112][patientinfo_path select]pathology=" + pathology);
+    
     if(patient.length > 0 )
     {
         sql = sql +  " and patientID = '" +  patient + "'";
     }
-
-    console.log('patientid');
 
     if(pathology.length > 0 )
     {
@@ -135,17 +138,16 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     }
 
     sql = sql + " order by prescription_date desc, pathology_num ";
-   
-    console.log("sql last=",sql);
-    
+    logger.info("[137][patientinfo_path select]sql=" + sql);
+        
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
        // console.dir( result);
         
         return result.recordset;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error("[112][patientinfo_path select]err=" + error.message);
     }
   }
 
@@ -157,13 +159,15 @@ console.log(req.body);
    let patientID       =  req.body.patientID.trim(); // 환자 id
    let pathology_num   =  req.body.pathologyNo.trim(); // 겸재 번호
 
-   console.log(start,end, patientID, pathology_num);
+   logger.info("[159][patientinfo_path list]start=" + start);
+   logger.info("[159][patientinfo_path select]end=" + end);
+   logger.info("[159][patientinfo_path select]patientID=" + patientID);
+   logger.info("[159][patientinfo_path select]pathology_num=" + pathology_num);
 
    const  now = new Date();
    const today = getFormatDate2(now);
 
    const nowTime = new Date().getTime();
-   //const requestTime = new Date(end).getTime();
    const requestTime = getFormatDate3(end).getTime();
 
    if (requestTime > nowTime) {
@@ -171,17 +175,16 @@ console.log(req.body);
        console.log('end=', end);
    }
 
-   //console.log('qry before',start,end, patientID, pathology_num);
-
    const result = messageHandler2(start, end, patientID, pathology_num);
    result.then(data => {
  
-    //  console.log(data);
       res.json(data);
-
       res.end();
    })
-   .catch( err  => res.sendStatus(500)); 
+   .catch( error  => {
+      logger.error("[112][patientinfo_path select]err=" + error.message);
+      res.sendStatus(500)
+    }); 
 }
 
 /**
@@ -192,6 +195,11 @@ console.log(req.body);
  */
 
 const  changeExaminer = async (pathologyNum, part, name) => {
+    
+    logger.info("[196][patientinfo_path update]part=" + part);
+    logger.info("[196][patientinfo_path update]name=" + name);
+    logger.info("[196][patientinfo_path select]pathologyNum=" + pathologyNum);
+    
     let sql;
     if ( part === 'exam') {
         sql =`update patientInfo_path set examin=@name where pathology_num=@pathologyNum`;
@@ -199,15 +207,17 @@ const  changeExaminer = async (pathologyNum, part, name) => {
         sql =`update patientInfo_path set recheck=@name where pathology_num=@pathologyNum`;
     }
 
+    logger.info("[207][patientinfo_path update]sql=" + sql);
+    
     try {
         const request = pool.request()
         .input('name', mssql.NVarChar, name)
-        .input('pathology_num', mssql.VarChar, pathologyNum);
+        .input('pathologyNum', mssql.VarChar, pathologyNum);
         
         const result = await request.query(sql);       
         return result;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error("[220][patientinfo_path select]err=" + error.message);
     }    
 }
 
@@ -215,63 +225,83 @@ exports.updateExaminer = (req, res, next) => {
     let pathologyNum   =  req.body.pathologyNum.trim(); 
     let part =  req.body.part;  
     let name   =  req.body.name;  
+    
+    logger.info("[226][patientinfo_path updateExaminer]pathologyNum=" + pathologyNum);
+    logger.info("[226][patientinfo_path updateExaminer]name=" + name);
+    logger.info("[226][patientinfo_path updateExaminer]part=" + part);
+    
     const result = changeExaminer(pathologyNum, part, name);
     result.then( data => {
          res.json({message: 'SUCCESS'});
-    }). err( err => console.log('[219][patinetslist_path][err] ', err));
+    })
+    .catch( error => {
+        logger.error('[238][patinetslist_path updateExaminer]err=' + error.message);
+    });
 }
-
-
 
 // 병리 "수정" 버튼 누르면 screenstatus 상태를 변경
 const resetscreenstatusPath = async (pathologyNum, seq) =>{
     await poolConnect; // ensures that the pool has been created
 
-    console.log('==[257][resetscreenstatus]', pathologyNum, seq);
-    sql =`update patientInfo_path set screenstatus=@seq where pathology_Num=@pathologyNum`;
+    logger.info("[226][patientinfo_path reset screen]pathologyNum=" + pathologyNum);
+    logger.info("[226][patientinfo_path reset screen]seq=" + seq);
+    
+    let sql =`update patientInfo_path set screenstatus=@seq where pathology_Num=@pathologyNum`;
+    logger.info("[226][patientinfo_path reset screen]sql=" + sql);
+    
     try {
-
         const request = pool.request()
                  .input('seq', mssql.VarChar, seq)
                  .input('pathologyNum', mssql.VarChar, pathologyNum);
         const result = await request.query(sql);       
-                 return result;        
-      
-    } catch(err) {
-        console.error('SQL error', err);
+        return result;        
+    } catch(error) {
+        logger.error("[226][patientinfo_path reset screen]err=" + error.message);
     }
 }
 
 exports.resetScreenStatusPath = (req, res, next) => {
+
+    logger.info("[226][patientinfo_path reset screen]data=" + JSON.stringify(req.body));
+    
     let pathologyNum = req.body.pathologyNum.trim();
     let num        = req.body.num;
-    console.log('=== [271][patientslist_path] ', pathologyNum);
+
+    logger.info("[226][patientinfo_path reset screen]pathologyNum=" + pathologyNum);
+    logger.info("[226][patientinfo_path reset screen]num=" + num);
+    
     const result = resetscreenstatusPath(pathologyNum, num);
     result.then(data => {
          res.json({message: "SUCCESS"});
-    });   
+    })
+    .catch( error => {
+        logger.error('[219][patinetslist_path reset screen]err=' + error.message);
+    });
 }
 
 //병리의 screenstatus 상태 알애내기
 const getscreenstatusPath = async (pathologyNum) =>{
     await poolConnect; // ensures that the pool has been created
+
+    logger.info("[283][patientinfo_path get screen]pathologyNum=" + pathologyNum);
     sql =`select  screenstatus from patientInfo_path where pathology_Num=@pathologyNum`;
+    logger.info("[283][patientinfo_path get screen]sql=" + sql);
     try {
         const request = pool.request()
                  .input('pathologyNum', mssql.VarChar, pathologyNum);
         const result = await request.query(sql);       
                  return result.recordset[0];             
-    } catch(err) {
-        console.error('SQL error', err);
+    } catch(error) {
+        logger.error("[292][patientinfo_path get screen]pathologyNum=" + error.message);
     }
 }
 
 exports.getScreenStatusPath = (req, res, next) => {
     let pathologyNum = req.body.pathologyNum.trim();
-    console.log('=== [283][patientslist_path] ', pathologyNum);
+    logger.info("[298][patientinfo_path get screen]pathologyNum=" + pathologyNum);
+    
     const result = getscreenstatusPath(pathologyNum);
     result.then(data => {
          res.json(data);
     });    
 }
-
