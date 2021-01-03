@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
+const logger = require('../common/winston');
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -20,20 +22,20 @@ const config = {
 const pool = new mssql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
+const geneHandler = async (req) => {
+    await poolConnect;  
 
-const  geneHandler = async (req) => {
-     await poolConnect;  
-
-   const sql = 'select  * from polymorphism';
-   try {
+    const sql = 'select  * from polymorphism';
+    logger.info('[29][polymorphism select]sql=' + sql);
+    try {
         const request = pool.request();
         const result = await request.query(sql)
  
         return result.recordset;
 
-   } catch (err) {
-       console.error('SQL error', err);
-   }
+    } catch (error) {
+        logger.error('[37][polymorphism select]err=' + error.message);
+    }
 }
 
 exports.select = (req, res, next) => {
@@ -47,6 +49,9 @@ exports.select = (req, res, next) => {
         //  console.log('[320][getArtifactsInfoCount]',data);
           res.json(data);
      })
-     .catch( err  => res.sendStatus(500));    
+     .catch( error  => {
+        logger.info('[53][polymorphism select]err=' + error.message);
+          res.sendStatus(500)
+     });    
 
 }
