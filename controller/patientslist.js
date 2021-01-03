@@ -1,8 +1,8 @@
 const express = require('express');
-
 const router = express.Router();
-
 const mssql = require('mssql');
+const logger = require('../common/winston');
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -22,7 +22,7 @@ const config = {
 const pool = new mssql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
- function getFormatDate(date){
+function getFormatDate(date){
 
     var year = date.getFullYear();
     var month = (1 + date.getMonth());
@@ -40,12 +40,13 @@ function getFormatDate2(date){
     var day = date.getDate();
     day = day >= 10 ? day : '0' + day;
     return year + month +  day;
- }
+}
 
 const  messageHandler = async (today) => {
     await poolConnect; // ensures that the pool has been created
    
     const sql ="select * from [dbo].[patientinfo_path] where left(prescription_date, 10) = '" + today + "'";
+    logger.info('[49][patientinfo_path select]sql=' + sql);
     
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
@@ -53,22 +54,25 @@ const  messageHandler = async (today) => {
        // console.dir( result);
         
         return result.recordset;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error('[58][patientinfo_path select]err=' + error.message);
     }
   }
 
  exports.getLists = (req,res, next) => {
     
-	 const  now = new Date();
-     const today = getFormatDate2(now);
-     const result = messageHandler(today);
-     result.then(data => {
+	const  now = new Date();
+    const today = getFormatDate2(now);
+    const result = messageHandler(today);
+    result.then(data => {
    
        // console.log(json.stringfy());
         res.json(data);
-     })
-     .catch( err  => res.sendStatus(500)); 
+    })
+    .catch( error  => {
+        logger.error('[58][patientinfo_path getLists]err=' + error.message);
+        res.sendStatus(500)}
+    ); 
 }
 
 const  messageHandler2 = async (start, end) => {
@@ -77,23 +81,20 @@ const  messageHandler2 = async (start, end) => {
     const sql = "select * from [dbo].[patientinfo_path]"
                + " where left(prescription_date, 8) >= '" + start 
                + "' and left(prescription_date, 8) <= '" + end + "'";
+    logger.info('[58][patientinfo_path select2]sql=' + sql);
   
-             //  console.log("sql="+sql);           
-
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
         console.dir( result);
  
         return result.recordset;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error('[58][patientinfo_path select2]err=' + error.message);
     }
   }
 
 exports.patientSearch = (req, res,next) => {
-
-// console.log(req.body.start,req.body.end);
 
    const start =  req.body.start;  
    let end   =  req.body.end;  
@@ -108,15 +109,16 @@ exports.patientSearch = (req, res,next) => {
 	   end = today; 
    }
 
-   console.log("param=" + start + "," + end  + "," + today );
+   logger.info('[112][patientinfo_path select2]start=' + start);
+   logger.info('[112][patientinfo_path select2]end=' + end);
+   logger.info('[112][patientinfo_path select2]today=' + today );
 
    const dataset = messageHandler2(start, end);
    dataset.then(data => {
       res.json(data);
    })
-   .catch( err  => {
-    console.log('err =>', err);
+   .catch( error  => {
+    logger.info('[120][patientinfo_path select2]err=' + error.message);
     res.status(500).send('That is Not good...config.database.anchor.apply.')
    }); 
 }
-
