@@ -1,8 +1,9 @@
 const express = require('express');
-
 const router = express.Router();
-
 const mssql = require('mssql');
+const config = require('./config.js');
+const logger = require('../common/winston');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -18,6 +19,7 @@ const config = {
         encrypt:false
     }
 }
+*/
 
 const pool = new mssql.ConnectionPool(config);
 const poolConnect = pool.connect();
@@ -59,7 +61,6 @@ function getFormatDate3(date_str)
     return new Date(Number(sYear), Number(sMonth)-1, Number(sDate));
 }
 
-     
 /**
  * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
  * @param st           : 체크할 문자열
@@ -67,7 +68,7 @@ function getFormatDate3(date_str)
  */
 function nvl(st, defaultStr){
     
-    console.log('st=', st);
+    //console.log('st=', st);
     if(st === undefined || st == null || st == "") {
         st = defaultStr ;
     }
@@ -78,6 +79,8 @@ function nvl(st, defaultStr){
 const  messageHandler = async (today) => {
     await poolConnect; // ensures that the pool has been created
    
+    logger.info('[82][patientinfo_diag list]today=' + today);
+
     const sql ="select isnull(name, '') name  ,isnull(patientID, '') patientID \
                 ,isnull(age,  '') age ,isnull(gender, '') gender \
                 ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
@@ -96,15 +99,15 @@ const  messageHandler = async (today) => {
                 ,isnull(test_code, '') test_code ,isnull (report_date, '') report_date \
                 ,isnull(screenstatus, '')  screenstatus \
                 from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
-    console.log('[getDiagLists] ', sql);
+    logger.info('[82][patientinfo_diag list]sql=' + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
       //  console.dir( result.recordset);
         
         return result.recordset;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.info('[110][patientinfo_diag list]err=' + error.message);
     }
   }
 
@@ -119,17 +122,23 @@ const  messageHandler = async (today) => {
         console.log('[getDiagLists 환자목록]', data);
         res.json(data);
      })
-     .catch( err  => res.sendStatus(500)); 
+     .catch( error  => {
+        logger.info('[82][patientinfo_diag list]err=' + error.message);
+        res.sendStatus(500)
+    }); 
 }
 
 const  messageHandler2 = async (start, end, patientID, specimenNo) => {
     await poolConnect; // ensures that the pool has been created
    
-  //  console.log('qry start',start,end, patientID, specimenNo)
+    logger.info('[134][patientinfo_diag list2]start=' + start);
+    logger.info('[134][patientinfo_diag list2]end=' + end);
 
     let patient =  nvl(patientID, "");
-    console.log('patient 0');
     let specimen_no =  nvl(specimenNo, "");
+    
+    logger.info('[140][patientinfo_diag list2]patient=' + patient);
+    logger.info('[140][patientinfo_diag list2]specimen_no=' + specimen_no);
 
     let sql = "select isnull(name, '') name  ,isnull(patientID, '') patientID \
             ,isnull(age,  '') age ,isnull(gender, '') gender \
@@ -163,32 +172,33 @@ const  messageHandler2 = async (start, end, patientID, specimenNo) => {
         sql = sql +  " and specimenNo = '" +  specimen_no + "'";
     }
 
-     
     sql = sql + " order by prescription_date desc   ";
 
-    console.log("sql="+sql);
+    logger.info('[177][patientinfo_diag list2]sql=' + sql);
     
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
-        const result = await request.query(sql)
+        const result = await request.query(sql);
        // console.dir( result);
         
         return result.recordset;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error('[186][patientinfo_diag list2]err=' + error.message);
     }
   }
 
 // diag 날자별 환자ID, 검사ID 로 검사자 조회  
 exports.getPatientDiagLists = (req, res,next) => {
+    logger.info('[192][patientinfo_diag list]data=' + JSON.stringify(req.body));
 
-//console.log(req);
    let start =  req.body.start; //.replace("-", "");
    let end   =  req.body.end; //.replace("-", "");
    let patientID   =  req.body.patientID.trim(); // 환자 id
    let specimenNo   =  req.body.specimenNo.trim(); // 검채 번호
 
-   console.log('[187][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo);
+   logger.info('[194][patientinfo_diag list]start=' + start);
+   logger.info('[194][patientinfo_diag list]patientID=' + patientID);
+   logger.info('[194][patientinfo_diag list]specimenNo=' + specimenNo);
    
    const  now = new Date();
    const today = getFormatDate2(now);
@@ -198,8 +208,9 @@ exports.getPatientDiagLists = (req, res,next) => {
 
    if (requestTime > nowTime) {
 	   end = today; // .replace("-", "");
-       console.log('end=', end);
+       //console.log('end=', end);
    }
+   logger.info('[194][patientinfo_diag list]end=' + end);
 
    const result = messageHandler2(start, end, patientID, specimenNo);
    result.then(data => {
@@ -209,7 +220,10 @@ exports.getPatientDiagLists = (req, res,next) => {
 
       res.end();
    })
-   .catch( err  => res.sendStatus(500)); 
+   .catch( error  => {
+        logger.info('[224][patientinfo_diag list]err=' + error.message);
+        res.sendStatus(500)
+    }); 
 }
 
 /**
@@ -218,14 +232,19 @@ exports.getPatientDiagLists = (req, res,next) => {
  * @param {*} res 
  * @param {*} next 
  */
+const changeExaminer = async (specimenNo, part, name) => {
+    logger.info('[236][patientinfo_diag updateExaminer]specimenNo=' + specimenNo);
+    logger.info('[236][patientinfo_diag updateExaminer]part=' + part);
+    logger.info('[236][patientinfo_diag updateExaminer]name=' + name);
 
-const  changeExaminer = async (specimenNo, part, name) => {
     let sql;
     if ( part === 'exam') {
         sql =`update patientInfo_diag set examin=@name where specimenNo=@specimenNo`;
     } else if (part === 'recheck') {
         sql =`update patientInfo_diag set recheck=@name where specimenNo=@specimenNo`;
     }
+
+    logger.info('[247][patientinfo_diag updateExaminer]sql=' + sql);
 
     try {
         const request = pool.request()
@@ -234,8 +253,8 @@ const  changeExaminer = async (specimenNo, part, name) => {
         
         const result = await request.query(sql);       
         return result;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.info('[257][patientinfo_diag updateExaminer]err=' + error.message);
     }    
 }
 
@@ -246,72 +265,90 @@ exports.updateExaminer = (req, res, next) => {
     const result = changeExaminer(specimenNo, part, name);
     result.then( data => {
          res.json({message: 'SUCCESS'});
-    }). err( err => console.log('[250][patinetslist_diag][err] ', err));
+    })
+    .catch( error => {
+        logger.info('[270][patientinfo_diag updateExaminer]err=' + error.message);
+    });
 }
 
 // 진검 "수정" 버튼 누르면 screenstatus 상태를 변경
 const resetscreenstatus = async (specimenNo, seq) =>{
     await poolConnect; // ensures that the pool has been created
 
-    console.log('==[257][resetscreenstatus]', specimenNo, seq);
-    sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
+    logger.info('[277][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
+    logger.info('[277][patientinfo_diag resetScreen]seq=' + seq);
+    let sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
+    logger.info('[281][patientinfo_diag resetScreen]sql=' + sql);
     try {
 
         const request = pool.request()
                  .input('seq', mssql.VarChar, seq)
                  .input('specimenNo', mssql.VarChar, specimenNo);
         const result = await request.query(sql);       
-                 return result;        
+        return result;        
       
-    } catch(err) {
-        console.error('SQL error', err);
+    } catch(error) {
+        logger.info('[291][patientinfo_diag resetScreen]err=' + specimenNo);
     }
 }
 
 exports.resetScreenStatus = (req, res, next) => {
     let specimenNo = req.body.specimenNo.trim();
     let num        = req.body.num;
-    console.log('=== [271][patientslist_diag] ', specimenNo);
+    logger.info('[298][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
+    logger.info('[298][patientinfo_diag resetScreen]num=' + num);
+
     const result = resetscreenstatus(specimenNo, num);
     result.then(data => {
          res.json({message: "SUCCESS"});
-    });   
+    })
+    .catch( error => {
+        logger.info('[270][patientinfo_diag resetScreen]err=' + error.message);
+    })
 }
 
 //진검의 screenstatus 상태 알애내기
 const getscreenstatus = async (specimenNo) =>{
     await poolConnect; // ensures that the pool has been created
-    sql =`select  screenstatus from patientInfo_diag where specimenNo=@specimenNo`;
+    logger.info('[313][patientinfo_diag getScreen]specimenNo=' + specimenNo);
+    let sql =`select screenstatus from patientInfo_diag where specimenNo=@specimenNo`;
+    logger.info('[313][patientinfo_diag getScreen]sql=' + sql);
     try {
         const request = pool.request()
                  .input('specimenNo', mssql.VarChar, specimenNo);
         const result = await request.query(sql);       
-                 return result.recordset[0];             
-    } catch(err) {
-        console.error('SQL error', err);
+        return result.recordset;             
+    } catch(error) {
+        logger.error('[321][patientinfo_diag getScreen]err=' + error.message);
     }
 }
 
 exports.getScreenStatus = (req, res, next) => {
     let specimenNo = req.body.specimenNo.trim();
-    console.log('=== [283][patientslist_diag] ', specimenNo);
+    logger.info('[327][patientinfo_diag getScreen]specimenNo=' + specimenNo);
     const result = getscreenstatus(specimenNo);
     result.then(data => {
+        console.log('[331][검색결과][]', data);
          res.json(data);
-    });    
+    })
+    .catch( error => {
+        logger.info('[270][patientinfo_diag getScreen]err=' + error.message);
+    });
 }
 
 // EMR로 보낸 전송 횟수 기록
 const setEMRcount = async (specimenNo, sendEMR) => {
     await poolConnect; // ensures that the pool has been created
     let sql;
-    console.log('==[307][resetscreenstatus]', specimenNo, sendEMR);
+    logger.info('[298][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
+    logger.info('[298][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
     if ( Number(sendEMR) === 1 ) {  // 검사보고일
         sql =`update patientInfo_diag set sendEMR=@sendEMR , sendEMRDate=getdate(), report_date=getdate() where specimenNo=@specimenNo`;
     } else if (Number(sendEMR) > 1 ) {  // 수정 보고일
         sql =`update patientInfo_diag set sendEMR=@sendEMR , report_date=getdate() where specimenNo=@specimenNo`;
     }
-    
+    logger.info('[298][patientinfo_diag sendEMrcount]sql=' + sql);
+
     try {
         const request = pool.request()
         .input('sendEMR', mssql.VarChar, sendEMR)
@@ -320,8 +357,8 @@ const setEMRcount = async (specimenNo, sendEMR) => {
         const result = await request.query(sql);
         return result;
 
-    } catch(err) {
-        console.error('[312][setEMRCount] SQL error', err);
+    } catch(error) {
+        logger.info('[298][patientinfo_diag sendEMRcount]err=' + error.message);
     }
 }
 
@@ -329,10 +366,16 @@ exports.setEMRSendCount = (req, res, next) => {
     const specimenNo = req.body.specimenNo.trim();
     const sendEMR    = req.body.sendEMR;  // 전송 횟수
 
+    logger.info('[367][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
+    logger.info('[367][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
+    
     const result = setEMRcount(specimenNo, sendEMR);
     result.then(data => {
            console.log(data);
            res.json({message: 'SUCCESS', count: sendEMR});
+    })
+    .catch( error => {
+        logger.info('[376][patientinfo_diag sendEMRcount]err=' + error.message);
     });
 }
 
