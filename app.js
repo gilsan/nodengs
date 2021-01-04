@@ -48,7 +48,7 @@ const detailFunctionsRouter      = require('./routes/detailFunctionsRouter');
 const commentsRouters        = require('./routes/ngscommentsRouter');
 const artifactsRouters       = require('./routes/ngsartifactsRouter');
 const benignRouters          = require('./routes/ngsbenignRouter');
-const mutationRouters        = require('./routes/ngsmutationRouter');
+//const mutationRouters        = require('./routes/ngsmutationRouter');
 
 
 // inhouse 

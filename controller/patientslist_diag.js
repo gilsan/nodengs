@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
-const config = require('./config.js');
+//const config = require('./config.js');
 const logger = require('../common/winston');
-/*
+
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -19,7 +19,7 @@ const config = {
         encrypt:false
     }
 }
-*/
+
 
 const pool = new mssql.ConnectionPool(config);
 const poolConnect = pool.connect();
