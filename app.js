@@ -69,6 +69,10 @@ const savedFilePathRouter   = require('./routes/savedFilePathRouter');
 const searchpatientRouter   = require('./routes/searchRouter');
 const searchpatientDiagRouter   = require('./routes/searchRouter_diag');
 const searchpatientPathRouter   = require('./routes/searchRouter_path');
+
+
+const diagGeneRouter                 = require('./routes/diagGeneRouter');
+ 
 // EMR로 보내기
 const emrRouter                 = require('./routes/emrroute');
 const pathologyRouter           = require('./routes/pathologyRoute');
@@ -205,6 +209,8 @@ app.use('/tests', function(req, res, next) {
     next();
   });
  
+  app.use('/diagGene', diagGeneRouter);
+  
  // 검진 EMR 보내기
   app.use('/diagEMR', emrRouter);
   app.use('/sendToEMR', emrRouter);
