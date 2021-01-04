@@ -28,7 +28,7 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
    
     logger.info('[28][clinicaldata] pathologyNum=' +  pathologyNum);
     let sql = "delete from clinical where  pathologyNum = @pathologyNum ";
-    logger.info('[30][clinicaldata] sql=', sql);
+    logger.info('[30][clinicaldata] sql='+ sql);
 
     try {
         const request = pool.request()
@@ -52,7 +52,7 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
             const tier      = clinical[i].tier;
             logger.info( '[49][clinicaldata]' + pathologyNum  + " " + frequency + " " + gene + " " + tier);
             const qry = "insert into clinical (pathologyNum, frequency, gene, tier) values(@pathologyNum,  @frequency, @gene, @tier)"; 
-            console.log('[51][clinicaldata]', qry);
+            logger.info('[30][clinicaldata] sql='+ qry);
             try {
                 const request = pool.request()
                 .input('pathologyNum', mssql.VarChar, pathologyNum)
@@ -63,7 +63,7 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
                 result = await request.query(qry);
     
             } catch (err) {
-                logger.error('SQL error', err);
+                logger.error('SQL error='+ err);
             }
              
         }
@@ -105,7 +105,7 @@ exports.clinicaldata = (req, res, next) => {
           res.json({message: 'SUCCESS'});
      })
      .catch( err  => {
-         logger.info('[105][clinical]err= ' + err);
+         logger.error('[105][clinical]err= ' + err);
         res.sendStatus(500);
      });
 
