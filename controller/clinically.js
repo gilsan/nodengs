@@ -37,7 +37,7 @@ const  clinicallyInsertHandler = async (pathologyNum, clinically) => {
         
         //return result;
       } catch (err) {
-        logger.error('==== SQL error =======', err);
+        logger.error('==== SQL error ======='+ err);
       }
  
     const len = clinically.length;
@@ -48,21 +48,16 @@ const  clinicallyInsertHandler = async (pathologyNum, clinically) => {
             const clinically = item;
             logger.info('[51][clinically]data=' +  pathologyNum + "," + clinically);
             const qry = "insert into clinically (pathologyNum, clinically) values(@pathologyNum, @clinically)"; 
+            logger.info('[27][clinically]query=' + qry);
             try {
                 const request = pool.request()
                 .input('pathologyNum', mssql.VarChar, pathologyNum)
                 .input('clinically', mssql.VarChar, clinically);
     
-                result2 = await request.query(qry, (error, result)=> {
-                    if (error)
-                    {
-                        logger.error('[59][clinical][][error= ' + error);
-                    }
-                    logger.info("result=" + result);
-                });
+                result2 = await request.query(qry);
     
             } catch (err) {
-                logger.error('SQL error', err);
+                logger.error('SQL error'+ err);
             }            
         })
      
