@@ -107,7 +107,7 @@ exports.prevalentdata = (req, res, next) => {
 exports.prevalentList = (req, res, next) => {
     const pathologyNum = req.body.pathologyNum;
 
-    logger.error('[109][prevalentlist]pathologyNum=' + pathologyNum);
+    logger.info('[109][prevalentlist]pathologyNum=' + pathologyNum);
     const result = prevalentSelectHandler(pathologyNum);
     result.then(data => {  
           console.log('[100][prevalentList]', data);
