@@ -128,18 +128,20 @@ const  messageHandler = async (today) => {
     }); 
 }
 
-const  messageHandler2 = async (start, end, patientID, specimenNo) => {
+const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status) => {
     await poolConnect; // ensures that the pool has been created
    
-    logger.info('[134][patientinfo_diag list2]start=' + start);
-    logger.info('[134][patientinfo_diag list2]end=' + end);
+  logger.info('qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo + ' '  + sheet + ' ' +  status);
 
     let patient =  nvl(patientID, "");
+    console.log('patient 0');
     let specimen_no =  nvl(specimenNo, "");
-    
-    logger.info('[140][patientinfo_diag list2]patient=' + patient);
-    logger.info('[140][patientinfo_diag list2]specimen_no=' + specimen_no);
+    let sheet_1 =  nvl(sheet, "");
+    let status_1 =  nvl(status, "");
 
+    logger.info("sheet_1="+sheet_1);
+    logger.info("status_1="+status_1);
+ 
     let sql = "select isnull(name, '') name  ,isnull(patientID, '') patientID \
             ,isnull(age,  '') age ,isnull(gender, '') gender \
             ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
@@ -155,7 +157,6 @@ const  messageHandler2 = async (start, end, patientID, specimenNo) => {
             ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
             ,isnull(sendEMRDate, '') sendEMRDate \
             ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
-            ,isnull (report_date, '') report_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             from [dbo].[patientinfo_diag] \
@@ -172,33 +173,49 @@ const  messageHandler2 = async (start, end, patientID, specimenNo) => {
         sql = sql +  " and specimenNo = '" +  specimen_no + "'";
     }
 
-    sql = sql + " order by prescription_date desc   ";
+    if(sheet_1.length > 0 )
+    {
+        if (sheet_1 == 'AMLALL') {
+            sql = sql +  " and test_code in ('LPE471', 'LPE545')";
+        } else if (sheet_1 == 'ETC') {
+            sql = sql +  " and test_code in ('LPE473', 'LPE474')";
+        } 
+    }
 
-    logger.info('[177][patientinfo_diag list2]sql=' + sql);
+    if(status_1.length == 1 )
+    {
+        sql = sql +  " and screenstatus = '" +  status_1 + "'";
+    }
+
+     
+    sql = sql + " order by prescription_date desc, specimenNo desc   ";
+
+    logger.info("sql="+sql);
     
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
-        const result = await request.query(sql);
+        const result = await request.query(sql)
        // console.dir( result);
         
         return result.recordset;
-    } catch (error) {
-        logger.error('[186][patientinfo_diag list2]err=' + error.message);
+    } catch (err) {
+        console.error('SQL error', err);
     }
   }
 
 // diag 날자별 환자ID, 검사ID 로 검사자 조회  
 exports.getPatientDiagLists = (req, res,next) => {
-    logger.info('[192][patientinfo_diag list]data=' + JSON.stringify(req.body));
 
+    logger.info('data=' + JSON.stringify( req.body));
+//console.log(req);
    let start =  req.body.start; //.replace("-", "");
    let end   =  req.body.end; //.replace("-", "");
    let patientID   =  req.body.patientID.trim(); // 환자 id
    let specimenNo   =  req.body.specimenNo.trim(); // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  req.body.sheet; // 결과지
 
-   logger.info('[194][patientinfo_diag list]start=' + start);
-   logger.info('[194][patientinfo_diag list]patientID=' + patientID);
-   logger.info('[194][patientinfo_diag list]specimenNo=' + specimenNo);
+   console.log('[187][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status);
    
    const  now = new Date();
    const today = getFormatDate2(now);
@@ -208,11 +225,10 @@ exports.getPatientDiagLists = (req, res,next) => {
 
    if (requestTime > nowTime) {
 	   end = today; // .replace("-", "");
-       //console.log('end=', end);
+       console.log('end=', end);
    }
-   logger.info('[194][patientinfo_diag list]end=' + end);
 
-   const result = messageHandler2(start, end, patientID, specimenNo);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
    result.then(data => {
  
       console.log('[203][검색결과][]', data);
@@ -220,10 +236,7 @@ exports.getPatientDiagLists = (req, res,next) => {
 
       res.end();
    })
-   .catch( error  => {
-        logger.info('[224][patientinfo_diag list]err=' + error.message);
-        res.sendStatus(500)
-    }); 
+   .catch( err  => res.sendStatus(500)); 
 }
 
 /**
