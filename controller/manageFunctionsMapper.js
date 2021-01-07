@@ -39,7 +39,34 @@ const listHandler = async (req) => {
    }
  }
 
-const updateHandler = async (req) => {
+  const insertHandler = async (req) => {
+    await poolConnect;    
+	const functionName			= req.body.functionName;   
+ 
+	let sql =" insert diag_function (   " ; 
+	sql = sql +"   function_id  "; 
+	sql = sql +" , function_name  "; 
+	sql = sql +" , service_status ";
+	sql = sql +" , create_date  " ;  
+	sql = sql +" , update_date ) " ;  
+	sql = sql +" values(  (select isnull(max(function_id),0)+1 from diag_function) ";
+	sql = sql +" , @functionName "; 
+	sql = sql +" , '0' ";
+	sql = sql +" , getdate()  " ;  
+	sql = sql +" , getdate() ) "; 
+
+	console.log("sql", sql);
+   try {
+       const request = pool.request()  
+		 .input('functionName', mssql.NVarChar, functionName)   ; 
+       const result = await request.query(sql) 
+       return result.recordset;
+   } catch (err) {
+       console.error('SQL error', err);
+   }
+ }
+
+ const updateHandler = async (req) => {
     await poolConnect;   
 	const functionId			= req.body.functionId; 
 	const functionName			= req.body.functionName; 
@@ -69,6 +96,28 @@ const updateHandler = async (req) => {
    }
  }
 
+ // Delete functions
+  const deleteHandler = async (req) => {
+    await poolConnect;   
+	const functionId			= req.body.functionId;  
+	
+	let sql =" delete  from diag_function    " ;  
+	sql = sql + " where function_id = @functionId ";  
+
+	console.log("sql", sql);
+
+   try {
+       const request = pool.request() 
+		 .input('functionId', mssql.VarChar, functionId) 
+		 .input('functionName', mssql.NVarChar, functionName)  
+		 .input('serviceStatus', mssql.VarChar, serviceStatus)   ; 
+       const result = await request.query(sql) 
+       return result.recordset;
+   } catch (err) {
+       console.error('SQL error', err);
+   }
+ }
+
 // List functions
  exports.listFunctions = (req, res, next) => {  
     const result = listHandler(req);
@@ -86,3 +135,22 @@ const updateHandler = async (req) => {
      })
      .catch( err  => res.sendStatus(500));
  };
+
+ // Insert functions
+ exports.insertFunctions = (req, res, next) => {  
+    const result = insertHandler(req);
+    result.then(data => { 
+          res.json(data);
+     })
+     .catch( err  => res.sendStatus(500));
+ };
+
+ // Delete functions
+ exports.deleteFunctions = (req, res, next) => {  
+    const result = deleteHandler(req);
+    result.then(data => { 
+          res.json(data);
+     })
+     .catch( err  => res.sendStatus(500));
+ };
+
