@@ -534,7 +534,6 @@ const  cntHandler_amplification_p = async (pathologyNum) => {
 	 } catch (err) {
 		   console.error('SQL error', err);
 	 }  
-	
  }
 
  //병리 Fusion p형 보고서 조회

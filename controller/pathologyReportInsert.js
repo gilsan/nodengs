@@ -59,6 +59,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	let variant_allele_frequency = mutation.variantAlleleFrequency;
 	let variant_id       = mutation.ID;
 	let tier             = mutation.tier;
+	let seq              = mutation.seq;
 
 	logger.info("[289][mutation] pathology_num=" + pathology_num);
 	logger.info("[289][mutation] gene=" + gene);
@@ -67,6 +68,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	logger.info("[289][mutation] variant_allele_frequency=" + variant_allele_frequency);
 	logger.info("[289][mutation] variant_id=" + variant_id);
 	logger.info("[289][mutation] tier=" + tier);
+	logger.info("[289][mutation] seq=" + seq);
 
 	//select Query 생성
 	let sql2 = "insert_report_mutation";
@@ -84,6 +86,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 			.input('variant_id', mssql.VarChar(100), variant_id)
 			.input('tier', mssql.VarChar(10), tier)
 			.input('note', mssql.VarChar(10), '')
+			.input('seq', mssql.int, seq)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultMC;
@@ -174,6 +177,7 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 	let estimated_copy_num = amplification.copynumber;
 	let tier             = amplification.tier;
 	let note             = amplification.note;
+	let seq              = amplification.seq;
   
 	logger.info("[243][amplification] pathology_num=" + pathology_num);
 	logger.info("[243][amplification] report_gb=" + report_gb);
@@ -181,6 +185,7 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 	logger.info("[243][amplification] estimated_copy_num=" + estimated_copy_num);
 	logger.info("[243][amplification] tier=" + tier);
 	logger.info("[243][amplification] note=" + note);
+	logger.info("[243][amplification] seq=" + seq);
 
 	//select Query 생성
 	let sql2 = "insert_report_amplification";
@@ -196,6 +201,7 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 			.input('estimated_copy_num', mssql.VarChar, estimated_copy_num)
 			.input('tier', mssql.VarChar, tier)
 			.input('note', mssql.VarChar, note)
+			.input('seq', mssql.int, seq)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultAc;
@@ -289,11 +295,15 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 	let fusion_function   = fusion.functions;
 	let tier              = fusion.tier;
 	let note              = fusion.note;
+	let seq               = fusion.seq;
   
 	logger.info("[243][fusion] pathology_num=" + pathology_num);
 	logger.info("[243][fusion] gene=" + gene);
 	logger.info("[243][fusion] fusion_breakpoint=" + fusion_breakpoint);
 	logger.info("[243][fusion] fusion_function=" + fusion_function);
+	logger.info("[243][fusion] tier=" + tier);
+	logger.info("[243][fusion] note=" + note);
+	logger.info("[243][fusion] seq=" + seq);
 	logger.info("[243][fusion] report_gb=" + report_gb);
 
 	//select Query 생성
@@ -310,6 +320,7 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 			.input('fusion_function', mssql.VarChar, fusion_function)
 			.input('tier', mssql.VarChar, tier)
 			.input('note', mssql.VarChar, note)
+			.input('seq', mssql.int, seq)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultFu;
