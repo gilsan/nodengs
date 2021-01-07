@@ -61,6 +61,8 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	let tier             = mutation.tier;
 	let seq              = mutation.seq;
 
+	let seq_1 =  nvl(seq, "0");
+
 	logger.info("[289][mutation] pathology_num=" + pathology_num);
 	logger.info("[289][mutation] gene=" + gene);
 	logger.info("[289][mutation] nucleotide_change=" + nucleotide_change);
@@ -68,7 +70,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	logger.info("[289][mutation] variant_allele_frequency=" + variant_allele_frequency);
 	logger.info("[289][mutation] variant_id=" + variant_id);
 	logger.info("[289][mutation] tier=" + tier);
-	logger.info("[289][mutation] seq=" + seq);
+	logger.info("[289][mutation] seq=" + seq_1);
 
 	//select Query 생성
 	let sql2 = "insert_report_mutation";
@@ -86,7 +88,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 			.input('variant_id', mssql.VarChar(100), variant_id)
 			.input('tier', mssql.VarChar(10), tier)
 			.input('note', mssql.VarChar(10), '')
-			.input('seq', mssql.int, seq)
+			.input('seq', mssql.VarChar,  seq_1)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultMC;
@@ -105,7 +107,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 		
 		return resultMC;
 	} catch (err) {
-		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+		logger.error('[110][mutation C]SQL error=' + JSON.stringify(err));
 	} // try end
 }
 
@@ -178,14 +180,17 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 	let tier             = amplification.tier;
 	let note             = amplification.note;
 	let seq              = amplification.seq;
+
+	let seq_1 =  nvl(seq, "0");
+	let note_1 =  nvl(note, "0");
   
 	logger.info("[243][amplification] pathology_num=" + pathology_num);
 	logger.info("[243][amplification] report_gb=" + report_gb);
 	logger.info("[243][amplification] region=" + region);
 	logger.info("[243][amplification] estimated_copy_num=" + estimated_copy_num);
 	logger.info("[243][amplification] tier=" + tier);
-	logger.info("[243][amplification] note=" + note);
-	logger.info("[243][amplification] seq=" + seq);
+	logger.info("[243][amplification] note=" + note_1);
+	logger.info("[243][amplification] seq=" + seq_1);
 
 	//select Query 생성
 	let sql2 = "insert_report_amplification";
@@ -200,8 +205,8 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 			.input('region', mssql.VarChar, region) 
 			.input('estimated_copy_num', mssql.VarChar, estimated_copy_num)
 			.input('tier', mssql.VarChar, tier)
-			.input('note', mssql.VarChar, note)
-			.input('seq', mssql.int, seq)
+			.input('note', mssql.VarChar, note_1)
+			.input('seq', mssql.VarChar,  seq_1)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultAc;
@@ -220,8 +225,8 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 		logger.info("[275]resultAc=" + JSON.stringify(resultAc));
 		
 		return resultAc;
-	} catch (err) {
-		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+	} catch (error) {
+		logger.error('[229][amplication]SQL error=' + error.message);
 	} // try end
 }
 
@@ -296,6 +301,8 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 	let tier              = fusion.tier;
 	let note              = fusion.note;
 	let seq               = fusion.seq;
+
+	let seq_1 =  nvl(seq, "0");
   
 	logger.info("[243][fusion] pathology_num=" + pathology_num);
 	logger.info("[243][fusion] gene=" + gene);
@@ -303,7 +310,7 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 	logger.info("[243][fusion] fusion_function=" + fusion_function);
 	logger.info("[243][fusion] tier=" + tier);
 	logger.info("[243][fusion] note=" + note);
-	logger.info("[243][fusion] seq=" + seq);
+	logger.info("[243][fusion] seq=" + seq_1);
 	logger.info("[243][fusion] report_gb=" + report_gb);
 
 	//select Query 생성
@@ -320,7 +327,7 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 			.input('fusion_function', mssql.VarChar, fusion_function)
 			.input('tier', mssql.VarChar, tier)
 			.input('note', mssql.VarChar, note)
-			.input('seq', mssql.int, seq)
+			.input('seq', mssql.VarChar, seq_1)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultFu;
@@ -339,8 +346,8 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 		logger.info("[275]resultFu=" + JSON.stringify(resultFu));
 		
 		return resultFu;
-	} catch (err) {
-		logger.error('[342][mutation C]SQL error=' + JSON.stringify(err));
+	} catch (error) {
+		logger.error('[350][fusion]SQL error=' + error.message);
 	} // try end
 }
 
