@@ -108,9 +108,7 @@ const listHandler = async (req) => {
 
    try {
        const request = pool.request() 
-		 .input('functionId', mssql.VarChar, functionId) 
-		 .input('functionName', mssql.NVarChar, functionName)  
-		 .input('serviceStatus', mssql.VarChar, serviceStatus)   ; 
+		 .input('functionId', mssql.VarChar, functionId)  ; 
        const result = await request.query(sql) 
        return result.recordset;
    } catch (err) {
