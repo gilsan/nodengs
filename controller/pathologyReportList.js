@@ -79,7 +79,8 @@ const  messageHandler_mutation_c = async (pathologyNum) => {
 			variant_allele_frequency, variant_id, tier \
 			from  report_mutation \
 			where pathology_num=@pathologyNum \
-			and report_gb=@reportGb ";
+			and report_gb=@reportGb \
+			order by id ";
 
 	console.log('[84][mutationC]', sql);
 			
@@ -163,7 +164,8 @@ const  messageHandler_amplification_c = async (pathologyNum) => {
 			estimated_copy_num, tier   \
 			from report_amplification \
 			where pathology_num = @pathologyNum \
-			and report_gb =	@reportGb ";
+			and report_gb =	@reportGb \
+			order by id ";
 	  
 	console.log("[168][sel_amplification_c]", sql);
 		   
@@ -251,7 +253,8 @@ const  messageHandler_fusion_c = async (pathologyNum) => {
 					fusion_function, tier \
 					from report_fusion \
 					where pathology_num = @pathologyNum \
-					and report_gb =	@reportGb";
+					and report_gb =	@reportGb \
+					order by id ";
 	  
 	console.log("[226][sel_fusion_c]",sql);
 		   
@@ -337,7 +340,8 @@ const  messageHandler_mutation_p = async (pathologyNum) => {
 	            variant_allele_frequency, variant_id, tier \
 	            from  report_mutation \
 	            where pathology_num = @pathologyNum \
-	            and report_gb =	@reportGb ";
+	            and report_gb =	@reportGb \
+				order by id ";
 
 	console.log(sql);
 	
@@ -424,7 +428,8 @@ const  cntHandler_amplification_p = async (pathologyNum) => {
 			 estimated_copy_num, note   \
 			 from report_amplification \
 			 where pathology_num = @pathologyNum \
-			 and report_gb = @reportGb ";
+			 and report_gb = @reportGb \
+			 order by id ";
 	   
 	 console.log(sql);
 			
@@ -513,7 +518,8 @@ const  cntHandler_amplification_p = async (pathologyNum) => {
 					fusion_function, tier \
 					from report_fusion \
 					where pathology_num = @pathologyNum \
-					and report_gb =	@reportGb";
+					and report_gb =	@reportGb \
+					order by id ";
 	
 	 console.log(sql);
 			
