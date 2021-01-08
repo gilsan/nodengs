@@ -98,8 +98,9 @@ const  messageHandler = async (today) => {
                 ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
                 ,isnull(test_code, '') test_code ,isnull (report_date, '') report_date \
                 ,isnull(screenstatus, '')  screenstatus \
+                ,isnull(report_date, '') report_date \
                 from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
-    logger.info('[82][patientinfo_diag list]sql=' + sql);
+    logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
@@ -123,7 +124,7 @@ const  messageHandler = async (today) => {
         res.json(data);
      })
      .catch( error  => {
-        logger.info('[82][patientinfo_diag list]err=' + error.message);
+        logger.info('[126][patientinfo_diag list]err=' + error.message);
         res.sendStatus(500)
     }); 
 }
@@ -159,6 +160,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
+            ,isnull(report_date, '') report_date \
             from [dbo].[patientinfo_diag] \
             where left(prescription_date, 8) >= '" + start + "'" 
              + " and left(prescription_date, 8) <= '" + end + "'"; 
@@ -215,7 +217,7 @@ exports.getPatientDiagLists = (req, res,next) => {
    let status   =  req.body.status; // 상태
    let sheet   =  req.body.sheet; // 결과지
 
-   console.log('[187][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status);
+   console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status);
    
    const  now = new Date();
    const today = getFormatDate2(now);
@@ -246,9 +248,9 @@ exports.getPatientDiagLists = (req, res,next) => {
  * @param {*} next 
  */
 const changeExaminer = async (specimenNo, part, name) => {
-    logger.info('[236][patientinfo_diag updateExaminer]specimenNo=' + specimenNo);
-    logger.info('[236][patientinfo_diag updateExaminer]part=' + part);
-    logger.info('[236][patientinfo_diag updateExaminer]name=' + name);
+    logger.info('[249][patientinfo_diag updateExaminer]specimenNo=' + specimenNo);
+    logger.info('[250][patientinfo_diag updateExaminer]part=' + part);
+    logger.info('[251][patientinfo_diag updateExaminer]name=' + name);
 
     let sql;
     if ( part === 'exam') {
@@ -257,7 +259,7 @@ const changeExaminer = async (specimenNo, part, name) => {
         sql =`update patientInfo_diag set recheck=@name where specimenNo=@specimenNo`;
     }
 
-    logger.info('[247][patientinfo_diag updateExaminer]sql=' + sql);
+    logger.info('[260][patientinfo_diag updateExaminer]sql=' + sql);
 
     try {
         const request = pool.request()
@@ -267,7 +269,7 @@ const changeExaminer = async (specimenNo, part, name) => {
         const result = await request.query(sql);       
         return result;
     } catch (error) {
-        logger.info('[257][patientinfo_diag updateExaminer]err=' + error.message);
+        logger.info('[270][patientinfo_diag updateExaminer]err=' + error.message);
     }    
 }
 
@@ -280,7 +282,7 @@ exports.updateExaminer = (req, res, next) => {
          res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.info('[270][patientinfo_diag updateExaminer]err=' + error.message);
+        logger.info('[283][patientinfo_diag updateExaminer]err=' + error.message);
     });
 }
 
@@ -288,8 +290,8 @@ exports.updateExaminer = (req, res, next) => {
 const resetscreenstatus = async (specimenNo, seq) =>{
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[277][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
-    logger.info('[277][patientinfo_diag resetScreen]seq=' + seq);
+    logger.info('[291][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
+    logger.info('[292][patientinfo_diag resetScreen]seq=' + seq);
     let sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
     logger.info('[281][patientinfo_diag resetScreen]sql=' + sql);
     try {
@@ -301,29 +303,30 @@ const resetscreenstatus = async (specimenNo, seq) =>{
         return result;        
       
     } catch(error) {
-        logger.info('[291][patientinfo_diag resetScreen]err=' + specimenNo);
+        logger.info('[304][patientinfo_diag resetScreen]err=' + specimenNo);
     }
 }
 
+// screenstatus 변경
 exports.resetScreenStatus = (req, res, next) => {
     let specimenNo = req.body.specimenNo.trim();
     let num        = req.body.num;
-    logger.info('[298][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
-    logger.info('[298][patientinfo_diag resetScreen]num=' + num);
+    logger.info('[312][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
+    logger.info('[313][patientinfo_diag resetScreen]num=' + num);
 
     const result = resetscreenstatus(specimenNo, num);
     result.then(data => {
          res.json({message: "SUCCESS"});
     })
     .catch( error => {
-        logger.info('[270][patientinfo_diag resetScreen]err=' + error.message);
+        logger.info('[320][patientinfo_diag resetScreen]err=' + error.message);
     })
 }
 
 //진검의 screenstatus 상태 알애내기
 const getscreenstatus = async (specimenNo) =>{
     await poolConnect; // ensures that the pool has been created
-    logger.info('[313][patientinfo_diag getScreen]specimenNo=' + specimenNo);
+    logger.info('[327][patientinfo_diag getScreen]specimenNo=' + specimenNo);
     let sql =`select screenstatus from patientInfo_diag where specimenNo=@specimenNo`;
     logger.info('[313][patientinfo_diag getScreen]sql=' + sql);
     try {
@@ -332,20 +335,20 @@ const getscreenstatus = async (specimenNo) =>{
         const result = await request.query(sql);       
         return result.recordset;             
     } catch(error) {
-        logger.error('[321][patientinfo_diag getScreen]err=' + error.message);
+        logger.error('[336][patientinfo_diag getScreen]err=' + error.message);
     }
 }
 
 exports.getScreenStatus = (req, res, next) => {
     let specimenNo = req.body.specimenNo.trim();
-    logger.info('[327][patientinfo_diag getScreen]specimenNo=' + specimenNo);
+    logger.info('[342][patientinfo_diag getScreen]specimenNo=' + specimenNo);
     const result = getscreenstatus(specimenNo);
     result.then(data => {
-        console.log('[331][검색결과][]', data);
+        console.log('[345][검색결과][]', data);
          res.json(data);
     })
     .catch( error => {
-        logger.info('[270][patientinfo_diag getScreen]err=' + error.message);
+        logger.info('[349][patientinfo_diag getScreen]err=' + error.message);
     });
 }
 
@@ -353,14 +356,16 @@ exports.getScreenStatus = (req, res, next) => {
 const setEMRcount = async (specimenNo, sendEMR) => {
     await poolConnect; // ensures that the pool has been created
     let sql;
-    logger.info('[298][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
-    logger.info('[298][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
+    logger.info('[357][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
+    logger.info('[358][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
     if ( Number(sendEMR) === 1 ) {  // 검사보고일
         sql =`update patientInfo_diag set sendEMR=@sendEMR , sendEMRDate=getdate(), report_date=getdate() where specimenNo=@specimenNo`;
     } else if (Number(sendEMR) > 1 ) {  // 수정 보고일
         sql =`update patientInfo_diag set sendEMR=@sendEMR , report_date=getdate() where specimenNo=@specimenNo`;
+    }  else {
+        sql =`update patientInfo_diag set sendEMR=@sendEMR   where specimenNo=@specimenNo`;
     }
-    logger.info('[298][patientinfo_diag sendEMrcount]sql=' + sql);
+    logger.info('[364][patientinfo_diag sendEMrcount]sql=' + sql);
 
     try {
         const request = pool.request()
@@ -371,7 +376,7 @@ const setEMRcount = async (specimenNo, sendEMR) => {
         return result;
 
     } catch(error) {
-        logger.info('[298][patientinfo_diag sendEMRcount]err=' + error.message);
+        logger.info('[375][patientinfo_diag sendEMRcount]err=' + error.message);
     }
 }
 
@@ -379,8 +384,8 @@ exports.setEMRSendCount = (req, res, next) => {
     const specimenNo = req.body.specimenNo.trim();
     const sendEMR    = req.body.sendEMR;  // 전송 횟수
 
-    logger.info('[367][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
-    logger.info('[367][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
+    logger.info('[383][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
+    logger.info('[384][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
     
     const result = setEMRcount(specimenNo, sendEMR);
     result.then(data => {
@@ -388,9 +393,42 @@ exports.setEMRSendCount = (req, res, next) => {
            res.json({message: 'SUCCESS', count: sendEMR});
     })
     .catch( error => {
-        logger.info('[376][patientinfo_diag sendEMRcount]err=' + error.message);
+        logger.info('[392][patientinfo_diag sendEMRcount]err=' + error.message);
     });
 }
+
+// EMR 전송 횟수 알아오기
+const getEMRcount = async (specimenNo) => {
+    await poolConnect;
+    
+    const sql =`select sendEMR from patientInfo_diag  where specimenNo=@specimenNo`;
+
+    try {
+        const request = pool.request()
+        .input('specimenNo', mssql.VarChar, specimenNo);
+
+        const result = await request.query(sql);
+        return result.recordset[0];
+
+    } catch(error) {
+        logger.info('[409][patientinfo_diag getEMRcount]err=' + error.message);
+    }
+
+}
+
+exports.getEMRSendCount = (req, res, next) => {
+    const specimenNo = req.body.specimenNo.trim();
+    const result = getEMRcount(specimenNo);
+    result.then(data => {
+        console.log(data);
+        res.json({count: data});
+ })
+ .catch( error => {
+     logger.info('[407][patientinfo_diag getEMRcount]err=' + error.message);
+ });
+}
+
+// 검체자 정보 찿기
 
 
  

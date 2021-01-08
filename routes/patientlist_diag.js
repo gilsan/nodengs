@@ -13,4 +13,7 @@ router.post('/reset', patientDiagController.resetScreenStatus);
 router.post('/screenstatus', patientDiagController.getScreenStatus);
 // EMR로 보낸 횟수 저장
 router.post('/setEMRSendCount', patientDiagController.setEMRSendCount);
+router.post('/getEMRSendCount', patientDiagController.getEMRSendCount);
+// 개인 검사자 정보 찿기
+router.post('/patientinfo', patientDiagController.getPatientinfo)
 module.exports = router;
