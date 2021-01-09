@@ -76,11 +76,11 @@ const  messageHandler_mutation_c = async (pathologyNum) => {
   	//select Query 생성
   	const sql = "select pathology_num, report_date, \
 			gene, amino_acid_change,nucleotide_change, \
-			variant_allele_frequency, variant_id, tier \
+			variant_allele_frequency, variant_id, isnull(tier, '') tier, seq \
 			from  report_mutation \
 			where pathology_num=@pathologyNum \
 			and report_gb=@reportGb \
-			order by id ";
+			order by seq ";
 
 	console.log('[84][mutationC]', sql);
 			
@@ -161,11 +161,11 @@ const  messageHandler_amplification_c = async (pathologyNum) => {
 	//insert Query 생성
 	const sql = "select pathology_num, report_date, \
 			report_gb, gene, region, \
-			estimated_copy_num, tier   \
+			estimated_copy_num, isnull(tier, '') tier, seq   \
 			from report_amplification \
 			where pathology_num = @pathologyNum \
 			and report_gb =	@reportGb \
-			order by id ";
+			order by seq ";
 	  
 	console.log("[168][sel_amplification_c]", sql);
 		   
@@ -250,7 +250,7 @@ const  messageHandler_fusion_c = async (pathologyNum) => {
 	//insert Query 생성
 	const sql = "select pathology_num, report_date, \
 					report_gb, gene, fusion_breakpoint, \
-					fusion_function, tier, seq \
+					fusion_function, isnull(tier, '') tier, seq \
 					from report_fusion \
 					where pathology_num = @pathologyNum \
 					and report_gb =	@reportGb \
@@ -337,7 +337,7 @@ const  messageHandler_mutation_p = async (pathologyNum) => {
 	//select Query 생성
 	const sql = "select pathology_num, report_date, \
 	            gene, amino_acid_change,nucleotide_change, \
-	            variant_allele_frequency, variant_id, tier, seq \
+	            variant_allele_frequency, variant_id, isnull(tier, '') tier, seq \
 	            from  report_mutation \
 	            where pathology_num = @pathologyNum \
 	            and report_gb =	@reportGb \
@@ -425,7 +425,7 @@ const  cntHandler_amplification_p = async (pathologyNum) => {
 	 //insert Query 생성
 	 const sql = "select pathology_num, report_date, \
 			 report_gb, gene, region, \
-			 estimated_copy_num, note, seq   \
+			 estimated_copy_num, isnull(note, '') note, seq   \
 			 from report_amplification \
 			 where pathology_num = @pathologyNum \
 			 and report_gb = @reportGb \
@@ -515,7 +515,7 @@ const  cntHandler_amplification_p = async (pathologyNum) => {
 	 //insert Query 생성
 	 const sql = "select pathology_num, report_date, \
 					report_gb, gene, fusion_breakpoint, \
-					fusion_function, tier, seq \
+					fusion_function, isnull(tier, '') tier, seq \
 					from report_fusion \
 					where pathology_num = @pathologyNum \
 					and report_gb =	@reportGb \
