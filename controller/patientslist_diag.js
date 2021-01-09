@@ -232,8 +232,7 @@ exports.getPatientDiagLists = (req, res,next) => {
 
    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
    result.then(data => {
- 
-      console.log('[203][검색결과][]', data);
+
       res.json(data);
 
       res.end();
@@ -242,7 +241,6 @@ exports.getPatientDiagLists = (req, res,next) => {
 }
 
 /**
- * 
  * @param 검체자 검사자 기록
  * @param {*} res 
  * @param {*} next 
@@ -293,7 +291,7 @@ const resetscreenstatus = async (specimenNo, seq) =>{
     logger.info('[291][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
     logger.info('[292][patientinfo_diag resetScreen]seq=' + seq);
     let sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
-    logger.info('[281][patientinfo_diag resetScreen]sql=' + sql);
+    logger.info('[294][patientinfo_diag resetScreen]sql=' + sql);
     try {
 
         const request = pool.request()
@@ -328,7 +326,7 @@ const getscreenstatus = async (specimenNo) =>{
     await poolConnect; // ensures that the pool has been created
     logger.info('[327][patientinfo_diag getScreen]specimenNo=' + specimenNo);
     let sql =`select screenstatus from patientInfo_diag where specimenNo=@specimenNo`;
-    logger.info('[313][patientinfo_diag getScreen]sql=' + sql);
+    logger.info('[329][patientinfo_diag getScreen]sql=' + sql);
     try {
         const request = pool.request()
                  .input('specimenNo', mssql.VarChar, specimenNo);
@@ -344,7 +342,7 @@ exports.getScreenStatus = (req, res, next) => {
     logger.info('[342][patientinfo_diag getScreen]specimenNo=' + specimenNo);
     const result = getscreenstatus(specimenNo);
     result.then(data => {
-        console.log('[345][검색결과][]', data);
+      //  console.log('[345][검색결과][]', data);
          res.json(data);
     })
     .catch( error => {
@@ -365,7 +363,7 @@ const setEMRcount = async (specimenNo, sendEMR) => {
     }  else {
         sql =`update patientInfo_diag set sendEMR=@sendEMR   where specimenNo=@specimenNo`;
     }
-    logger.info('[364][patientinfo_diag sendEMrcount]sql=' + sql);
+    logger.info('[366][patientinfo_diag sendEMrcount]sql=' + sql);
 
     try {
         const request = pool.request()
@@ -376,7 +374,7 @@ const setEMRcount = async (specimenNo, sendEMR) => {
         return result;
 
     } catch(error) {
-        logger.info('[375][patientinfo_diag sendEMRcount]err=' + error.message);
+        logger.info('[377][patientinfo_diag sendEMRcount]err=' + error.message);
     }
 }
 
@@ -384,8 +382,8 @@ exports.setEMRSendCount = (req, res, next) => {
     const specimenNo = req.body.specimenNo.trim();
     const sendEMR    = req.body.sendEMR;  // 전송 횟수
 
-    logger.info('[383][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
-    logger.info('[384][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
+    logger.info('[385][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
+    logger.info('[386][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
     
     const result = setEMRcount(specimenNo, sendEMR);
     result.then(data => {
@@ -393,7 +391,7 @@ exports.setEMRSendCount = (req, res, next) => {
            res.json({message: 'SUCCESS', count: sendEMR});
     })
     .catch( error => {
-        logger.info('[392][patientinfo_diag sendEMRcount]err=' + error.message);
+        logger.info('[394][patientinfo_diag sendEMRcount]err=' + error.message);
     });
 }
 
@@ -411,7 +409,7 @@ const getEMRcount = async (specimenNo) => {
         return result.recordset[0];
 
     } catch(error) {
-        logger.info('[409][patientinfo_diag getEMRcount]err=' + error.message);
+        logger.info('[412][patientinfo_diag getEMRcount]err=' + error.message);
     }
 
 }
@@ -424,11 +422,40 @@ exports.getEMRSendCount = (req, res, next) => {
         res.json({count: data});
  })
  .catch( error => {
-     logger.info('[407][patientinfo_diag getEMRcount]err=' + error.message);
+     logger.info('[425][patientinfo_diag getEMRcount]err=' + error.message);
  });
 }
 
 // 검체자 정보 찿기
+const getpatientinfo = async (specimenNo) => {
+    await poolConnect;
+    
+    const sql =`select * from patientInfo_diag  where specimenNo=@specimenNo`;
+
+    try {
+        const request = pool.request()
+        .input('specimenNo', mssql.VarChar, specimenNo);
+
+        const result = await request.query(sql);
+        return result.recordset[0];
+
+    } catch(error) {
+        logger.info('[443][patientinfo_diag getpatientinfo]err=' + error.message);
+    }
+
+}
+exports.getPatientinfo  = (req, res, next) => {
+    const specimenNo = req.body.specimenNo;
+    console.log('[449][getPatientinfo]', specimenNo);
+    const result = getpatientinfo(specimenNo);
+    result.then(data => {
+       // console.log(data);
+        res.json(data);
+ })
+ .catch( error => {
+     logger.info('[455][patientinfo_diag getPatientinfo]err=' + error.message);
+ });
+}
 
 
  

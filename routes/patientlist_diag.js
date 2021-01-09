@@ -15,5 +15,5 @@ router.post('/screenstatus', patientDiagController.getScreenStatus);
 router.post('/setEMRSendCount', patientDiagController.setEMRSendCount);
 router.post('/getEMRSendCount', patientDiagController.getEMRSendCount);
 // 개인 검사자 정보 찿기
-router.post('/patientinfo', patientDiagController.getPatientinfo)
+router.post('/patientinfo', patientDiagController.getPatientinfo);
 module.exports = router;
