@@ -209,6 +209,7 @@ app.use('/tests', function(req, res, next) {
     next();
   });
  
+  // 유전자 정보 관리
   app.use('/diagGene', diagGeneRouter);
   
  // 검진 EMR 보내기
