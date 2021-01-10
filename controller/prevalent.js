@@ -144,9 +144,10 @@ exports.prevalentList = (req, res, next) => {
 
     if ( len > 0 ) {
        prevalent.forEach( async(item) => {
-        logger.info('======== [146][item]', item);   
+        logger.info('======== [146][item]'+  item);   
         const geneinfo = item.gene;
         const seq = item.seq;
+        logger.info('======== [146][item]seq='+  seq);   
         const qry = "insert into prevalent (pathologyNum, prevalent, seq) values(@pathologyNum, @geneinfo, @seq)"; 
         logger.info('[149][prevalentdata2 insert]qry=' + qry);
         logger.info('[150][prevalentdata2]' + geneinfo + ' ' + seq);
