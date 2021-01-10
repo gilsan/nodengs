@@ -90,7 +90,7 @@ exports.prevalentdata = (req, res, next) => {
     logger.info('[89][prevalentdata select]pathologyNum=' + pathologyNum);
 
     //select Query 생성
-    const qry = "select prevalent from prevalent where pathologyNum = @pathologyNum ";
+    const qry = "select prevalent, seq from prevalent where pathologyNum = @pathologyNum ";
     logger.info('[91][prevalentdata select]sql=' + qry);
     
     try {
@@ -111,10 +111,77 @@ exports.prevalentList = (req, res, next) => {
     const result = prevalentSelectHandler(pathologyNum);
     result.then(data => {  
           console.log('[100][prevalentList]', data);
-          res.send(data.map(item => item.prevalent));
+          res.json(data);
+          // res.send(data.map(item => item.prevalent));
      })
      .catch( error  => {
         logger.error('[116][prevalentlist]error=' + error.message);
         res.sendStatus(500);
     })
+ };
+
+
+ const  prevalentInsertHandler2 = async (pathologyNum, prevalent) => {
+    await poolConnect; // ensures that the pool has been created
+    let result;
+    logger.info('[126][prevalentdata2 insert]pathologyNum=' + pathologyNum);
+    logger.info('[127][prevalentdata2 insert]prevalent2=' + prevalent);
+
+    let sql = "delete from prevalent where  pathologyNum = @pathologyNum ";
+    logger.info("[130][prevalentdata insert]sql=" + sql);
+
+    try {
+        const request = pool.request()
+            .input('pathologyNum', mssql.VarChar, pathologyNum); 
+            
+        const result = await request.query(sql)       
+        //return result;
+      } catch (error) {
+        logger.error('[41][prevalentdata2 delete]error=' + error.message);
+    } 
+    
+    const len = prevalent.length;
+
+    if ( len > 0 ) {
+       prevalent.forEach( async(item) => {
+        logger.info('======== [146][item]', item);   
+        const geneinfo = item.gene;
+        const seq = item.seq;
+        const qry = "insert into prevalent (pathologyNum, prevalent, seq) values(@pathologyNum, @geneinfo, @seq)"; 
+        logger.info('[149][prevalentdata2 insert]qry=' + qry);
+        logger.info('[150][prevalentdata2]' + geneinfo + ' ' + seq);
+        try {
+            const request = pool.request()
+            .input('pathologyNum', mssql.VarChar, pathologyNum)
+            .input('seq', mssql.VarChar, seq)
+            .input('geneinfo', mssql.VarChar, geneinfo);
+            result = await request.query(qry);
+        } catch (error) {
+            logger.error('[158][prevalentdata2 insert]error=' + error.message);
+        }
+       });
+    }
+ 
+    return result;
+}
+
+exports.prevalentdata2 = (req, res, next) => {
+     
+    const pathologyNum = req.body.pathologyNum;
+    const prevalent = req.body.prevalent;
+
+    logger.info('[171][prevalentdata ]pathologyNum=' + pathologyNum);
+   // logger.info('[172][prevalentdata ]prevalent=' + prevalent);
+
+    const result = prevalentInsertHandler2(pathologyNum, prevalent);
+    result.then(data => {
+   
+        console.log('[177][prevalentdata]', data);
+          res.json({message:'SUCCESS'});
+     })
+     .catch( error  => {
+        logger.error('[180][prevalentdata]error=' + error.message);
+        res.sendStatus(500)
+    });
+
  };

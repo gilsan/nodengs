@@ -8,6 +8,7 @@ const  prevalentController = require('../controller/prevalent');
 //병리   
 //clinically 소스내의   함수
 router.post('/insert', prevalentController.prevalentdata);
+router.post('/insert2',prevalentController.prevalentdata2)
 router.post('/list', prevalentController.prevalentList);
 
 module.exports = router;
