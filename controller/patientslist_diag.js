@@ -99,6 +99,7 @@ const  messageHandler = async (today) => {
                 ,isnull(test_code, '') test_code ,isnull (report_date, '') report_date \
                 ,isnull(screenstatus, '')  screenstatus \
                 ,isnull(report_date, '') report_date \
+                ,isnull(bonemarrow, '') bonemarrow, isnull(diagnosis, '') diagnosis,  isnull(generictest, '') generictest \
                 from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
@@ -161,6 +162,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             ,isnull(report_date, '') report_date \
+            ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(generictest, '') generictest  \
             from [dbo].[patientinfo_diag] \
             where left(prescription_date, 8) >= '" + start + "'" 
              + " and left(prescription_date, 8) <= '" + end + "'"; 
