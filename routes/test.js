@@ -1,5 +1,12 @@
-
-
+ s1 = 'test;test';
+ s2 = 'test';
+ s3 = '23.456';
+ s4 ;
+ s1  = s1.replace(/;/g, ",");
+ s2  = s2.replace(/;/g, ",");
+ s3  = s3.replace(/;/g, ",");
+ s4 = s4.replace(/;/g, ",");
+ console.log(s1,s2,s3);
 /*
 const location_mod       = require('../functions/location');
 

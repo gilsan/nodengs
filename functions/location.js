@@ -82,7 +82,7 @@ exports.locations = (locations_data) =>  {
 			  const locations_utr    = locations_items.includes('utr_5');               
 			  const upstream         = locations_items.includes('upstream');
 			 			  
-			  if (!upstream) {
+			  if (!upstream || (upstream && locations_exonic)) {
 			     if (locations_exonic || (locations_exonic && locations_utr)) {
 				    if (locations_length === 0) {
 					    loc1 = '';
@@ -104,7 +104,7 @@ exports.locations = (locations_data) =>  {
 					    loc7
 				      };
 			      }	  
-			  }
+			  } 
 			  
 		     return { result: false };
 

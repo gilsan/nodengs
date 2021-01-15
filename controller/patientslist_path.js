@@ -381,3 +381,70 @@ exports.getScreenStatusPath = (req, res, next) => {
          res.json(data);
     });    
 }
+
+// 검체로 환자정보 알아오기
+const getPatientInfo = async (pathologyNum) => {
+    await poolConnect; // ensures that the pool has been created
+    
+    let sql = "select isnull(FLT3ITD, '') FLT3ITD, \
+    isnull(accept_date, '') accept_date, \
+    isnull(age, '') age, \
+    isnull(appoint_doc, '') appoint_doc, \
+    isnull(bamFilename, '') bamFilename, \
+    isnull(createDate, '') createDate, \
+    isnull(dna_rna_ext, '') dna_rna_ext, \
+    isnull(examin, '') examin, \
+    isnull(gender, '') gender, \
+    isnull(id, '') id, \
+    isnull(irpath, '') irpath, \
+    isnull(key_block, '') key_block, \
+    isnull(management, '') management, \
+    isnull(msiscore, '') msiscore, \
+    isnull(name, '') name, \
+    isnull(organ, '') organ, \
+    isnull(orpath, '')  orpath, \
+    isnull(pathological_dx, '') pathological_dx, \
+    isnull(pathology_num, '') pathology_num, \
+    isnull(patientID, '') patientID, \
+    isnull(prescription_code, '') prescription_code, \
+    isnull(prescription_date, '') prescription_date, \
+    isnull(prescription_no, '') prescription_no, \
+    isnull(recheck, '') recheck, \
+    isnull(rel_pathology_num, '') rel_pathology_num, \
+    isnull(report_date, '') report_date, \
+    isnull(screenstatus, '') screenstatus, \
+    isnull(sendEMR, '') sendEMR, \
+    isnull(sendEMRDate, '') sendEMRDate, \
+    isnull(test_code, '') test_code, \
+    isnull(tsvFilteredDate, '') tsvFilteredDate, \
+    isnull(tsvFilteredFilename, '') tsvFilteredFilename, \
+    isnull(tsvFilteredStatus, '') tsvFilteredStatus, \
+    isnull(tsvirfilename, '') tsvirfilename, \
+    isnull(tsvorfilename, '') tsvorfilename, \
+    isnull(tumor_cell_per, '') tumor_cell_per, \
+    isnull(tumor_type, '') tumor_type, \
+    isnull(tumorburden, '') tumorburden, \
+    isnull(worker, '') worker  from [dbo].[patientinfo_path] \
+               where  pathology_num=@pathologyNum";
+
+        
+    try {
+        const request = pool.request()
+         .input('pathologyNum', mssql.VarChar, pathologyNum); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+       // console.dir( result);
+        
+        return result.recordset[0];
+    } catch (error) {
+        logger.error("[459][patientinfo_path select]err=" + error.message);
+    }
+}
+
+exports.getPatientByPathNo = (req, res, next) => {
+    let pathologyNum = req.body.pathologyNum.trim();
+    const result = getPatientInfo(pathologyNum);
+    result.then(data => {
+         res.json(data);
+    }); 
+
+}

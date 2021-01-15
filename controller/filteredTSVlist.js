@@ -48,7 +48,7 @@ const  messageHandler = async (testedID) => {
      const result = messageHandler(testedID);
      result.then(data => {
 
-       // console.log('[52][getTSVLists]',data);
+       console.log('[52][getTSVLists][response]',data);
         res.json(data);
    })
    .catch( err  => res.sendStatus(500));

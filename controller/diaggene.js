@@ -105,7 +105,7 @@ const updateHandler = async (type, gene, newgene) => {
     await poolConnect;
   
     const sql = 'update genediag set gene=@newgene   where type=@type and gene=@gene';
-    logger.info('[l08][diaggene controller update ]query=' + sql);
+    logger.info('[l08][diaggene controller update ]query=' + sql + '/ ' + type + ', ' + gene + ', ' + newgene);
     try {
         const request = pool.request()
              .input('type',mssql.VarChar, type)

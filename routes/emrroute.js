@@ -29,15 +29,16 @@ router.post('/redirectEMR', (req, res, next) => {
    // const url = req.query.data;
    // urlData = escape(url)
     console.log('[웹에서 받은 데이타]', req.body);
-   axios({
-       method: 'post',
-       url ,
-       data: querystring.stringify(req.body) 
-   })
-   .then(function(response) {
-      res.json(response.data)
-      console.log('[ response from EMR ] \n  ', response);      
-   });
+    res.json({msg:'SUCCESS'});
+   // axios({
+   //     method: 'post',
+   //     url ,
+   //     data: querystring.stringify(req.body) 
+   // })
+   // .then(function(response) {
+   //    res.json(response.data)
+   //    console.log('[ response from EMR ] \n  ', response);      
+   // });
    
 });
 

@@ -1,4 +1,4 @@
-// Beign Á¤º¸·Î ÇÊ¿ä»çÇ× °¡Á®¿À±â 
+// Beign ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
@@ -46,8 +46,8 @@ const insertHandler = async (req) => {
           .input('type', mssql.VarChar, type) 
           .input('gene', mssql.VarChar, gene) 
 		  .input('variant_id', mssql.VarChar, variant_id) 	
-          .input('comment', mssql.VarChar, comment) 
-          .input('reference', mssql.VarChar, reference)   
+          .input('comment', mssql.NVarChar, comment) 
+          .input('reference', mssql.NVarChar, reference)   
         const result = await request.query(sql)
       //  console.dir( result); 
         return result;

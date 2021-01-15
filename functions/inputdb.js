@@ -71,6 +71,54 @@ const  messageHandler = async (
     loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID) => {
 
   await poolConnect; // ensures that the pool has been created
+     /*
+    locus = locusreplace(/;/g, ",");
+    genotype = genotypereplace(/;/g, ",");
+    ref = ref.replace(/;/g, ",");
+    observed_allele= observed_allele.replace(/;/g, ",");
+    type = type.replace(/;/g, ",");
+    no_call_reason =  no_call_reason.replace(/;/g, ",");
+    genes = genes.replace(/;/g, ",");
+    locations = locations.replace(/;/g, ",");
+   
+    info = info.replace(/;/g, ",");
+    variant_id = variant_id.replace(/;/g, ",");
+    variant_name = variant_name.replace(/;/g, ",");
+    frequency = frequency.replace(/;/g, ",");
+    strand= strand.replace(/;/g, ",");
+    exon = exon.replace(/;/g, ",");
+    transcript = transcript.replace(/;/g, ",");
+    coding = coding.replace(/;/g, ",");
+    amino_acid_change = amino_acid_change.replace(/;/g, ",");
+    variant_effect = variant_effect.replace(/;/g, ",");
+    phylop = phylop.replace(/;/g, ",");
+    sift = sift.replace(/;/g, ",");
+    grantham = grantham.replace(/;/g, ",");
+    polyphen = polyphen.replace(/;/g, ",");
+    fathmm = fathmm.replace(/;/g, ",");
+    pfam = pfam.replace(/;/g, ",");
+    dbsnp = dbsnp.replace(/;/g, ",");
+    dgv = dgv.replace(/;/g, ",");
+    maf = maf.replace(/;/g, ",");
+    emaf = emaf.replace(/;/g, ",");
+    amaf = amaf.replace(/;/g, ",");
+    gmaf = gmaf.replace(/;/g, ",");
+    ucsc_common_snps = ucsc_common_snps.replace(/;/g, ",");
+    exac_laf = exac_laf.replace(/;/g, ",");
+    exac_eaaf = exac_eaaf.replace(/;/g, ",");
+    exac_gaf = exac_gaf.replace(/;/g, ",");
+    cosmic = cosmic.replace(/;/g, ",");
+    omim = omim.replace(/;/g, ",");
+    gene_ontology = gene_ontology.replace(/;/g, ",");
+    drugbank = drugbank.replace(/;/g, ",");    
+    clinvar = clinvar.replace(/;/g, ",");
+    allele_coverage = allele_coverage.replace(/;/g, ",");
+    allele_ratio = allele_ratio.replace(/;/g, ",");
+
+    ref_ref_var_var = ref_ref_var_var.replace(/;/g, ",");
+    krgdb_622_lukemia = krgdb_622_lukemia.replace(/;/g, ",");
+    krgdb_1100_leukemia = krgdb_1100_leukemia.replace(/;/g, ",");
+     */
 
   const sql2 =`insert into filtered_raw_tsv (		   
      locus, genotype, filter, ref, observed_allele,
