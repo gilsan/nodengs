@@ -417,10 +417,10 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   await poolConnect; // ensures that the pool has been created
   
   //입력 파라미터를 수신한다
-  logger.info("[->][pathologyReportInsert][pathology_num]" + patientinfo);
-  logger.info("[->][pathologyReportInsert][extraction]" + extraction);
-
-  logger.info( "[->][pathologyReportInsert][messageHandler] pathology_num= " +  pathology_num);
+  logger.info("[420->][pathologyReportInsert][pathology_num]" + patientinfo);
+  logger.info("[420->][pathologyReportInsert][extraction]" + extraction);
+  logger.info( "[420->][pathologyReportInsert][messageHandler] screenstatus= " +  screenstatus);
+  logger.info( "[420->][pathologyReportInsert][messageHandler] pathology_num= " +  pathology_num);
   
   let diagnosis = extraction.diagnosis;
   let dnarna = ''
@@ -431,6 +431,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   let tumortype = '';
   let msiscore = '';
   let tumorburden = '';
+  let sendEMRDate = '';
 
   	if (screenstatus === '1')
   	{
@@ -441,6 +442,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		tumortype = extraction.tumortype;
 		msiscore = extraction.msiscore;
 		tumorburden = extraction.tumorburden;
+		sendEMRDate = today();
   	}
 	else if (screenstatus === '2') {
 		// dnarna = patientinfo.dna_rna_ext;
@@ -463,17 +465,18 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   let recheck = patientinfo.recheck; // 확인자 
 
   logger.info("[199][pathologyReportInsert][extraction][dnarna]" + dnarna);
-  logger.info("[->][pathologyReportInsert][extraction][keyblock]" + keyblock);
-  logger.info("[->][pathologyReportInsert][extraction][organ]" + organ);
-  logger.info("[->][pathologyReportInsert][extraction][tumortype]" + tumortype);
-  logger.info("[->][pathologyReportInsert][extraction][diagnosis]" + diagnosis);
-  logger.info("[->][pathologyReportInsert][extraction][msiscore]" + msiscore);
-  logger.info("[->][pathologyReportInsert][extraction][tumorburden]" + tumorburden);
-  logger.info("[->][pathologyReportInsert][extraction][tumorcellpercentage]" + tumorcellpercentage);
-  logger.info("[->][pathologyReportInsert][patientinfo][examin]" + examin);
-  logger.info("[->][pathologyReportInsert][patientinfo][recheck]" +  recheck);
-  logger.info("[->][pathologyReportInsert][patientinfo][screenstatus]" + screenstatus);  
-  logger.info("[->][pathologyReportInsert][patientinfo][rel_pathology_num]" +  rel_pathology_num);
+  logger.info("[479->][pathologyReportInsert][extraction][keyblock]" + keyblock);
+  logger.info("[479->][pathologyReportInsert][extraction][organ]" + organ);
+  logger.info("[479->][pathologyReportInsert][extraction][tumortype]" + tumortype);
+  logger.info("[479->][pathologyReportInsert][extraction][diagnosis]" + diagnosis);
+  logger.info("[479->][pathologyReportInsert][extraction][msiscore]" + msiscore);
+  logger.info("[479->][pathologyReportInsert][extraction][tumorburden]" + tumorburden);
+  logger.info("[479->][pathologyReportInsert][extraction][tumorcellpercentage]" + tumorcellpercentage);
+  logger.info("[479->][pathologyReportInsert][patientinfo][examin]" + examin);
+  logger.info("[479->][pathologyReportInsert][patientinfo][recheck]" +  recheck);
+  logger.info("[479->][pathologyReportInsert][patientinfo][screenstatus]" + screenstatus);  
+  logger.info("[479->][pathologyReportInsert][patientinfo][rel_pathology_num]" +  rel_pathology_num);
+  logger.info("[479->][pathologyReportInsert][patientinfo][sendEMRDate]" + sendEMRDate);
   
   //insert Query 생성
   const sql_patient = "update patientinfo_path \
@@ -481,7 +484,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 			   key_block = @keyblock, rel_pathology_num = @rel_pathology_num, \
 			tumor_cell_per = @tumorcellpercentage, \
 			   organ = @organ, tumor_type = @tumortype, \
-			   pathological_dx=@diagnosis, screenstatus = @screenstatus,\
+			   pathological_dx=@diagnosis, screenstatus = @screenstatus, sendEMRDate=@sendEMRDate, \
 			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck \
 	  where  pathology_num = @pathology_num ";
 	  
@@ -501,7 +504,8 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		  .input('examin', mssql.NVarChar,examin)
 		  .input('recheck',mssql.NVarChar,recheck)
 		  .input('screenstatus',mssql.NVarChar,screenstatus)
-		  .input('pathology_num', mssql.VarChar, pathology_num);
+		  .input('pathology_num', mssql.VarChar, pathology_num)
+		  .input('sendEMRDate', mssql.SmallDateTime, sendEMRDate);
 		  
 	  let result;
 	   await request.query(sql_patient, (err, recordset) => 
@@ -714,3 +718,16 @@ exports.updateReportPathology = (req,res, next) => {
   .catch( err  => res.sendStatus(500)); 
 
 }
+
+function today() {
+    const today = new Date();
+
+    const year = today.getFullYear(); // 년도
+    const month = today.getMonth() + 1;  // 월
+    const date = today.getDate();  // 날짜
+
+    const newmon = ('0' + month).substr(-2);
+    const newday = ('0' + date).substr(-2);
+    const now = year + '-' + newmon + '-' + newday;
+    return now;
+  }
