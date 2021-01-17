@@ -11,13 +11,14 @@ const listHandler = async (req) => {
 	const userNm			= req.body.userNm; 
 	const startDay			= req.body.startDay; 
 	const endDay			= req.body.endDay;
+	const dept				= req.body.dept;
 	
 	let sql ="select id, user_id, password, user_nm, user_gb, dept, CONVERT(CHAR(19), login_date, 120) login_date, isnull(approved,'N') approved ,";
 	sql = sql + " case when dept ='P' then 'Pathology' when dept ='D' then 'Diagnostic' else '' end dept_nm ,"
 	sql = sql + " case when user_gb  ='U' then 'User' when dept ='A' then 'Manager' else '' end user_gb_nm ,"
 	sql = sql + " uuid , reg_date pickselect, case when part ='T' then 'Tester' when part = 'D' then 'Doctor' end part_nm ";
     sql = sql + " from users  ";
-	sql = sql + " where 1 = 1 ";
+	sql = sql + " where dept = @dept ";
 	if(userId != "") 
 		sql = sql + " and user_id like '%"+userId+"%'";
 	if(userNm != "") 
@@ -35,8 +36,9 @@ const listHandler = async (req) => {
    try {
        const request = pool.request()
          .input('userId', mssql.VarChar, userId)
-		 .input('userNm', mssql.VarChar, userNm)  ; 
-       const result = await request.query(sql) 
+		 .input('userNm', mssql.VarChar, userNm)  
+		 .input('dept', mssql.VarChar, dept); 
+       const result = await request.query(sql)  
        return result.recordset;
    } catch (err) {
        console.error('SQL error', err);
