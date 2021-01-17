@@ -175,3 +175,29 @@ exports.listAllDiagGene = (req,res, next) => {
   .catch( err  => res.sendStatus(500));
 
 }
+
+// 중복검사
+const checkHandler = async (type, gene) => {
+  await poolConnect;
+  const sql = "select count(*) as count from genediag where type=@type and gene=@gene";
+
+    try {
+        const request = pool.request()
+             .input('type',mssql.VarChar, type)
+             .input('gene',mssql.VarChar, gene);           
+             const result = await request.query(sql);
+             return result.recordsets[0];
+    } catch (err) {
+        logger.info('[115][diaggene controller update error ]query=' +  err);
+    } 
+
+}
+
+exports.duplicateGene = (req, res, next) => {
+    const gene = req.body.gene;
+    const type = req.body.type;
+    const result = checkHandler(type, gene);
+    result.then(data => {
+           res.json(data);
+    });    
+}

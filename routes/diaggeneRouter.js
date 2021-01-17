@@ -16,5 +16,7 @@ router.post('/insert', diagGeneController.insertDiagGene);
 router.post('/update', diagGeneController.updateDiagGene);
 router.post('/delete', diagGeneController.deleteDiagGene);
 router.get('/listall', diagGeneController.listAllDiagGene);
+// 중복검사
+router.post('/duplicate', diagGeneController.duplicateGene);
 
 module.exports = router;
