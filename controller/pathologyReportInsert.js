@@ -186,6 +186,7 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
   
 	logger.info("[243][amplification] pathology_num=" + pathology_num);
 	logger.info("[243][amplification] report_gb=" + report_gb);
+	logger.info("[243][amplification] gene=" + gene);
 	logger.info("[243][amplification] region=" + region);
 	logger.info("[243][amplification] estimated_copy_num=" + estimated_copy_num);
 	logger.info("[243][amplification] tier=" + tier);
