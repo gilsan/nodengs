@@ -182,7 +182,7 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 	let seq              = amplification.seq;
 
 	let seq_1 =  nvl(seq, "0");
-	let note_1 =  nvl(note, "0");
+	let note_1 =  nvl(note, "");
   
 	logger.info("[243][amplification] pathology_num=" + pathology_num);
 	logger.info("[243][amplification] report_gb=" + report_gb);
