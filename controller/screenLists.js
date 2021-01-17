@@ -569,10 +569,12 @@ exports.finishPathologyScreen = (req, res, next) => {
     .catch( err  => res.sendStatus(500));
 }
 
-const messageHandlerStat_log = async (pathologyNum ) => {
+const messageHandlerStat_log = async (pathologyNum, userid ) => {
 	await poolConnect; // ensures that the pool has been created
 
 	logger.info("[289][stat_log] pathology_num=" + pathologyNum);
+	logger.info("[289][stat_log] userid=" + userid);
+
 
 	//select Query 생성
 	let sql2 = "insert_stat_log_path";
@@ -582,6 +584,7 @@ const messageHandlerStat_log = async (pathologyNum ) => {
 	try {
 		const request = pool.request()
 			.input('pathologyNum', mssql.VarChar(300), pathologyNum)
+			.input('userId', mssql.VarChar(30), userid)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultSt;
@@ -630,9 +633,11 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   logger.info('[screenList][653][finishPathologyScreen]data=' + JSON.stringify(req.body));
 
   const pathologyNum = req.body.pathologyNum;
+  const userid = req.body.userid;
   logger.info('[screenList][653][finishPathologyScreen]pathologyNum=' + pathologyNum);
+  logger.info('[screenList][653][finishPathologyScreen]userid=' + userid);
 
-  const resultLog = messageHandlerStat_log(pathologyNum);
+  const resultLog = messageHandlerStat_log(pathologyNum, userid);
   logger.info('[screenList][655][finishPathologyScreen]result=' + resultLog); 
     //  res.json({message: 'SUCCESS'});
 
