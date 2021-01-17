@@ -359,7 +359,7 @@ const setEMRcount = async (specimenNo, sendEMR) => {
     logger.info('[357][patientinfo_diag sendEMRcount]specimenNo=' + specimenNo);
     logger.info('[358][patientinfo_diag sendEMRcount]sendEMR=' + sendEMR );
     if ( Number(sendEMR) === 1 ) {  // 검사보고일
-        sql =`update patientInfo_diag set sendEMR=@sendEMR , sendEMRDate=getdate(), report_date=getdate() where specimenNo=@specimenNo`;
+        sql =`update patientInfo_diag set sendEMR=@sendEMR , sendEMRDate=getdate() where specimenNo=@specimenNo`;
     } else if (Number(sendEMR) > 1 ) {  // 수정 보고일
         sql =`update patientInfo_diag set sendEMR=@sendEMR , report_date=getdate() where specimenNo=@specimenNo`;
     }  else {
