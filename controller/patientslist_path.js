@@ -4,7 +4,7 @@ const mssql = require('mssql');
 //const config = require('./config.js');
 const logger = require('../common/winston');
 
-
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -21,8 +21,11 @@ const config = {
     }
 }
 
-
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 function getFormatDate(date){
@@ -213,7 +216,7 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
         sql = sql +  " and pathology_num like '%" +  pathology + "%'";
     }
 
-    sql = sql + " order by prescription_date desc, pathology_num ";
+    sql = sql + " order by prescription_date desc, pathology_num desc ";
     logger.info("[137][patientinfo_path select]sql=" + sql);
         
     try {
