@@ -2,7 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -20,21 +22,30 @@ const config = {
 }
 
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 const  messageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
-
   
   const gene     = req.body.gene;
   const filename =  req.body.filename;
   const testedID = req.body.testedID;
+  
+  logger.info('[38][save_file_path]gene=' + gene);
+  logger.info('[38][save_file_path]filename=' + filename);
+  logger.info('[38][save_file_path]testedID=' + testedID);
    
-   const sql ="select path   "
+   const sql ="select top 1 path   "
    sql = sql + " where gene=@gene   "
    sql = sql + " and filename=@filename   "
    sql = sql + " and testedID =@testedID   "
-   sql = sql + " order by id limit 1";
+   sql = sql + " order by id";
+
+   logger.info('[48][save_file_path]sql=' + sql);
        
   try {
       const request = pool.request()
@@ -45,17 +56,23 @@ const  messageHandler = async (req) => {
       console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[60][save-file_path]err=' + error.message);
   }
 }
 
  exports.getsavedFilePathList = (req,res, next) => {
+
+    logger.info('[66][get_save_file_path]data=' + JSON.stringify( req.body));
+
     const result = messageHandler(req);
     result.then(data => {
   
        console.log(json.stringfy());
        res.json(data);
     })
-    .catch( err  => res.sendStatus(500)); 
+    .catch( error  => {
+        logger.info('[75][get_save_file_path]err=' + error.message);
+        res.sendStatus(500);
+    }); 
  }

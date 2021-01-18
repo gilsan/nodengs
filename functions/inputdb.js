@@ -2,6 +2,7 @@
 //  select  id, locus, locations, variant_effect, gmaf, phred_qual_score, type,info, krgdb_622_lukemia, krgdb_1100_leukemia from filtered_raw_tsv where type != 'REF' and info != 'HS'
 //  select   count(*) as cnt from filtered_raw_tsv where type != 'REF' and info != 'HS' 
 const mssql = require('mssql');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -19,6 +20,10 @@ const config = {
 }
 
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 const  messageHandler_del = async (testedID) => {

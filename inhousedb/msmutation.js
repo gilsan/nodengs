@@ -3,7 +3,8 @@ const Excel = require('exceljs');
 
 const workbook = new Excel.Workbook();  
 const fs = require('fs');
- 
+
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -19,6 +20,7 @@ const config = {
         encrypt:false
     }
 }
+*/
 
 // 특수문자찿기 변경하기
 function findChar(findChar) {
@@ -248,6 +250,9 @@ function findChar(findChar) {
  }
 
 
-const pool = new mssql.ConnectionPool(config);
+//const pool = new mssql.ConnectionPool(config);
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 

@@ -1,7 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -19,6 +21,10 @@ const config = {
 }
 
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 const  messageHandler = async (req) => {
@@ -37,7 +43,11 @@ const  messageHandler = async (req) => {
   const vaf               = req.body.vafPercent;
   const reference         = req.body.references;
   const cosmic_id         = req.body.cosmicID;
-console.log(patient_name,register_number,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id);
+
+  logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
+  logger.info('[47][mutation]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
+  logger.info('[47][mutation]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
+  logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
 
   let sql ="insert into mutation   ";
   sql = sql + " (igv, sanger,patient_name,register_number,  ";
@@ -50,6 +60,8 @@ console.log(patient_name,register_number,gene,functional_impact,transcript,exon_
   sql = sql + " @exon_intro, @nucleotide_change,  ";
   sql = sql + " @amino_acid_change, @zygosity, @vaf,  ";
   sql = sql + " @reference,@cosmic_id)";
+
+  logger.info('[64][mutation]sql=' + sql);
 
   try {
       const request = pool.request()
@@ -71,20 +83,25 @@ console.log(patient_name,register_number,gene,functional_impact,transcript,exon_
      // console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[87][mutation]err=' + error.message);
   }
 }
 
  exports.saveMutation = (req,res, next) => {
         
-    const result = messageHandler(gene);
-    result.then(data => {
+  logger.info('[93][mutation insert]data=' + JSON.stringify(req.body));
+
+   const result = messageHandler(req);
+   result.then(data => {
 
       //  console.log(json.stringfy());
         res.json(data);
     })
-    .catch( err  => res.sendStatus(500));
+    .catch( error  => {
+      logger.error('[102][mutation]err=' + error.message);
+      res.sendStatus(500)
+    });
 }
 
 exports.updateMutation = (req, res, next) => {
@@ -93,10 +110,13 @@ exports.updateMutation = (req, res, next) => {
 
 const  messageHandler2 = async (req) => {
   await poolConnect; // ensures that the pool has been created
-  
+
+  logger.info('[114][mutation] del data=' + JSON.stringify( req.body));
+
   const id = req.body.id;
 
   const sql = "delete from mutation where id=@id";
+  logger.info('[114][mutation]del data=' + JSON.stringify( req.body));
        
   try {
       const request = pool.request()
