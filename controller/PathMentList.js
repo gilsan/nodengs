@@ -8,7 +8,9 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -26,6 +28,10 @@ const config = {
 }
 
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 // 'yyyy-mm-dd' -> 'yyyyMMdd'
@@ -45,17 +51,15 @@ function getFormatDate2(date){
 const  cntHandler_path_ment = async (pathologyNum) => { 
     await poolConnect; // ensures that the pool has been created
     
-    console.log("pathologyNum", pathologyNum);
-  
-    let reportGb  = "C"
+    logger.info("[54][cnt_path_ment]pathologyNum=", pathologyNum);
   
     const sql = "select count(1) as count  \
               from  path_comment \
               where pathology_num=@pathologyNum ";
   
-      console.log('[55][path_ment]', sql);
+    logger.info('[60][cnt_path_ment]sql=' + sql);
               
-      try {
+    try {
           const request = pool.request()
               .input('pathologyNum', mssql.VarChar, pathologyNum); 
                   
@@ -64,21 +68,23 @@ const  cntHandler_path_ment = async (pathologyNum) => {
           const data = result.recordset[0];
           return data;      
           
-      } catch (err) {
-          console.error('SQL error', err);
-      }
+    } catch (error) {
+        logger.error('[72][cnt_path_ment]err=' + error.message);
+    }
   }
   
   const  messageHandler_path_ment = async (pathologyNum) => { 
       await poolConnect; // ensures that the pool has been created
             
-        //select Query 생성
-        const sql = "select pathology_num, notement, \
+      logger.info('[79][sel_path_ment]pathologyNum=' + pathologyNum);
+      
+      //select Query 생성
+      const sql = "select pathology_num, notement, \
                 generalReport, specialment  \
               from  path_comment \
               where pathology_num=@pathologyNum  ";
   
-      console.log('[84][path_ment]', sql);
+      logger.info('[87][sel_path_ment]sql=' + sql);
               
       try {
           const request = pool.request()
@@ -87,15 +93,15 @@ const  cntHandler_path_ment = async (pathologyNum) => {
           const result = await request.query(sql)
               
           return result.recordset;
-      } catch (err) {
-          console.error('SQL error', err);
+      } catch (error) {
+        logger.error('[97][sel_path_ment]err=' + error.message);
       }
   }
   
   //병리 Mutation c형 보고서 조회
   exports.selPathMentList = (req,res, next) => {
   
-    console.log (req.body);
+    logger.info('[104][sel_path_ment]data=' + JSON.stringify( req.body));
   
     let pathologyNum = req.body.pathologyNum;
     
@@ -110,12 +116,18 @@ const  cntHandler_path_ment = async (pathologyNum) => {
   
            //console.log(json.stringfy());
            res.json(data);
-          });
+          })
+          .catch( error  => {
+            logger.error('[121][sel_path_ment]err=' + error.message);
+            res.sendStatus(500)}); 
       } else { 
            //console.log(json.stringfy());
            res.json({message:"no data"});
       }
   })
-    .catch( err  => res.sendStatus(500)); 
+  .catch( error => {
+    logger.error('[129][cnt_path_ment]err=' + Error.message);
+    res.sendStatus(500);
+  }); 
   
   }

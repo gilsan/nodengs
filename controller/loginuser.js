@@ -2,6 +2,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -20,6 +21,10 @@ const config = {
 
 // 진검 궈리
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 /**

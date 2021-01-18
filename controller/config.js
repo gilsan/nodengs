@@ -1,4 +1,4 @@
-
+/*
  module.exports = {
   host     : '127.0.0.1', //db접속 주소
   user     : 'ngs', //db접속id
@@ -9,3 +9,4 @@
 		enableArithAbort: true
 	},
 };
+*/

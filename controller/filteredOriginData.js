@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
-
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -27,6 +27,10 @@ const config = {
 
 //
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 const  filteredOrigindataMessageHandler = async (req) => {

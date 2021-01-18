@@ -1,6 +1,7 @@
 const mssql = require('mssql');
 const fs = require('fs');
- 
+
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -17,8 +18,11 @@ const config = {
     }
 }
 
-
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 // 특수문자찿기 변경하기

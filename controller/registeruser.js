@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
 const dbConfigMssql = require('./dbconfig-mssql.js');
+
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
  
@@ -29,6 +30,9 @@ const  listHandler = async (user_id) => {
 
 const  insertHandler = async (req) => {
   await poolConnect;   
+
+console.log(req.body);
+
   const user_id     = req.body.user_id;
   
   const password	= req.body.password;
@@ -74,16 +78,18 @@ const  insertHandler = async (req) => {
 
 exports.register = (req,res, next) => {
   
+  console.log(req.body);
+
   const user_id    = req.body.user_id;  
   const result  = listHandler(user_id);
   result.then(data => {     
     	 if (data != undefined) { 
 			 res.json({message: 'DUPID'});
 		 }else{ 
-			console.error('register->>>>>>step1');
+			console.log('register->>>>>>step1');
 			const regist = insertHandler(req);
 			regist.then(data => {  
-				console.error('register->>>>>>step2');
+				console.log('register->>>>>>step2');
 				res.json({message: 'success'});
 			})
 			.catch( err  => res.sendStatus(500)); 

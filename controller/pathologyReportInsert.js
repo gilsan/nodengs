@@ -9,6 +9,7 @@ const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
 const { data } = require('../common/winston');
+/*
 const config = {
     user: 'ngs',
     password: 'ngs12#$',
@@ -27,6 +28,10 @@ const config = {
 
 //
 const pool = new mssql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('../common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 const sleep = (ms) => {
@@ -106,8 +111,8 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 		});
 		
 		return resultMC;
-	} catch (err) {
-		logger.error('[110][mutation C]SQL error=' + JSON.stringify(err));
+	} catch (error) {
+		logger.error('[110][mutation C]SQL error=' + error.message);
 	} // try end
 }
 
@@ -132,8 +137,8 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 	  
 	  logger.info("[270] result =" + JSON.stringify(result) )
 	  //return result;
-	} catch (err) {
-	  logger.error('SQL error=' + JSON.stringify(err));
+	} catch (error) {
+	  logger.error('SQL error=' + error.message);
 	}
   
 	let resultCnt;
@@ -254,8 +259,8 @@ const  messageAmplificationCHandler = async (pathology_num, amplification, repor
   
 	  logger.info("[361][amplification] data=" + JSON.stringify(result)); 
 	  //return result;
-	} catch (err) {
-	  logger.error('[364][amplification] SQL error=' + JSON.stringify(err));
+	} catch (error) {
+	  logger.error('[364][amplification] SQL error=' + error.message);
 	}
   
 	let resultCnt;
@@ -418,10 +423,16 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   await poolConnect; // ensures that the pool has been created
   
   //입력 파라미터를 수신한다
-  logger.info("[420->][pathologyReportInsert][pathology_num]" + patientinfo);
-  logger.info("[420->][pathologyReportInsert][extraction]" + extraction);
+  logger.info("[420->][pathologyReportInsert]pathology_num=" + pathology_num);
+  logger.info("[420->][pathologyReportInsert]patient_info=" + JSON.stringify(patientinfo));
+  logger.info("[420->][pathologyReportInsert]extraction=" + JSON.stringify(extraction));
+  logger.info("[420->][pathologyReportInsert]mutation_c=" + JSON.stringify(mutation_c));
+  logger.info("[420->][pathologyReportInsert]amplication_c=" + JSON.stringify(amplification_c));
+  logger.info("[420->][pathologyReportInsert]fusion_c=" + JSON.stringify(fusion_c));
+  logger.info("[420->][pathologyReportInsert]mutation_p=" + JSON.stringify(mutation_p));
+  logger.info("[420->][pathologyReportInsert]amplication_p=" + JSON.stringify(amplification_p));
+  logger.info("[420->][pathologyReportInsert]fusion_p=" + JSON.stringify(fusion_p));
   logger.info( "[420->][pathologyReportInsert][messageHandler] screenstatus= " +  screenstatus);
-  logger.info( "[420->][pathologyReportInsert][messageHandler] pathology_num= " +  pathology_num);
   
   let diagnosis = extraction.diagnosis;
   let dnarna = ''
@@ -522,8 +533,8 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 	  
 	  logger.info("data", JSON.stringify(result));
 	  //return result;
-  } catch (err) {
-	  logger.error('SQL error=' + err);
+  } catch (error) {
+	  logger.error('SQL error=' + error.message);
   }
   
   //1. Clinically significant boiomakers
@@ -594,7 +605,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   //delete Query 생성
   sql_del = "delete from path_comment where  pathology_num = @pathology_num ";
 
-  console.log("[438][del comment]", sql_del);
+  logger.info("[438][del comment]del sql=" + sql_del);
 	
   try {
 	const request = pool.request()
@@ -620,7 +631,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 					values(@pathology_num, @notement, \
 						@generalReport, @specialment)";
 	
-	console.log('[465][pathologyReportInsert][comment]',sql_comment);
+	logger.info('[628][pathologyReportInsert][comment]ins sql=' + sql_comment);
 	
 	let result_comment;
 
@@ -636,8 +647,8 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		console.log("[721][commwnt]", result_comment);
 		
 		//return result;
-	} catch (err) {
-		console.error('SQL error', err);
+	} catch (error) {
+		logger.error('[645[pathologyinsert][comment]ins sql error' + error.message);
 	}  // try end
 
   
@@ -646,7 +657,6 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 
   //return '{"uuid":"' + uuid + '"}';
   return result_comment; //
-  
   
 }
 
@@ -669,11 +679,18 @@ exports.insertReportPathology = (req,res, next) => {
   let notement = req.body.notement;
   let generalReport = req.body.generalReport;
   let specialment = req.body.specialment;
-
    
-  console.log ('[748][pathologyReportInsert][mutation_c]', mutation_c);
+  logger.info("[683->][pathologyReportInsert][insert]screenstatus=" + screenstatus);
+  logger.info("[683->][pathologyReportInsert][insert]pathology_num=" + pathology_num);
+  logger.info("[683->][pathologyReportInsert][insert]patient_info=" + JSON.stringify(patientinfo));
+  logger.info("[683->][pathologyReportInsert][insert]extraction=" + JSON.stringify(extraction));
+  logger.info("[683->][pathologyReportInsert][insert]mutation_c=" + JSON.stringify(mutation_c));
+  logger.info("[683->][pathologyReportInsert][insert]amplication_c=" + JSON.stringify(amplification_c));
+  logger.info("[683->][pathologyReportInsert][insert]fusion_c=" + JSON.stringify(fusion_c));
+  logger.info("[683->][pathologyReportInsert][insert]mutation_p=" + JSON.stringify(mutation_p));
+  logger.info("[683->][pathologyReportInsert][insert]amplication_p=" + JSON.stringify(amplification_p));
+  logger.info("[683->][pathologyReportInsert][insert]fusion_p=" + JSON.stringify(fusion_p));
   
-
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 
 								   notement, generalReport, specialment, screenstatus);
@@ -682,17 +699,17 @@ exports.insertReportPathology = (req,res, next) => {
      //console.log(json.stringfy());
      res.json({info:"SUCCESS"});
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error => {
+	logger.error("[702][pathologyReportInsert insert]err=" + error.message);
+	res.sendStatus(500)
+  }); 
 
 }
 
 //병리 Pathology 보고서 2차
 exports.updateReportPathology = (req,res, next) => {
 
-  console.log ('[488][pathologyReportInsert][update]', req.body);
-
-  var log_req_body  = "[488][pathologyReportInsert][MutationCnt]  req.body=" + JSON.stringify( req.body); 
-  logger.info(log_req_body);
+  logger.info("[711][pathologyReportInsert][updae]req.body=" + JSON.stringify( req.body));
 
   let screenstatus = '2';
   let pathology_num = req.body.pathology_num;
@@ -707,7 +724,18 @@ exports.updateReportPathology = (req,res, next) => {
   let notement = req.body.notement;
   let generalReport = req.body.generalReport;
   let specialment = req.body.specialment;
-
+   
+  logger.info("[683->][pathologyReportInsert][update]screenstatus=" + screenstatus);
+  logger.info("[683->][pathologyReportInsert][update]pathology_num=" + pathology_num);
+  logger.info("[683->][pathologyReportInsert][update]patient_info=" + JSON.stringify(patientinfo));
+  logger.info("[683->][pathologyReportInsert][update]extraction=" + JSON.stringify(extraction));
+  logger.info("[683->][pathologyReportInsert][update]mutation_c=" + JSON.stringify(mutation_c));
+  logger.info("[683->][pathologyReportInsert][update]amplication_c=" + JSON.stringify(amplification_c));
+  logger.info("[683->][pathologyReportInsert][update]fusion_c=" + JSON.stringify(fusion_c));
+  logger.info("[683->][pathologyReportInsert][update]mutation_p=" + JSON.stringify(mutation_p));
+  logger.info("[683->][pathologyReportInsert][update]amplication_p=" + JSON.stringify(amplification_p));
+  logger.info("[683->][pathologyReportInsert][update]fusion_p=" + JSON.stringify(fusion_p));
+  
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 
 								   notement, generalReport, specialment, screenstatus);
@@ -716,7 +744,10 @@ exports.updateReportPathology = (req,res, next) => {
      //console.log(json.stringfy());
      res.json({info:"SUCCESS"});
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error  => {
+	logger.error("[683->][pathologyReportInsert][update]err=" + error.message);
+      res.sendStatus(500)
+  }); 
 
 }
 
@@ -731,4 +762,4 @@ function today() {
     const newday = ('0' + date).substr(-2);
     const now = year + '-' + newmon + '-' + newday;
     return now;
-  }
+}

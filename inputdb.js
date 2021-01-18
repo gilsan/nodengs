@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
+/*
 const sql = require('mssql');
 const config = {
     user: 'saint',
@@ -21,6 +22,10 @@ const config = {
 
 
 const pool = new sql.ConnectionPool(config);
+*/
+
+const dbConfigMssql = require('./common/dbconfig.js');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 const  messageHandler = async () => {
