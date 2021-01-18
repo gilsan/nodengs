@@ -31,7 +31,7 @@ const geneExistRouter       = require('./routes/geneExist');
 const addGeneInfoRouter     = require('./routes/addGeneToMutation');
 
 // 사용자등록
-app.use('/register', registerRouter); 
+//app.use('/register', registerRouter); 
 
 // 사용자 관리
 const manageUsersRouter      = require('./routes/manageUsersRouter');
