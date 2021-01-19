@@ -20,7 +20,7 @@ const listHandler = async (req) => {
 	sql = sql +"  from stat_Log  a  " ;
 	sql = sql +"  inner join  users b " ;
 	sql = sql +" on a.sender = b.user_id  " ; 
-	sql = sql + " where dept = @dept ";
+	sql = sql + " where a.dept = @dept ";
 	if(userId != "") 
 		sql = sql + " and a.patientID like '%"+userId+"%'";
 	if(userNm != "") 
