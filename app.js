@@ -91,6 +91,9 @@ const allScreenRouter                 = require('./routes/allscreenroute');
 const amlReportRouter         = require('./routes/amlReportRouter');       //amlReportRouter.js 파일을 선언한다.
 const pathologyReportRouter   = require('./routes/pathologyReportRouter'); //pathologyReportRouter.js 파일을 선언한다.
 
+//2021.01.19
+const pathologyImageRouter   = require('./routes/pathologyImageRouter');   //pathologyImageRouter.js 파일을 선언한다.
+
 const amlSearchRouter         = require('./routes/amlSearchRouter');       //amlSearchRouter.js 파일을 선언한다.
 
 const pathologySearchRouter  = require('./routes/pathologySearchRouter');  //pathologySearchRouter.js 파일을 선언한다.
@@ -234,6 +237,10 @@ app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 �
 //진검, 병리 결과지/보고서 입력, 수정, 삭제
  app.use('/amlReportInsert', amlReportRouter);                //진검. amlReportInsert => 디렉토리 파일명
  app.use('/pathologyReportInsert', pathologyReportRouter);    //병리. pathologyReportInsert => 디렉토리 파일명
+
+ app.use('/pathologyimage', pathologyImageRouter);    //병리. pathologyImageRouter => 디렉토리 파일명
+
+ 
 
  app.use('/amlReportSearch', amlSearchRouter);                //진검. amlSearchRouter => 디렉토리 파일명
  app.use('/pathologyReportSearch', pathologySearchRouter);    //병리. pathologySearchRouter => 디렉토리 파일명

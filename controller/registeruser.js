@@ -39,31 +39,25 @@ console.log(req.body);
   const user_nm     = req.body.user_nm;
   const dept		= req.body.dept;
   const part		= req.body.part;
-  const uuid		= uuidv4();
  
-
   const sql = "insert into users ( "
-			  +"	id			"
-			  +"	,user_id		"
+			  +"	user_id		"
 			  +"	,password	"
 			  +"	,user_nm		"
 			  +"	,user_gb		"
 			  +"	,dept		"
-			  +"	,uuid		"
 			  +"	,reg_date	"
-			  +"	,login_date	"
-			  +"	,pickselect	"
 			  +"	,part		"
 			  +"	,approved ) " 
-			  +" values((select isnull(max(id),0)+1 from users) "
-			  +" , @user_id, @password, @user_nm, 'U',  @dept "
-			  +" , @uuid, getdate(), null, null, @part, 'N') "; 
+			  +" values( "
+			  +" @user_id, @password, @user_nm, 'U',  @dept "
+			  +" , getdate(),  @part, 'N') "; 
        
   try {
       const request = pool.request()
         .input('user_id', mssql.VarChar, user_id)
         .input('password', mssql.VarChar, password)
-		.input('user_nm', mssql.NVarChar, user_nm)
+		    .input('user_nm', mssql.NVarChar, user_nm)
         .input('uuid', mssql.VarChar, uuid) 
         .input('dept', mssql.VarChar, dept)
         .input('part', mssql.VarChar, part); 

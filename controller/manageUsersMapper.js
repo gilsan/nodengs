@@ -53,16 +53,20 @@ const insertHandler = async (req) => {
      const user_nm			= req.body.userNm;	
      const user_gb			= req.body.userGb;
      const dept				= req.body.dept;
-     const uuid				= req.body.uuid;
-     const pickselect		= req.body.pickselect;
      const part				= req.body.part; 
  
-     let sql = "insert into users " ;
-     sql = sql + " (id, user_id, password, user_nm, "
-     sql = sql + " user_gb,dept, uuid, pickselect, part)  "
-     sql = sql + " values( (select isnull(max(id),0)+1 from users), " 
-	 sql = sql + " @user_id, @password, @user_nm, "
-     sql = sql + " @user_gb, @dept, @uuid,@pickselect, @part )";
+     let sql = "insert into users ( "
+        +"	user_id		"
+        +"	,password	"
+        +"	,user_nm	"
+        +"	,user_gb	"
+        +"	,dept		"
+        +"	,reg_date	"
+        +"	,part		"
+        +"	,approved ) " 
+        +" values( "
+        +" @user_id, @password, @user_nm, 'U',  @dept "
+        +" , getdate(),  @part, 'N') "; 
      
     try {
         const request = pool.request()
@@ -71,8 +75,6 @@ const insertHandler = async (req) => {
           .input('user_nm', mssql.NVarChar, user_nm) 
           .input('user_gb', mssql.VarChar, user_gb) 
           .input('dept', mssql.VarChar, dept) 
-          .input('uuid', mssql.VarChar, uuid)
-		  .input('pickselect', mssql.VarChar, pickselect)
 		  .input('part', mssql.VarChar, part); 
 
         const result = await request.query(sql)
