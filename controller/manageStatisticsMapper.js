@@ -13,6 +13,7 @@ const listHandler = async (req) => {
 	const endDay			= req.body.endDay;
 	const dept			    = req.body.dept;
 	
+	console.log("endDay=", endDay);
   
 	let sql =" select a.seq, a.patientID, a.name, substring(a.accept_date,1,4) + '-' + " ;
 	sql = sql +" + substring(a.accept_date,5,2) +'-' + substring(a.accept_date,7,2)  accept_date , " ;
@@ -27,13 +28,13 @@ const listHandler = async (req) => {
 		sql = sql + " and a.name like '%"+userNm+"%'";
 
 	if(startDay != "") 
-		sql = sql + " and a.accept_date >= '"+startDay+"'";
+		sql = sql + " and a.send_time >= '"+startDay+"'";
 	if(endDay != "") 
-		sql = sql + " and a.accept_date <= '"+endDay+"'";
+		sql = sql + " and a.send_time <= DATEADD(d, 1, '"+endDay+ "')";
 
     sql = sql + " order by a.seq desc";
 
-	//console.log("sql", sql);
+	console.log("sql", sql);
    try {
        const request = pool.request()
          .input('userId', mssql.VarChar, userId)
