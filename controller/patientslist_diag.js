@@ -339,8 +339,7 @@ const resetscreenstatus = async (specimenNo, seq, userid) =>{
         const request = pool.request()
                  .input('seq', mssql.VarChar, seq)
                  .input('specimenNo', mssql.VarChar, specimenNo);
-        const result = await request.query(sql);       
-        return result;        
+        const result = await request.query(sql); 
       
     } catch(error) {
         logger.error('[304][patientinfo_diag resetScreen]err=' + error.message);
@@ -349,15 +348,8 @@ const resetscreenstatus = async (specimenNo, seq, userid) =>{
     const resultLog = messageHandlerStat_diag(specimenNo, userid);
     logger.info('[screenList][350][patientinfo_diag resetScreen]result=' + resultLog); 
         //  res.json({message: 'SUCCESS'});
-
-    const result = messageHandlerEMR(pathologyNum);
-    result.then(data => {
-        console.log('[screenList][355][patientinfo_diag resetScreen]',data); 
-    }) 
-    .catch( error  =>  {
-        logger.error('[358][patientinfo_diag resetScreen]err=' + error.message)
-        res.sendStatus(500)
-    });
+          
+    return resultLog;        
 }
 
 // screenstatus 변경
@@ -369,7 +361,7 @@ exports.resetScreenStatus = (req, res, next) => {
     let num        = req.body.num;
     let userid     = req.body.userid;
     logger.info('[372][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
-    logger.info('[73][patientinfo_diag resetScreen]num=' + num);
+    logger.info('[373][patientinfo_diag resetScreen]num=' + num);
     logger.info('[373][patientinfo_diag resetScreen]userid=' + userid);
 
     const result = resetscreenstatus(specimenNo, num, userid);
