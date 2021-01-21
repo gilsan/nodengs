@@ -289,8 +289,45 @@ exports.updateExaminer = (req, res, next) => {
     });
 }
 
+const messageHandlerStat_diag = async (specimenNo, userid ) => {
+	await poolConnect; // ensures that the pool has been created
+
+	logger.info("[295][patientinfo_diag stat_log] specimenNo=" + specimenNo);
+	logger.info("[295][patientinfo_diag stat_log] userid=" + userid);
+
+	//select Query 생성
+	let sql2 = "insert_stat_log_diag";
+
+	logger.info("[300][patientinfo_diag stat_log] sql=" + sql2);
+
+	try {
+		const request = pool.request()
+			.input('specimenNo', mssql.VarChar(300), specimenNo)
+			.input('userId', mssql.VarChar(30), userid)
+			.output('TOTALCNT', mssql.int, 0); 
+			
+		let resultSt;
+		await request.execute(sql2, (err, recordset, returnValue) => {
+			if (err)
+			{
+				logger.error("[313][patientinfo_diag  stat_log]err message=" + err.message);
+			}
+
+			logger.info("[313][patientinfo_diag  stat_log]recordset=" + recordset);
+			logger.info("[313][patientinfo_diag  stat_log]returnValue=" + returnValue);
+
+			resultSt = returnValue;
+			logger.info("[313][patientinfo_diag stat_log]resultSt=" + JSON.stringify(resultSt));
+		});
+		
+		return resultSt;
+	} catch (err) {
+		logger.error('[342][patientinfo_diag  stat_log]SQL error=' + JSON.stringify(err));
+	} // try end
+}
+
 // 진검 "수정" 버튼 누르면 screenstatus 상태를 변경
-const resetscreenstatus = async (specimenNo, seq) =>{
+const resetscreenstatus = async (specimenNo, seq, userid) =>{
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[291][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
@@ -306,23 +343,41 @@ const resetscreenstatus = async (specimenNo, seq) =>{
         return result;        
       
     } catch(error) {
-        logger.info('[304][patientinfo_diag resetScreen]err=' + specimenNo);
+        logger.error('[304][patientinfo_diag resetScreen]err=' + error.message);
     }
+
+    const resultLog = messageHandlerStat_diag(specimenNo, userid);
+    logger.info('[screenList][350][patientinfo_diag resetScreen]result=' + resultLog); 
+        //  res.json({message: 'SUCCESS'});
+
+    const result = messageHandlerEMR(pathologyNum);
+    result.then(data => {
+        console.log('[screenList][355][patientinfo_diag resetScreen]',data); 
+    }) 
+    .catch( error  =>  {
+        logger.error('[358][patientinfo_diag resetScreen]err=' + error.message)
+        res.sendStatus(500)
+    });
 }
 
 // screenstatus 변경
 exports.resetScreenStatus = (req, res, next) => {
+
+    logger.info('[366][patientinfo_diag resetScreen]data=' + JSON.stringify(req.body));
+    
     let specimenNo = req.body.specimenNo.trim();
     let num        = req.body.num;
-    logger.info('[312][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
-    logger.info('[313][patientinfo_diag resetScreen]num=' + num);
+    let userid     = req.body.userid;
+    logger.info('[372][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
+    logger.info('[73][patientinfo_diag resetScreen]num=' + num);
+    logger.info('[373][patientinfo_diag resetScreen]userid=' + userid);
 
-    const result = resetscreenstatus(specimenNo, num);
+    const result = resetscreenstatus(specimenNo, num, userid);
     result.then(data => {
          res.json({message: "SUCCESS"});
     })
     .catch( error => {
-        logger.info('[320][patientinfo_diag resetScreen]err=' + error.message);
+        logger.error('[380][patientinfo_diag resetScreen]err=' + error.message);
     })
 }
 
