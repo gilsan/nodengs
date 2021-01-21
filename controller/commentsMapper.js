@@ -34,11 +34,10 @@ const insertHandler = async (req) => {
 	 const variant_id        = req.body.variant_id;
      const comment           = req.body.comment;
      const reference         = req.body.reference; 
- 
 
      let sql = "insert into comments " ;
-     sql = sql + "  (id, type, gene, variant_id, comment, reference) " 
-	 sql = sql + " values( (select isnull(max(id),0)+1 from comments), "
+     sql = sql + "  (type, gene, variant_id, comment, reference) " 
+	 sql = sql + " values(  "
      sql = sql + " @type, @gene, @variant_id, @comment, @reference) "; 
      
     try {

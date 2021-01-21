@@ -36,9 +36,9 @@ const insertHandler = async (req) => {
      const aminoAcidChange   = req.body.aminoAcidChange;
  
      let sql = "insert into artifacts " ;
-     sql = sql + " (id, genes, location, exon, "
+     sql = sql + " (genes, location, exon, "
      sql = sql + " transcript,coding, amino_acid_change)  "
-     sql = sql + " values( (select isnull(max(id),0)+1 from artifacts), "
+     sql = sql + " values(  "
 	 sql = sql + " @genes, @locat, @exon, "
      sql = sql + " @transcript, @coding, @aminoAcidChange)";
      

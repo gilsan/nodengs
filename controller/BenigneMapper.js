@@ -1,4 +1,4 @@
-// Beign Á¤º¸·Î ÇÊ¿ä»çÇ× °¡Á®¿À±â 
+// Beign ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
@@ -37,9 +37,9 @@ const insertHandler = async (req) => {
      const aminoAcidChange   = req.body.aminoAcidChange;
  
      let sql = "insert into benign " ;
-     sql = sql + " (id, genes, location, exon, "
+     sql = sql + " (genes, location, exon, "
      sql = sql + " transcript,coding, amino_acid_change)  "
-     sql = sql + " values( (select isnull(max(id),0)+1 from benign), " 
+     sql = sql + " values(  " 
 	 sql = sql + " @genes, @locat, @exon, "
      sql = sql + " @transcript, @coding, @aminoAcidChange)";
      
