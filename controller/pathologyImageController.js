@@ -62,8 +62,34 @@ const  cntHandler_pathology_image = async (pathologynum) => {
           logger.error('[65][Pathology_image]sel err=' + error.message);
       }
   }
+
+  //병리 Pathology_image count 조회
+  exports.checkpathologyImage = (req,res, next) => {
   
-  //병리 Mutation c형 보고서 조회
+    logger.info('[109][search Pathology_image]data=' + JSON.stringify(req.body));
+  
+    let pathologynum = req.body.pathologynum;
+    
+    const resultC = cntHandler_pathology_image(pathologynum);
+    resultC.then(data => {
+  
+      console.log('[Pathology_image][109]', data);
+      if ( data.count > 0) {
+
+           res.json({count:data.count});
+      } else { 
+           //console.log(json.stringfy());
+           res.json({count:0});
+      }
+    })
+    .catch( error  =>{ 
+      logger.info('[130][search Pathology_image]err=' + error.message);
+      res.sendStatus(500);
+    });
+  
+  }
+  
+  //병리 Pathology_image 보고서 조회
   exports.searchpathologyImage = (req,res, next) => {
   
     logger.info('[109][search Pathology_image]data=' + JSON.stringify(req.body));

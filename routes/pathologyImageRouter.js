@@ -6,5 +6,6 @@ const pathologyImageController = require('../controller/pathologyImageController
 
 //pathologyImageController 소스내의 pathologyImageController() 함수 => pathology Image 조회
 router.post('/lists', pathologyImageController.searchpathologyImage);  
+router.post('/checks', pathologyImageController.checkpathologyImage);  
 
 module.exports = router;
