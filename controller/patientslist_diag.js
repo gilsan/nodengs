@@ -289,11 +289,12 @@ exports.updateExaminer = (req, res, next) => {
     });
 }
 
-const messageHandlerStat_diag = async (specimenNo, userid ) => {
+const messageHandlerStat_diag = async (specimenNo, userid, type ) => {
 	await poolConnect; // ensures that the pool has been created
 
 	logger.info("[295][patientinfo_diag stat_log] specimenNo=" + specimenNo);
 	logger.info("[295][patientinfo_diag stat_log] userid=" + userid);
+	logger.info("[295][patientinfo_diag stat_log] type=" + type);
 
 	//select Query 생성
 	let sql2 = "insert_stat_log_diag";
@@ -304,6 +305,7 @@ const messageHandlerStat_diag = async (specimenNo, userid ) => {
 		const request = pool.request()
 			.input('specimenNo', mssql.VarChar(300), specimenNo)
 			.input('userId', mssql.VarChar(30), userid)
+			.input('type', mssql.VarChar(100), type)
 			.output('TOTALCNT', mssql.int, 0); 
 			
 		let resultSt;
@@ -327,7 +329,7 @@ const messageHandlerStat_diag = async (specimenNo, userid ) => {
 }
 
 // 진검 "수정" 버튼 누르면 screenstatus 상태를 변경
-const resetscreenstatus = async (specimenNo, seq, userid) =>{
+const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[291][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
@@ -345,7 +347,7 @@ const resetscreenstatus = async (specimenNo, seq, userid) =>{
         logger.error('[304][patientinfo_diag resetScreen]err=' + error.message);
     }
 
-    const resultLog = messageHandlerStat_diag(specimenNo, userid);
+    const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
     logger.info('[screenList][350][patientinfo_diag resetScreen]result=' + resultLog); 
         //  res.json({message: 'SUCCESS'});
           
@@ -360,11 +362,13 @@ exports.resetScreenStatus = (req, res, next) => {
     let specimenNo = req.body.specimenNo.trim();
     let num        = req.body.num;
     let userid     = req.body.userid;
+    let type     = req.body.type;
     logger.info('[372][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
     logger.info('[373][patientinfo_diag resetScreen]num=' + num);
     logger.info('[373][patientinfo_diag resetScreen]userid=' + userid);
+    logger.info('[373][patientinfo_diag resetScreen]type=' + type);
 
-    const result = resetscreenstatus(specimenNo, num, userid);
+    const result = resetscreenstatus(specimenNo, num, userid, type);
     result.then(data => {
          res.json({message: "SUCCESS"});
     })
