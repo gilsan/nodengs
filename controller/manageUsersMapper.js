@@ -23,12 +23,12 @@ const listHandler = async (req) => {
 		sql = sql + " and user_id like '%"+userId+"%'";
 	if(userNm != "") 
 		sql = sql + " and user_nm like '%"+userNm+"%'";
-	/*
+	
 	if(startDay != "") 
-		sql = sql + " and reg_date >= '"+startDay+"'";
+		sql = sql + " and login_date >= '"+startDay+"'";
 	if(endDay != "") 
-		sql = sql + " and reg_date <= '"+endDay+"'";
-	*/
+		sql = sql + " and login_date <= DATEADD(d, 1, '"+endDay+ "')";
+	
 
     sql = sql + " order by id";
 
