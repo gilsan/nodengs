@@ -125,8 +125,8 @@ const  messageHandler2 = async (req) => {
     //  console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[129][mutation]err=' + error.message);
   }
 }
 
@@ -140,6 +140,9 @@ exports.deleteMutation = (req, res, next) => {
        //  console.log(json.stringfy());
          res.json(data);
      })
-     .catch( err  => res.sendStatus(500));
+     .catch( error  => {
+      logger.error('[144][mutation]err=' + error.message)
+      res.sendStatus(500);
+    });
 
 }

@@ -6,6 +6,7 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
 /*
 const config = {
@@ -35,19 +36,18 @@ const poolConnect = pool.connect();
 const  msiscoreMessageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   
-  console.log('======== [33][save][messageHandler]',req.body);
+  logger.info('[33][msiscore save][messageHandler]data=' + JSON.stringify( req.body));
     
   //입력 파라미터를 수신한다
-  
   const msiscore = req.body.msiscore;
   const pathologyNum  =  req.body.pathologyNum;
   
-  console.log("========= [40][msiscore]e8", pathologyNum, msiscore);
+  logger.info("[40][msiscore]pathologyNum" +  pathologyNum  + ",msiscore" +  msiscore);
  
   //insert Query 생성
   let sql2 = "delete from msiscore where  pathologyNum = @pathologyNum ";
 
-  console.log(sql2);
+  logger.info("[50][msiscore]del sql=" + sql2);
 	
   try {
 	const request = pool.request()
@@ -56,17 +56,14 @@ const  msiscoreMessageHandler = async (req) => {
 	const result = await request.query(sql2)
 	
 	//return result;
-  } catch (err) {
-	console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[60][msiscore]del err=' + error.message);
   }
-
-  console.log("e1", msiscore);
-  console.log("e8", pathologyNum);
 
   //insert Query 생성;
   const qry = "insert into msiscore (msiscore, pathologyNum)  values(@msiscore, @pathologyNum)";
 		   
-	console.log("=============== [65][msiscore]",qry);
+	logger.info("[65][msiscore]insert sql=" + qry);
     try {
         const request = pool.request()
         .input('msiscore', mssql.VarChar, msiscore)
@@ -76,15 +73,13 @@ const  msiscoreMessageHandler = async (req) => {
         
         return result;
 
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+      logger.error('[77][msiscore]err=' + error.message);
     }
     
-  
   //const uuid = uuidv4();
   //console.log('uuid:', uuid);
   //return result;
-  
 }
    
 //병리 msiscore 보고서 입력
@@ -94,16 +89,14 @@ console.log(req.body);
 
   const result = msiscoreMessageHandler(req);
 
-
   result.then(data => {
 
-     
      res.json({message: 'SUCCESS'});
   })
-  .catch( err  => {
-    console.log('[99][msiscore][]', err);
+  .catch( error  => {
+    console.log('[99][msiscore][message handler]err=' + error.message);
     res.sendStatus(500);
-  } ); 
+  }); 
 
 }
 

@@ -2,8 +2,11 @@ const app = require('express');
 const querystring = require('querystring');
 const router = app.Router();
 const axios = require('axios');
- 
+
+// 교육
 let url = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
+// 운영 
+//let url = 'http://emr012.cmcnu.or.kr/cmcnu/.live';
  
 router.post('/redirectEMR', (req, res, next) => {  
    console.log('[웹에서 받은 데이타]', req.body);
