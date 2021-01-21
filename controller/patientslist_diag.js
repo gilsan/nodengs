@@ -486,7 +486,26 @@ exports.getEMRSendCount = (req, res, next) => {
 const getpatientinfo = async (specimenNo) => {
     await poolConnect;
     
-    const sql =`select * from patientInfo_diag  where specimenNo=@specimenNo`;
+    const sql =`select isnull(name, '') name  ,isnull(patientID, '') patientID \
+        ,isnull(age,  '') age ,isnull(gender, '') gender \
+        ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
+        ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease \
+        ,isnull(method, '') method ,isnull(specimen, '') specimen \
+        ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
+        ,isnull(worker, '') worker \
+        ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
+        ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
+        ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
+        ,isnull(tsvFilteredFilename, '') tsvFilteredFilename ,isnull(createDate, '') createDate \
+        ,isnull(tsvFilteredStatus, '') tsvFilteredStatus ,isnull(tsvFilteredDate, '') tsvFilteredDate \
+        ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
+        ,isnull(sendEMRDate, '') sendEMRDate \
+        ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
+        ,isnull(test_code, '') test_code  \
+        ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
+        ,isnull(report_date, '') report_date \
+        ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+      from patientInfo_diag  where specimenNo=@specimenNo`;
 
     try {
         const request = pool.request()
