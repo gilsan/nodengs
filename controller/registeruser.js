@@ -58,7 +58,6 @@ console.log(req.body);
         .input('user_id', mssql.VarChar, user_id)
         .input('password', mssql.VarChar, password)
 		    .input('user_nm', mssql.NVarChar, user_nm)
-        .input('uuid', mssql.VarChar, uuid) 
         .input('dept', mssql.VarChar, dept)
         .input('part', mssql.VarChar, part); 
       const result = await request.query(sql)

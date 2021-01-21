@@ -92,13 +92,12 @@ const updateHandler = async (req) => {
      const user_nm			= req.body.userNm;	
      const user_gb			= req.body.userGb;
      const dept				= req.body.dept;
-     const uuid				= req.body.uuid;
      const pickselect		= req.body.pickselect;
      const part				= req.body.part; 
  
      let sql = "update users set " ;
      sql = sql + " password = @password, user_nm= @user_nm, "
-     sql = sql + " user_gb= @user_gb, dept= @dept, uuid= @uuid, pickselect= @pickselect, part= @part )";
+     sql = sql + " user_gb= @user_gb, dept= @dept, pickselect= @pickselect, part= @part )";
      sql = sql + "where id = @id"
      
      try {
@@ -108,7 +107,6 @@ const updateHandler = async (req) => {
           .input('user_nm', mssql.NVarChar, user_nm) 
           .input('user_gb', mssql.VarChar, user_gb) 
           .input('dept', mssql.VarChar, dept) 
-          .input('uuid', mssql.VarChar, uuid)
 		  .input('pickselect', mssql.VarChar, pickselect)
 		  .input('part', mssql.VarChar, part); 
 
