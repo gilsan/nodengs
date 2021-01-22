@@ -21,8 +21,8 @@ const  messageHandler = async (req) => {
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
   const zygosity          = req.body.zygosity;
-  const vaf               = req.body.vafPercent;
-  const reference         = req.body.references;
+  const vaf               = req.body.vaf;
+  const reference         = req.body.reference;
   const cosmic_id         = req.body.cosmicID;
   const buccal            = req.body.buccal;
   const buccal2           = req.body.buccal2;

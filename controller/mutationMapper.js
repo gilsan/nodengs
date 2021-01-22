@@ -26,7 +26,9 @@ const listHandler = async (req) => {
 				+"	,reference "
 				+"	,cosmic_id "
 				+"	,sift_polyphen_mutation_taster "
-				+"	,buccal2 ";
+				+"	,buccal2 "
+				+"	,igv "
+				+"	,sanger ";
     sql = sql + " from mutation ";
 	if(genes != "") 
 		sql = sql + " where gene like '%"+genes+"%'";
@@ -56,8 +58,8 @@ const  insertHandler = async (req) => {
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
   const zygosity          = req.body.zygosity;
-  const vaf               = req.body.vafPercent;
-  const reference         = req.body.references;
+  const vaf               = req.body.vaf;
+  const reference         = req.body.reference;
   const cosmic_id         = req.body.cosmicId;
   const	sift_polyphen_mutation_taster  = req.body.siftPolyphenMutationTaster;
   const buccal2			  = req.body.buccal2;
@@ -112,6 +114,9 @@ const  insertHandler = async (req) => {
 // update 
 const  updateHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
+
+  console.log("data", JSON.stringify( req.body));
+
   const id				  = req.body.id;
   const buccal			  = req.body.buccal;
   const patient_name      = req.body.name;
@@ -124,8 +129,8 @@ const  updateHandler = async (req) => {
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
   const zygosity          = req.body.zygosity;
-  const vaf               = req.body.vafPercent;
-  const reference         = req.body.references;
+  const vaf               = req.body.vaf;
+  const reference         = req.body.reference;
   const cosmic_id         = req.body.cosmicId;
   const	sift_polyphen_mutation_taster  = req.body.siftPolyphenMutationTaster;
   const buccal2			  = req.body.buccal2;
@@ -169,8 +174,8 @@ const  updateHandler = async (req) => {
      // console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+      console.error('SQL error', error.message);
   }
 }
 
