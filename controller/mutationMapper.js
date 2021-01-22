@@ -46,7 +46,7 @@ const listHandler = async (req) => {
 const  insertHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   const buccal			  = req.body.buccal;
-  const patient_name      = req.body.patientName;
+  const patient_name      = req.body.name;
   const register_number   = req.body.registerNumber;
   const fusion			  = req.body.fusion;
   const gene              = req.body.gene;
@@ -114,7 +114,7 @@ const  updateHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   const id				  = req.body.id;
   const buccal			  = req.body.buccal;
-  const patient_name      = req.body.patientName;
+  const patient_name      = req.body.name;
   const register_number   = req.body.registerNumber;
   const fusion			  = req.body.fusion;
   const gene              = req.body.gene;
