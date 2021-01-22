@@ -152,9 +152,9 @@ const functionHandler = async (req) => {
 	const functionId		= req.body.functionId;  
 	const seq				= req.body.seq;   
 
-	let	  sql =" delete  from diag_function	a			";
-	sql = sql 	+" where a.function_id = @functionId	";
-	sql = sql 	+" and	seq			   = @seq			"; 
+	let	  sql =" delete  from diag_function			";
+	sql = sql 	+" where function_id = @functionId	";
+	sql = sql 	+" and	seq			   = @seq		"; 
 	
   // console.log("sql", sql);
    try {

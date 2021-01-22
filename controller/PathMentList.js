@@ -126,7 +126,7 @@ const  cntHandler_path_ment = async (pathologyNum) => {
       }
   })
   .catch( error => {
-    logger.error('[129][cnt_path_ment]err=' + Error.message);
+    logger.error('[129][cnt_path_ment]err=' + error.message);
     res.sendStatus(500);
   }); 
   

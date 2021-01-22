@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
-const dbConfigMssql = require('./dbconfig-mssql.js');
+const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect(); 
 
@@ -13,7 +14,7 @@ const listHandler = async (req) => {
 	const endDay			= req.body.endDay;
 	const dept			    = req.body.dept;
 	
-	console.log("endDay=", endDay);
+	logger.info('[17][manageStatistics list]data=' + userId + ", " + userNm + ", "  + startDay + ", "  + endDay + ", " +  dept);
   
 	let sql =" select a.seq, a.patientID, a.name, substring(a.accept_date,1,4) + '-' + " ;
 	sql = sql +" + substring(a.accept_date,5,2) +'-' + substring(a.accept_date,7,2)  accept_date , " ;
@@ -34,8 +35,8 @@ const listHandler = async (req) => {
 
     sql = sql + " order by a.seq desc";
 
-	console.log("sql", sql);
-   try {
+	logger.info('[17][manageStatistics sql' + sql);
+    try {
        const request = pool.request()
          .input('userId', mssql.VarChar, userId)
 		 .input('userNm', mssql.VarChar, userNm) 
@@ -44,17 +45,23 @@ const listHandler = async (req) => {
 		 .input('dept', mssql.VarChar, dept)   ; 
        const result = await request.query(sql) 
        return result.recordset;
-   } catch (err) {
-       console.error('SQL error', err);
-   }
- }
+    } catch (error) {
+		logger.error('[49][manageStatistics list]err=' + error.message);
+    }
+}
 
 
 // List statistics
  exports.listStatistics = (req, res, next) => {  
+
+	logger.info('[57][manageStatistics list]data=' + JSON.stringify(req.body));
+
     const result = listHandler(req);
     result.then(data => { 
-          res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
- };
+        res.json(data);
+    })
+    .catch( error => {
+		logger.error('[64][manageStatistics list]err=' + error.message);
+		res.sendStatus(500)
+	});
+};
