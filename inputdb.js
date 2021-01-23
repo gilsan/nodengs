@@ -1,28 +1,5 @@
 const express = require('express');
-
 const router = express.Router();
-
-/*
-const sql = require('mssql');
-const config = {
-    user: 'saint',
-    password: 'saint13%&',
-    server: 'localhost',
-    database: 'sainthospital',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-
-const pool = new sql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('./common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -40,8 +17,6 @@ const  messageHandler = async () => {
       console.error('SQL error', err);
   }
 }
-
-
 
 exports.lists = (req, res, next) => {
     const result = messageHandler();

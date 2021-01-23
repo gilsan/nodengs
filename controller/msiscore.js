@@ -65,7 +65,7 @@ const  msiscoreMessageHandler = async (req) => {
 //병리 msiscore 보고서 입력
 exports.msiscoreData = (req,res, next) => {
 
-console.log(req.body);
+  logger.info('[33][msiscore save]req=' + req.body);
 
   const result = msiscoreMessageHandler(req);
 
@@ -74,7 +74,7 @@ console.log(req.body);
      res.json({message: 'SUCCESS'});
   })
   .catch( error  => {
-    console.log('[99][msiscore][message handler]err=' + error.message);
+    logger.info('[77][msiscore][message handler]err=' + error.message);
     res.sendStatus(500);
   }); 
 
@@ -84,17 +84,16 @@ const  msiscoreMessageHandler2 = async (req) => {
 	await poolConnect; // ensures that the pool has been created
 	  
 	//입력 파라미터를 수신한다
-	//1. Detected Variants
 	
 	const pathologyNum = req.body.pathologyNum;
 
-	console.log('[150][select]pathologyNum',pathologyNum);
+	logger.info('[91][msiscore[select]pathologyNum=' + pathologyNum);
 
 	//insert Query 생성
 	const qry = "select msiscore  from msiscore\
 				where pathologyNum = @pathologyNum ";
 
-	console.log("sql",qry);
+  logger.info('[97][msiscore select]sql=' + qry);
 		   
 	try {
 		  const request = pool.request()
@@ -103,24 +102,26 @@ const  msiscoreMessageHandler2 = async (req) => {
 		  const result = await request.query(qry);
 		  
 		 return result.recordset;
-	} catch (err) {
-		  console.error('SQL error', err);
+	} catch (error) {
+		logger.error('[107][msiscore select]err=' + error.message);
 	}
 }
    
 //병리 msiscore 보고서 조회
 exports.msiscoreList = (req,res, next) => {
 
-console.log(req.body);
+  logger.info('[114][msiscore list req=' + JSON.stringify( req.body));
 
   const result = msiscoreMessageHandler2(req);
-
 
   result.then(data => {
      console.log('[142][msiscoreValue][]', data);
      //console.log(json.stringfy());
      res.json(data);
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error => {
+    logger.info('[33][msiscore select  err=' + error.message);
+    res.sendStatus(500);
+  }); 
 
 }

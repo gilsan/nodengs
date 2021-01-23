@@ -10,25 +10,6 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const logger = require('../common/winston');
 const mssql = require('mssql');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);

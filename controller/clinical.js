@@ -3,27 +3,9 @@ const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('../common/dbconfig.js');
+const { clinicallyList } = require('./clinically');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -31,9 +13,9 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
     await poolConnect; // ensures that the pool has been created
     let result;
    
-    logger.info('[28][clinicaldata] pathologyNum=' +  pathologyNum);
+    logger.info('[15][clinicaldata] pathologyNum=' +  pathologyNum);
     let sql = "delete from clinical where  pathologyNum = @pathologyNum ";
-    logger.info('[30][clinicaldata] sql='+ sql);
+    logger.info('[15][clinicaldata] sql='+ sql);
 
     try {
         const request = pool.request()
@@ -41,13 +23,13 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
             
         const result = await request.query(sql)       
         //return result;
-      } catch (err) {
-        logger.error('[clinical]SQL error =' + err);
+      } catch (error) {
+        logger.error('[26][clinical]SQL error =' + error.message);
     } 
     
     const len = clinical.length;
 
-    logger.info("[clinical][42]len=" + len);
+    logger.info("[clinical][32]len=" + len);
      
     if (len > 0) {
         for (let i =0; i < len; i++) {
@@ -55,9 +37,9 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
             const frequency = clinical[i].frequency;
             const gene      = clinical[i].gene;
             const tier      = clinical[i].tier;
-            logger.info( '[49][clinicaldata]' + pathologyNum  + " " + frequency + " " + gene + " " + tier);
+            logger.info( '[39][clinicaldata]' + pathologyNum  + " " + frequency + " " + gene + " " + tier);
             const qry = "insert into clinical (pathologyNum, frequency, gene, tier) values(@pathologyNum,  @frequency, @gene, @tier)"; 
-            logger.info('[30][clinicaldata] sql='+ qry);
+            logger.info('[40][clinicaldata] sql='+ qry);
             try {
                 const request = pool.request()
                 .input('pathologyNum', mssql.VarChar, pathologyNum)
@@ -67,32 +49,11 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
     
                 result = await request.query(qry);
     
-            } catch (err) {
-                logger.error('SQL error='+ err);
+            } catch (error) {
+                logger.error('SQL error='+ error.message);
             }
-             
         }
 
-        // clinical.forEaach( async(item) => {
-        //     const frequency = item.frequency.slice(0, -1);
-        //     const gene      = item.gene;
-        //     const tier      = item.tier;
-        //     console.log('[47][clinicaldata]', pfrequency,gene, tier);
-        //     const qry = "insert into clinical (pathologyNum, frequency, gene, tier) values(@pathologyNum,  @frequency, @gene, @tier)"; 
-        //     console.log('[49][clinicaldata]', qry);
-        //     try {
-        //         const request = pool.request()
-        //         .input('pathologyNum', mssql.VarChar, pathologyNum)
-        //         .input('frequency', mssql.VarChar, frequency)
-        //         .input('gene', mssql.Variant, gene)
-        //         .input('tier', mssql.Variant, tier);
-    
-        //         result = await request.query(qry);
-    
-        //     } catch (err) {
-        //         console.error('SQL error', err);
-        //     }
-        // })
         return result;
     }
 
@@ -101,6 +62,8 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
 
 exports.clinicaldata = (req, res, next) => {
      
+    logger.info('[64][clinicaldata]req=' + JSON.stringify(req.body));
+
     const pathologyNum = req.body.pathologyNum;
     const clinical = req.body.clinical;
      
@@ -110,17 +73,17 @@ exports.clinicaldata = (req, res, next) => {
           res.json({message: 'SUCCESS'});
      })
      .catch( err  => {
-         logger.error('[105][clinical]err= ' + err);
+        logger.error('[75][clinical]err= ' + err);
         res.sendStatus(500);
      });
 
- };
+};
 
-
- const  clinicalSelectHandler = async (pathologyNum) => {
+const  clinicalSelectHandler = async (pathologyNum) => {
     await poolConnect; // ensures that the pool has been created
 
-    	//insert Query 생성
+    logger.info('[84]clinicalSelect data=' + pathologyNum);
+    //insert Query 생성
     const qry = "select frequency, gene, tier  from clinical   where pathologyNum = @pathologyNum ";
     
     try {
@@ -130,18 +93,23 @@ exports.clinicaldata = (req, res, next) => {
 
         const result = await request.query(qry);
         return result.recordset; 
-    }catch (err) {
-            console.error('SQL error', err);
-        }
-  }
+    }catch (error) {
+        logger.error('[97]clinicalSelectHandler err=' + error.message);
+    }
+}
 
-  exports.clinicalList = (req, res, next) => {
+// get clinically List
+exports.clinicalList = (req, res, next) => {
+    logger.info('[103]clinicalList req=' + JSON.stringify(req.body));
+
     const pathologyNum = req.body.pathologyNum;
     const result = clinicalSelectHandler(pathologyNum);
     result.then(data => {  
         //  console.log('[437][benignInfoCount]', data);
           res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));; 
-
+    })
+    .catch( error => {
+        logger.error('[112]clinicalList err=' + error.message);
+        res.sendStatus(500)
+    }); 
  };

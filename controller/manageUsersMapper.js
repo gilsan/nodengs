@@ -235,7 +235,7 @@ exports.listUsers = (req, res, next) => {
         res.json(data);
     })
     .catch( error  => {
-        logger.info('[17][manageUser del]err=' + error.message);
+        logger.error('[17][manageUser del]err=' + error.message);
         res.sendStatus(500);
     });
 	
@@ -251,7 +251,7 @@ exports.listUsers = (req, res, next) => {
         res.json(data);
     })
     .catch( error  => {
-        logger.info('[17][manageUser approved]err=' + error.message);
+        logger.error('[17][manageUser approved]err=' + error.message);
         res.sendStatus(500);
     });
 	

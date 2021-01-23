@@ -127,7 +127,7 @@ exports.listFunctions = (req, res, next) => {
         res.json(data);
      })
      .catch( error  => {
-        logger.info('[130][manageFunction list]err=' + error.message);
+        logger.error('[130][manageFunction list]err=' + error.message);
         res.sendStatus(500)
     });
 };
@@ -141,7 +141,7 @@ exports.updateFunctions = (req, res, next) => {
           res.json(data);
     })
     .catch( error  => {
-        logger.info('[144][manageFunction update]err=' + error.message);
+        logger.error('[144][manageFunction update]err=' + error.message);
         res.sendStatus(500)
     });
 };
@@ -154,7 +154,7 @@ exports.insertFunctions = (req, res, next) => {
         res.json(data);
     })
     .catch( error  => {
-        logger.info('[156][manageFunction insert]err=' + error.message); 
+        logger.error('[156][manageFunction insert]err=' + error.message); 
         res.sendStatus(500)
     });
 };
@@ -168,7 +168,7 @@ exports.deleteFunctions = (req, res, next) => {
         res.json(data);
     })
     .catch( error  => {
-        logger.info('[171][manageFunction del]err=' + error.message); 
+        logger.error('[171][manageFunction del]err=' + error.message); 
         res.sendStatus(500)}
     );
 };

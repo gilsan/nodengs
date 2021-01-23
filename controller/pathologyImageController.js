@@ -83,7 +83,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
       }
     })
     .catch( error  =>{ 
-      logger.info('[130][search Pathology_image]err=' + error.message);
+      logger.error('[130][search Pathology_image]err=' + error.message);
       res.sendStatus(500);
     });
   
@@ -114,7 +114,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
       }
     })
     .catch( error  =>{ 
-      logger.info('[130][search Pathology_image]err=' + error.message);
+      logger.error('[130][search Pathology_image]err=' + error.message);
       res.sendStatus(500);
     });
   

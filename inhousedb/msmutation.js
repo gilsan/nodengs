@@ -4,24 +4,6 @@ const Excel = require('exceljs');
 const workbook = new Excel.Workbook();  
 const fs = require('fs');
 
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-*/
-
 // 특수문자찿기 변경하기
 function findChar(findChar) {
     const check = findChar.toString().indexOf(',');

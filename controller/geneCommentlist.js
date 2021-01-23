@@ -2,27 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const mssql = require('mssql');
 const logger = require('../common/winston');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
-*/
+const mssql = require('mssql');
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -31,12 +12,12 @@ const poolConnect = pool.connect();
 const  commentMessageHandler = async (gene, type) => {
   await poolConnect; // ensures that the pool has been created
 
-  logger.info("[30][getCommentLists]gene=" + gene );
-  logger.info("[30][getCommentLists]type=" + type );
+  logger.info("[15][getCommentLists]gene=" + gene );
+  logger.info("[15][getCommentLists]type=" + type );
   
   const sql ="select * from comments where gene = '" + gene + "' and type = '" + type + "'";
 
-  logger.info("[30][getCommentLists]sql=" + sql );
+  logger.info("[20][getCommentLists]sql=" + sql );
 
   try {
       const request = pool.request(); // or: new sql.Request(pool1)
@@ -49,10 +30,9 @@ const  commentMessageHandler = async (gene, type) => {
   }
 }
 
- exports.getCommentLists = (req,res, next) => {
+exports.getCommentLists = (req,res, next) => {
 
     const gene =  req.body.gene;
-	const type =  req.body.type;
 	 
     const result = commentMessageHandler(gene);
     result.then(data => {
@@ -60,5 +40,8 @@ const  commentMessageHandler = async (gene, type) => {
      //  console.log(json.stringfy());
        res.json(data);
   })
-  .catch( err  => res.sendStatus(500));
- }
+  .catch( error => {
+    logger.error('[45][getCommentLists]err=' + error.message);
+      res.sendStatus(500)
+  });
+}

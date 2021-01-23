@@ -5,25 +5,6 @@
 
 const fs = require('fs');
 const mssql = require('mssql');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -458,10 +439,10 @@ const  messageHandler = async (locus, genotype, filter ,ref, observed_allele, ty
 	} catch (err) {
 		console.error('SQL error', err);
 	}
-  }
+}
 
 
-  const  messageHandler_del = async (testedID) => {
+const  messageHandler_del = async (testedID) => {
 
   await poolConnect; // ensures that the pool has been created
 
@@ -601,6 +582,7 @@ const  messageHandler2 = async (
       console.error('SQL error', err);
   }
 } 
+
 ////////////////////////////////////////////////////////////////////////////
 exports.registerDB = async (path) => {
 
@@ -638,7 +620,7 @@ for (let i=0; i < data.length ; i++ ) {
 	   const sift              = field[21];
 	   const grantham          = field[22];
 	   const polyphen          = field[23];
-       const fathmm            = field[24];
+     const fathmm            = field[24];
 	   const pfam              = field[25];
 	   const dbsnp             = field[26];
 	   const dgv               = field[27];
@@ -690,7 +672,7 @@ for (let i=0; i < data.length ; i++ ) {
 		 // console.log(json.stringfy());
 		  res.json(data);
 	 })
-	 .catch( err  => res.sendStatus(500));
+	 .catch( error  => res.sendStatus(500));
 		 
 	 /////////////////////////////////////////////////////////////////////
        // Varian effect: Synonymous 제거 존재하면:false, 존재하지않으면: true

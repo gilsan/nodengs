@@ -8,25 +8,6 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -128,7 +109,7 @@ exports.searchReportMutationC = (req,res, next) => {
 	}
   })
   .catch( error  =>{ 
-	logger.info('[130][search Mutation C]err=' + error.message);
+	logger.error('[130][search Mutation C]err=' + error.message);
 	res.sendStatus(500);
   });
 
@@ -316,7 +297,7 @@ exports.searchReportFusionC = (req,res, next) => {
 	}
   })
   .catch( error  =>{
-	logger.info('[319][cnt_fusion_c]err=' + error.message);
+	logger.error('[319][cnt_fusion_c]err=' + error.message);
 	res.sendStatus(500);
   }); 
 
@@ -348,7 +329,7 @@ const  cntHandler_mutation_p = async (pathologyNum) => {
 		  return data;      
 		  
 	} catch (error) {
-		logger.info('[351][cnt_mutation_p]err=' + error.message);
+		logger.error('[351][cnt_mutation_p]err=' + error.message);
 	}
 }
 

@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
-const dbConfigMssql = require('./dbconfig-mssql.js');
+const dbConfigMssql = require('../common/dbconfig.js');
+const { listBenign } = require('./BenigneMapper');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect(); 
 
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
+    logger.info('[12]artifcats listHandler genes=' + genes);
 	
 	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change ";
     sql = sql + " from artifacts ";
@@ -15,16 +18,16 @@ const listHandler = async (req) => {
 		sql = sql + " where genes like '%"+genes+"%'";
     sql = sql + " order by id ";
 
-	//console.log("sql", sql);
-   try {
+	logger.info('[12]artifcats listHandler sql' + sql);
+    try {
        const request = pool.request()
          .input('genes', mssql.VarChar, genes); 
        const result = await request.query(sql) 
        return result.recordset;
-   } catch (err) {
-       console.error('SQL error', err);
-   }
- }
+    } catch (error) {
+        logger.error('[27]artifcats listHandler err=' + error.message);
+    }
+}
 
 // insert
 const insertHandler = async (req) => { 
@@ -34,6 +37,9 @@ const insertHandler = async (req) => {
      const transcript        = req.body.transcript;
      const coding            = req.body.coding;
      const aminoAcidChange   = req.body.aminoAcidChange;
+     logger.info('[39]artifcats insertHandler genes=' + genes + ', locat=' + locat + ", exon" + exon
+                                    + ", transcript" + transcript + ', coding=' + coding
+                                    + ', aminoAcidChange=' + aminoAcidChange);   
  
      let sql = "insert into artifacts " ;
      sql = sql + " (genes, location, exon, "
@@ -42,7 +48,7 @@ const insertHandler = async (req) => {
 	 sql = sql + " @genes, @locat, @exon, "
      sql = sql + " @transcript, @coding, @aminoAcidChange)";
      
-	 console.log("sql", sql);
+    logger.info('[50]artifcats insertHandler sql=' + sql);
 
     try {
         const request = pool.request()
@@ -55,10 +61,10 @@ const insertHandler = async (req) => {
         const result = await request.query(sql)
       //  console.dir( result); 
         return result;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error('[64]artifcats insertHandler err=' + error.message);
     }
- }
+}
 
 // update
 const updateHandler = async (req) => { 
@@ -69,12 +75,18 @@ const updateHandler = async (req) => {
      const transcript        = req.body.transcript;
      const coding            = req.body.coding;
      const aminoAcidChange   = req.body.aminoAcidChange;
- 
+
+    logger.info('[78]artifcats updateHandler id=' + id + ', genes=' + genes
+                   + ', locat=' + locat + ", exon" + exon
+     + ", transcript" + transcript + ', coding=' + coding
+     + ', aminoAcidChange=' + aminoAcidChange);   
+
      let sql = "update artifacts set " ;
      sql = sql + "  genes = @genes, location = @locat, exon =  @exon "
      sql = sql + "  ,transcript = @transcript ,coding = @coding  "
      sql = sql + "  ,amino_acid_change =  @aminoAcidChange "
      sql = sql + "where id = @id";
+     logger.info('[88]artifcats updateHandler sql=' + sql);
      
      try {
         const request = pool.request()
@@ -88,17 +100,19 @@ const updateHandler = async (req) => {
         const result = await request.query(sql)
         console.dir( result); 
         return result;
-     } catch (err) {
-        console.error('SQL error', err);
-     }
+    } catch (error) {
+        logger.error('[103]artifcats updateHandler err=' + error.message);
+    }
  }
 
 // Delete
 const deleteHandler = async (req) => { 
 	const id        = req.body.id; 
  
-    let sql = "delete artifacts  " ; 
-    sql = sql + "where id = @id"; 
+    let sql = "delete artifacts " ; 
+    sql = sql + "where id = @id";
+    
+    logger.info('[114]artifcats deleteHandler id=' + id); 
 
     try {
         const request = pool.request()
@@ -106,51 +120,64 @@ const deleteHandler = async (req) => {
         const result = await request.query(sql)
         console.dir( result); 
         return result;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+        logger.error('[123]artifcats deleteHandler err=' + error.message);
     }
- }
-
+}
 
 // List artifacts
- exports.listArtifacts = (req, res, next) => { 
-  //  console.log('[200][listBenign]');
+exports.listArtifacts = (req, res, next) => { 
+    logger.info('[130]artifcats listBenign]req=' + JSON.stringify(req.body));
     const result = listHandler(req);
     result.then(data => { 
-          res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[136]artifcats listBenign err=' + error.message);
+        res.sendStatus(500);
+    });
  };
 
 // artifacts Insert
  exports.insertArtifacts = (req,res,next) => {
+    logger.info('[143]artifcats insertHandler req=' + JSON.stringify(req.body));
+
     const result = insertHandler(req);
     result.then(data => { 
           res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+    })
+    .catch( error => {
+        logger.error('[150]artifcats insertArtifacts err=' + error.body);
+        res.sendStatus(500);
+    });
  };
 
 // artifacts Update
  exports.updateArtifacts = (req,res,next) => {
-  //  console.log('[200][updateBenign]');
+    logger.info('[157]artifcats updateArtifacts req=' + JSON.stringify(req.body));
 
 	const result = updateHandler(req);
     result.then(data => {
-          res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[164]artifcats updateArtifacts err=' + error.message);
+        res.sendStatus(500);
+    });
 	
  };
 
 // artifacts Delete
  exports.deleteArtifacts = (req,res,next) => {
-   // console.log('[200][deleteBenign]');
+    logger.info('[172]artifcats deleteArtifacts req=' + JSON.stringify(req.body));
 
 	const result = deleteHandler(req);
     result.then(data => { 
-          res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[179]artifcats delete err=' + error.message);  
+        res.sendStatus(500)
+    });
 	
  };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
-const dbConfigMssql = require('./dbconfig-mssql.js');
+const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect(); 
 

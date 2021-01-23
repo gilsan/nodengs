@@ -112,7 +112,7 @@ const  messageHandler = async (today) => {
         
         return result.recordset;
     } catch (error) {
-        logger.info('[110][patientinfo_diag list]err=' + error.message);
+        logger.error('[110][patientinfo_diag list]err=' + error.message);
     }
   }
 
@@ -128,7 +128,7 @@ const  messageHandler = async (today) => {
         res.json(data);
      })
      .catch( error  => {
-        logger.info('[126][patientinfo_diag list]err=' + error.message);
+        logger.error('[126][patientinfo_diag list]err=' + error.message);
         res.sendStatus(500)
     }); 
 }
@@ -272,7 +272,7 @@ const changeExaminer = async (specimenNo, part, name) => {
         const result = await request.query(sql);       
         return result;
     } catch (error) {
-        logger.info('[270][patientinfo_diag updateExaminer]err=' + error.message);
+        logger.error('[270][patientinfo_diag updateExaminer]err=' + error.message);
     }    
 }
 
@@ -285,7 +285,7 @@ exports.updateExaminer = (req, res, next) => {
          res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.info('[283][patientinfo_diag updateExaminer]err=' + error.message);
+        logger.error('[283][patientinfo_diag updateExaminer]err=' + error.message);
     });
 }
 
@@ -402,7 +402,7 @@ exports.getScreenStatus = (req, res, next) => {
          res.json(data);
     })
     .catch( error => {
-        logger.info('[349][patientinfo_diag getScreen]err=' + error.message);
+        logger.error('[349][patientinfo_diag getScreen]err=' + error.message);
     });
 }
 
@@ -430,7 +430,7 @@ const setEMRcount = async (specimenNo, sendEMR) => {
         return result;
 
     } catch(error) {
-        logger.info('[377][patientinfo_diag sendEMRcount]err=' + error.message);
+        logger.error('[377][patientinfo_diag sendEMRcount]err=' + error.message);
     }
 }
 
@@ -447,7 +447,7 @@ exports.setEMRSendCount = (req, res, next) => {
            res.json({message: 'SUCCESS', count: sendEMR});
     })
     .catch( error => {
-        logger.info('[394][patientinfo_diag sendEMRcount]err=' + error.message);
+        logger.error('[394][patientinfo_diag sendEMRcount]err=' + error.message);
     });
 }
 
@@ -465,7 +465,7 @@ const getEMRcount = async (specimenNo) => {
         return result.recordset[0];
 
     } catch(error) {
-        logger.info('[412][patientinfo_diag getEMRcount]err=' + error.message);
+        logger.error('[412][patientinfo_diag getEMRcount]err=' + error.message);
     }
 
 }
@@ -478,7 +478,7 @@ exports.getEMRSendCount = (req, res, next) => {
         res.json({count: data});
  })
  .catch( error => {
-     logger.info('[425][patientinfo_diag getEMRcount]err=' + error.message);
+     logger.error('[425][patientinfo_diag getEMRcount]err=' + error.message);
  });
 }
 
@@ -515,7 +515,7 @@ const getpatientinfo = async (specimenNo) => {
         return result.recordset[0];
 
     } catch(error) {
-        logger.info('[443][patientinfo_diag getpatientinfo]err=' + error.message);
+        logger.error('[443][patientinfo_diag getpatientinfo]err=' + error.message);
     }
 
 }
@@ -528,7 +528,7 @@ exports.getPatientinfo  = (req, res, next) => {
         res.json(data);
  })
  .catch( error => {
-     logger.info('[455][patientinfo_diag getPatientinfo]err=' + error.message);
+     logger.error('[455][patientinfo_diag getPatientinfo]err=' + error.message);
  });
 }
 

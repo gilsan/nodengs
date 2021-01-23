@@ -55,7 +55,7 @@ exports.select = (req, res, next) => {
           res.json(data);
      })
      .catch( error  => {
-        logger.info('[53][polymorphism select]err=' + error.message);
+        logger.error('[53][polymorphism select]err=' + error.message);
           res.sendStatus(500)
      });    
 

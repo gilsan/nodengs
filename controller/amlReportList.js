@@ -6,27 +6,8 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
+const logger = require('../common/winston');
 const mssql = require('mssql');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-//
-const pool = new mssql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -38,14 +19,11 @@ const  messageHandler = async (req) => {
   //입력 파라미터를 수신한다
   //1. Detected Variants
   
-  	console.log(req.body);
-
 	const pathology_num = req.body.pathology_num;
 	const report_date = req.body.report_date;
 	const report_gb  = 'C'
 
-	console.log(pathology_num);
-	console.log(report_date);
+	logger.info('[25][amlReport messageHandler]pathology_num=' +pathology_num + ", report_date=" + report_date);
 
 	//insert Query 생성;
 	const qry = "select gene, \
@@ -56,7 +34,7 @@ const  messageHandler = async (req) => {
 			 and convert(varchar, report_date, 112) = @report_date \
 			 and report_gb = @report_gb";
 		   
-	console.log("sql",qry);
+	logger.info('[37][amlReport messageHandler sql=' + qry);
 
 	try {
 		  const request = pool.request()
@@ -68,24 +46,26 @@ const  messageHandler = async (req) => {
 		  
 		  return result.recordset;
 	
-	} catch (err) {
-		  console.error('SQL error', err);
+	} catch (error) {
+		logger.error('[50][amlReport messageHandler err=' + error.message);
 	}
 }
 
 //진검 AML (ALL, MPS/MPN, Lymphoma 같이 사용할것!!!) 보고서 입력
 exports.searchReportDetected = (req,res, next) => {
-  const result = messageHandler(req);
 
-  console.log(req.body);
+  logger.info('[25][amlReport searchReportDetected req=' + JSON.stringify(req.body)); 
+  const result = messageHandler(req);
 
   result.then(data => {
 
-     //console.log(json.stringfy());
-     res.json(data);
+    //console.log(json.stringfy());
+    res.json(data);
   })
-  .catch( err  => res.sendStatus(500)); 
-
+  .catch( error => {
+	logger.error('[66][amlReport searchReportComments err=' + error.message); 
+	res.sendStatus(500);
+  }); 
 }
 
 const  messageHandler2 = async (req) => {
@@ -98,8 +78,7 @@ const  messageHandler2 = async (req) => {
 	const report_date = req.body.report_date;
 	const report_gb  = 'C'
 
-	console.log('pathology_num',pathology_num);
-	console.log('report_date',report_date);
+	logger.info('[25][amlReport messageHandler2 pathology_num=' + pathology_num + ', report_date=' + report_date);
 
 	//insert Query 생성
 	const qry = "select gene, variants \
@@ -108,7 +87,7 @@ const  messageHandler2 = async (req) => {
 				and convert(varchar, report_date, 112) = @report_date \
 				and report_gb = @report_gb";
 
-	console.log("sql",qry);
+	logger.info('[90][amlReport messageHandler2 sql' + qry);
 		   
 	try {
 		  const request = pool.request()
@@ -119,8 +98,8 @@ const  messageHandler2 = async (req) => {
 		  const result = await request.query(qry);
 		  
 		 return result.recordset;
-	} catch (err) {
-		  console.error('SQL error', err);
+	} catch (error) {
+		logger.error('[102][amlReport messageHandler2 err='  + error.message);
 	}
 }
 
@@ -128,13 +107,16 @@ const  messageHandler2 = async (req) => {
 exports.searchReportComments = (req,res, next) => {
   const result = messageHandler2(req);
 
-  console.log(req.body);
+  logger.info('[110][amlReport searchReportComments req=' + JSON.stringify(req.body));
 
   result.then(data => {
 
-     //console.log(json.stringfy());
-     res.json(data);
+    //console.log(json.stringfy());
+    res.json(data);
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error => {
+	logger.info('[118][amlReport searchReportComments err=' + error.message); 
+	res.sendStatus(500);
+  }); 
 
 }

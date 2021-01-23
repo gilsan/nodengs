@@ -122,7 +122,7 @@ exports.patientSearch = (req, res,next) => {
       res.json(data);
    })
    .catch( error  => {
-    logger.info('[120][patientinfo_path select2]err=' + error.message);
+    logger.error('[120][patientinfo_path select2]err=' + error.message);
     res.status(500).send('That is Not good...config.database.anchor.apply.')
    }); 
 }

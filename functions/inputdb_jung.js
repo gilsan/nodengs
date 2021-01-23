@@ -59,7 +59,7 @@ exports.inputdb_diag_del = ( testedID ) => {
         // res.json(data);
     })
     .catch( error  => { 
-        logger.info("[49][diag_raw_tsv del]err=" + error.message );
+        logger.error('[49][diag_raw_tsv del]err=' + error.message );
     });
 }
 
