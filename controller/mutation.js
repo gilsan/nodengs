@@ -8,10 +8,26 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+function nvl(st, defaultStr){
+    
+  console.log('st=', st);
+  if(st === undefined || st == null || st == "") {
+      st = defaultStr ;
+  }
+      
+  return st ;
+}
+
+// insert mutation
 const  messageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
-  const igv               = req.body.igv;
-  const sanger            = req.body.sanger;  
+  const igv               = nvl(req.body.igv, "");
+  const sanger            = nvl(req.body.sanger, "");  
   const patient_name      = req.body.name;
   const register_number   = req.body.patientID;
   const gene              = req.body.gene;
@@ -20,12 +36,12 @@ const  messageHandler = async (req) => {
   const exon_intro        = req.body.exonIntro;
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = req.body.zygosity;
-  const vaf               = req.body.vaf;
-  const reference         = req.body.reference;
-  const cosmic_id         = req.body.cosmicID;
-  const buccal            = req.body.buccal;
-  const buccal2           = req.body.buccal2;
+  const zygosity          = nvl(req.body.zygosity, "");
+  const vaf               = nvl(req.body.vaf, "");
+  const reference         = nvl(req.body.reference, "");
+  const cosmic_id         = nvl(req.body.cosmicID, "");
+  const buccal            = nvl(req.body.buccal, "");
+  const buccal2           = nvl(req.body.buccal2, "");
 
   logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
   logger.info('[47][mutation]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
