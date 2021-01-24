@@ -9,5 +9,7 @@ router.post('/insert', mutationController.insertMutation);
 router.post('/update', mutationController.updateMutation);
 router.post('/delete', mutationController.deleteMutation);
 // 
+router.post('/searchbygene', mutationController.searchMutaionbygene);
+router.post('/list',   mutationController.listMutation);
 
 module.exports = router;
