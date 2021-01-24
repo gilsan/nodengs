@@ -31,9 +31,9 @@ const listHandler = async (req) => {
 		sql = sql + " and user_nm like '%"+userNm+"%'";
 	
 	if(startDay != "") 
-		sql = sql + " and login_date >= '"+startDay+"'";
+		sql = sql + " and isnull(login_date, getdate()) >= '"+startDay+"'";
 	if(endDay != "") 
-		sql = sql + " and login_date <= DATEADD(d, 1, '"+endDay+ "')";
+		sql = sql + " and isnull(login_date, getdate()) <= DATEADD(d, 1, '"+endDay+ "')";
 	
 
     sql = sql + " order by id";

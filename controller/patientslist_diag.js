@@ -102,7 +102,8 @@ const  messageHandler = async (today) => {
                 ,isnull(test_code, '') test_code ,isnull (report_date, '') report_date \
                 ,isnull(screenstatus, '')  screenstatus \
                 ,isnull(report_date, '') report_date \
-                ,isnull(bonemarrow, '') bonemarrow, isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest \
+                ,isnull(examin, '') examin, isnull(recheck, '') recheck \
+                ,isnull(bonemarrow, '') bonemarrow, isnull(diagnosis, '') diagnosis, isnull(genetictest, '') genetictest \
                 from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
@@ -160,11 +161,12 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,isnull(tsvFilteredFilename, '') tsvFilteredFilename ,isnull(createDate, '') createDate \
             ,isnull(tsvFilteredStatus, '') tsvFilteredStatus ,isnull(tsvFilteredDate, '') tsvFilteredDate \
             ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
-            ,isnull(sendEMRDate, '') sendEMRDate \
+            ,isnull(sendEMRDate,'') sendEMRDate \
             ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             ,isnull(report_date, '') report_date \
+            ,isnull(examin, '') examin, isnull(recheck, '') recheck \
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
             from [dbo].[patientinfo_diag] \
             where left(prescription_date, 8) >= '" + start + "'" 

@@ -10,7 +10,7 @@ const poolConnect = pool.connect();
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
-    logger.info('[13][get comments list]data=' + gene);
+    logger.info('[13][get comments list]data=' + genes);
 	
 	let sql ="select id, type, gene, comment, reference, variant_id";
     sql = sql + " from comments ";
@@ -123,7 +123,7 @@ exports.listComments = (req, res, next) => {
           res.json(data);
     })
     .catch( error => {
-        logger.error('[126]deleteComments err=' + error.message);
+        logger.error('[126]listComments err=' + error.message);
         res.sendStatus(500)
     });
 };

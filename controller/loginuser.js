@@ -62,7 +62,7 @@ const updateLoginTime = async (user) =>{
       const request = pool.request()
                .input('user', mssql.VarChar, user);
       const result = await request.query(sql);       
-               return result;        
+      return result;        
     
   } catch(error) {
     logger.error('[17][loginUser 진검][updateDiagLoginTime]err=' + error.message);
