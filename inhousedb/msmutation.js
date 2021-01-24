@@ -212,13 +212,15 @@ workbook.xlsx.readFile('../inhouseupload/mutation2.xlsx').then( async (workbook)
                     });*/
                     result.then(data => {
                     console.dir(data);
-                    }).catch( err => console.log(err))
+                    }).catch( error => {
+                         logger.error("[216][msmutation]err=" + error.message)
+                    });
                
                     console.log("result=", result);
 
                }   
-               catch(err) {
-                 console.error('SQL error', err);
+               catch(error) {
+                    logger.error('[222][msmtation]err=' + error.message);
                }  
                     
           } // end of if loop

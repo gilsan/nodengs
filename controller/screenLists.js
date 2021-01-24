@@ -45,7 +45,7 @@ const  messageHandler = async (req) => {
   })
   .catch( error => {
     logger.error('[47][screenList][find detected variant]err=' + error.message);
-    res.sendStatus(500)
+    res.sendStatus(500);
   });
  };
 
@@ -376,98 +376,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
       logger.info('[373][screenList][insertScreen]err=' + error.message);
       res.sendStatus(500)
     });
- };
-
-///////////////////////////////////////////////////////////////////////////////////////
-const updateCommentHandler = async (specimenNo, comments) => {
-  //for 루프를 돌면서 Commencts 만큼       //Commencts Count
-  let commentResult;
-  for (i = 0; i < comments.length; i++)
-  {
-      const id          = comments[i].id;
-	  const gene        = comments[i].gene;
-      const variants    = comments[i].variants;
-      const comment     = comments[i].comment;
-      const reference   = comments[i].reference;
-
-	  //insert Query 생성                     
-      const qry = "update report_comments set gene=@gene, variants=@variants, comment=@comment, reference=@reference where id=@id";                
-
-	console.log("sql",qry);
-		   
-	  try {
-          const request = pool.request()
-            .input('id', mssql.Int, id)
-			.input('gene', mssql.VarChar, gene)
-            .input('variants', mssql.VarChar, variants)
-            .input('comment', mssql.NVarChar, comment)
-            .input('reference', mssql.NVarChar, reference);
-			
-		    commentResult = await request.query(qry);
-		  		  
-	  } catch (err) {
-		  console.error('SQL error', err);
-	  }
-	}  // End of For Loop
-    return commentResult;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-const updateHandler = async (specimenNo, detected_variants) => {
-    for (i = 0; i < detected_variants.length; i++)
-    {
-      const id                = detected_variants[i].id;
-      const igv               = detected_variants[i].igv;
-      const sanger            = detected_variants[i].sanger;
-      const gene              = detected_variants[i].gene;
-      const functional_impact = detected_variants[i].functionalImpact;
-      const transcript        = detected_variants[i].transcript;
-      
-      const exon              = detected_variants[i].exonIntro;
-      const nucleotide_change = detected_variants[i].nucleotideChange;
-      const amino_acid_change = detected_variants[i].aminoAcidChange;
-      const zygosity          = detected_variants[i].zygosity;
-      const vaf               = detected_variants[i].vafPercent;
-      const reference         = detected_variants[i].references;
-      const cosmic_id         = detected_variants[i].cosmicID;
-      const type              = detected_variants[i].type;
-    
-   
-      //insert Query 생성;    
-      const qry ="update report_detected_variants set gene=@gene, functional_impact=@functional_impact, \
-      transcript=@transcript, exon=@exon, nucleotide_change=@nucleotide_change, amino_acid_change=@amino_acid_change, \
-      zygosity=@zygosity, vaf=@vaf, reference=@reference, cosmic_id=@cosmic_id, igv=@igv, sanger=@sanger, type=@type \
-        where id=@id";
-             
-      console.log("sql",qry);
-   
-        try {
-            const request = pool.request()
-              .input('id', mssql.Int, id)
-              .input('gene', mssql.VarChar, gene)
-              .input('functional_impact', mssql.VarChar, functional_impact)
-              .input('transcript', mssql.VarChar, transcript)
-              .input('exon', mssql.VarChar, exon)
-              .input('nucleotide_change', mssql.VarChar, nucleotide_change)
-              .input('amino_acid_change', mssql.VarChar, amino_acid_change)
-              .input('zygosity', mssql.VarChar, zygosity)
-              .input('vaf', mssql.VarChar, vaf)
-              .input('reference', mssql.VarChar, reference)
-              .input('cosmic_id', mssql.VarChar, cosmic_id)
-              .input('igv', mssql.VarChar, igv)
-              .input('sanger', mssql.VarChar, sanger)
-              .input('type', mssql.VarChar, type);
-              
-             result = await request.query(qry);         
-      
-        } catch (err) {
-            console.error('SQL error', err);
-        }
-        
-     } // End of For Loop
-        return result;   
-
-}
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////
 const deleteCommentHandler = async (specimenNo) => {
@@ -508,80 +417,31 @@ const deleteHandler = async (specimenNo) => {
           result = await request.query(qry);         
   
     } catch (error) {
-      logger.info('[508][screenList][del detected_variant]err=' +  error.message);
+      logger.error('[508][screenList][del detected_variant]err=' +  error.message);
     }
       
     return result;
 }
 
-///////////////////////////////////////////////////
-//
- const updateProfileHander = async (specimenNo) => {
-    // profile insert Query 생성
- }
-// 판독 완료
- exports.finishScreen = (req, res, next) => {
-
-  console.log(req.body);
-
-    const specimenNo  = req.body.specimenNo;
-    const comments    = req.body.comments;
-    const detected_variants = req.body. detected_variants;
-    const profile = req.body.profile
-
-    const chron    = profile.chron ;
-    const flt3ITD  = profile.flt3itd ; 
-    const leukemia = profile.leukemia;
-    const examin   = req.body.patientInfo.examin;
-    const recheck  = req.body.patientInfo.recheck;
-    
-    const result = deleteHandler(specimenNo);
-    result.then( data => {
-
-      const result2 = insertHandler(specimenNo, detected_variants);
-      result2.then( data => {
-          
-        // console.log('[157][insertScreen]', data);
-        const commentResult2 = deleteCommentHandler(specimenNo, comments);
-        commentResult2.then(data => {
-        
-          // console.log('[157][insertScreen]', data);
-          const commentResult = insertCommentHandler(specimenNo, comments);
-          commentResult.then(data => {
-
-            // 검사자 상태변경
-            const statusResult = messageHandler2(specimenNo, '2', chron,flt3ITD,leukemia, examin, recheck);
-            statusResult.then(data => {
-                res.json({message: 'OK UPDATE'});
-            });
-
-          });
-        });
-      });
-
-    });
-    
-};
-
 // 검진 EMR 전송후 screenstatus 변경
 exports.emrSendUpdate = (req, res, next) => {
-    logger.info('[466][screenList][emr status update]req=' + JSON.stringify(req.body));
-     const specimenNo    = req.body.specimenNo;
-    // const chron         = req.body.chron
+  logger.info('[466][screenList][emr status update]req=' + JSON.stringify(req.body));
+    const specimenNo    = req.body.specimenNo;
+  // const chron         = req.body.chron
 
-    const result = messageHandler3(specimenNo, '3');
-    result.then(data => {
-      res.json({message: 'EMR 전송 상태 갱신 했습니다.'})
-    })
-    .catch(error => {
-    logger.info('[574][screenList][emr status update]err=' + error.message);
-     })
+  const result = messageHandler3(specimenNo, '3');
+  result.then(data => {
+    res.json({message: 'EMR 전송 상태 갱신 했습니다.'})
+  })
+  .catch(error => {
+    logger.error('[574][screenList][emr status update]err=' + error.message);
+  })
      
 }
 
 // 병리 DB 저장 완료
 const  messageHandlerPathology = async (pathologyNum) => {
-  logger.info('[screenList][501][finishPathologyScreen]pathologyNum=' +  pathologyNum); 
+  logger.info('[501][screenList][finishPathologyScreen]pathologyNum=' +  pathologyNum); 
   let sql ="update [dbo].[patientinfo_path] \
           set screenstatus='1' \
           where pathology_num=@pathologyNum ";
@@ -594,8 +454,8 @@ const  messageHandlerPathology = async (pathologyNum) => {
       console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('[577]SQL error', err);
+  } catch (error) {
+    logger.error('[501][screenList][finishPathologyScreen]err=' + error.message);
   }
 
 }
@@ -611,7 +471,7 @@ exports.finishPathologyScreen = (req, res, next) => {
   }) 
   .catch( error => {
     logger.error('[610][screenList][screen status update]err=' + error.message);
-    res.sendStatus(500)
+    res.sendStatus(500);
   });
 }
 
@@ -694,8 +554,8 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   }) 
   .catch( error => {
     logger.error('[601][screenList][finishPathologyScreen]err=' + error.message);
-    res.sendStatus(500)}
-    );
+    res.sendStatus(500);
+  });
 }
 
 // 병리 EMR전송 완료

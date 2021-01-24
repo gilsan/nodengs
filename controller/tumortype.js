@@ -92,13 +92,16 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
 //병리 tumorMutationalBurden 보고서 입력
 exports.tumortypedata = (req,res, next) => {
 
-console.log(req.body);
+  logger.error('[58][tumortypeBurden]save=' + JSON.stringify(req.body));
 
   const result = tumorMutationalBurdenMessageHandler(req);
   result.then(data => {
      res.json({message: 'SUCCESS'});
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error  => {
+    logger.error('[58][tumortypeBurden]save err=' + error.message);
+    res.sendStatus(500);
+  }); 
 }
 
 const  tumorMutationalBurdenMessageHandler2 = async (req) => {
@@ -121,8 +124,8 @@ const  tumorMutationalBurdenMessageHandler2 = async (req) => {
 		  const result = await request.query(qry);
 		  
 		 return result.recordset;
-	} catch (err) {
-		  logger.error('[127][tumortype select] error=' + err);
+	} catch (error) {
+		  logger.error('[127][tumortype select] error=' + error.message);
 	}
 }
    
@@ -138,6 +141,9 @@ exports.tumortypeList = (req,res, next) => {
      //console.log(json.stringfy());
      res.json(data);
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error => {
+    logger.error('[58][tumortype list]err=' + error.message); 
+    res.sendStatus(500);
+  }); 
 
 }

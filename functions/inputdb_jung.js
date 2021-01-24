@@ -173,8 +173,8 @@ const  messageHandler_diag_insert = async (
       console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[177][inputdb_jung]err=' + error.message);
   }
 }
 
@@ -211,6 +211,8 @@ exports.inputdb_jung = (
        console.log(data);
       // res.json(data);
   })
-  .catch( err  => console.log(err));
+  .catch( error => {
+    logger.log('[215][inputdb_jugn]err=' + error.message);
+  });
     
 }
