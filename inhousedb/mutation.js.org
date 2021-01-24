@@ -1,0 +1,170 @@
+const Excel = require('exceljs');
+const mariadb = require('mariadb');
+
+const workbook = new Excel.Workbook();  
+const fs = require('fs');
+
+var pool = mariadb.createPool({
+  host     : '127.0.0.1', //db접속 주소
+  user     : 'wirex', //db접속id
+  password : 'wirex', //db접속pw
+  database : 'sainthospital', //db명
+   connectionLimit: 100
+});
+
+// 특수문자찿기 변경하기
+ function findChar(findChar) {
+    const check = findChar.toString().indexOf(',');
+    let result = '';
+	if(check === -1) {
+		result = findChar;
+	} else {
+        result = findChar.replace( /,/gi, '\,');
+	}
+
+	return result;
+ }
+
+const inputData= async (sql, params) => {
+            await pool.getConnection()
+                   .then(conn => {    
+                          conn.query(sql, params)
+                          .then((rows) => {
+                               console.log('결과', rows);  
+				               conn.end();
+                           }) 
+                    })
+					.catch(err => {
+                        console.log('not connect');	        
+                    });	
+ }
+
+workbook.xlsx.readFile('../inhouseupload/mutation.xlsx').then( async (workbook) =>{
+  
+    let buccal;
+    const worksheet = workbook.getWorksheet('Sheet1');
+    worksheet.eachRow({ includeEmpty: true }, function(row, rowNumber) {
+
+        /*
+		if(rowNumber === 1) {
+           console.log(row.values[1], row.values[2], row.values[3]);
+		}
+
+		if (rowNumber === 4)
+		{
+			console.log(row.values[0],row.values[1], row.values[2], row.values[3],row.values[4], row.values[5]);
+		}
+		 */
+  		  
+		  
+         if (rowNumber > 1) {             
+                if(row.values[1] === undefined){
+					buccal = '';
+				} else {
+                    buccal = row.values[1];
+				}
+
+                if(row.values[2] === undefined){
+					patient_name = '';
+				} else {					 
+                    patient_name = row.values[2];                
+				}
+
+                if(row.values[3] === undefined){
+					register_number = '';
+				} else {
+                    register_number = findChar(row.values[3]);
+				}
+             
+                if(row.values[4] === undefined){
+					fusion = '';
+				} else {
+                    fusion = findChar(row.values[4]);
+				}
+				 
+                if(row.values[5] === undefined){
+					gene = '';
+				} else {
+                    gene = findChar(row.values[5]);
+				}
+
+				if(row.values[6] === undefined){
+					functional_impact = '';
+				} else {			   
+                    functional_impact = findChar(row.values[6]);                  
+				}
+				 
+				if(row.values[7] === undefined){
+					transcript = '';
+				} else {
+                    transcript = findChar(row.values[7]);
+				}
+
+				if(row.values[8] === undefined){
+					exon_intro = '';
+				} else {
+                    exon_intro = findChar(row.values[8]);
+				}
+
+				if(row.values[9] === undefined){
+					nucleotide_change = '';
+				} else {
+                    nucleotide_change = findChar(row.values[9]);
+				}
+
+				if(row.values[10] === undefined){
+					amino_acid_change = '';
+				} else {
+                    amino_acid_change = findChar(row.values[10]);
+				}
+
+				if(row.values[11] === undefined){
+					zygosity = '';
+				} else {
+                    zygosity = findChar(row.values[11]);
+				}
+
+				if(row.values[12] === undefined){
+					vaf = '';
+				} else {
+                    vaf = findChar(row.values[12]);
+				}
+
+				if(row.values[13] === undefined){
+					reference = '';
+				} else {
+                    reference = findChar(row.values[13]);
+				}
+
+				if(row.values[14] === undefined){
+					cosmic_id = '';
+				} else {
+                    cosmic_id = findChar(row.values[14]);
+				}
+
+				if(row.values[15] === undefined){
+					sift_polyphen_mutation_taster = '';
+				} else {
+                    sift_polyphen_mutation_taster = findChar(row.values[15]);
+				}
+
+				if(row.values[16] === undefined){
+					buccal2 = '';
+				} else {
+                    buccal2 = findChar(row.values[16]);
+				}
+//  fs.appendFileSync('./inhouse.txt', buccal + ',' + patient_name + ',' + register_number + ',' + fusion + ',' + gene + ',' + functional_impact + ',' + transcript + ',' + exon_intro + ',' + nucleotide_change+ ',' + amino_acid_change + ',' + zygosity + ',' + vaf + ',' + reference + ',' + cosmic_id + ',' + sift_polyphen_mutation_taster + ',' + buccal2 + '\n');
+         
+// console.log(buccal + ': ' +patient_name + ',' + locations + ',' + exon + ',' + transcript + ',' + coding + ',' + amino_acid_change);				 
+                   
+                const sql= 'insert into mutation (buccal,patient_name,register_number,fusion,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id,sift_polyphen_mutation_taster,buccal2) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+				const params = [buccal,patient_name,register_number,fusion,gene,functional_impact,transcript,exon_intro,nucleotide_change,amino_acid_change,zygosity,vaf,reference,cosmic_id,sift_polyphen_mutation_taster,buccal2];
+               inputData(sql, params);
+
+			 
+		  } // end of if loop
+		 
+        
+        });	
+    
+})

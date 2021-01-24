@@ -12,11 +12,13 @@ const router = express.Router();
 const inputDB      = require('../controlDB/inputdb');
 const main_mod     = require('../functions/main');
 const loadData_mod = require('../functions/readData');
+const logger = require('../common/winston');
 
 var multer = require('multer');
 const mssql = require('mssql');
 
 const dbConfigMssql = require('../common/dbconfig.js');
+const { dir } = require('console');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -24,7 +26,7 @@ const today = () => {
   let year = new Date().getFullYear();
   let month = new Date().getMonth() + 1;
   let day = new Date().getDate();
-// console.log(year, month, day);
+
   if (month < 10) {
      month = '0' + month;
   }
@@ -43,7 +45,7 @@ var storage = multer.diskStorage({
       const year = new Date().getFullYear();
       const month = new Date().getMonth() + 1;
       const day = new Date().getDate();
-	 // console.log(year, month, day);
+
       if (month < 10) {
          thisMonth = '0' + month;
       }
@@ -51,28 +53,29 @@ var storage = multer.diskStorage({
       if (day < 10) {
         thisDay = '0' + day;
       }
-	  if (month < 10) {             
-		if (day < 10) {
-			  dirPath = 'diag/'+ year + '/' + thisMonth + '/' + thisDay;
-		} else {
-              dirPath = 'diag/'+ year + '/' + thisMonth + '/' + day;
-		}
-	  } else {
-  		if (day < 10) {
-			  dirPath = 'diag/'+ year + '/' + month + '/' + thisDay;
-		} else {
-			  dirPath = 'diag/'+ year + '/' + month + '/' + day;
-		}
-	  }
 
-           
+      if (month < 10) {             
+        if (day < 10) {
+          dirPath = 'diag/'+ year + '/' + thisMonth + '/' + thisDay;
+        } else {
+                  dirPath = 'diag/'+ year + '/' + thisMonth + '/' + day;
+        }
+      } else {
+        if (day < 10) {
+          dirPath = 'diag/'+ year + '/' + month + '/' + thisDay;
+        } else {
+            dirPath = 'diag/'+ year + '/' + month + '/' + day;
+        }
+      }
+
+      // directory check  
       let isDirExists = fs.existsSync(dirPath) && fs.lstatSync(dirPath).isDirectory();
-    //  console.log('directory: ', isDirExists, dirPath);
+      
       if (!isDirExists){
           fs.mkdirSync( dirPath, { recursive: true });
       }
 
-     // cb(null, 'uploads/');
+      // cb(null, 'uploads/');
 	    cb(null,  dirPath); 
     },
     filename: function (req, file, cb) {
@@ -80,53 +83,57 @@ var storage = multer.diskStorage({
     }
 })
 
-
-
 const  messageHandler = async (testedID, today) => {
   await poolConnect; // ensures that the pool has been created
  
+  logger.info('[88][fileupload count]testedID=' + testedID + ", today=" + today);
   const qry=`select count(*) as count 
                 from filtered_raw_tsv
                  where testedID=@testedID 
                  and left(createdate,10)=@today`;
+  logger.info('[93][fileupload count]sql=' + qry);
 
   try {
-      const request = pool.request() // or: new sql.Request(pool1)
+      const request = pool.request() 
       .input('testedID', mssql.VarChar, testedID)
       .input('today', mssql.VarChar, today);
       const result = await request.query(qry)
       console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[104][fileupload count]err=' + error.message);
   }
 }
 
 const  messageHandler2 = async (testedID, today) => {
   await poolConnect; // ensures that the pool has been created
  
+  logger.info('[88][fileupload del]testedID=' + testedID + ", today=" + today);
+  
   const qry=`delete from filtered_raw_tsv
                  where testedID = @testedID 
                  and left(createdate,10) = @today`;
-
+  logger.info('[88][fileupload del]sql=' + qry);
+  
   try {
-      const request = pool.request() // or: new sql.Request(pool1)
-      .input('testedID', mssql.VarChar, testedID)
-      .input('today', mssql.VarChar, today);
+      const request = pool.request() 
+        .input('testedID', mssql.VarChar, testedID)
+        .input('today', mssql.VarChar, today);
       const result = await request.query(qry)
       console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[128][fileupload del]err=' + error.message);
   }
 }
 
 const  messageHandler3 = async (originalname, dirPath, testedID) => {
   await poolConnect; // ensures that the pool has been created
    const now = today();
-   console.log('[145][fileupload][messageHandler3] ', now, dirPath, originalname, testedID);
+   logger.info('[135][fileupload update][messageHandler3]now=' + now  + ",dirPath=" +  dirPath
+                                        + ", originalname=" + originalname + ", testedID" + testedID);
   const qry=`update patientinfo_diag 
         set tsvFilteredFilename = @originalname, 
         tsvFilteredStatus= '처리완료',
@@ -134,7 +141,8 @@ const  messageHandler3 = async (originalname, dirPath, testedID) => {
         path=@dirPath,
         tsvFilteredDate=getdate()  
         where specimenNo = @testedID`;
-     console.log('[152][fileupload][update patientinfo_diag]',  qry) ;
+  logger.info('[144][fileupload][update patientinfo_diag]sql=' +  qry) ;
+
   try {
       const request = pool.request() // or: new sql.Request(pool1)
       .input('originalname', mssql.VarChar, originalname)
@@ -144,16 +152,19 @@ const  messageHandler3 = async (originalname, dirPath, testedID) => {
       console.dir( result);
     //  console.log('[158][update patientinfo_diag] ', result)
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[156][fileupload]update patient diag err=' + error.message);
   }
 }
 
-const  messageHandler4 = async (originalname, dirPath,  testedID) => {
+const  messageHandler4 = async (originalname, dirPath, testedID) => {
   await poolConnect; // ensures that the pool has been created
  
+  logger.info('[163][fileupload]insert jinTsvUpload originalname=' + originalname 
+                                   + ", dirPath=" + dirPath + ", testedID=" + testedID);
   const sql ="insert into jinTsvUpload (filename, path, testedID ) "
                      + " values (@originalname, @dirPath, @testedID)";
+  logger.info('[167][fileupload jinTsvUpload sql=' + sql);
        
   try {
       const request = pool.request() // or: new sql.Request(pool1)
@@ -164,30 +175,10 @@ const  messageHandler4 = async (originalname, dirPath,  testedID) => {
       console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error('[179][fileupload jinTsvUpload err=' + error.message);
   }
 }
-
-
-const updatePatient = async (testedID) => {
-  await poolConnect;
-  const sql ="update  patientinfo_diag \
-               set IKZK1Deletion = '', \
-               chromosomalanalysis = '', \
-               FLT3ITD = '' \
-             where specimenNo=@testedID";
-  console.log('[updatePatient] [195]', sql);
-  try {
-   const request = pool.request()
-     .input('testedID', mssql.VarChar, testedID)
-   const result = await request.query(sql);
-  } catch(err) {
-    console.log('SQL error [updatePatient][201]\n', err)
-  }
-}
-
-
  
 var upload = multer({ storage: storage, limits: { fileSize : 3 *1024 * 1000 * 1000, fieldSize: 3 *1024 * 1000 * 1000, fieldNameSize: 1000  } }).array('userfiles', 10);
 
@@ -201,46 +192,45 @@ router.post('/upload', function (req, res) {
           return res.status(500).json(err);
         }
 
-        
         let uploadedFiles = [];
         let today ='';
         let testedID = '';
 
         for(let item of req.files) {
-              uploadedFiles.push({filename: item.originalname});
- 
-		          // 검체번호로 atientInfo_diag update 함
-		          testedID = req.body.testedID;
-       
-              // 금일 날자와 검체번호로 존재 하는지 조사.
-              const year1  = new Date().getFullYear();
-              const month1 = new Date().getMonth() + 1;
-              const day1   = new Date().getDate();
-	            // console.log(year, month, day);
-              if (month1 < 10) {
-                thismonth = '0' + month1;
-              }
+            uploadedFiles.push({filename: item.originalname});
 
+            // 검체번호로 atientInfo_diag update 함
+            testedID = req.body.testedID;
+      
+            // 금일 날자와 검체번호로 존재 하는지 조사.
+            const year1  = new Date().getFullYear();
+            const month1 = new Date().getMonth() + 1;
+            const day1   = new Date().getDate();
+            
+            if (month1 < 10) {
+              thismonth = '0' + month1;
+            }
+
+            if (day1 < 10) {
+              thisday = '0' + day1;
+            }
+
+            if (month1 < 10) {
+            
               if (day1 < 10) {
-                thisday = '0' + day1;
+                today = year1 + '-' + thismonth + '-' + thisday;
+              } else {
+                today = year1 + '-' + thismonth + '-' + day1;
               }
-
-	            if (month1 < 10) {
-              
-		            if (day1 < 10) {
-			            today = year1 + '-' + thismonth + '-' + thisday;
-		            } else {
-                  today = year1 + '-' + thismonth + '-' + day1;
-			          }
-	            } else {
-  		          if (day1 < 10) {
-			            today = year1 + '-' + month1 + '-' + thisday;
-		            } else {
-			            today = year1 + '-' + month1 + '-' + day1;
+            } else {
+              if (day1 < 10) {
+                today = year1 + '-' + month1 + '-' + thisday;
+              } else {
+                today = year1 + '-' + month1 + '-' + day1;
               }
             }
 	     
-       ///////////////////////////////////////////////////////////////////////////////////////////////////////  
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////  
             // 기존 count 체크
             const result = messageHandler(testedID, today);
             result.then(data => {
@@ -249,7 +239,7 @@ router.post('/upload', function (req, res) {
 
             const count = parseInt(data.recordset[0].count,10);
                 
-           // console.log('[247] 시험용', count);
+            // console.log('[247] 시험용', count);
             if (count > 0) {
               // tsv 레코드 삭제
               const result2 = messageHandler2(testedID, today);
@@ -259,12 +249,16 @@ router.post('/upload', function (req, res) {
                 const count2 = parseInt(data.recordset[0].count,10);                      
                // console.log('이전것 삭제');             
               })
-              .catch( err  => console.log('[258][fileupload] ', err))
+              .catch( error  => {
+                logger.error('[253][fileupload]err=' + error.message);
+              })
             }
           })
-          .catch( err  => console.log('error', err))
+          .catch( error  => {
+            logger.info('[88][fileupload]err=' + error.message);
+          })
 
-    /////////////////////////////////////////////////////////////////////////////////////////////
+          /////////////////////////////////////////////////////////////////////////////////////////////
           console.log('Next...');
       
           // patient tsv 상태 update
@@ -274,7 +268,9 @@ router.post('/upload', function (req, res) {
             console.log('[268][fileupload] ', data);
             //res.json(data);
           })
-          .catch( err  => console.log('error', err));
+          .catch( error => {
+            logger.info('[272][fileupload] update patient diag err=' + error.message);
+          });
     
          // console.log('insert...');
       
@@ -285,7 +281,9 @@ router.post('/upload', function (req, res) {
             console.log(data);
             //res.json(data);
           })
-          .catch( err  => console.log('error', err));	  
+          .catch( error => {
+            logger.error('[284][fileupload] inset jintsv err=' + error.message)
+          });	  
           
 		      const surfix = item.originalname.split('.');
 		      if ( surfix[1] === 'tsv') {
@@ -294,9 +292,7 @@ router.post('/upload', function (req, res) {
               // inputDB.registerDB(item.path);
               main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
           }	
-          
-          
-      /////////////////////////////////////////////////////////////////////////////////////////////
+          /////////////////////////////////////////////////////////////////////////////////////////////
 	 
         }  // End of For Loop
 
