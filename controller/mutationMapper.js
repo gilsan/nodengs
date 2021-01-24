@@ -265,3 +265,39 @@ exports.deleteMutation = (req, res, next) => {
      .catch( err  => res.sendStatus(500));
 
 }
+
+// 유전자가 있는지 확인
+const searchGeneHandler =  async (gene) => {
+  await poolConnect;
+
+  const sql = "select  count(*) as count  from mutation where gene=@gene";
+  try {
+       const request = pool.request()
+          .input('gene', mssql.VarChar, gene);
+          const result = await request.query(sql);
+          return result.recordset[0].count;
+  } catch(err) {
+    console.err('==[139][mutation controller] SQL error');
+  }
+
+}
+
+exports.searchMutaionbygene = (req, res, next) => {
+const gene = req.body.gene;
+const result = searchGeneHandler(gene);
+result.then(data => {
+   res.json(data);
+}).catch(err => res.sendStatus(500))
+
+}
+
+// List Mutation
+exports.listMutation = (req, res, next) => { 
+  //   console.log('[200][listMutation]');
+     const result = listHandler(req);
+     result.then(data => { 
+           res.json(data);
+      })
+      .catch( err  => res.sendStatus(500));
+  };
+
