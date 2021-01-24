@@ -51,7 +51,7 @@ const insertOR = async (originalname, dirPath, pathology_num) => {
 const updateORpath = async (filename, orpath, pathology_num) => {
    await poolConnect;
 
-   logger.info('[53][dieaseupload]update patient path]originalname=' + originalname
+   logger.info('[53][dieaseupload]update patient path]filename=' + filename
                                       + ", dirPath=" + dirPath + ", pathology_num=" + pathology_num); 
 
    const sql ="update  patientinfo_path set tsvorfilename = @filename, orpath = @orpath where pathology_num=@pathology_num";
@@ -291,14 +291,14 @@ router.post('/upload', function (req, res) {
               irPathUpdate.then(data => {
                 // res.json({message: ' OR 추가 했습니다.'});
               }).catch( error => {
-                logger.info('[289][dieaseupload][update or path]err=' + error.message);
+                logger.error('[289][dieaseupload][update or path]err=' + error.message);
               });
 
               const orResult = insertOR(filename, dirPath, pathologyNum);
               orResult.then(data => {
                 // console.log('[OR insert result] ', data);      
               }).catch( error => {
-                logger.info('[296][dieaseupload][insert OR]err=' + error.message);
+                logger.error('[296][dieaseupload][insert OR]err=' + error.message);
               });
 
               logger.info("or 추가"); 
