@@ -17,15 +17,16 @@ const poolConnect = pool.connect();
 const listHandler = async (type) => {
     await poolConnect;
 
+    logger.info('[20][diaggene]type=' + type);
     const sql ="select isnull(gene, '') gene  from genediag where type =@type";
-    console.log('[20][diaggene]', sql);
+    logger.info('[20][diaggene]sql=' + sql);
     try {
         const request = pool.request()
           .input('type', mssql.VarChar, type); 
           const result = await request.query(sql) 
           return result.recordset;
     } catch(error) {
-        logger.error('[15]selectDiagGene err=' + error.message);
+        logger.error('[28]selectDiagGene err=' + error.message);
     }
 }
 

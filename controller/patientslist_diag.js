@@ -506,6 +506,7 @@ const getpatientinfo = async (specimenNo) => {
         ,isnull(test_code, '') test_code  \
         ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
         ,isnull(report_date, '') report_date \
+        ,isnull(examin, '') examin, isnull(recheck, '') recheck \
         ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
       from patientInfo_diag  where specimenNo=@specimenNo`;
 

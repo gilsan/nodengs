@@ -105,7 +105,7 @@ exports.clinicalList = (req, res, next) => {
     const pathologyNum = req.body.pathologyNum;
     const result = clinicalSelectHandler(pathologyNum);
     result.then(data => {  
-        //  console.log('[437][benignInfoCount]', data);
+        //  console.log('[108][clinicalList]', data);
           res.json(data);
     })
     .catch( error => {

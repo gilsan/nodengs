@@ -113,7 +113,7 @@ exports.tumorcellpercentageList = (req,res, next) => {
   })
   .catch( error  =>
      {
-      logger.info('[130][tumorcellpercentageList]error=' + error.message  );
+      logger.error('[130][tumorcellpercentageList]error=' + error.message  );
        res.sendStatus(500)
       }
   ); 
