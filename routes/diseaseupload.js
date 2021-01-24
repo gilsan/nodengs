@@ -72,7 +72,7 @@ const updateORpath = async (filename, orpath, pathology_num) => {
 const updateIRpath = async (filename, irpath, pathology_num) => {
   await poolConnect;
 
-  logger.info('[73][dieaseupload]update IR path]originalname=' + originalname
+  logger.info('[73][dieaseupload]update IR path]filename=' + filename
                              + ", dirPath=" + dirPath + ", pathology_num=" + pathology_num); 
 
   const sql ="update patientinfo_path set tsvirfilename = @filename, irpath = @irpath , screenstatus = '0' where pathology_num=@pathology_num";
