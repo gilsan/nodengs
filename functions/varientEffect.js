@@ -14,9 +14,10 @@ exports.variantEffect = (variant_effect) => {
                return true;
 	   } else {
            const filterResult =  variant_effect.replace(/"/g, "").split(';');
-		 
+		    // synonymous 가 여러개인 경우 true
 		   if (filterResult.includes('synonymous')) {
-			   return false
+        // return false
+         return true; 
 		   }
 		   return true;
 	   }
