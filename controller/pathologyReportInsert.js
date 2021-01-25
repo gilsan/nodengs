@@ -48,19 +48,19 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 
 	let seq_1 =  nvl(seq, "0");
 
-	logger.info("[289][mutation] pathology_num=" + pathology_num);
-	logger.info("[289][mutation] gene=" + gene);
-	logger.info("[289][mutation] nucleotide_change=" + nucleotide_change);
-	logger.info("[289][mutation] amino_acid_change=" + amino_acid_change);
-	logger.info("[289][mutation] variant_allele_frequency=" + variant_allele_frequency);
-	logger.info("[289][mutation] variant_id=" + variant_id);
-	logger.info("[289][mutation] tier=" + tier);
-	logger.info("[289][mutation] seq=" + seq_1);
+	logger.info("[51][mutation] pathology_num=" + pathology_num);
+	logger.info("[51][mutation] gene=" + gene);
+	logger.info("[51][mutation] nucleotide_change=" + nucleotide_change);
+	logger.info("[51][mutation] amino_acid_change=" + amino_acid_change);
+	logger.info("[51][mutation] variant_allele_frequency=" + variant_allele_frequency);
+	logger.info("[51][mutation] variant_id=" + variant_id);
+	logger.info("[51][mutation] tier=" + tier);
+	logger.info("[51][mutation] seq=" + seq_1);
 
 	//select Query 생성
 	let sql2 = "insert_report_mutation";
 
-	logger.info("[49][MutationCnt] sql=" + sql2);
+	logger.info("[63][MutationCnt] sql=" + sql2);
 
 	try {
 		const request = pool.request()
@@ -80,19 +80,19 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 		await request.execute(sql2, (err, recordset, returnValue) => {
 			if (err)
 			{
-				logger.info ("[268][amplification]err message=" + err.message);
+				logger.info ("[83][amplification]err message=" + err.message);
 			}
 
-			logger.info("[268][amplication]recordset="+ recordset);
-			logger.info("[268][amplication]returnValue="+ returnValue);
+			logger.info("[86][amplication]recordset="+ recordset);
+			logger.info("[86][amplication]returnValue="+ returnValue);
 
 			resultMC = returnValue;
-			logger.info("[275]resultMC=" + JSON.stringify(resultMC));
+			logger.info("[90]resultMC=" + JSON.stringify(resultMC));
 		});
 		
 		return resultMC;
 	} catch (error) {
-		logger.error('[110][mutation C]SQL error=' + error.message);
+		logger.error('[95][mutation C]SQL error=' + error.message);
 	} // try end
 }
 
@@ -100,14 +100,14 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 
 	const mutation_length =  mutation.length;
-	logger.info("[254][mutation] data=" + JSON.stringify( mutation));
-	logger.info("[254[mutation] length=" + mutation.length);
-	logger.info("[254[mutation] report_gb=" + report_gb);
+	logger.info("[103][mutation] data=" + JSON.stringify( mutation));
+	logger.info("[103][mutation] length=" + mutation.length);
+	logger.info("[103][mutation] report_gb=" + report_gb);
    
 	//insert Query 생성
 	let sql2 = "delete from report_mutation where  pathology_num = @pathology_num ";
   
-	logger.info("[262][del mutation] sql=" + sql2);
+	logger.info("[110][del mutation] sql=" + sql2);
 	  
 	try {
 	  const request = pool.request()
@@ -115,10 +115,10 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 		  
 	  const result = await request.query(sql2);
 	  
-	  logger.info("[270] result =" + JSON.stringify(result) )
+	  logger.info("[118] result =" + JSON.stringify(result) )
 	  //return result;
 	} catch (error) {
-	  logger.error('SQL error=' + error.message);
+	  logger.error('[121][]SQL error=' + error.message);
 	}
   
 	let resultCnt;
@@ -127,7 +127,7 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 	  mutation.forEach (item => 
 	  {
 		resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
-		logger.info("[296]cnt=" , resultCnt);
+		logger.info("[130]cnt=" , resultCnt);
 	
 	  }); // foreach end
 	}  //if end
@@ -139,9 +139,9 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 const  messageMutationPHandler = async (pathology_num, mutationP, report_gb) => {
 
 	const mutation_length =  mutationP.length;
-	logger.info("[292][mutation p] data=" + JSON.stringify( mutationP));
-	logger.info("[292[mutation p] length=" + mutationP.length);
-	logger.info("[292[mutation p] report_gb=" + report_gb);
+	logger.info("[142][mutation p] data=" + JSON.stringify( mutationP));
+	logger.info("[142][mutation p] length=" + mutationP.length);
+	logger.info("[142][mutation p] report_gb=" + report_gb);
   
 	let cnt = 0;
 	let resultCnt = 0;
@@ -151,7 +151,7 @@ const  messageMutationPHandler = async (pathology_num, mutationP, report_gb) => 
 	  	mutationP.forEach (item => 
 		{
 		  resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
-		  logger.info("[296]cnt=" , resultCnt);
+		  logger.info("[154]cnt=" , resultCnt);
 	  	}); // foreach end
 	}  //if end
 }
@@ -169,19 +169,19 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 	let seq_1 =  nvl(seq, "0");
 	let note_1 =  nvl(note, "");
   
-	logger.info("[243][amplification] pathology_num=" + pathology_num);
-	logger.info("[243][amplification] report_gb=" + report_gb);
-	logger.info("[243][amplification] gene=" + gene);
-	logger.info("[243][amplification] region=" + region);
-	logger.info("[243][amplification] estimated_copy_num=" + estimated_copy_num);
-	logger.info("[243][amplification] tier=" + tier);
-	logger.info("[243][amplification] note=" + note_1);
-	logger.info("[243][amplification] seq=" + seq_1);
+	logger.info("[172][amplification] pathology_num=" + pathology_num);
+	logger.info("[172][amplification] report_gb=" + report_gb);
+	logger.info("[172][amplification] gene=" + gene);
+	logger.info("[172][amplification] region=" + region);
+	logger.info("[172][amplification] estimated_copy_num=" + estimated_copy_num);
+	logger.info("[172][amplification] tier=" + tier);
+	logger.info("[172][amplification] note=" + note_1);
+	logger.info("[172][amplification] seq=" + seq_1);
 
 	//select Query 생성
 	let sql2 = "insert_report_amplification";
 
-	logger.info("[252][amplification save] sql=" + sql2);
+	logger.info("[184][amplification save] sql=" + sql2);
 
 	try {
 		const request = pool.request()
@@ -199,20 +199,20 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 		 	await request.execute(sql2, (err, recordset, returnValue) => {
 				if (err)
 				{
-					logger.info ("[268][amplification]err message=" + err.message);
+					logger.info ("[202][amplification]err message=" + err.message);
 				}
 
-				logger.info("[268][amplication]recordset="+ recordset);
-				logger.info("[268][amplication]returnValue="+ returnValue);
+				logger.info("[205][amplication]recordset="+ recordset);
+				logger.info("[205][amplication]returnValue="+ returnValue);
 
 				resultAc = returnValue;
 			 });
 		
-		logger.info("[275]resultAc=" + JSON.stringify(resultAc));
+		logger.info("[211]resultAc=" + JSON.stringify(resultAc));
 		
 		return resultAc;
 	} catch (error) {
-		logger.error('[229][amplication]SQL error=' + error.message);
+		logger.error('[215][amplication]SQL error=' + error.message);
 	} // try end
 }
 
@@ -220,16 +220,16 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 const  messageAmplificationCHandler = async (pathology_num, amplification, report_gb) => {
 
 	const amplification_length =  amplification.length;
-	logger.info("[345][amplification C] amplification_c =" + JSON.stringify( amplification));
-	logger.info("[345][amplification C] length=" + amplification.length);
-	logger.info("[347][amplification C] pathology_num=" + pathology_num );
-	logger.info("[347][amplification C] report_gb=" + report_gb );
+	logger.info("[223][amplification C] amplification_c =" + JSON.stringify( amplification));
+	logger.info("[223][amplification C] length=" + amplification.length);
+	logger.info("[223][amplification C] pathology_num=" + pathology_num );
+	logger.info("[223][amplification C] report_gb=" + report_gb );
   
 	//dekete Query 생성
 	let sql2 = "delete from report_amplification where  pathology_num = @pathology_num ";
   
 	console.log(sql2);
-	logger.info("[352][amplication C]del sql =" + sql2);
+	logger.info("[223][amplication C]del sql =" + sql2);
 	  
 	try {
 	  const request = pool.request()
@@ -237,10 +237,10 @@ const  messageAmplificationCHandler = async (pathology_num, amplification, repor
 		  
 	  const result = await request.query(sql2);
   
-	  logger.info("[361][amplification] data=" + JSON.stringify(result)); 
+	  logger.info("[240][amplification] data=" + JSON.stringify(result)); 
 	  //return result;
 	} catch (error) {
-	  logger.error('[364][amplification] SQL error=' + error.message);
+	  logger.error('[243][amplification] SQL error=' + error.message);
 	}
   
 	let resultCnt;

@@ -23,8 +23,9 @@ function nvl(st, defaultStr){
 
 // list
 const listHandler = async (req) => {
-    await poolConnect;  
-    const genes			= req.body.genes; 
+  await poolConnect;  
+  const genes			= req.body.genes; 
+  logger.info("[27][mutationMapper list]genes=" + genes );
 	
 	let sql ="select id	"
 				+"	,buccal "
@@ -45,20 +46,22 @@ const listHandler = async (req) => {
 				+"	,buccal2 "
 				+"	,igv "
 				+"	,sanger ";
-    sql = sql + " from mutation ";
+  sql = sql + " from mutation ";
 	if(genes != "") 
 		sql = sql + " where gene like '%"+genes+"%'";
-    sql = sql + " order by id";
-  //  console.log("sql", sql);
+  sql = sql + " order by id";
+  
+  logger.info("[54][mutationMapper list]sql" + sql);
+
     try {
        const request = pool.request()
-         .input('gene', mssql.VarChar, genes); 
+         .input('genes', mssql.VarChar, genes); 
        const result = await request.query(sql) 
        return result.recordset;
-   } catch (err) {
-       console.error('SQL error', err);
+   } catch (error) {
+    logger.error("[62][mutationMapper list]err=" + error.message);
    }
- }
+}
 
 // insert 
 const  insertHandler = async (req) => {
@@ -82,11 +85,11 @@ const  insertHandler = async (req) => {
   const igv				  = nvl(req.body.igv, "");
   const sanger			  = nvl(req.body.sanger, "");
 
-  logger.info('[70][mutationmapper insert]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
-  logger.info('[70][mutationmapper insert]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
-  logger.info('[70][mutationmapper insert]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
-  logger.info('[70][mutationmapper insert]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
-  logger.info('[70][mutationmapper insert]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[90][mutationmapper insert]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
+  logger.info('[90][mutationmapper insert]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
+  logger.info('[90][mutationmapper insert]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
+  logger.info('[90][mutationmapper insert]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
+  logger.info('[90][mutationmapper insert]buccal=' + buccal  + ' buccal2=' + buccal2);
 
   let sql ="insert into mutation   ";
   sql = sql + " (buccal,patient_name,register_number,  ";
@@ -106,7 +109,7 @@ const  insertHandler = async (req) => {
         .input('buccal', mssql.VarChar, buccal) 
         .input('patient_name', mssql.NVarChar, patient_name) 
         .input('register_number', mssql.VarChar, register_number) 
-		.input('fusion', mssql.VarChar, fusion) 
+		    .input('fusion', mssql.VarChar, fusion) 
         .input('gene', mssql.VarChar, gene) 
         .input('functional_impact', mssql.VarChar, functional_impact) 
         .input('transcript', mssql.VarChar, transcript) 
@@ -117,17 +120,17 @@ const  insertHandler = async (req) => {
         .input('vaf', mssql.VarChar, vaf) 
         .input('reference', mssql.VarChar, reference)  
         .input('cosmic_id', mssql.VarChar, cosmic_id) 
-	    .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster) 
-	    .input('buccal2', mssql.VarChar, buccal2) 
-		.input('igv', mssql.VarChar, igv) 
+	      .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster) 
+	      .input('buccal2', mssql.VarChar, buccal2) 
+		    .input('igv', mssql.VarChar, igv) 
         .input('sanger', mssql.VarChar, sanger) ; 
 
       const result = await request.query(sql)
      // console.dir( result);
       
       return result;
-  } catch (err) {
-      console.error('SQL error', err);
+  } catch (error) {
+    logger.error("[133][mutationMapper insert]err=" + error.message);
   }
 }
  
@@ -135,7 +138,7 @@ const  insertHandler = async (req) => {
 const  updateHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
-  console.log("data", JSON.stringify( req.body));
+  logger.info("[62][mutationMapper update]req data=" + JSON.stringify( req.body));
 
   const id				  = req.body.id;
   const buccal			  = nvl(req.body.buccal, "");
@@ -157,11 +160,11 @@ const  updateHandler = async (req) => {
   const igv				  = nvl(req.body.igv, "");
   const sanger			  = nvl(req.body.sanger, "");
 
-  logger.info('[70][mutationmapper update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
-  logger.info('[70][mutationmapper update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
-  logger.info('[70][mutationmapper update]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
-  logger.info('[70][mutationmapper update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
-  logger.info('[70][mutationmapper update]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[160][mutationmapper update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
+  logger.info('[163][mutationmapper update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
+  logger.info('[163][mutationmapper update]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
+  logger.info('[163][mutationmapper update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
+  logger.info('[163][mutationmapper update]buccal=' + buccal  + ' buccal2=' + buccal2);
 
   let sql ="update mutation set  ";
   sql = sql + " buccal = @buccal, patient_name= @patient_name, register_number = @register_number,  ";
@@ -173,42 +176,45 @@ const  updateHandler = async (req) => {
   sql = sql + " where id = @id ";
 
   try {
-      const request = pool.request()
-		.input('id', mssql.VarChar, id)  
-        .input('buccal', mssql.VarChar, buccal) 
-        .input('patient_name', mssql.NVarChar, patient_name) 
-        .input('register_number', mssql.VarChar, register_number) 
-        .input('fusion', mssql.VarChar, fusion) 
-		.input('gene', mssql.VarChar, gene) 
-        .input('functional_impact', mssql.VarChar, functional_impact) 
-        .input('transcript', mssql.VarChar, transcript) 
-        .input('exon_intro', mssql.VarChar, exon_intro) 
-        .input('nucleotide_change', mssql.VarChar, nucleotide_change) 
-        .input('amino_acid_change', mssql.VarChar, amino_acid_change) 
-        .input('zygosity', mssql.VarChar, zygosity) 
-        .input('vaf', mssql.VarChar, vaf) 
-        .input('reference', mssql.VarChar, reference)  
-        .input('cosmic_id', mssql.VarChar, cosmic_id) 
+   const request = pool.request()
+      .input('id', mssql.VarChar, id)  
+      .input('buccal', mssql.VarChar, buccal) 
+      .input('patient_name', mssql.NVarChar, patient_name) 
+      .input('register_number', mssql.VarChar, register_number) 
+      .input('fusion', mssql.VarChar, fusion) 
+      .input('gene', mssql.VarChar, gene) 
+      .input('functional_impact', mssql.VarChar, functional_impact) 
+      .input('transcript', mssql.VarChar, transcript) 
+      .input('exon_intro', mssql.VarChar, exon_intro) 
+      .input('nucleotide_change', mssql.VarChar, nucleotide_change) 
+      .input('amino_acid_change', mssql.VarChar, amino_acid_change) 
+      .input('zygosity', mssql.VarChar, zygosity) 
+      .input('vaf', mssql.VarChar, vaf) 
+      .input('reference', mssql.VarChar, reference)  
+      .input('cosmic_id', mssql.VarChar, cosmic_id) 
 	    .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster) 
 	    .input('buccal2', mssql.VarChar, buccal2) 
-		.input('igv', mssql.VarChar, igv) 
-        .input('sanger', mssql.VarChar, sanger) ; 
+		  .input('igv', mssql.VarChar, igv) 
+      .input('sanger', mssql.VarChar, sanger) ; 
 
       const result = await request.query(sql)
      // console.dir( result);
       
       return result;
   } catch (error) {
-      console.error('SQL error', error.message);
+    logger.error("[205][mutationMapper update]err=" + error.message);
   }
 }
 
 // Delete
 const deleteHandler = async (req) => { 
-	const id        = req.body.id; 
+  const id        = req.body.id; 
+  
+  logger.info("[213][mutationMapper del]id-" + id)
  
     let sql = "delete mutation  " ; 
     sql = sql + "where id = @id"; 
+    logger.info("[215][mutationMapper del]sql=" + sql);
 
     try {
         const request = pool.request()
@@ -216,53 +222,65 @@ const deleteHandler = async (req) => {
         const result = await request.query(sql)
         console.dir( result); 
         return result;
-    } catch (err) {
-        console.error('SQL error', err);
+    } catch (error) {
+      logger.error("[205][mutationMapper del]err=" + error.message);
     }
- }
-
+}
 
 // List Mutation
  exports.listMutation = (req, res, next) => { 
- //   console.log('[200][listMutation]');
+    logger.info("[232][mutationMapper list]req" + JSON.stringify(req.body));
     const result = listHandler(req);
     result.then(data => { 
           res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+    })
+    .catch( error => {
+      logger.error("[238][mutationMapper list]err=" + error.message);
+       res.sendStatus(500);
+    });
  };
 
 // Mutation Insert
  exports.insertMutation = (req,res,next) => {
-    logger.info('[222][mutationmapper insert]req' + JSON.stringify(req.body));
+    logger.info('[245][mutationmapper insert]req' + JSON.stringify(req.body));
     const result = insertHandler(req);
     result.then(data => { 
-          res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+      res.json(data);
+    })
+    .catch( error => {
+      logger.error("[251][mutationMapper insert}err=" + error.message);
+      res.sendStatus(500);
+    });
  };
 
 // Mutation Update
  exports.updateMutation = (req,res,next) => {
-    logger.info('[231][mutationmapper update]req' + JSON.stringify(req.body));
+    logger.info('[258][mutationmapper update]req' + JSON.stringify(req.body));
 
 	const result = updateHandler(req);
     result.then(data => {
           res.json(data);
      })
-     .catch( err  => res.sendStatus(500));
+     .catch( error => {
+      logger.error("[265][mutationMapper update]err=" + error.message); 
+       res.sendStatus(500);
+      });
 	
  };
   
 exports.deleteMutation = (req, res, next) => {
-      
-     const result = deleteHandler(req);
-     result.then(data => {
+    
+  logger.info("[273][mutationMapper del]req=" + JSON.stringify(req.body)); 
+    const result = deleteHandler(req);
+    result.then(data => {
  
        //  console.log(json.stringfy());
          res.json(data);
-     })
-     .catch( err  => res.sendStatus(500));
+    })
+    .catch( error => {
+      logger.error("[281][mutationMapper del]err=" + error.message); 
+       res.sendStatus(500);
+    });
 
 }
 
@@ -270,34 +288,31 @@ exports.deleteMutation = (req, res, next) => {
 const searchGeneHandler =  async (gene) => {
   await poolConnect;
 
+  logger.info("[290][mutationMapper search]gene=" + gene);
   const sql = "select  count(*) as count  from mutation where gene=@gene";
+  logger.info("[293][mutationMapper search]sql=" + sql);
   try {
        const request = pool.request()
           .input('gene', mssql.VarChar, gene);
           const result = await request.query(sql);
           return result.recordset[0].count;
-  } catch(err) {
-    console.err('==[139][mutation controller] SQL error');
+  } catch(error) {
+    logger.info("[300][mutationMapper search]err=" + error.message);
   }
 
 }
 
 exports.searchMutaionbygene = (req, res, next) => {
-const gene = req.body.gene;
-const result = searchGeneHandler(gene);
-result.then(data => {
-   res.json(data);
-}).catch(err => res.sendStatus(500))
+  logger.info("[305][mutationMapper search]req=" + JSON.stringify(req.body)); 
+  const gene = req.body.gene;
+  const result = searchGeneHandler(gene);
+  result.then(data => {
+    res.json(data);
+  })
+  .catch(error => {
+    logger.info("[205][mutationMapper search]err=" + error.message); 
+    res.sendStatus(500)
+  })
 
 }
-
-// List Mutation
-exports.listMutation = (req, res, next) => { 
-  //   console.log('[200][listMutation]');
-     const result = listHandler(req);
-     result.then(data => { 
-           res.json(data);
-      })
-      .catch( err  => res.sendStatus(500));
-  };
 

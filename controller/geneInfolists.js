@@ -51,7 +51,7 @@ exports.getMutationInfoLists = (req,res, next) => {
        res.json(data);
   })
   .catch( error  => {
-    logger.error('[17][geneinfo]getMutation err=' + error.message);
+    logger.error('[54][geneinfo]getMutation err=' + error.message);
     res.sendStatus(500);
   });
 }
@@ -78,7 +78,7 @@ const  messageHandler2 = async (req) => {
        
        return result.recordset;
   } catch (error) {
-    logger.error('[75][geneinfo]geneExist err=' + error.message);
+    logger.error('[81][geneinfo]geneExist err=' + error.message);
   }
 }
 
@@ -146,7 +146,7 @@ exports.addGeneToMutation = (req, res, next) => {
           res.json(data);
   })
   .catch( error => {
-    logger.error('[17][geneinfo]addGeneToMutation err=' + error.message);
+    logger.error('[150][geneinfo]addGeneToMutation err=' + error.message);
     res.sendStatus(500);
   });
  };
@@ -174,7 +174,7 @@ const  messageHandler4 = async (req) => {
       
       return result.recordset;
   } catch (error) {
-    logger.error('[17][geneinfo]comments select err=' + error.message);
+    logger.error('[177][geneinfo]comments select err=' + error.message);
   }
 }
 
@@ -387,7 +387,7 @@ const  messageHandler9 = async (req) => {
     sql = sql + " from benign ";
     sql = sql + " where genes=@gene ";
     sql = sql + " and coding=@coding";
-  logger.info('[234][geneinfo]get benignInfolists sql=' + sql);
+  logger.info('[390][geneinfo]get benignInfolists sql=' + sql);
     
   try {
     const request = pool.request()
@@ -398,7 +398,7 @@ const  messageHandler9 = async (req) => {
        
     return result.recordset;
   } catch (error) {
-    logger.error('[234][geneinfo]get benignInfolists err=' + error.message);
+    logger.error('[401][geneinfo]get benignInfolists err=' + error.message);
   }
 }
 
@@ -494,14 +494,14 @@ const  messageHandler11 = async (req) => {
       
       return result.recordset;
   } catch (error) {
-    logger.error('[234][geneinfo]benignInfoCount err=' + error.message);
+    logger.error('[497][geneinfo]benignInfoCount err=' + error.message);
   }
 }
 
 // get benign Info Count
 exports.benignInfoCount = (req, res, next) => {
 
-  logger.info('[234][geneinfo]get benignInfoCount req=' + JSON.stringify(req.body)); 
+  logger.info('[504][geneinfo]get benignInfoCount req=' + JSON.stringify(req.body)); 
   const result = messageHandler11(req);
   result.then(data => {
 
@@ -509,7 +509,7 @@ exports.benignInfoCount = (req, res, next) => {
     res.json(data);
   })
   .catch( error  => {
-    logger.error('[234][geneinfo]get benignInfoCount err=' + error.message);
+    logger.error('[512][geneinfo]get benignInfoCount err=' + error.message);
     res.sendStatus(500);
   });
 
@@ -560,7 +560,6 @@ const insertCommentHandler = async(comments) => {
   let commentResult;
 
   logger.info('[563][geneinfo]insertCommentHandler req' + JSON.stringify(req.body));
-
   logger.info('[563][geneinfo]insertCommentHandler length=' + comments.length);  
 
   for (i = 0; i < comments.length; i++)
@@ -636,7 +635,7 @@ exports.getCommentInsert = (req,res, next) => {
     res.json("1");
   })
   .catch( error => {
-    logger.error('[234][geneinfo]getCommentInsert err=' +error.message);
+    logger.error('[638][geneinfo]getCommentInsert err=' +error.message);
     res.sendStatus(500);
   });
 }

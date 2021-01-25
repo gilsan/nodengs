@@ -88,7 +88,7 @@ exports.register = (req,res, next) => {
 				console.log('register->>>>>>step2');
 				res.json({message: 'success'});
 			})
-			.catch( error =>{
+			.catch( error => {
         logger.error("[92][registeruser insert]err=" + error.message);
         res.sendStatus(500);
       }); 

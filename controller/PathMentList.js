@@ -99,7 +99,7 @@ const  cntHandler_path_ment = async (pathologyNum) => {
            res.json(data);
           })
           .catch( error  => {
-            logger.error('[121][sel_path_ment]err=' + error.message);
+            logger.error('[102][sel_path_ment]err=' + error.message);
             res.sendStatus(500)}); 
       } else { 
            //console.log(json.stringfy());
@@ -107,7 +107,7 @@ const  cntHandler_path_ment = async (pathologyNum) => {
       }
   })
   .catch( error => {
-    logger.error('[129][cnt_path_ment]err=' + error.message);
+    logger.error('[110][cnt_path_ment]err=' + error.message);
     res.sendStatus(500);
   }); 
   

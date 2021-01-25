@@ -34,7 +34,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
           return data;      
           
       } catch (error) {
-          logger.error('[55][Pathology_image]]err=' + error.message);
+          logger.error('[37][Pathology_image]]err=' + error.message);
       }
   }
   
@@ -66,7 +66,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
   //병리 Pathology_image count 조회
   exports.checkpathologyImage = (req,res, next) => {
   
-    logger.info('[109][search Pathology_image]data=' + JSON.stringify(req.body));
+    logger.info('[69][search Pathology_image]data=' + JSON.stringify(req.body));
   
     let pathologynum = req.body.pathologynum;
     
@@ -83,7 +83,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
       }
     })
     .catch( error  =>{ 
-      logger.error('[130][search Pathology_image]err=' + error.message);
+      logger.error('[86][search Pathology_image]err=' + error.message);
       res.sendStatus(500);
     });
   
@@ -92,7 +92,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
   //병리 Pathology_image 보고서 조회
   exports.searchpathologyImage = (req,res, next) => {
   
-    logger.info('[109][search Pathology_image]data=' + JSON.stringify(req.body));
+    logger.info('[95][search Pathology_image]data=' + JSON.stringify(req.body));
   
     let pathologynum = req.body.pathologynum;
     
@@ -114,7 +114,7 @@ const  cntHandler_pathology_image = async (pathologynum) => {
       }
     })
     .catch( error  =>{ 
-      logger.error('[130][search Pathology_image]err=' + error.message);
+      logger.error('[117][search Pathology_image]err=' + error.message);
       res.sendStatus(500);
     });
   

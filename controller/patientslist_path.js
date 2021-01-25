@@ -88,7 +88,9 @@ const  messageHandler = async (today) => {
     isnull(age, '') age, \
     isnull(appoint_doc, '') appoint_doc, \
     isnull(bamFilename, '') bamFilename, \
-    isnull(createDate, '') createDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, \
     isnull(dna_rna_ext, '') dna_rna_ext, \
     isnull(examin, '') examin, \
     isnull(gender, '') gender, \
@@ -108,12 +110,18 @@ const  messageHandler = async (today) => {
     isnull(prescription_no, '') prescription_no, \
     isnull(recheck, '') recheck, \
     isnull(rel_pathology_num, '') rel_pathology_num, \
-    isnull(report_date, '') report_date, \
+    case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, \
     isnull(screenstatus, '') screenstatus, \
     isnull(sendEMR, '') sendEMR, \
-    isnull(sendEMRDate, '') sendEMRDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, \
     isnull(test_code, '') test_code, \
-    isnull(tsvFilteredDate, '') tsvFilteredDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, \
     isnull(tsvFilteredFilename, '') tsvFilteredFilename, \
     isnull(tsvFilteredStatus, '') tsvFilteredStatus, \
     isnull(tsvirfilename, '') tsvirfilename, \
@@ -161,7 +169,9 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(age, '') age, \
     isnull(appoint_doc, '') appoint_doc, \
     isnull(bamFilename, '') bamFilename, \
-    isnull(createDate, '') createDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, \
     isnull(dna_rna_ext, '') dna_rna_ext, \
     isnull(examin, '') examin, \
     isnull(gender, '') gender, \
@@ -181,12 +191,18 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(prescription_no, '') prescription_no, \
     isnull(recheck, '') recheck, \
     isnull(rel_pathology_num, '') rel_pathology_num, \
-    isnull(report_date, '') report_date, \
+    case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, \
     isnull(screenstatus, '') screenstatus, \
     isnull(sendEMR, '') sendEMR, \
-    isnull(sendEMRDate, '') sendEMRDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, \
     isnull(test_code, '') test_code, \
-    isnull(tsvFilteredDate, '') tsvFilteredDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, \
     isnull(tsvFilteredFilename, '') tsvFilteredFilename, \
     isnull(tsvFilteredStatus, '') tsvFilteredStatus, \
     isnull(tsvirfilename, '') tsvirfilename, \
@@ -394,7 +410,9 @@ const getPatientInfo = async (pathologyNum) => {
     isnull(age, '') age, \
     isnull(appoint_doc, '') appoint_doc, \
     isnull(bamFilename, '') bamFilename, \
-    isnull(createDate, '') createDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, \
     isnull(dna_rna_ext, '') dna_rna_ext, \
     isnull(examin, '') examin, \
     isnull(gender, '') gender, \
@@ -414,12 +432,18 @@ const getPatientInfo = async (pathologyNum) => {
     isnull(prescription_no, '') prescription_no, \
     isnull(recheck, '') recheck, \
     isnull(rel_pathology_num, '') rel_pathology_num, \
-    isnull(report_date, '') report_date, \
+    case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, \
     isnull(screenstatus, '') screenstatus, \
     isnull(sendEMR, '') sendEMR, \
-    isnull(sendEMRDate, '') sendEMRDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, \
     isnull(test_code, '') test_code, \
-    isnull(tsvFilteredDate, '') tsvFilteredDate, \
+    case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, \
     isnull(tsvFilteredFilename, '') tsvFilteredFilename, \
     isnull(tsvFilteredStatus, '') tsvFilteredStatus, \
     isnull(tsvirfilename, '') tsvirfilename, \
