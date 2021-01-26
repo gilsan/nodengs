@@ -118,7 +118,7 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 	  logger.info("[118] result =" + JSON.stringify(result) )
 	  //return result;
 	} catch (error) {
-	  logger.error('[121][]SQL error=' + error.message);
+	  logger.error('[121][mutation c]SQL error=' + error.message);
 	}
   
 	let resultCnt;
@@ -127,7 +127,7 @@ const  messageMutationCHandler = async (pathology_num, mutation, report_gb) => {
 	  mutation.forEach (item => 
 	  {
 		resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
-		logger.info("[130]cnt=" , resultCnt);
+		logger.info("[130]cnt=" + resultCnt);
 	
 	  }); // foreach end
 	}  //if end
@@ -151,7 +151,7 @@ const  messageMutationPHandler = async (pathology_num, mutationP, report_gb) => 
 	  	mutationP.forEach (item => 
 		{
 		  resultCnt = MutationSaveHandler(pathology_num, item, report_gb);
-		  logger.info("[154]cnt=" , resultCnt);
+		  logger.info("[154]cnt=" + resultCnt);
 	  	}); // foreach end
 	}  //if end
 }
@@ -212,7 +212,7 @@ const amplificationSaveHandler = async (pathology_num, amplification, report_gb 
 		
 		return resultAc;
 	} catch (error) {
-		logger.error('[215][amplication]SQL error=' + error.message);
+		logger.error('[215][amplication save]err=' + error.message);
 	} // try end
 }
 
@@ -226,10 +226,10 @@ const  messageAmplificationCHandler = async (pathology_num, amplification, repor
 	logger.info("[223][amplification C] report_gb=" + report_gb );
   
 	//dekete Query 생성
-	let sql2 = "delete from report_amplification where  pathology_num = @pathology_num ";
+	let sql2 = "delete from report_amplification where pathology_num = @pathology_num ";
   
 	console.log(sql2);
-	logger.info("[223][amplication C]del sql =" + sql2);
+	logger.info("[223][amplication C]del sql=" + sql2);
 	  
 	try {
 	  const request = pool.request()
@@ -240,7 +240,7 @@ const  messageAmplificationCHandler = async (pathology_num, amplification, repor
 	  logger.info("[240][amplification] data=" + JSON.stringify(result)); 
 	  //return result;
 	} catch (error) {
-	  logger.error('[243][amplification] SQL error=' + error.message);
+	  logger.error('[243][amplification]err=' + error.message);
 	}
   
 	let resultCnt;
@@ -249,7 +249,7 @@ const  messageAmplificationCHandler = async (pathology_num, amplification, repor
 		amplification.forEach (item => 
 	  	{
 			resultCnt = amplificationSaveHandler(pathology_num, item, report_gb);
-			logger.info("[296]cnt=" , resultCnt);
+			logger.info("[296]cnt=" + resultCnt);
 	
 	  	}); // foreach end
 	}  //if end
@@ -272,7 +272,7 @@ const  messageAmplificationPHandler = async (pathology_num, amplificationP, repo
 		amplificationP.forEach (item => 
 		{
 			resultCnt = amplificationSaveHandler(pathology_num, item, report_gb);
-			logger.info("[296]cnt=" , resultCnt);
+			logger.info("[296]cnt=" + resultCnt);
 	
 		}); // foreach end
   } // if  amplipication end
@@ -341,15 +341,15 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 const  messageFusionCHandler = async (pathology_num, fusion, report_gb) => {
 
 	const fusion_length = fusion.length;
-	console.log("fusion=", fusion);
-	console.log("b=", fusion.length);
+	logger.info('[344][fusion C]data=' + JSON.stringify( fusion));
+	logger.info('[350][fusion C]length=' + fusion.length);
 
 	let resultCnt ;
 
 	//dekete Query 생성
 	let sql2 = "delete from report_fusion where  pathology_num = @pathology_num ";
 
-	console.log(sql2);
+	logger.info('[350][fusion]sql=' + sql2);
 		
 	try {
 		const request = pool.request()
@@ -358,8 +358,8 @@ const  messageFusionCHandler = async (pathology_num, fusion, report_gb) => {
 		const result = await request.query(sql2)
 		
 		//return result;
-	} catch (err) {
-		console.error('SQL error', err);
+	} catch (error) {
+		logger.error('[365][fusion C]err=' + error.message);
 	}
 
 	if (fusion_length > 0)
@@ -367,7 +367,7 @@ const  messageFusionCHandler = async (pathology_num, fusion, report_gb) => {
 		fusion.forEach (item => 
 		{
 			resultCnt = fusionSaveHandler(pathology_num, item, report_gb);
-			logger.info("[296]cnt=" , resultCnt);
+			logger.info("[296]cnt=" + resultCnt);
 	
 		}); // foreach end
  	} //  if end
@@ -378,8 +378,8 @@ const  messageFusionCHandler = async (pathology_num, fusion, report_gb) => {
 const  messageFusionPHandler = async (pathology_num, fusionP, report_gb) => {
 
   const fusion_length = fusionP.length;
-  console.log("fusion=", fusionP);
-  console.log("b=", fusionP.length);
+  logger.info('[380][fusion P]data=' + JSON.stringify( fusionP));
+  logger.info('[380][fusion]length=' + fusionP.length);
   let resultCnt;
 
   if (fusion_length > 0)
@@ -387,7 +387,7 @@ const  messageFusionPHandler = async (pathology_num, fusionP, report_gb) => {
 	fusionP.forEach (item => 
 		{
 			resultCnt = fusionSaveHandler(pathology_num, item, report_gb);
-			logger.info("[296]cnt=" , resultCnt);
+			logger.info("[390]cnt=" + resultCnt);
 	
 		}); // foreach end
   } //  if end
@@ -403,16 +403,16 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   await poolConnect; // ensures that the pool has been created
   
   //입력 파라미터를 수신한다
-  logger.info("[420->][pathologyReportInsert]pathology_num=" + pathology_num);
-  logger.info("[420->][pathologyReportInsert]patient_info=" + JSON.stringify(patientinfo));
-  logger.info("[420->][pathologyReportInsert]extraction=" + JSON.stringify(extraction));
-  logger.info("[420->][pathologyReportInsert]mutation_c=" + JSON.stringify(mutation_c));
-  logger.info("[420->][pathologyReportInsert]amplication_c=" + JSON.stringify(amplification_c));
-  logger.info("[420->][pathologyReportInsert]fusion_c=" + JSON.stringify(fusion_c));
-  logger.info("[420->][pathologyReportInsert]mutation_p=" + JSON.stringify(mutation_p));
-  logger.info("[420->][pathologyReportInsert]amplication_p=" + JSON.stringify(amplification_p));
-  logger.info("[420->][pathologyReportInsert]fusion_p=" + JSON.stringify(fusion_p));
-  logger.info( "[420->][pathologyReportInsert][messageHandler] screenstatus= " +  screenstatus);
+  logger.info("[406->][pathologyReportInsert]pathology_num=" + pathology_num);
+  logger.info("[406->][pathologyReportInsert]patient_info=" + JSON.stringify(patientinfo));
+  logger.info("[406->][pathologyReportInsert]extraction=" + JSON.stringify(extraction));
+  logger.info("[406->][pathologyReportInsert]mutation_c=" + JSON.stringify(mutation_c));
+  logger.info("[406->][pathologyReportInsert]amplication_c=" + JSON.stringify(amplification_c));
+  logger.info("[406->][pathologyReportInsert]fusion_c=" + JSON.stringify(fusion_c));
+  logger.info("[406->][pathologyReportInsert]mutation_p=" + JSON.stringify(mutation_p));
+  logger.info("[406->][pathologyReportInsert]amplication_p=" + JSON.stringify(amplification_p));
+  logger.info("[406->][pathologyReportInsert]fusion_p=" + JSON.stringify(fusion_p));
+  logger.info("[406->][pathologyReportInsert][messageHandler] screenstatus= " +  screenstatus);
   
   let diagnosis = extraction.diagnosis;
   let dnarna = ''
@@ -456,19 +456,19 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   let examin  = patientinfo.examin;  // 검사자
   let recheck = patientinfo.recheck; // 확인자 
 
-  logger.info("[199][pathologyReportInsert][extraction][dnarna]" + dnarna);
-  logger.info("[479->][pathologyReportInsert][extraction][keyblock]" + keyblock);
-  logger.info("[479->][pathologyReportInsert][extraction][organ]" + organ);
-  logger.info("[479->][pathologyReportInsert][extraction][tumortype]" + tumortype);
-  logger.info("[479->][pathologyReportInsert][extraction][diagnosis]" + diagnosis);
-  logger.info("[479->][pathologyReportInsert][extraction][msiscore]" + msiscore);
-  logger.info("[479->][pathologyReportInsert][extraction][tumorburden]" + tumorburden);
-  logger.info("[479->][pathologyReportInsert][extraction][tumorcellpercentage]" + tumorcellpercentage);
-  logger.info("[479->][pathologyReportInsert][patientinfo][examin]" + examin);
-  logger.info("[479->][pathologyReportInsert][patientinfo][recheck]" +  recheck);
-  logger.info("[479->][pathologyReportInsert][patientinfo][screenstatus]" + screenstatus);  
-  logger.info("[479->][pathologyReportInsert][patientinfo][rel_pathology_num]" +  rel_pathology_num);
-  logger.info("[479->][pathologyReportInsert][patientinfo][sendEMRDate]" + sendEMRDate);
+  logger.info("[459][pathologyReportInsert][extraction][dnarna]" + dnarna);
+  logger.info("[459->][pathologyReportInsert][extraction][keyblock]" + keyblock);
+  logger.info("[459->][pathologyReportInsert][extraction][organ]" + organ);
+  logger.info("[459->][pathologyReportInsert][extraction][tumortype]" + tumortype);
+  logger.info("[459->][pathologyReportInsert][extraction][diagnosis]" + diagnosis);
+  logger.info("[459->][pathologyReportInsert][extraction][msiscore]" + msiscore);
+  logger.info("[459->][pathologyReportInsert][extraction][tumorburden]" + tumorburden);
+  logger.info("[459->][pathologyReportInsert][extraction][tumorcellpercentage]" + tumorcellpercentage);
+  logger.info("[459->][pathologyReportInsert][patientinfo][examin]" + examin);
+  logger.info("[459->][pathologyReportInsert][patientinfo][recheck]" +  recheck);
+  logger.info("[459->][pathologyReportInsert][patientinfo][screenstatus]" + screenstatus);  
+  logger.info("[459->][pathologyReportInsert][patientinfo][rel_pathology_num]" +  rel_pathology_num);
+  logger.info("[459->][pathologyReportInsert][patientinfo][sendEMRDate]" + sendEMRDate);
   
   //insert Query 생성
   const sql_patient = "update patientinfo_path \
@@ -481,7 +481,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck \
 	  where  pathology_num = @pathology_num ";
 	  
-  logger.info("[222][pathologyReportInsert][patientinfo][sql]" + sql_patient);
+  logger.info("[484][pathologyReportInsert][patientinfo][sql]" + sql_patient);
 	  
   try {
 	  const request = pool.request()
@@ -512,10 +512,10 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		}
 		);
 	  
-	  logger.info("data", JSON.stringify(result));
+	  logger.info("data" + JSON.stringify(result));
 	  //return result;
   } catch (error) {
-	  logger.error('SQL error=' + error.message);
+	  logger.error('[518][pathologyReportInsert][handler]err=' + error.message);
   }
   
   //1. Clinically significant boiomakers
@@ -526,7 +526,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   // mutation handler
   let resultMc = messageMutationCHandler(pathology_num, mutation_c, report_gb);
 
-  logger.info("[361][messageMutationCHandler] data=" + JSON.stringify(resultMc)); 
+  logger.info("[529][messageMutationCHandler] data=" + JSON.stringify(resultMc)); 
 
   /*
   resultMc.then(data2 => {
@@ -539,7 +539,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   resultMc = messageAmplificationCHandler(pathology_num, amplification_c, report_gb);
 
   resultMc.then(data2 => {
-	logger.info("[361][messageAmplificationCHandler] data=" + JSON.stringify(data2)); 
+	logger.info("[541][messageAmplificationCHandler] data=" + JSON.stringify(data2)); 
 
   });
 
@@ -547,7 +547,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   resultMc = messageFusionCHandler(pathology_num, fusion_c, report_gb);
 
   resultMc.then(data2 => {
-	logger.info("[361][messageFusionCHandler] data=" + JSON.stringify(data2)); 
+	logger.info("[550][messageFusionCHandler] data=" + JSON.stringify(data2)); 
 
   });
 
@@ -563,7 +563,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   resultMc = messageMutationPHandler(pathology_num, mutation_p, report_gb);
 
   resultMc.then(data2 => {
-	logger.info("[361][messageMutationPHandler] data=" + JSON.stringify(data2)); 
+	logger.info("[565][messageMutationPHandler] data=" + JSON.stringify(data2)); 
 
   }); 
   
@@ -571,7 +571,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   resultMc = messageAmplificationPHandler(pathology_num, amplification_p, report_gb);
 
   resultMc.then(data2 => {
-	logger.info("[361][messageAmplificationPHandler] data=" + JSON.stringify(data2)); 
+	logger.info("[574][messageAmplificationPHandler] data=" + JSON.stringify(data2)); 
 
   });
 
@@ -579,14 +579,14 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   resultMc = messageFusionPHandler(pathology_num, fusion_p, report_gb);
 
   resultMc.then(data2 => {
-	logger.info("[361][messageFusionPHandler] data=" + JSON.stringify(data2)); 
+	logger.info("[582][messageFusionPHandler] data=" + JSON.stringify(data2)); 
 
   });
 
   //delete Query 생성
   sql_del = "delete from path_comment where  pathology_num = @pathology_num ";
 
-  logger.info("[438][del comment]del sql=" + sql_del);
+  logger.info("[589][del path_comment]del sql=" + sql_del);
 	
   try {
 	const request = pool.request()
@@ -594,16 +594,16 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		
 	const result = await request.query(sql_del);
 
-	console.log("[693][commwnt]", result);
+	console.log("[597][path_comment]", result);
 	
 	//return result;
-  } catch (err) {
-	console.error('SQL error', err);
+  } catch (error) {
+	logger.info('[582][path_comment]err=', err);
   }
 
-  console.log("[455][comment][notement]", notement);
-  console.log("[455][comment][generalReport]", generalReport);
-  console.log("[455][comment][specialment]", specialment);
+  console.log("[604][path_comment][notement]", notement);
+  console.log("[604][path_comment][generalReport]", generalReport);
+  console.log("[604][path_comment][specialment]", specialment);
 
 	//insert Query 생성
 	const sql_comment = "insert into path_comment \
@@ -612,7 +612,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 					values(@pathology_num, @notement, \
 						@generalReport, @specialment)";
 	
-	logger.info('[628][pathologyReportInsert][comment]ins sql=' + sql_comment);
+	logger.info('[615][pathologyReportInsert][comment]ins sql=' + sql_comment);
 	
 	let result_comment;
 
@@ -625,11 +625,11 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		
 		result_comment = await request.query(sql_comment);
 
-		console.log("[721][commwnt]", result_comment);
+		console.log("[628][path_comment]", result_comment);
 		
 		//return result;
 	} catch (error) {
-		logger.error('[645[pathologyinsert][comment]ins sql error' + error.message);
+		logger.error('[632][pathologyinsert][path_comment]ins sql error' + error.message);
 	}  // try end
 
   
@@ -661,16 +661,16 @@ exports.insertReportPathology = (req,res, next) => {
   let generalReport = req.body.generalReport;
   let specialment = req.body.specialment;
    
-  logger.info("[683->][pathologyReportInsert][insert]screenstatus=" + screenstatus);
-  logger.info("[683->][pathologyReportInsert][insert]pathology_num=" + pathology_num);
-  logger.info("[683->][pathologyReportInsert][insert]patient_info=" + JSON.stringify(patientinfo));
-  logger.info("[683->][pathologyReportInsert][insert]extraction=" + JSON.stringify(extraction));
-  logger.info("[683->][pathologyReportInsert][insert]mutation_c=" + JSON.stringify(mutation_c));
-  logger.info("[683->][pathologyReportInsert][insert]amplication_c=" + JSON.stringify(amplification_c));
-  logger.info("[683->][pathologyReportInsert][insert]fusion_c=" + JSON.stringify(fusion_c));
-  logger.info("[683->][pathologyReportInsert][insert]mutation_p=" + JSON.stringify(mutation_p));
-  logger.info("[683->][pathologyReportInsert][insert]amplication_p=" + JSON.stringify(amplification_p));
-  logger.info("[683->][pathologyReportInsert][insert]fusion_p=" + JSON.stringify(fusion_p));
+  logger.info("[664->][pathologyReportInsert][insert]screenstatus=" + screenstatus);
+  logger.info("[664->][pathologyReportInsert][insert]pathology_num=" + pathology_num);
+  logger.info("[664->][pathologyReportInsert][insert]patient_info=" + JSON.stringify(patientinfo));
+  logger.info("[664->][pathologyReportInsert][insert]extraction=" + JSON.stringify(extraction));
+  logger.info("[664->][pathologyReportInsert][insert]mutation_c=" + JSON.stringify(mutation_c));
+  logger.info("[664->][pathologyReportInsert][insert]amplication_c=" + JSON.stringify(amplification_c));
+  logger.info("[664->][pathologyReportInsert][insert]fusion_c=" + JSON.stringify(fusion_c));
+  logger.info("[664->][pathologyReportInsert][insert]mutation_p=" + JSON.stringify(mutation_p));
+  logger.info("[664->][pathologyReportInsert][insert]amplication_p=" + JSON.stringify(amplification_p));
+  logger.info("[664->][pathologyReportInsert][insert]fusion_p=" + JSON.stringify(fusion_p));
   
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 
@@ -681,7 +681,7 @@ exports.insertReportPathology = (req,res, next) => {
      res.json({info:"SUCCESS"});
   })
   .catch( error => {
-	logger.error("[702][pathologyReportInsert insert]err=" + error.message);
+	logger.error("[684][pathologyReportInsert insert]err=" + error.message);
 	res.sendStatus(500)
   }); 
 
@@ -690,7 +690,7 @@ exports.insertReportPathology = (req,res, next) => {
 //병리 Pathology 보고서 2차
 exports.updateReportPathology = (req,res, next) => {
 
-  logger.info("[711][pathologyReportInsert][updae]req.body=" + JSON.stringify( req.body));
+  logger.info("[693][pathologyReportInsert][updae]req.body=" + JSON.stringify( req.body));
 
   let screenstatus = '2';
   let pathology_num = req.body.pathology_num;
@@ -706,16 +706,16 @@ exports.updateReportPathology = (req,res, next) => {
   let generalReport = req.body.generalReport;
   let specialment = req.body.specialment;
    
-  logger.info("[683->][pathologyReportInsert][update]screenstatus=" + screenstatus);
-  logger.info("[683->][pathologyReportInsert][update]pathology_num=" + pathology_num);
-  logger.info("[683->][pathologyReportInsert][update]patient_info=" + JSON.stringify(patientinfo));
-  logger.info("[683->][pathologyReportInsert][update]extraction=" + JSON.stringify(extraction));
-  logger.info("[683->][pathologyReportInsert][update]mutation_c=" + JSON.stringify(mutation_c));
-  logger.info("[683->][pathologyReportInsert][update]amplication_c=" + JSON.stringify(amplification_c));
-  logger.info("[683->][pathologyReportInsert][update]fusion_c=" + JSON.stringify(fusion_c));
-  logger.info("[683->][pathologyReportInsert][update]mutation_p=" + JSON.stringify(mutation_p));
-  logger.info("[683->][pathologyReportInsert][update]amplication_p=" + JSON.stringify(amplification_p));
-  logger.info("[683->][pathologyReportInsert][update]fusion_p=" + JSON.stringify(fusion_p));
+  logger.info("[709->][pathologyReportInsert][update]screenstatus=" + screenstatus);
+  logger.info("[709->][pathologyReportInsert][update]pathology_num=" + pathology_num);
+  logger.info("[709->][pathologyReportInsert][update]patient_info=" + JSON.stringify(patientinfo));
+  logger.info("[709->][pathologyReportInsert][update]extraction=" + JSON.stringify(extraction));
+  logger.info("[709->][pathologyReportInsert][update]mutation_c=" + JSON.stringify(mutation_c));
+  logger.info("[709->][pathologyReportInsert][update]amplication_c=" + JSON.stringify(amplification_c));
+  logger.info("[709->][pathologyReportInsert][update]fusion_c=" + JSON.stringify(fusion_c));
+  logger.info("[709->][pathologyReportInsert][update]mutation_p=" + JSON.stringify(mutation_p));
+  logger.info("[709->][pathologyReportInsert][update]amplication_p=" + JSON.stringify(amplification_p));
+  logger.info("[709->][pathologyReportInsert][update]fusion_p=" + JSON.stringify(fusion_p));
   
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 
@@ -726,7 +726,7 @@ exports.updateReportPathology = (req,res, next) => {
      res.json({info:"SUCCESS"});
   })
   .catch( error  => {
-	logger.error("[683->][pathologyReportInsert][update]err=" + error.message);
+	logger.error("[729->][pathologyReportInsert][update]err=" + error.message);
       res.sendStatus(500)
   }); 
 
