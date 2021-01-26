@@ -144,6 +144,9 @@ exports.tumorMutationalBurdenList = (req,res, next) => {
      logger.info('[140][tumorMutationalBurdenList]data=', JSON.stringify( data));
      res.send(data);
   })
-  .catch( err  => res.sendStatus(500)); 
+  .catch( error => {
+    logger.error('[127][tumorMutationalBurden] error=' + error.message);
+    res.sendStatus(500);
+  }); 
 
 }
