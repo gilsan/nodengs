@@ -8,27 +8,6 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-//
-const pool = new mssql.ConnectionPool(config);
-*/
-
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
@@ -36,20 +15,20 @@ const poolConnect = pool.connect();
 const  tumorMutationalBurdenMessageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   
-  logger.info('[33][save][messageHandler]data' + JSON.stringify( req.body));
+  logger.info('[18][save][messageHandler]data' + JSON.stringify( req.body));
     
   //입력 파라미터를 수신한다
   
   const tumorMutationalBurden = req.body.tumorMutationalBurden;
   const pathologyNum  =  req.body.pathologyNum;
   
-  logger.info("[33][save][messageHandler]pathologyNum=" + pathologyNum);
-  logger.info("[33][save][messageHandler]tumorMutationalBurden=" + tumorMutationalBurden);
+  logger.info("[25][save][messageHandler]pathologyNum=" + pathologyNum);
+  logger.info("[25][save][messageHandler]tumorMutationalBurden=" + tumorMutationalBurden);
  
   //insert Query 생성
   let sql2 = "delete from tumorMutationalBurden where  pathologyNum = @pathologyNum ";
 
-  logger.info("[33][save][messageHandler]sql=" + sql2);
+  logger.info("[31][save][messageHandler]sql=" + sql2);
 	
   try {
 	const request = pool.request()
@@ -59,14 +38,14 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
 	
 	//return result;
   } catch (error) {
-	  logger.error('[33][save][messageHandler]error=' + error.message);
+	  logger.error('[41][save][messageHandler]error=' + error.message);
   }
 
   //insert Query 생성;
   const qry = "insert into tumorMutationalBurden (tumorMutationalBurden, pathologyNum) \
 	         values(@tumorMutationalBurden, @pathologyNum)";
 	   
-	logger.info("[33][save][messageHandler]sql=" + qry);
+	logger.info("[48][save][messageHandler]sql=" + qry);
 
     try {
         const request = pool.request()
@@ -77,7 +56,7 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
         return result2;
 
     } catch (error) {
-        logger.error('[33][save][tumorMutationalBurden messageHandler]error=' + error.message);
+        logger.error('[58][save][tumorMutationalBurden messageHandler]error=' + error.message);
     }
      
   //const uuid = uuidv4();
@@ -89,16 +68,16 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
 //병리 tumorMutationalBurden 보고서 입력
 exports.tumorMutationalBurdendata = (req,res, next) => {
 
-  logger.info("[88][save][messageHandler]data=" + JSON.stringify( req.body));
+  logger.info("[71][save][messageHandler]data=" + JSON.stringify( req.body));
 
   const result = tumorMutationalBurdenMessageHandler(req);
   result.then(data => {
 
-     logger.info('[94][tumorMutationalBurdendata][]' + JSON.stringify( data));
+     logger.info('[76][tumorMutationalBurdendata][]' + JSON.stringify( data));
      res.json({message: 'SUCCESS'});
   })
   .catch( error  => {
-    logger.error('[97][tumorMutationalBurdendata][err]',error.message);
+    logger.error('[80][tumorMutationalBurdendata][err]',error.message);
     res.sendStatus(500);
   }); 
 
@@ -112,13 +91,13 @@ const  tumorMutationalBurdenMessageHandler2 = async (req) => {
 	
 	const pathologyNum = req.body.pathologyNum;
 
-	console.log('[113][tumorMutationalBurden select]pathologyNum',pathologyNum);
+	logger.info('[94][tumorMutationalBurden select]pathologyNum',pathologyNum);
 
 	//insert Query 생성
 	const qry = "select tumorMutationalBurden from tumorMutationalBurden \
 				where pathologyNum = @pathologyNum ";
 
-	console.log("sql",qry);
+  logger.info('[76][tumorMutationalBurdendata select]sql' + qry);
 		   
 	try {
 		  const request = pool.request()
@@ -128,20 +107,20 @@ const  tumorMutationalBurdenMessageHandler2 = async (req) => {
 		  
 		 return result.recordset;
 	} catch (error) {
-		  logger.error('[127][tumorMutationalBurden] error=' + error.message);
+		  logger.error('[110][tumorMutationalBurden] error=' + error.message);
 	}
 }
    
 //병리 filteredOriginData 보고서 조회
 exports.tumorMutationalBurdenList = (req,res, next) => {
 
-  logger.info("[134][tumorMutationalBurden]select data=" + req.body);
+  logger.info("[117][tumorMutationalBurden]select data=" + req.body);
 
   const result = tumorMutationalBurdenMessageHandler2(req);
 
   result.then(data => {
 
-     logger.info('[140][tumorMutationalBurdenList]data=', JSON.stringify( data));
+     logger.info('[123][tumorMutationalBurdenList]data=', JSON.stringify( data));
      res.send(data);
   })
   .catch( error => {

@@ -161,7 +161,7 @@ const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, exam
             .input('status', mssql.VarChar, status)
             .input('flt3ITD', mssql.VarChar, flt3ITD)
             .input('leukemia', mssql.VarChar, leukemia)
-            .input('chron', mssql.VarChar, chron)
+            .input('chron', mssql.NVarChar, chron)
             .input('examin', mssql.NVarChar, examin)
             .input('recheck', mssql.NVarChar, recheck)
             .input('specimenNo', mssql.VarChar, specimenNo); // or: new sql.Request(pool1)
