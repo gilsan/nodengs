@@ -85,36 +85,38 @@ const  messageHandler = async (today) => {
     logger.info('[82][patientinfo_diag list]today=' + today);
 
     const sql ="select isnull(name, '') name  ,isnull(patientID, '') patientID \
-                ,isnull(age,  '') age ,isnull(gender, '') gender \
-                ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
-                ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease \
-                ,isnull(method, '') method ,isnull(specimen, '') specimen \
-                ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
-                ,isnull(worker, '') worker \
-                ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
-                ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
-                ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
-                ,isnull(tsvFilteredFilename, '') tsvFilteredFilename \
-                ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
-                        then '' \
-                        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end  AS  createDate \
-                ,isnull(tsvFilteredStatus, '') tsvFilteredStatus \
-                ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
-                        then '' \
-                        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end  AS tsvFilteredDate \
-                ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
-                ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  \
-                        then '' \
-                        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end  AS sendEMRDate  \
-                ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
-                ,isnull(test_code, '') test_code  \
-                ,isnull(screenstatus, '')  screenstatus \
-                ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  \
-                        then '' \
-                        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end  AS report_date \
-                ,isnull(examin, '') examin, isnull(recheck, '') recheck \
-                ,isnull(bonemarrow, '') bonemarrow, isnull(diagnosis, '') diagnosis, isnull(genetictest, '') genetictest \
-                from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
+    ,isnull(age,  '') age ,isnull(gender, '') gender \
+    ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
+    ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease \
+    ,isnull(method, '') method ,isnull(specimen, '') specimen \
+    ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
+    ,isnull(worker, '') worker \
+    ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
+    ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
+    ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
+    ,isnull(tsvFilteredFilename, '') tsvFilteredFilename \
+    ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate \
+    ,isnull(tsvFilteredStatus, '') tsvFilteredStatus \
+    ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate \
+    ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
+    ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
+    ,case when IsNULL( CONVERT(VARCHAR(4), accept_date, 102 ), '' ) = '1900'  \
+    then '' \
+    else IsNULL( CONVERT(VARCHAR(10), accept_date, 102 ), '' ) end accept_date \
+    ,isnull(test_code, '') test_code  \
+    ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
+    ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
+        then '' \
+        else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
+    ,isnull(examin, '') examin, isnull(recheck, '') recheck \
+    ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+    from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
@@ -175,17 +177,19 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,isnull(tsvFilteredStatus, '') tsvFilteredStatus \
             ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
                 then '' \
-                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate \
+                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate \
             ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
-            ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  \
+            ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  \
                 then '' \
-                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate \
-            ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
+                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
+            ,case when IsNULL( CONVERT(VARCHAR(4), accept_date, 102 ), '' ) = '1900'  \
+            then '' \
+            else IsNULL( CONVERT(VARCHAR(10), accept_date, 102 ), '' ) end accept_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
-            ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  \
+            ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
                 then '' \
-                else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end  report_date \
+                else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
             ,isnull(examin, '') examin, isnull(recheck, '') recheck \
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
             from [dbo].[patientinfo_diag] \
@@ -509,26 +513,38 @@ const getpatientinfo = async (specimenNo) => {
     await poolConnect;
     
     const sql =`select isnull(name, '') name  ,isnull(patientID, '') patientID \
-        ,isnull(age,  '') age ,isnull(gender, '') gender \
-        ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
-        ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease \
-        ,isnull(method, '') method ,isnull(specimen, '') specimen \
-        ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
-        ,isnull(worker, '') worker \
-        ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
-        ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
-        ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
-        ,isnull(tsvFilteredFilename, '') tsvFilteredFilename ,isnull(createDate, '') createDate \
-        ,isnull(tsvFilteredStatus, '') tsvFilteredStatus ,isnull(tsvFilteredDate, '') tsvFilteredDate \
-        ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
-        ,isnull(sendEMRDate, '') sendEMRDate \
-        ,isnull(convert(varchar(10), cast(stuff(stuff(stuff(accept_date, 9, 0, ' '), 12, 0, ':'), 15, 0, ':') as datetime), 102), '') accept_date \
-        ,isnull(test_code, '') test_code  \
-        ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
-        ,isnull(report_date, '') report_date \
-        ,isnull(examin, '') examin, isnull(recheck, '') recheck \
-        ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
-      from patientInfo_diag  where specimenNo=@specimenNo`;
+            ,isnull(age,  '') age ,isnull(gender, '') gender \
+            ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
+            ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease \
+            ,isnull(method, '') method ,isnull(specimen, '') specimen \
+            ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
+            ,isnull(worker, '') worker \
+            ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
+            ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
+            ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
+            ,isnull(tsvFilteredFilename, '') tsvFilteredFilename \
+            ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+                then '' \
+                else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate \
+            ,isnull(tsvFilteredStatus, '') tsvFilteredStatus \
+            ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+                then '' \
+                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate \
+            ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
+            ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  \
+                then '' \
+                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
+            ,case when IsNULL( CONVERT(VARCHAR(4), accept_date, 102 ), '' ) = '1900'  \
+            then '' \
+            else IsNULL( CONVERT(VARCHAR(10), accept_date, 102 ), '' ) end accept_date \
+            ,isnull(test_code, '') test_code  \
+            ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
+            ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
+                then '' \
+                else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
+            ,isnull(examin, '') examin, isnull(recheck, '') recheck \
+            ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+            from patientInfo_diag  where specimenNo=@specimenNo`;
 
     try {
         const request = pool.request()
