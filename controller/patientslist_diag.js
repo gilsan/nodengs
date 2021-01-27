@@ -106,7 +106,7 @@ const  messageHandler = async (today) => {
     ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  \
         then '' \
         else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
-    ,case when IsNULL( CONVERT(VARCHAR(4), accept_date, 102 ), '' ) = '1900'  \
+    ,case when IsNULL( CONVERT(VARCHAR(4), cast(CAST(accept_date as CHAR(8)) as datetime), 102  ), '' ) = '1900'  \
     then '' \
     else IsNULL( CONVERT(VARCHAR(10), accept_date, 102 ), '' ) end accept_date \
     ,isnull(test_code, '') test_code  \
@@ -184,7 +184,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
             ,case when IsNULL( CONVERT(VARCHAR(4), accept_date, 102 ), '' ) = '1900'  \
             then '' \
-            else IsNULL( CONVERT(VARCHAR(10), accept_date, 102 ), '' ) end accept_date \
+            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
@@ -536,7 +536,7 @@ const getpatientinfo = async (specimenNo) => {
                 else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
             ,case when IsNULL( CONVERT(VARCHAR(4), accept_date, 102 ), '' ) = '1900'  \
             then '' \
-            else IsNULL( CONVERT(VARCHAR(10), accept_date, 102 ), '' ) end accept_date \
+            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
