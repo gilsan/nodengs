@@ -13,54 +13,31 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  filteredOrigindataMessageHandler = async (req) => {
+// filteredOrigindata insert
+const  filteredOrigindataSaveHandler = async (body_data) => {
   await poolConnect; // ensures that the pool has been created
-  
-  logger.info('[19][save][messageHandler][filteredOriginData]req='  + JSON.stringify( req.body));
-    
-  //입력 파라미터를 수신한다
-  
-  const pathologyNum  =  req.body.data[0].pathologyNum;
-
-  logger.info("[25][filteredOriginData]pathologyNum="+ pathologyNum);
- 
-  //insert Query 생성
-  let sql2 = "delete from filteredOriginData where  pathologyNum = @pathologyNum ";
-
-  logger.info('[30]filteredOrigindata sql=' + sql2);
-	
-  try {
-    const request = pool.request()
-      .input('pathologyNum', mssql.VarChar, pathologyNum); 
-      
-    const result = await request.query(sql2)
-	
-	//return result;
-  } catch (error) {
-	  logger.error('[40][filteredOrigindata del err]err=' + error.message);
-  }
 
   //insert Query 생성;
   //for 루프를 돌면서 filteredOriginData 카운트 만큼 
-  const len = req.body.data.length;
+  const len = body_data.length;
   let result;
   if (len > 0 ) {
     for (let i = 0; i < len; i++) {
 
-      const aminoAcidChange = req.body.data[i].aminoAcidChange;
-      const coding = req.body.data[i].coding;
-      const comsmicID  =  req.body.data[i].comsmicID;
-      const cytoband  =  req.body.data[i].cytoband;
-      const frequency  =  req.body.data[i].frequency;
-      const gene  =  req.body.data[i].gene;
-      const locus  =  req.body.data[i].locus;
-      const oncomine  =  req.body.data[i].oncomine;
-      const OncomineVariant = req.body.data[i].OncomineVariant;
-      const pathologyNum  =  req.body.data[i].pathologyNum;
-      const readcount  =  req.body.data[i].readcount;
-      const type  =  req.body.data[i].type; 
-      const variantID  =  req.body.data[i].variantID;
-      const variantName  =  req.body.data[i].variantName;
+      const aminoAcidChange = body_data[i].aminoAcidChange;
+      const coding = body_data[i].coding;
+      const comsmicID  =  body_data[i].comsmicID;
+      const cytoband  =  body_data[i].cytoband;
+      const frequency  =  body_data[i].frequency;
+      const gene  =  body_data[i].gene;
+      const locus  =  body_data[i].locus;
+      const oncomine  =  body_data[i].oncomine;
+      const OncomineVariant = body_data[i].OncomineVariant;
+      const pathologyNum  =  body_data[i].pathologyNum;
+      const readcount  =  body_data[i].readcount;
+      const type  =  body_data[i].type; 
+      const variantID  =  body_data[i].variantID;
+      const variantName  =  body_data[i].variantName;
 
       logger.info("[51][filteredOriginData]aminoAcidChange=" + aminoAcidChange);
       logger.info("[51][filteredOriginData]coding=" + coding);
@@ -117,6 +94,50 @@ const  filteredOrigindataMessageHandler = async (req) => {
       }
     }
   } // End of If
+}
+
+const  filteredOrigindataMessageHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+  
+  logger.info('[19][save][messageHandler][filteredOriginData]req=' + JSON.stringify( req.body));
+    
+  //입력 파라미터를 수신한다
+  const pathologyNum  =  req.body.data[0].pathologyNum;
+  const data_body  =  req.body.data;
+
+  logger.info("[25][filteredOriginData]pathologyNum="+ pathologyNum);
+ 
+  //insert Query 생성
+  let sql2 = "delete from filteredOriginData where  pathologyNum = @pathologyNum ";
+
+  logger.info('[30]filteredOrigindata sql=' + sql2);
+  
+  
+  let result;
+
+  try {
+    const request = pool.request()
+      .input('pathologyNum', mssql.VarChar, pathologyNum); 
+      
+      result = await request.query(sql2);
+    
+    result.then( data => {
+      console.log (data);
+
+      result = filteredOrigindataSaveHandler(data_body);
+
+      result.then (data_ins => {
+        console.log (data_ins);
+      })
+      .catch(error => {
+        logger.error('[40][filteredOrigindata ins err]err=' + error.message);
+      })
+    });
+	
+	//return result;
+  } catch (error) {
+	  logger.error('[40][filteredOrigindata del err]err=' + error.message);
+  }
   
   return result;
 }

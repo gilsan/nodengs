@@ -14,37 +14,14 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  tumorcellpercentageMessageHandler = async (req) => {
+const  tumorcellpercentageInsertHandler = async (pathologyNum, tumorcellpercentage) => {
   await poolConnect; // ensures that the pool has been created
-    
-  //입력 파라미터를 수신한다
-  
-  const tumorcellpercentage = req.body.percentage;
-  const pathologyNum  =  req.body.pathologyNum;
-  logger.info('[37][tumorcellpercentageMessageHandler]tumorcellpercentage=' + tumorcellpercentage);
-  logger.info('[37][tumorcellpercentageMessageHandler]pathologyNum=' + pathologyNum  );
- 
-  //insert Query 생성
-  let sql2 = "delete from tumorcellpercentage where pathologyNum = @pathologyNum ";
-
-  logger.info('[45][tumorcellpercentageMessageHandler]delete sql=' + sql2  );
- 
-  try {
-	   const request = pool.request()
-		.input('pathologyNum', mssql.VarChar, pathologyNum); 
-		
-	  const result = await request.query(sql2)
-	
-	  //return result;
-    } catch (error) {
-	  logger.error('[55][tumorcellpercentageMessageHandler]err=' + error.message);
-  }
 
   //insert Query 생성;
   const qry = "insert into tumorcellpercentage (tumorcellpercentage, pathologyNum) \
 	         values(@tumorcellpercentage, @pathologyNum)";
 		   
-  logger.info('[62][tumorcellpercentageMessageHandler]insert sql=' + qry  );
+  logger.info('[24][tumorcellpercentageMessageHandler]insert sql=' + qry  );
 
     try {
         const request = pool.request()
@@ -56,8 +33,48 @@ const  tumorcellpercentageMessageHandler = async (req) => {
         return result;
 
     } catch (error) {
-      logger.error('[74][tumorcellpercentageMessageHandler]insert error=' + error.message  );
+      logger.error('[36][tumorcellpercentageMessageHandler]insert error=' + error.message  );
     }
+}
+
+const  tumorcellpercentageMessageHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+    
+  //입력 파라미터를 수신한다
+  logger.info('[44][tumorcellpercentageMessageHandler]req=' + JSON.stringify(req.body));
+
+  const tumorcellpercentage = req.body.percentage;
+  const pathologyNum  =  req.body.pathologyNum;
+  logger.info('[47][tumorcellpercentageMessageHandler]tumorcellpercentage=' + tumorcellpercentage);
+  logger.info('[47][tumorcellpercentageMessageHandler]pathologyNum=' + pathologyNum  );
+ 
+  //insert Query 생성
+  let sql2 = "delete from tumorcellpercentage where pathologyNum = @pathologyNum ";
+
+  logger.info('[54][tumorcellpercentageMessageHandler]delete sql=' + sql2  );
+ 
+  try {
+	   const request = pool.request()
+		.input('pathologyNum', mssql.VarChar, pathologyNum); 
+		
+    const result = await request.query(sql2);
+    
+    result.then(data => {
+      console.log(data);
+
+      const res_ins = tumorcellpercentageInsertHandler(pathologyNum, tumorcellpercentage);
+      res_ins.then(data_ins => {
+        console.log(data_ins);
+      })
+      .catch(error => {
+        logger.error('[70][tumorcellpercentageMessageHandler]err=' + error.message);
+      })
+    });
+	
+	  //return result;
+    } catch (error) {
+	  logger.error('[76][tumorcellpercentageMessageHandler]err=' + error.message);
+  }
 }
    
 //병리 tumorcellpercentage

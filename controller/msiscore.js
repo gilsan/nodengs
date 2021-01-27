@@ -13,32 +13,9 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  msiscoreMessageHandler = async (req) => {
+//  msiscore insert
+const msiscoreSaveHandler = async (pathologyNum, msiscore) => {
   await poolConnect; // ensures that the pool has been created
-  
-  logger.info('[33][msiscore save][messageHandler]data=' + JSON.stringify( req.body));
-    
-  //입력 파라미터를 수신한다
-  const msiscore = req.body.msiscore;
-  const pathologyNum  =  req.body.pathologyNum;
-  
-  logger.info("[40][msiscore]pathologyNum" +  pathologyNum  + ",msiscore" +  msiscore);
- 
-  //insert Query 생성
-  let sql2 = "delete from msiscore where  pathologyNum = @pathologyNum ";
-
-  logger.info("[50][msiscore]del sql=" + sql2);
-	
-  try {
-	const request = pool.request()
-		.input('pathologyNum', mssql.VarChar, pathologyNum); 
-		
-	const result = await request.query(sql2)
-	
-	//return result;
-  } catch (error) {
-    logger.error('[60][msiscore]del err=' + error.message);
-  }
 
   //insert Query 생성;
   const qry = "insert into msiscore (msiscore, pathologyNum)  values(@msiscore, @pathologyNum)";
@@ -56,6 +33,48 @@ const  msiscoreMessageHandler = async (req) => {
     } catch (error) {
       logger.error('[77][msiscore]err=' + error.message);
     }
+}
+
+const  msiscoreMessageHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+  
+  logger.info('[40][msiscore save][messageHandler]data=' + JSON.stringify( req.body));
+    
+  //입력 파라미터를 수신한다
+  const msiscore = req.body.msiscore;
+  const pathologyNum  =  req.body.pathologyNum;
+  
+  logger.info("[46][msiscore]pathologyNum=" +  pathologyNum  + ", msiscore=" +  msiscore);
+ 
+  //insert Query 생성
+  let sql2 = "delete from msiscore where  pathologyNum = @pathologyNum ";
+
+  logger.info("[50][msiscore]del sql=" + sql2);
+	
+  try {
+    const request = pool.request()
+      .input('pathologyNum', mssql.VarChar, pathologyNum); 
+      
+    const result = request.query(sql2);
+    
+    result.then( data =>
+    {
+        console.log(data);
+        result_ins = msiscoreSaveHandler(pathologyNum,  msiscore);
+
+        result_ins.then(data_ins => {
+          console.log(data_ins);
+        })
+        .catch(error => {
+          logger.error('[60][msiscore]ins err=' + error.message);
+        })
+
+    });
+
+	//return result;
+  } catch (error) {
+    logger.error('[60][msiscore]del err=' + error.message);
+  };
     
   //const uuid = uuidv4();
   //console.log('uuid:', uuid);

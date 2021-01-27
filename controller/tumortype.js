@@ -14,7 +14,28 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  tumorMutationalBurdenMessageHandler = async (req) => {
+const  tumortypeSaveHandler = async (pathologyNum, tumortype) => {
+
+  //insert Query 생성;
+  const qry = "insert into tumortype (tumortype, pathologyNum) \
+	         values(@tumortype, @pathologyNum)";
+  
+  logger.info('[56][save][messageHandler]qry=' + qry);
+
+    try {
+        const request = pool.request()
+        .input('tumortype', mssql.VarChar, tumortype)
+        .input('pathologyNum', mssql.VarChar, pathologyNum);
+        
+        const result2 = await request.query(qry);
+        
+        return result2;
+    } catch (error) {
+        logger.error('[58][tumortype] error=' + error.message);
+    }
+}
+
+const  tumortypenMessageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   
   logger.info('[20][save][messageHandler]data=' + JSON.stringify( req.body));
@@ -36,36 +57,30 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
 	  const request = pool.request()
 		  .input('pathologyNum', mssql.VarChar, pathologyNum); 
 		
-	  const result = await request.query(sql2, (error, result2)=> {
+	  const result = request.query(sql2, (error, result2)=> {
       if (error)
       {
           logger.error('[42][tumortype]error= ' + error.message);
       }
       logger.info("[44][tumortype]result=" + JSON.stringify( result2))
     });
-	
+
+    result.then(data => {
+      console.log(data);
+      const res_ins = tumortypeSaveHandler(pathologyNum, tumortype);
+
+      res_ins.then( data => {
+        console.log(data);
+      })
+      .catch (error => {
+        logger.error('[58][tumortype] error=' + error.message);
+      });
+    });
+    	
 	//return result;
   } catch (error) {
 	  logger.error('[49][tumortype]del error=' + error.message);
   }
-
-  //insert Query 생성;
-  const qry = "insert into tumortype (tumortype, pathologyNum) \
-	         values(@tumortype, @pathologyNum)";
-  
-  logger.info('[56][save][messageHandler]qry=' + qry);
-
-    try {
-        const request = pool.request()
-        .input('tumortype', mssql.VarChar, tumortype)
-        .input('pathologyNum', mssql.VarChar, pathologyNum);
-        
-        const result2 = await request.query(qry);
-        
-        return result2;
-    } catch (error) {
-        logger.error('[58][tumortype] error=' + error.message);
-    }
 }
    
 //병리 tumorMutationalBurden 보고서 입력
@@ -73,7 +88,7 @@ exports.tumortypedata = (req,res, next) => {
 
   logger.info('[74][tumortype]save=' + JSON.stringify(req.body));
 
-  const result = tumorMutationalBurdenMessageHandler(req);
+  const result = tumortypenMessageHandler(req);
   result.then(data => {
      res.json({message: 'SUCCESS'});
   })

@@ -9,43 +9,18 @@ const router = express.Router();
 const mssql = require('mssql');
 const logger = require('../common/winston');
 const dbConfigMssql = require('../common/dbconfig.js');
+const { error } = require('winston');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  tumorMutationalBurdenMessageHandler = async (req) => {
+const  tumorMutationalBurdenInsertHandler = async (pathologyNum, tumorMutationalBurden) => {
   await poolConnect; // ensures that the pool has been created
-  
-  logger.info('[18][save][messageHandler]data' + JSON.stringify( req.body));
-    
-  //입력 파라미터를 수신한다
-  
-  const tumorMutationalBurden = req.body.tumorMutationalBurden;
-  const pathologyNum  =  req.body.pathologyNum;
-  
-  logger.info("[25][save][messageHandler]pathologyNum=" + pathologyNum);
-  logger.info("[25][save][messageHandler]tumorMutationalBurden=" + tumorMutationalBurden);
- 
-  //insert Query 생성
-  let sql2 = "delete from tumorMutationalBurden where  pathologyNum = @pathologyNum ";
-
-  logger.info("[31][save][messageHandler]sql=" + sql2);
-	
-  try {
-	const request = pool.request()
-		.input('pathologyNum', mssql.VarChar, pathologyNum); 
-		
-	const result = await request.query(sql2)
-	
-	//return result;
-  } catch (error) {
-	  logger.error('[41][save][messageHandler]error=' + error.message);
-  }
 
   //insert Query 생성;
   const qry = "insert into tumorMutationalBurden (tumorMutationalBurden, pathologyNum) \
 	         values(@tumorMutationalBurden, @pathologyNum)";
 	   
-	logger.info("[48][save][messageHandler]sql=" + qry);
+	logger.info("[22][save][messageHandler]sql=" + qry);
 
     try {
         const request = pool.request()
@@ -56,8 +31,49 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
         return result2;
 
     } catch (error) {
-        logger.error('[58][save][tumorMutationalBurden messageHandler]error=' + error.message);
+        logger.error('[33][save][tumorMutationalBurden messageHandler]error=' + error.message);
     }
+}
+
+const  tumorMutationalBurdenMessageHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+  
+  //입력 파라미터를 수신한다
+  logger.info('[41][save][messageHandler]data' + JSON.stringify( req.body));
+      
+  const tumorMutationalBurden = req.body.tumorMutationalBurden;
+  const pathologyNum  =  req.body.pathologyNum;
+  
+  logger.info("[45][save][messageHandler]pathologyNum=" + pathologyNum);
+  logger.info("[45][save][messageHandler]tumorMutationalBurden=" + tumorMutationalBurden);
+ 
+  //insert Query 생성
+  let sql2 = "delete from tumorMutationalBurden where  pathologyNum = @pathologyNum ";
+  logger.info("[51][save][messageHandler]sql=" + sql2);
+	
+  try {
+	const request = pool.request()
+		.input('pathologyNum', mssql.VarChar, pathologyNum); 
+		
+  const result = await request.query(sql2);
+  result.then(data => {
+
+    console.log(data);
+
+    res_ins = tumorMutationalBurdenInsertHandler(pathologyNum, tumorMutationalBurden);
+    res_ins.then(data_ins => {
+      console.log(data_ins);
+    })
+    .catch(error => {
+      logger.error('[68][save][messageHandler ins]error=' + error.message);
+    })
+
+  });
+	
+	//return result;
+  } catch (error) {
+	  logger.error('[75][save][messageHandler]error=' + error.message);
+  }
      
   //const uuid = uuidv4();
   //console.log('uuid:', uuid);

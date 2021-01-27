@@ -22,7 +22,7 @@ const  clinicallyInsertHandler = async (pathologyNum, clinically) => {
         
         //return result;
       } catch (error) {
-        logger.error('==== SQL error ======='+ error.message);
+        logger.info('[27][clinically ins]err='+ error.message);
       }
  
     const len = clinically.length;
