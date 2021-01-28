@@ -138,6 +138,7 @@ const  messageHandler3 = async (originalname, dirPath, testedID) => {
         set tsvFilteredFilename = @originalname, 
         tsvFilteredStatus= '처리완료',
         screenstatus = '0',
+        detected = '0',
         path=@dirPath,
         tsvFilteredDate=getdate()  
         where specimenNo = @testedID`;
