@@ -653,7 +653,7 @@ exports.finishScreen = (req, res, next) => {
 // 임시저장
 exports.saveScreen = (req, res, next) => {
 
-logger.info('[466][screenList][insertScreen]req=' + JSON.stringify(req.body));
+logger.info('[656][screenList][insertScreen]req=' + JSON.stringify(req.body));
 
 const chron = req.body.chron ;
 const flt3ITD = req.body.flt3itd ; 
@@ -667,7 +667,7 @@ const examin            = req.body.patientInfo.examin;
 const recheck           = req.body.patientInfo.recheck;
 const screenstatus      = req.body.patientInfo.screenstatus;
 
-logger.info('[479][screenList][update screen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
+logger.info('[676][screenList][update screen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
                               + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia); 
 const result2 = deleteHandler(specimenNo);
 result2.then(data => {
@@ -697,7 +697,7 @@ result2.then(data => {
         
   })
   .catch( error  => {
-    logger.info('[509][screenList][insertScreen]err=' + error.message);
+    logger.info('[700][screenList][insertScreen]err=' + error.message);
     res.sendStatus(500)
   });
 };
