@@ -354,7 +354,6 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const detectedtype      = req.body.resultStatus;
     const examin            = req.body.patientInfo.examin;
     const recheck           = req.body.patientInfo.recheck;
-    const screenstatus      = req.body.patientInfo.screenstatus;
 
     logger.info('[350][screenList][update screenspecimenNo=, ' + specimenNo
                                  + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia); 
