@@ -354,6 +354,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const detectedtype      = req.body.resultStatus;
     const examin            = req.body.patientInfo.examin;
     const recheck           = req.body.patientInfo.recheck;
+    const screenstatus      = req.body.patientInfo.screenstatus;
     console.log('[355][insertScreen][req.body]', req.body.specimenNo, detectedtype, examin, recheck);
     const result2 = deleteHandler(specimenNo);
     result2.then(data => {
@@ -371,7 +372,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
              const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
              detectedResult.then(data => {
                 // 검사자 상태변경
-                const statusResult = messageHandler2(specimenNo, '1', chron, flt3ITD, leukemia, examin, recheck);
+                const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck);
                 statusResult.then(data => {
                      res.json({message: 'OK'});
                  });
