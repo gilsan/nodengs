@@ -8,5 +8,6 @@ router.post('/find',  screenController.patientLists);
 router.post('/query',  screenController.screenLists);
 router.post('/comments', screenController.commentLists);  // 코멘트 가져오기
 router.post('/insert', screenController.insertScreen);
+router.post('/tempsave', screenController.saveScreen);
 router.post('/finish', screenController.finishScreen);
 module.exports = router;
