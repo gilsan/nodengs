@@ -667,7 +667,7 @@ const examin            = req.body.patientInfo.examin;
 const recheck           = req.body.patientInfo.recheck;
 const screenstatus      = req.body.patientInfo.screenstatus;
 
-logger.info('[479][screenList][update screenspecimenNo=, ' + specimenNo
+logger.info('[479][screenList][update screen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
                               + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia); 
 const result2 = deleteHandler(specimenNo);
 result2.then(data => {
