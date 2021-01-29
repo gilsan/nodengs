@@ -311,8 +311,8 @@ router.post('/upload', function (req, res) {
 
           // 2021.01.29  deleteDetectedVariantsHandler add
           //  deleteDetectedVariantsHandler
-           const result4 =  deleteDetectedVariantsHandler(testedID);
-           result4.then(data => {
+           const result5 =  deleteDetectedVariantsHandler(testedID);
+           result5.then(data => {
  
              console.log(data);
              //res.json(data);
