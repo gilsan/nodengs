@@ -79,6 +79,8 @@ function nvl(st, defaultStr){
     return st ;
 }
 
+// 진검 오늘 환자 검색
+// 2021.01.29 prescription_date -> accept_date 조회 조건 변경
 const  messageHandler = async (today) => {
     await poolConnect; // ensures that the pool has been created
    
@@ -116,7 +118,7 @@ const  messageHandler = async (today) => {
         else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
     ,isnull(examin, '') examin, isnull(recheck, '') recheck \
     ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
-    from [dbo].[patientinfo_diag] where left(prescription_date, 8) = '" + today + "'";
+    from [dbo].[patientinfo_diag] where left(accept_date, 8) = '" + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
@@ -146,6 +148,8 @@ const  messageHandler = async (today) => {
     }); 
 }
 
+// 진검 환자 검색
+// 2021.01.29 prescription_date -> accept_date 조회 조건 변경
 const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status) => {
     await poolConnect; // ensures that the pool has been created
    
@@ -193,8 +197,8 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,isnull(examin, '') examin, isnull(recheck, '') recheck \
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
             from [dbo].[patientinfo_diag] \
-            where left(prescription_date, 8) >= '" + start + "'" 
-             + " and left(prescription_date, 8) <= '" + end + "'"; 
+            where left(accept_date, 8) >= '" + start + "'" 
+             + " and left(accept_date, 8) <= '" + end + "'"; 
 
     if(patient.length > 0 )
     {

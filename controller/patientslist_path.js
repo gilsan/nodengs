@@ -158,6 +158,7 @@ const  messageHandler = async (today) => {
      }); 
 }
 
+// 병리 환자 검색
 const messageHandler2 = async (start, end, patientID, pathology_num) => {
     await poolConnect; // ensures that the pool has been created
    
