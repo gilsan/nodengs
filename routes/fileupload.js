@@ -180,6 +180,29 @@ const  messageHandler4 = async (originalname, dirPath, testedID) => {
     logger.error('[179][fileupload jinTsvUpload err=' + error.message);
   }
 }
+
+// 2021.01.29  deleteDetectedVariantsHandler add
+// delete Detected Variants Handler
+const deleteDetectedVariantsHandler = async (specimenNo) => {
+   
+  logger.info('[415][screenList]delete detected_variants]specimenNo=' + specimenNo);
+    //delete Query 생성;    
+    const qry ="delete report_detected_variants where specimenNo=@specimenNo";
+            
+    logger.info("[419][screenList][del detected_variant]del sql=" + qry);
+  
+    try {
+        const request = pool.request()
+          .input('specimenNo', mssql.VarChar, specimenNo);
+          
+          result = await request.query(qry);         
+  
+    } catch (error) {
+      logger.error('[428][screenList][del detected_variant]err=' +  error.message);
+    }
+      
+    return result;
+}
  
 var upload = multer({ storage: storage, limits: { fileSize : 3 *1024 * 1000 * 1000, fieldSize: 3 *1024 * 1000 * 1000, fieldNameSize: 1000  } }).array('userfiles', 10);
 
@@ -285,6 +308,18 @@ router.post('/upload', function (req, res) {
           .catch( error => {
             logger.error('[284][fileupload] inset jintsv err=' + error.message)
           });	  
+
+          // 2021.01.29  deleteDetectedVariantsHandler add
+          //  deleteDetectedVariantsHandler
+           const result4 =  deleteDetectedVariantsHandler(testedID);
+           result4.then(data => {
+ 
+             console.log(data);
+             //res.json(data);
+           })
+           .catch( error => {
+             logger.error('[284][fileupload] inset jintsv err=' + error.message)
+           });	  
           
 		      const surfix = item.originalname.split('.');
 		      if ( surfix[1] === 'tsv') {
