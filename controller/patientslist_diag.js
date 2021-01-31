@@ -118,6 +118,7 @@ const  messageHandler = async (today) => {
         else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
     ,isnull(examin, '') examin, isnull(recheck, '') recheck \
     ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+    , isnull(vusmsg, '') vusmsg  \
     from [dbo].[patientinfo_diag] where left(accept_date, 8) = '" + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
@@ -196,6 +197,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
             ,isnull(examin, '') examin, isnull(recheck, '') recheck \
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+            , isnull(vusmsg, '') vusmsg  \
             from [dbo].[patientinfo_diag] \
             where left(accept_date, 8) >= '" + start + "'" 
              + " and left(accept_date, 8) <= '" + end + "'"; 
@@ -548,6 +550,7 @@ const getpatientinfo = async (specimenNo) => {
                 else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
             ,isnull(examin, '') examin, isnull(recheck, '') recheck \
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+            , isnull(vusmsg, '') vusmsg  \
             from patientInfo_diag  where specimenNo=@specimenNo`;
 
     try {
