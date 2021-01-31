@@ -249,6 +249,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
  logger.info('[246][screenList][insert detected_variants]detected_variants=' + JSON.stringify(detected_variants));
 
   let result;
+   
   for (i = 0; i < detected_variants.length; i++)
   {
     const igv               = detected_variants[i].igv;
@@ -265,21 +266,22 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const reference         = detected_variants[i].references;
     const cosmic_id         = detected_variants[i].cosmicID;
     const type              = detected_variants[i].type;
-
+    const checked           = detected_variants[i].checked
+    
     logger.info('[267][screenList][insert detected_variants]igv=' + igv + ', sanger=' + sanger
                           + ', gene=' + gene + ', functional_impact=' + functional_impact
                           + ', transcript= ' + transcript + ', exon=' + exon 
                           + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                           + ', zygosity=' + zygosity + ', vaf=' + vaf + ', reference=' + reference 
-                          + ', cosmic_id=' + cosmic_id + ', type=' + type);
-  
+                          + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked);
+ 
     //insert Query 생성;
     const qry = "insert into report_detected_variants (specimenNo, report_date, gene, \
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
-              vaf, reference, cosmic_id, igv, sanger, type) \
-              values(@specimenNo, getdate(),  @gene, \
+              vaf, reference, cosmic_id, igv, sanger, type, checked) \
+              values(@specimenNo, getdate(),  @gene,\
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type)";
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked)";
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -298,7 +300,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('cosmic_id', mssql.VarChar, cosmic_id)
             .input('igv', mssql.VarChar, igv)
             .input('sanger', mssql.VarChar, sanger)
-            .input('type', mssql.VarChar, type);
+            .input('type', mssql.VarChar, type)
+            .input('checked', mssql.VarChar, checked);
             
             result = await request.query(qry);         
     
