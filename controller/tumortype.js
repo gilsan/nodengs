@@ -57,13 +57,7 @@ const  tumortypenMessageHandler = async (req) => {
 	  const request = pool.request()
 		  .input('pathologyNum', mssql.VarChar, pathologyNum); 
 		
-	  const result = request.query(sql2, (error, result2)=> {
-      if (error)
-      {
-          logger.error('[42][tumortype]error= ' + error.message);
-      }
-      logger.info("[44][tumortype]result=" + JSON.stringify( result2))
-    });
+	  const result = request.query(sql2);
 
     result.then(data => {
       console.log(data);
