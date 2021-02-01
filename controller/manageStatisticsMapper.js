@@ -20,9 +20,9 @@ const listHandler = async (req) => {
 	sql = sql +" + substring(a.accept_date,5,2) +'-' + substring(a.accept_date,7,2)  accept_date , " ;
 	sql = sql +" CONVERT(CHAR(19), send_time, 120) send_time, a.dept , b.user_nm  sender, send_result  " ;
 	sql = sql +"  from stat_Log  a  " ;
-	sql = sql +"  inner join  users b " ;
+	sql = sql +"  inner join  (select user_id, user_nm from users b where  dept = @dept )  b " ;
 	sql = sql +" on a.sender = b.user_id  " ; 
-	sql = sql + " where a.dept = @dept ";
+	sql = sql + " where 1=1 ";
 	if(userId != "") 
 		sql = sql + " and a.patientID like '%"+userId+"%'";
 	if(userNm != "") 
