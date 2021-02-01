@@ -289,9 +289,9 @@ const  messageHandler7 = async (req) => {
   const exon              = req.body.exon;
   const transcript        = req.body.transcript;
   const coding            = req.body.coding;
-	const amion_acid_change = req.body.aminoAcidChange;
+	const amino_acid_change = req.body.aminoAcidChange;
   logger.info('[292][geneinfo]insertArtifacts data=' + gene + ", " + locat + ", " + exon
-                           + ", " + transcript + ", " + coding + ", " + amion_acid_change );
+                           + ", " + transcript + ", " + coding + ", " + amino_acid_change );
 
   let sql = "insert into artifacts "
     sql = sql + "  (genes, location, exon, "
@@ -307,7 +307,7 @@ const  messageHandler7 = async (req) => {
       .input('exon', mssql.VarChar, exon) 
       .input('transcript', mssql.VarChar, transcript) 
       .input('coding', mssql.VarChar, coding) 
-      .input('amion_acid_change', mssql.VarChar, amion_acid_change); 
+      .input('amino_acid_change', mssql.VarChar, amino_acid_change); 
     const result = await request.query(sql)
     // console.dir( result);
     
@@ -427,9 +427,9 @@ const  messageHandler10 = async (req) => {
   const exon              = req.body.exon;
   const transcript        = req.body.transcript;
   const coding            = req.body.coding;
-  const amion_acid_change = req.body.aminoAcidChange;
+  const amino_acid_change = req.body.aminoAcidChange;
   logger.info('[431][geneinfo]insertBenign data=' + gene + ", " + locat
-                          + ", " + exon + ", " + transcript + ", " + coding + ", " + amion_acid_change);
+                          + ", " + exon + ", " + transcript + ", " + coding + ", " + amino_acid_change);
 
   let sql = "insert into benign " ;
   sql = sql + "  (genes, location, exon, "
@@ -445,7 +445,7 @@ const  messageHandler10 = async (req) => {
       .input('exon', mssql.VarChar, exon) 
       .input('transcript', mssql.VarChar, transcript) 
       .input('coding', mssql.VarChar, coding) 
-      .input('amion_acid_change', mssql.VarChar, amion_acid_change); 
+      .input('amino_acid_change', mssql.VarChar, amino_acid_change); 
     const result = await request.query(sql)
   //  console.dir( result);
     
