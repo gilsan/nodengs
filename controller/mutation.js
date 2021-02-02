@@ -159,18 +159,21 @@ const searchGeneHandler =  async (gene) => {
           .input('gene', mssql.VarChar, gene);
           const result = await request.query(sql);
           return result.recordset[0].count;
-  } catch(err) {
-    console.err('==[139][mutation controller] SQL error');
+  } catch(error) {
+    logger.error('[144][mutation search]err=' + error.message)
   }
 
 }
 
 exports.searchMutaionbygene = (req, res, next) => {
-const gene = req.body.gene;
-const result = searchGeneHandler(gene);
-result.then(data => {
-   res.json(data);
-}).catch(err => res.sendStatus(500))
+  const gene = req.body.gene;
+  const result = searchGeneHandler(gene);
+  result.then(data => {
+    res.json(data);
+  }).catch(err => {
+    logger.error('[144][mutation]err=' + error.message);
+    res.sendStatus(500)
+  });
 
 }
 
@@ -179,7 +182,7 @@ const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
 	
-	let sql ="select id	"
+	  let sql ="select id	"
 				+"	,buccal "
 				+"	,patient_name "
 				+"	,register_number "
@@ -197,6 +200,7 @@ const listHandler = async (req) => {
 				+"	,sift_polyphen_mutation_taster "
 				+"	,buccal2 ";
     sql = sql + " from mutation ";
+
 	if(genes != "") 
 		sql = sql + " where gene like '%"+genes+"%'";
     sql = sql + " order by id";
@@ -206,17 +210,20 @@ const listHandler = async (req) => {
          .input('gene', mssql.VarChar, genes); 
        const result = await request.query(sql) 
        return result.recordset;
-   } catch (err) {
-       console.error('SQL error', err);
+   } catch (erro4) {
+    logger.error('[213][mutation search]err=' + error.message)
    }
- }
+}
 
 // List Mutation
 exports.listMutation = (req, res, next) => { 
   //   console.log('[200][listMutation]');
-     const result = listHandler(req);
-     result.then(data => { 
-           res.json(data);
-      })
-      .catch( err  => res.sendStatus(500));
-  };
+  const result = listHandler(req);
+  result.then(data => { 
+        res.json(data);
+  })
+  .catch( error  => {
+    logger.error('[226][mutation list]err=' + error.message);
+    res.sendStatus(500);
+  });
+};

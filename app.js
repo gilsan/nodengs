@@ -23,6 +23,11 @@ const patientListPathRouter = require('./routes/patientlist_path');
 
 // 진검
 const patientListRouter     = require('./routes/patientlist');
+
+// 2021.02.02 진검 report_patient
+const reportPatientListRouter     = require('./routes/report_patient');
+
+
 const patientListDiagRouter     = require('./routes/patientlist_diag');
 const filteredTSVListRouter = require('./routes/filteredTSVlist');
 
@@ -154,6 +159,10 @@ app.use('/detailFunctions', detailFunctionsRouter);
 // 환자목록 가져오기
 app.use('/patients', patientListRouter);
 app.use('/patients_diag', patientListDiagRouter);
+
+// 2021.02.02 진검 report_patient
+app.use('/report_patient', reportPatientListRouter);
+
 //검사자 필터링된 리스트 가겨오기
 app.use('/filteredTSV', filteredTSVListRouter);
 

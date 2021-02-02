@@ -93,8 +93,8 @@ exports.clinicaldata = (req, res, next) => {
       //  console.log('[92][clinicaldata]', data);
           res.json({message: 'SUCCESS'});
      })
-     .catch( err  => {
-        logger.error('[95][clinical]err= ' + err);
+     .catch( error  => {
+        logger.error('[95][clinical]err= ' + error.message);
         res.sendStatus(500);
      });
 
