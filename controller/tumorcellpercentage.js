@@ -65,10 +65,7 @@ const  tumorcellpercentageMessageHandler = async (req) => {
       const res_ins = tumorcellpercentageInsertHandler(pathologyNum, tumorcellpercentage);
       res_ins.then(data_ins => {
         console.log(data_ins);
-      })
-      .catch(error => {
-        logger.error('[70][tumorcellpercentageMessageHandler]err=' + error.message);
-      })
+      });
     });
 	
 	  //return result;

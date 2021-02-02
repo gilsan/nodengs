@@ -65,9 +65,6 @@ const  msiscoreMessageHandler = async (req) => {
         result_ins.then(data_ins => {
           console.log(data_ins);
         })
-        .catch(error => {
-          logger.error('[60][msiscore]ins err=' + error.message);
-        })
 
     });
 
