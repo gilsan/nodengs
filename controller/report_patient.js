@@ -4,7 +4,6 @@ const mssql = require('mssql');
 const logger = require('../common/winston');
 
 const dbConfigMssql = require('../common/dbconfig.js');
-const { error } = require('winston');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
