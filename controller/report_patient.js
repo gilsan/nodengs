@@ -62,7 +62,7 @@ await poolConnect; // ensures that the pool has been created
                     report_type,
                     chromosomalanalysis, 
                     IKZK1Deletion,
-                    leukemiaassociatedfusion,
+                    leukemiaassociatedfusion
                 ) values ( @specimenNo,
                     @reportType,
                     @chromosomalanalysis,
@@ -91,7 +91,6 @@ await poolConnect; // ensures that the pool has been created
 
 const  insertPatientLymHandler = async (specimenNo, chromosomalanalysis, bonemarrow, reportType ) => {
     await poolConnect; // ensures that the pool has been created
-     const now = today();
      logger.info('[210][report_patient][insertPatientHandler]chromosomalanalysis=' + chromosomalanalysis 
                                     + ", bonemarrow=" + bonemarrow
                                     + ", report_type=" + reportType
@@ -125,13 +124,12 @@ const  insertPatientLymHandler = async (specimenNo, chromosomalanalysis, bonemar
     }
 }
 
-const  insertPatientMdsHandler = async (specimenNo, chromosomalanalysis, diagnosis, genetictest ) => {
+const  insertPatientMdsHandler = async (specimenNo, chromosomalanalysis, diagnosis, genetictest, reportType ) => {
     await poolConnect; // ensures that the pool has been created
-     const now = today();
-     logger.info('[210][report_patient][insertPatientHandler Lym]chromosomalanalysis=' + chromosomalanalysis 
+     logger.info('[210][report_patient][insertPatientHandler MDS]chromosomalanalysis=' + chromosomalanalysis 
                                     + ", diagnosis=" + diagnosis
-                                    + ", bonemarrow=" + bonemarrow
                                     + ", genetictest=" + genetictest
+                                    + ", report_type=" + reportType
                                     + ", specimenNo=" + specimenNo);
 
     const qry=`insert report_patientsInfo (
@@ -142,11 +140,12 @@ const  insertPatientMdsHandler = async (specimenNo, chromosomalanalysis, diagnos
             genetictest
           ) values ( @specimenNo,
             @reportType,
+            @chromosomalanalysis, 
             @diagnosis,
             @genetictest
           )`;
 
-    logger.info('[220][report_patient][insert report_patientsInfo Lym]sql=' +  qry) ;
+    logger.info('[220][report_patient][insert report_patientsInfo MDS]sql=' +  qry) ;
   
     try {
         const request = pool.request() // or: new sql.Request(pool1)
@@ -160,7 +159,7 @@ const  insertPatientMdsHandler = async (specimenNo, chromosomalanalysis, diagnos
       //  console.log('[158][insert patientinfo_diag] ', result)
         return result;
     } catch (error) {
-      logger.error('[232][report_patient]insert report_patientsInfo Lym err=' + error.message);
+      logger.error('[232][report_patient]insert report_patientsInfo MDS err=' + error.message);
     }
 }
 
@@ -320,13 +319,12 @@ const searchPatientHandler =  async (specimenNo) => {
 }
 
 // type : Aml 
-const  patientSelectAmlHandler = async (specimenNo) => {
+const  patientSelectAmlHandler = async (specimenNo, type) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[105][report_patient] patientSelectAmlHandler specimenNo=' + specimenNo + ", type=" + type);
     //insert Query 생성
-    const sql = "select specimenNo, 'AML' as type,   \
-                      chromosomalanalysis, IKZK1Deletion, leukemiaassociatedfusion \
+    const sql = "select chromosomalanalysis, FLT3ITD, leukemiaassociatedfusion \
                 from report_patientsInfo \
                 where specimenNo = @specimenNo \
                 and report_type = @type ";
@@ -348,13 +346,12 @@ const  patientSelectAmlHandler = async (specimenNo) => {
 
 
 // type : ALL
-const  patientSelectAllHandler = async (specimenNo) => {
+const  patientSelectAllHandler = async (specimenNo, type) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[105][report_patient] patientSelectAmlHandler specimenNo=' + specimenNo + ", type=" + type);
     //insert Query 생성
-    const sql = "select specimenNo, 'ALL' as type, \
-                    chromosomalanalysis, IKZK1Deletion, leukemiaassociatedfusion \
+    const sql = "select chromosomalanalysis, IKZK1Deletion, leukemiaassociatedfusion \
                 from report_patientsInfo \
                 where specimenNo = @specimenNo \
                 and report_type = @type ";
@@ -375,13 +372,12 @@ const  patientSelectAllHandler = async (specimenNo) => {
 }
 
 // type : LYM
-const  patientSelectLymHandler = async (specimenNo) => {
+const  patientSelectLymHandler = async (specimenNo, type) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[105][report_patient] patientSelectHandler specimenNo=' + specimenNo + ", type=" + type);
     //insert Query 생성
-    const sql = "select specimenNo, 'LYM' as type, \
-                      chromosomalanalysis, bonemarrow \
+    const sql = "select chromosomalanalysis, bonemarrow \
                 from report_patientsInfo \
                 where specimenNo = @specimenNo \
                 and report_type = @type ";
@@ -402,13 +398,12 @@ const  patientSelectLymHandler = async (specimenNo) => {
 }
 
 // type : MDS
-const  patientSelectMdsHandler = async (specimenNo) => {
+const  patientSelectMdsHandler = async (specimenNo, type) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[105][report_patient] patientSelectHandler specimenNo=' + specimenNo + ", type=" + type);
     //insert Query 생성
-    const sql = "select specimenNo, 'MDS' as type, \
-                     chromosomalanalysis, genetictest,  diagnosis \
+    const sql = "select chromosomalanalysis, genetictest,  diagnosis \
                 from report_patientsInfo \
                 where specimenNo = @specimenNo \
                 and report_type = @type ";
@@ -434,24 +429,24 @@ exports.getList= (req, res, next) => {
     logger.info('[84][report_patient][getList]req=' + JSON.stringify(req.body));
 
     const specimenNo = req.body.specimenNo;
-    const type = req.body.type;
+    const rtype = req.body.type;
 
     let result;  
-    if (type === "AML")
+    if (rtype == "AML")
     {
-        result = patientSelectAmlHandler(specimenNo);
+        result = patientSelectAmlHandler(specimenNo, rtype);
     }
-    else if (type === "ALL")
+    else if (rtype == "ALL")
     {
-        result = patientSelectAllHandler(specimenNo);
+        result = patientSelectAllHandler(specimenNo, rtype);
     }
-    else if (type === "LYM")
+    else if (rtype == "LYM")
     {
-        result = patientSelectLymHandler(specimenNo);
+        result = patientSelectLymHandler(specimenNo, rtype);
     }
-    else if (type === "MDS")
+    else if (rtype == "MDS")
     {
-        result = patientSelectMdsHandler(specimenNo);
+        result = patientSelectMdsHandler(specimenNo, rtype);
     }
     else 
     {
@@ -512,7 +507,7 @@ exports.insetList= (req, res, next) => {
   }
   else if (type === "ALL")
   {
-    result = patientSaveAllHandler(specimenNo, chromosomalanalysis, chromosomalanalysis, FLT3ITD, leukemiaassociatedfusion, type  );
+    result = patientSaveAllHandler(specimenNo, chromosomalanalysis, FLT3ITD, leukemiaassociatedfusion, type  );
   }
   else if (type === "LYM")
   {
