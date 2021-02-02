@@ -133,7 +133,7 @@ const  patientSelectHandler = async (specimenNo, type) => {
                       leukemiaassociatedfusion, bonemarrow, genetictest,  diagnosis \
                 from report_patientsInfo \
                 where specimenNo = @specimenNo \
-                and type = @type ";
+                and report_type = @type ";
 
     logger.info('[105][report_patient] patientSelectHandler sql=' + sql);
     
