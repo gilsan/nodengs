@@ -141,7 +141,7 @@ const  patientSelectHandler = async (specimenNo, type) => {
 
         const request = pool.request()
             .input('specimenNo', mssql.VarChar, specimenNo)
-            .input('typr', mssql.VarChar, type);
+            .input('type', mssql.VarChar, type);
 
         const result = await request.query(sql);
         return result.recordset; 
@@ -163,7 +163,7 @@ exports.getList= (req, res, next) => {
           res.json(data);
      })
      .catch( error  => {
-        logger.error('[95][clinical]err= ' + error.message);
+        logger.error('[95][report_patient select]err= ' + error.message);
         res.sendStatus(500);
      });
 
