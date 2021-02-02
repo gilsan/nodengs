@@ -503,11 +503,11 @@ exports.insetList= (req, res, next) => {
   let result;  
   if (type === "AML")
   {
-    result = patientSaveAmlHandler(specimenNo, chromosomalanalysis, IKZK1Deletion, leukemiaassociatedfusion, type  );
+    result = patientSaveAmlHandler(specimenNo, chromosomalanalysis, FLT3ITD , leukemiaassociatedfusion, type  );
   }
   else if (type === "ALL")
   {
-    result = patientSaveAllHandler(specimenNo, chromosomalanalysis, FLT3ITD, leukemiaassociatedfusion, type  );
+    result = patientSaveAllHandler(specimenNo, chromosomalanalysis, IKZK1Deletion, leukemiaassociatedfusion, type  );
   }
   else if (type === "LYM")
   {
