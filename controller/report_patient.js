@@ -124,24 +124,26 @@ const searchPatientHandler =  async (specimenNo) => {
 
 }
 
-const  patientSelectHandler = async (specimenNo) => {
+const  patientSelectHandler = async (specimenNo, type) => {
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[105][report_patient] patientSelectHandler data=' + specimenNo);
+    logger.info('[105][report_patient] patientSelectHandler specimenNo=' + specimenNo + ", type=" + type);
     //insert Query 생성
     const sql = "select specimenNo, report_type as reportType, chromosomalanalysis, FLT3ITD, IKZK1Deletion,  \
                       leukemiaassociatedfusion, bonemarrow, genetictest,  diagnosis \
                 from report_patientsInfo \
-                where specimenNo = @specimenNo ";
+                where specimenNo = @specimenNo \
+                and type = @type ";
 
     logger.info('[105][report_patient] patientSelectHandler sql=' + sql);
     
     try {
 
         const request = pool.request()
-            .input('specimenNo', mssql.VarChar, specimenNo);
+            .input('specimenNo', mssql.VarChar, specimenNo)
+            .input('typr', mssql.VarChar, type);
 
-        const result = await request.query(qry);
+        const result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
         logger.error('[117][report_patient]patientSelectHandler err=' + error.message);
@@ -153,8 +155,9 @@ exports.getList= (req, res, next) => {
     logger.info('[84][report_patient][getList]req=' + JSON.stringify(req.body));
 
     const specimenNo = req.body.specimenNo;
+    const type = req.body.type;
      
-    const result = patientSelectHandler(specimenNo);
+    const result = patientSelectHandler(specimenNo, type);
     result.then(data => {  
       //  console.log('[92][clinicaldata]', data);
           res.json({message: 'SUCCESS'});
