@@ -129,6 +129,27 @@ const  messageHandler2 = async (testedID, today) => {
   }
 }
 
+const  deleteReportHandler = async (testedID) => {
+  await poolConnect; // ensures that the pool has been created
+ 
+  logger.info('[88][fileupload report_patientsInfo del]testedID=' + testedID );
+  
+  const qry=`delete from report_patientsInfo
+                 where specimenNo = @testedID `;
+  logger.info('[88][fileupload report_patientsInfo del]sql=' + qry);
+  
+  try {
+      const request = pool.request() 
+        .input('testedID', mssql.VarChar, testedID);
+      const result = await request.query(qry)
+      console.dir( result);
+      
+      return result;
+  } catch (error) {
+    logger.error('[128][fileupload report_patientsInfo del]err=' + error.message);
+  }
+}
+
 const  messageHandler3 = async (originalname, dirPath, testedID) => {
   await poolConnect; // ensures that the pool has been created
    const now = today();
@@ -320,6 +341,18 @@ router.post('/upload', function (req, res) {
            .catch( error => {
              logger.error('[284][fileupload] inset jintsv err=' + error.message)
            });	  
+
+           // 2021.02.02  deleteReportHandler add
+           //  deleteReportHandler
+            const result6 =  deleteReportHandler(testedID);
+            result6.then(data => {
+  
+              console.log(data);
+              //res.json(data);
+            })
+            .catch( error => {
+              logger.error('[354][fileupload] deleteReportHandler err=' + error.message)
+            });	  
           
 		      const surfix = item.originalname.split('.');
 		      if ( surfix[1] === 'tsv') {

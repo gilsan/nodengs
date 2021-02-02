@@ -146,25 +146,19 @@ exports.patientLists = (req,res,next) => {
 }
 
 // 검사자 screenstatus 상태 스크린 완료 로 변경
-const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, examin, recheck, vusmsg) => {
+const  messageHandler2 = async (specimenNo, status, examin, recheck, vusmsg) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[149][screenList][update screen]data=' + status + ", " + specimenNo + ", "
-                                       + chron + ", " + flt3ITD + ", " +leukemia + ", vusmsg=" + vusmsg); 
+                                       + ", vusmsg=" + vusmsg); 
 
     let sql ="update [dbo].[patientinfo_diag] \
-             set screenstatus=@status, \
-                 leukemiaassociatedfusion=@leukemia,  \
-                 chromosomalanalysis=@chron, \
-                 FLT3ITD=@flt3ITD , examin=@examin, recheck=@recheck, vusmsg = @vusmsg \
+             set screenstatus=@status, examin=@examin, recheck=@recheck, vusmsg = @vusmsg \
              where specimenNo=@specimenNo ";   
     logger.info('[158][screenList][set screen]sql=' + sql);
     try {
         const request = pool.request()
             .input('status', mssql.VarChar, status)
-            .input('flt3ITD', mssql.VarChar, flt3ITD)
-            .input('leukemia', mssql.VarChar, leukemia)
-            .input('chron', mssql.NVarChar, chron)
             .input('examin', mssql.NVarChar, examin)
             .input('recheck', mssql.NVarChar, recheck)
             .input('vusmsg', mssql.NVarChar, vusmsg)

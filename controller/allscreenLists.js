@@ -98,12 +98,12 @@ exports.patientLists = (req,res,next) => {
 
 
  // 검사자 screenstatus 상태 스크린 완료 로 변경
- const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, examin, recheck) => {
+ const  messageHandler2 = async (specimenNo, status,  examin, recheck) => {
     await poolConnect; // ensures that the pool has been created
 
     console.log(chron);
         
-    console.log('[117][controller/screenList.js][스크린 상태변경]',status,specimenNo,chron,flt3ITD,leukemia); 
+    console.log('[117][controller/screenList.js][스크린 상태변경]',status,specimenNo); 
     //  let sql ="update [dbo].[patientinfo_diag] \
     //          set screenstatus=@status, \
     //             chromosomalanalysis=@chron, \
@@ -112,10 +112,7 @@ exports.patientLists = (req,res,next) => {
     //          where specimenNo=@specimenNo ";
 
       let sql ="update [dbo].[patientinfo_diag] \
-             set screenstatus=@status, \
-                 leukemiaassociatedfusion=@leukemia,  \
-                 chromosomalanalysis=@chron, \
-                 FLT3ITD='', IKZK1Deletion=@flt3ITD , examin=@examin, recheck=@recheck \
+             set screenstatus=@status, examin=@examin, recheck=@recheck \
              where specimenNo=@specimenNo ";   
 	    console.log('================== [128][controller/screenList.js ] =====================\n', sql);
     try {
