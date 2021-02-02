@@ -66,7 +66,7 @@ const  insertPatientHandler = async (specimenNo, chromosomalanalysis, FLT3ITD, I
   }
 
 const  patientSaveHandler = async (specimenNo, chromosomalanalysis, FLT3ITD, IKZK1Deletion,
-                                leukemiaassociatedfusion, bonemarrow, genetictest, diagnosis) => {
+                                leukemiaassociatedfusion, bonemarrow, genetictest, diagnosis, reportType) => {
     await poolConnect; // ensures that the pool has been created
     let result;
     
@@ -85,7 +85,7 @@ const  patientSaveHandler = async (specimenNo, chromosomalanalysis, FLT3ITD, IKZ
             console.log(data);
 
             const result_ins = insertPatientHandler(specimenNo, chromosomalanalysis, FLT3ITD, IKZK1Deletion,
-                                            leukemiaassociatedfusion, bonemarrow, genetictest, diagnosis, type );
+                                            leukemiaassociatedfusion, bonemarrow, genetictest, diagnosis, reportType );
 
             result_ins.then(data_ins => {
                 console.log(data_ins);
