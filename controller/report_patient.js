@@ -89,9 +89,9 @@ const  patientSaveHandler = async (specimenNo, chromosomalanalysis, FLT3ITD, IKZ
             result_ins.then(data_ins => {
                 console.log(data_ins);
             })
-            .catch(error)
+            .catch(err)
             {
-                logger.error('[71][report_patientsInfo ins]err=' + error.message);
+                logger.error('[71][report_patientsInfo ins]err=' + err.message);
             }
         });
 
