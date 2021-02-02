@@ -160,7 +160,7 @@ exports.getList= (req, res, next) => {
     const result = patientSelectHandler(specimenNo, type);
     result.then(data => {  
       //  console.log('[92][clinicaldata]', data);
-          res.json({message: 'SUCCESS'});
+          res.json(data);
      })
      .catch( error  => {
         logger.error('[95][clinical]err= ' + error.message);
