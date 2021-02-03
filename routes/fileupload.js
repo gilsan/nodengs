@@ -100,7 +100,7 @@ const  messageHandler = async (testedID, today) => {
       const result = await request.query(qry)
       console.dir( result.recordset);
       
-      return result;
+      return result.recordset[0].count;
   } catch (error) {
     logger.error('[104][fileupload count]err=' + error.message);
   }
@@ -280,9 +280,9 @@ router.post('/upload', function (req, res) {
             const result = messageHandler(testedID, today);
             result.then(data => {
 
-            console.log('[243][fileupload][count] ', data.recordset[0].count);
+            console.log('[243][fileupload][count] ', data);
 
-            const count = parseInt(data.recordset[0].count,10);
+            const count = parseInt(data,10);
                 
             // console.log('[247] 시험용', count);
             if (count > 0) {
@@ -291,7 +291,7 @@ router.post('/upload', function (req, res) {
               result2.then(data => {       
                 console.log('[252][]',data);
         
-                const count2 = parseInt(data.count,10);                      
+                //const count2 = parseInt(count,10);                      
                // console.log('이전것 삭제');             
               })
               .catch( error  => {
