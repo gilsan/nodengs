@@ -98,7 +98,7 @@ const  messageHandler = async (testedID, today) => {
       .input('testedID', mssql.VarChar, testedID)
       .input('today', mssql.VarChar, today);
       const result = await request.query(qry)
-      console.dir( result);
+      console.dir( result.recordset);
       
       return result;
   } catch (error) {
@@ -291,7 +291,7 @@ router.post('/upload', function (req, res) {
               result2.then(data => {       
                 console.log('[252][]',data);
         
-                const count2 = parseInt(data.recordset[0].count,10);                      
+                const count2 = parseInt(data.count,10);                      
                // console.log('이전것 삭제');             
               })
               .catch( error  => {
