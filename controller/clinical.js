@@ -67,10 +67,6 @@ const  clinicalSaveHandler = async (pathologyNum, clinical) => {
             result_ins.then(data_ins => {
                 console.log(data_ins);
             })
-            .catch(error)
-            {
-                logger.error('[71][clinical ins]err=' + error.message);
-            }
         });
 
         //return result;

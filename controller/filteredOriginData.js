@@ -79,13 +79,7 @@ const  filteredOrigindataSaveHandler = async (body_data) => {
           .input('variantName', mssql.VarChar, variantName)
           .input('OncomineVariant', mssql.VarChar, OncomineVariant);
           
-          result = await request.query(qry, (error, result)=> {
-            if (error)
-            {
-              logger.error('[124][filteredOriginData][error= ' + error.message);
-            }
-            logger.info("result=" + result);
-          });
+          result = await request.query(qry);
           
           //return result;
   
@@ -119,7 +113,7 @@ const  filteredOrigindataMessageHandler = async (req) => {
     const request = pool.request()
       .input('pathologyNum', mssql.VarChar, pathologyNum); 
       
-      result = await request.query(sql2);
+      result = request.query(sql2);
     
     result.then( data => {
       console.log (data);

@@ -57,7 +57,7 @@ const  tumorcellpercentageMessageHandler = async (req) => {
 	   const request = pool.request()
 		.input('pathologyNum', mssql.VarChar, pathologyNum); 
 		
-    const result = await request.query(sql2);
+    const result = request.query(sql2);
     
     result.then(data => {
       console.log(data);
