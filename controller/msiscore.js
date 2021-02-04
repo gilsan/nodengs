@@ -60,7 +60,7 @@ const  msiscoreMessageHandler = async (req) => {
     result.then( data =>
     {
         console.log(data);
-        result_ins = msiscoreSaveHandler(pathologyNum,  msiscore);
+        const result_ins = msiscoreSaveHandler(pathologyNum,  msiscore);
 
         result_ins.then(data_ins => {
           console.log(data_ins);
