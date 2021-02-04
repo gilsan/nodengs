@@ -60,7 +60,7 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
 
     console.log(data);
 
-    res_ins = tumorMutationalBurdenInsertHandler(pathologyNum, tumorMutationalBurden);
+    const  res_ins = tumorMutationalBurdenInsertHandler(pathologyNum, tumorMutationalBurden);
     res_ins.then(data_ins => {
       console.log(data_ins);
     })
