@@ -64,9 +64,6 @@ const  tumorMutationalBurdenMessageHandler = async (req) => {
     res_ins.then(data_ins => {
       console.log(data_ins);
     })
-    .catch(error => {
-      logger.error('[68][save][messageHandler ins]error=' + error.message);
-    })
 
   });
 	
