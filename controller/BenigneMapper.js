@@ -13,18 +13,21 @@ const poolConnect = pool.connect();
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
-    logger.info('[13]benign listHandler data=' + genes);
+    const coding		= req.body.coding; 
+    logger.info('[13]benign listHandler genes=' + genes + ", coding= " + coding );
 	
 	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change ";
     sql = sql + " from benign ";
+    sql = sql + " where 1 = 1 ";
 	if(genes != "") 
-		sql = sql + " where genes like '%"+genes+"%'";
+		sql = sql + " and genes like '%"+genes+"%'";
+    if(coding != "") 
+        sql = sql + " and coding like '%"+coding+"%'";
     sql = sql + " order by id";
 
 	logger.info('[21]benign listHandler sql=' + sql);
     try {
-       const request = pool.request()
-         .input('genes', mssql.VarChar, genes); 
+       const request = pool.request(); 
        const result = await request.query(sql) 
        return result.recordset;
     } catch (error) {

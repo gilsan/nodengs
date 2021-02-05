@@ -25,7 +25,8 @@ function nvl(st, defaultStr){
 const listHandler = async (req) => {
   await poolConnect;  
   const genes			= req.body.genes; 
-  logger.info("[27][mutationMapper list]genes=" + genes );
+  const coding			= req.body.coding; 
+  logger.info("[27][mutationMapper list]genes=" + genes + ", coding=" + coding );
 	
 	let sql ="select id	"
 				+"	,buccal "
@@ -47,8 +48,11 @@ const listHandler = async (req) => {
 				+"	,igv "
 				+"	,sanger ";
   sql = sql + " from mutation ";
+  sql = sql + " where 1 = 1";
 	if(genes != "") 
 		sql = sql + " where gene like '%"+genes+"%'";
+  if(coding != "") 
+		sql = sql + " where coding like '%"+coding+"%'";
   sql = sql + " order by id";
   
   logger.info("[54][mutationMapper list]sql" + sql);
