@@ -52,7 +52,7 @@ const listHandler = async (req) => {
 	if(genes != "") 
 		sql = sql + " and gene like '%"+genes+"%'";
   if(coding != "") 
-		sql = sql + " and coding like '%"+coding+"%'";
+		sql = sql + " and nucleotide_change like '%"+coding+"%'";
   sql = sql + " order by id";
   
   logger.info("[54][mutationMapper list]sql" + sql);
