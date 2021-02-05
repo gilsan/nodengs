@@ -50,9 +50,9 @@ const listHandler = async (req) => {
   sql = sql + " from mutation ";
   sql = sql + " where 1 = 1";
 	if(genes != "") 
-		sql = sql + " where gene like '%"+genes+"%'";
+		sql = sql + " and gene like '%"+genes+"%'";
   if(coding != "") 
-		sql = sql + " where coding like '%"+coding+"%'";
+		sql = sql + " and coding like '%"+coding+"%'";
   sql = sql + " order by id";
   
   logger.info("[54][mutationMapper list]sql" + sql);

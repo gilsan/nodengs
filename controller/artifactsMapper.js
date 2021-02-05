@@ -3,14 +3,13 @@ const router = express.Router();
 const logger = require('../common/winston');
 const mssql = require('mssql');
 const dbConfigMssql = require('../common/dbconfig.js');
-const { listBenign } = require('./BenigneMapper');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect(); 
 
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes;  
-    const coding			= req.body.coding; 
+    const coding		= req.body.coding; 
     logger.info('[12]artifcats listHandler genes=' + genes + ", coding=" + coding);
 	
 	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change ";
