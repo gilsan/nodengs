@@ -286,9 +286,9 @@ const listHandler = async (req) => {
 		sql = sql + " where 1=1";
 	if(genes != "") 
 		sql = sql + " and gene like '%"+genes+"%'";
-    if(coding != "") 
-      sql = sql + " and nucleotide_change like '%"+coding+"%'";
-    sql = sql + " order by id";
+  if(coding != "") 
+    sql = sql + " and nucleotide_change like '%"+coding+"%'";
+  sql = sql + " order by id";
 
     logger.info("[293][mutationMapper list]sql" + sql);
     try {
