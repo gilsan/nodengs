@@ -48,6 +48,7 @@ const  messageHandler = async (req) => {
   logger.info('[47][mutation]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
   logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[47][mutation]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[47][mutation]igv=' + igv  + ' sanger=' + sanger);
 
   let sql ="insert into mutation   ";
   sql = sql + " (igv, sanger,patient_name,register_number,  ";
@@ -132,11 +133,12 @@ const  updateHandler = async (req) => {
   const igv				  = nvl(req.body.igv, "");
   const sanger			  = nvl(req.body.sanger, "");
 
-  logger.info('[160][mutationmapper update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
-  logger.info('[163][mutationmapper update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
-  logger.info('[163][mutationmapper update]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
-  logger.info('[163][mutationmapper update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
-  logger.info('[163][mutationmapper update]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[160][mutation update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
+  logger.info('[163][mutation update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
+  logger.info('[163][mutation update]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
+  logger.info('[163][mutation update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
+  logger.info('[163][mutation update]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[163][mutation update]igv=' + igv  + ' sanger=' + sanger);
 
   let sql ="update mutation set  ";
   sql = sql + " buccal = @buccal, patient_name= @patient_name, register_number = @register_number,  ";
@@ -259,6 +261,8 @@ result.then(data => {
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
+    const coding			= req.body.coding; 
+    logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding );
 	
 	let sql ="select id	"
 				+"	,buccal "
@@ -276,19 +280,25 @@ const listHandler = async (req) => {
 				+"	,reference "
 				+"	,cosmic_id "
 				+"	,sift_polyphen_mutation_taster "
-				+"	,buccal2 ";
+				+"	,buccal2 "
+        +" ,igv, sanger";
     sql = sql + " from mutation ";
+		sql = sql + " where 1=1";
 	if(genes != "") 
-		sql = sql + " where gene like '%"+genes+"%'";
+		sql = sql + " and gene like '%"+genes+"%'";
+    if(coding != "") 
+      sql = sql + " and nucleotide_change like '%"+coding+"%'";
     sql = sql + " order by id";
-  //  console.log("sql", sql);
+
+    logger.info("[293][mutationMapper list]sql" + sql);
     try {
-       const request = pool.request()
-         .input('gene', mssql.VarChar, genes); 
+       const request = pool.request();
+        // .input('gene', mssql.VarChar, genes); 
        const result = await request.query(sql) 
        return result.recordset;
    } catch (err) {
-       console.error('SQL error', err);
+      
+      logger.error("[301][mutationMapper list]err=" + error.message);
    }
  }
 
