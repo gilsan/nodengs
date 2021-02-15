@@ -22,7 +22,7 @@ const listHandler = async (req) => {
 	let sql ="select id, user_id, password, user_nm, user_gb, dept, CONVERT(CHAR(19), login_date, 120) login_date, isnull(approved,'N') approved ,";
 	sql = sql + " case when dept ='P' then 'Pathology' when dept ='D' then 'Diagnostic' else '' end dept_nm ,"
 	sql = sql + " case when user_gb  ='U' then 'User' when dept ='A' then 'Manager' else '' end user_gb_nm ,"
-	sql = sql + " uuid , reg_date pickselect, case when part ='T' then 'Tester' when part = 'D' then 'Doctor' end part_nm ";
+	sql = sql + " uuid , reg_date, pickselect, case when part ='T' then 'Tester' when part = 'D' then 'Doctor' end part_nm ";
     sql = sql + " from users  ";
 	sql = sql + " where dept = @dept ";
 	if(userId != "") 
@@ -105,20 +105,21 @@ const updateHandler = async (req) => {
     const dept				= req.body.dept;
     const pickselect		= req.body.pickselect;
     const part				= req.body.part; 
+    const id				= req.body.id; 
 
-    logger.info('[107][manageUser updte]data=' + user_id + ", " + password + ", " + user_nm + ", " + user_gb 
-                    + dept + ", " + pickselect + ", " + part);
+    logger.info('[107][manageUser updte]user_id=' + user_id + ", " + password + ", " + user_nm + ", " + user_gb 
+                    + dept + ", " + pickselect + ", " + part + ", id=" + id);
 
     let sql = "update users set " ;
     sql = sql + " password = @password, user_nm= @user_nm, "
-    sql = sql + " user_gb= @user_gb, dept= @dept, pickselect= @pickselect, part= @part )";
+    sql = sql + " user_gb= @user_gb, dept= @dept, pickselect= @pickselect, part= @part ";
     sql = sql + "where id = @id";
 
     logger.info('[115][manageUser update]sql=' + sql);
      
     try {
         const request = pool.request()
-		  .input('user_id', mssql.VarChar, user_id) 
+		  .input('id', mssql.Int, id) 
           .input('password', mssql.VarChar, password) 
           .input('user_nm', mssql.NVarChar, user_nm) 
           .input('user_gb', mssql.VarChar, user_gb) 
