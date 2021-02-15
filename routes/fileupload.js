@@ -11,6 +11,7 @@ const router = express.Router();
  
 const inputDB      = require('../controlDB/inputdb');
 const main_mod     = require('../functions/main');
+const main_nu      = require('../functions/patient_nu');
 const loadData_mod = require('../functions/readData');
 const logger = require('../common/winston');
 
@@ -18,7 +19,7 @@ var multer = require('multer');
 const mssql = require('mssql');
 
 const dbConfigMssql = require('../common/dbconfig.js');
-const { dir } = require('console');
+//const { dir } = require('console');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -79,7 +80,7 @@ var storage = multer.diskStorage({
 	    cb(null,  dirPath); 
     },
     filename: function (req, file, cb) {
-	 cb(null, file.originalname)
+	    cb(null, file.originalname)
     }
 })
 
@@ -359,6 +360,9 @@ router.post('/upload', function (req, res) {
 			      console.log('필터링한 화일', surfix, item.originalname);
               // var data = loadData(item.path);
               // inputDB.registerDB(item.path);
+
+              main_nu.patient_nu(testedID);
+
               main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
           }	
           /////////////////////////////////////////////////////////////////////////////////////////////
