@@ -82,7 +82,7 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
   }
 
 exports.patient_nu = (testedID) => {
-	let data = '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
+	const data = '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
 
 	sendUrl += data;
 
