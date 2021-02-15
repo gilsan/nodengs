@@ -13,7 +13,7 @@ const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 // 교육
-let sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
+//let sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
 
 const options = {
 	 attributeNamePrefix : "@_", 
@@ -82,9 +82,9 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
   }
 
 exports.patient_nu = (testedID) => {
-	const data = '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
+	let sendUrl = '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
 
-	sendUrl += data;
+	//sendUrl += data;
 
 	logger.info('[96][patient_nu]sendUrl=' +  sendUrl); 
 
