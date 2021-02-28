@@ -42,25 +42,34 @@ const  messageHandler = async (req) => {
   const cosmic_id         = nvl(req.body.cosmicID, "");
   const buccal            = nvl(req.body.buccal, "");
   const buccal2           = nvl(req.body.buccal2, "");
+  const exac           = nvl(req.body.exac, "");
+  const exac_east_asia           = nvl(req.body.exac_east_asia, "");
+  const krgdb           = nvl(req.body.krgdb, "");
+  const etc1           = nvl(req.body.etc1, "");
+  const etc2           = nvl(req.body.etc2, "");
+  const etc3           = nvl(req.body.etc3, "");
 
   logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
   logger.info('[47][mutation]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
   logger.info('[47][mutation]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
   logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[47][mutation]buccal=' + buccal  + ' buccal2=' + buccal2);
-  logger.info('[47][mutation]igv=' + igv  + ' sanger=' + sanger);
+  logger.info('[47][mutation]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
+  logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
 
   let sql ="insert into mutation   ";
   sql = sql + " (igv, sanger,patient_name,register_number,  ";
   sql = sql + " gene,functional_impact,transcript,  ";
   sql = sql + " exon_intro,nucleotide_change,  ";
   sql = sql + " amino_acid_change,zygosity,vaf,  ";
-  sql = sql + " reference,cosmic_id, buccal, buccal2)   ";
+  sql = sql + " reference,cosmic_id, buccal, buccal2,   ";
+  sql = sql + " exac, exac_east_asia, krgdb, etc1, etc2, etc3)   ";
   sql = sql + " values (@igv, @sanger, @patient_name, @register_number,  ";
   sql = sql + " @gene, @functional_impact, @transcript,  ";
   sql = sql + " @exon_intro, @nucleotide_change,  ";
   sql = sql + " @amino_acid_change, @zygosity, @vaf,  ";
-  sql = sql + " @reference,@cosmic_id,@buccal,@buccal2)";
+  sql = sql + " @reference,@cosmic_id,@buccal,@buccal2,   ";
+  sql = sql + " @exac, @exac_east_asia, @krgdb, @etc1, @etc2, @etc3)";
 
   logger.info('[64][mutation]sql=' + sql);
 
@@ -81,7 +90,13 @@ const  messageHandler = async (req) => {
         .input('reference', mssql.VarChar, reference) 
         .input('cosmic_id', mssql.VarChar, cosmic_id)
         .input('buccal', mssql.VarChar, buccal) 
-        .input('buccal2', mssql.VarChar, buccal2); 
+        .input('buccal2', mssql.VarChar, buccal2)
+        .input('exac', mssql.VarChar, exac)
+        .input('exac_east_asia', mssql.VarChar, exac_east_asia)
+        .input('krgdb', mssql.VarChar, krgdb)
+        .input('etc1', mssql.VarChar, etc1)
+        .input('etc2', mssql.VarChar, etc2)
+        .input('etc3', mssql.VarChar, etc3); 
       const result = await request.query(sql)
      // console.dir( result);
       
@@ -132,6 +147,12 @@ const  updateHandler = async (req) => {
   const buccal2			  = nvl(req.body.buccal2, "");
   const igv				  = nvl(req.body.igv, "");
   const sanger			  = nvl(req.body.sanger, "");
+  const exac			  = nvl(req.body.exac, "");
+  const exac_east_asia			  = nvl(req.body.exac_east_asia, "");
+  const krgdb			  = nvl(req.body.krgdb, "");
+  const etc1			  = nvl(req.body.etc1, "");
+  const etc2			  = nvl(req.body.etc2, "");
+  const etc3			  = nvl(req.body.etc3, "");
 
   logger.info('[160][mutation update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
   logger.info('[163][mutation update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
@@ -139,6 +160,8 @@ const  updateHandler = async (req) => {
   logger.info('[163][mutation update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[163][mutation update]buccal=' + buccal  + ' buccal2=' + buccal2);
   logger.info('[163][mutation update]igv=' + igv  + ' sanger=' + sanger);
+  logger.info('[163][mutation update]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
+  logger.info('[163][mutation update]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
 
   let sql ="update mutation set  ";
   sql = sql + " buccal = @buccal, patient_name= @patient_name, register_number = @register_number,  ";
@@ -146,7 +169,9 @@ const  updateHandler = async (req) => {
   sql = sql + " exon_intro = @exon_intro, nucleotide_change= @nucleotide_change,  ";
   sql = sql + " amino_acid_change = @amino_acid_change, zygosity= @zygosity, vaf= @vaf,  ";
   sql = sql + " reference = @reference, cosmic_id = @cosmic_id, sift_polyphen_mutation_taster = @sift_polyphen_mutation_taster, "
-  sql = sql + " buccal2 = @buccal2, igv= @igv, sanger= @sanger ";
+  sql = sql + " buccal2 = @buccal2, igv= @igv, sanger= @sanger,   ";
+  sql = sql + " exac=@exac, exac_east_asia=@exac_east_asia, krgdb=@krgdb,   ";
+  sql = sql + " etc1=@etc1, etc2=@etc2, etc3=@etc3 ";
   sql = sql + " where id = @id ";
 
   try {
@@ -169,7 +194,12 @@ const  updateHandler = async (req) => {
 	    .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster) 
 	    .input('buccal2', mssql.VarChar, buccal2) 
 		  .input('igv', mssql.VarChar, igv) 
-      .input('sanger', mssql.VarChar, sanger) ; 
+      .input('exac', mssql.VarChar, exac)
+      .input('exac_east_asia', mssql.VarChar, exac_east_asia)
+      .input('krgdb', mssql.VarChar, krgdb)
+      .input('etc1', mssql.VarChar, etc1)
+      .input('etc2', mssql.VarChar, etc2)
+      .input('etc3', mssql.VarChar, etc3) ; 
 
       const result = await request.query(sql)
      // console.dir( result);
@@ -281,7 +311,13 @@ const listHandler = async (req) => {
 				+"	,cosmic_id "
 				+"	,sift_polyphen_mutation_taster "
 				+"	,buccal2 "
-        +" ,igv, sanger";
+        +" ,igv, sanger"
+        +" ,isnull(exac, '') exac"
+        +" ,isnull(exac_east_asia, '') exac_east_asia"
+        +" ,isnull(krgdb, '') krgdb"
+        +" ,isnull(etc1, '') etc1"
+        +" ,isnull(etc2, '') etc2"
+        +" ,isnull(etc3, '') etc3";
     sql = sql + " from mutation ";
 		sql = sql + " where 1=1";
 	if(genes != "") 
