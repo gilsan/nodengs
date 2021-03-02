@@ -77,7 +77,7 @@ const  messageHandler = async (req) => {
       const request = pool.request()
         .input('igv', mssql.VarChar, igv) 
         .input('sanger', mssql.VarChar, sanger) 
-        .input('patient_name', mssql.VarChar, patient_name) 
+        .input('patient_name', mssql.NVarChar, patient_name) 
         .input('register_number', mssql.VarChar, register_number) 
         .input('gene', mssql.VarChar, gene) 
         .input('functional_impact', mssql.VarChar, functional_impact) 
