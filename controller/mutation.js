@@ -174,6 +174,8 @@ const  updateHandler = async (req) => {
   sql = sql + " etc1=@etc1, etc2=@etc2, etc3=@etc3 ";
   sql = sql + " where id = @id ";
 
+  logger.info('[177][mutation update]sql=' + sql);
+
   try {
    const request = pool.request()
       .input('id', mssql.VarChar, id)  
