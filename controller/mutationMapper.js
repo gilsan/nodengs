@@ -106,6 +106,7 @@ const  insertHandler = async (req) => {
   logger.info('[90][mutationmapper insert]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
   logger.info('[90][mutationmapper insert]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[90][mutationmapper insert]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[90][mutationmapper insert]igv=' + igv  + ' sanger=' + sanger);
   logger.info('[90][mutationmapper insert]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
   logger.info('[90][mutationmapper insert]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
 
@@ -199,6 +200,7 @@ const  updateHandler = async (req) => {
   logger.info('[163][mutationmapper update]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
   logger.info('[163][mutationmapper update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[163][mutationmapper update]buccal=' + buccal  + ' buccal2=' + buccal2);
+  logger.info('[163][mutationmapper update]igv=' + igv  + ' sanger=' + sanger);
   logger.info('[163][mutationmapper update]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
   logger.info('[163][mutationmapper update]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
 

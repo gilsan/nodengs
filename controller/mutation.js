@@ -126,7 +126,7 @@ const  messageHandler = async (req) => {
 const  updateHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
-  logger.info("[62][mutationMapper update]req data=" + JSON.stringify( req.body));
+  logger.info("[62][mutation update]req data=" + JSON.stringify( req.body));
 
   const id				  = req.body.id;
   const buccal			  = nvl(req.body.buccal, "");
@@ -196,6 +196,7 @@ const  updateHandler = async (req) => {
 	    .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster) 
 	    .input('buccal2', mssql.VarChar, buccal2) 
 		  .input('igv', mssql.VarChar, igv) 
+      .input('sanger', mssql.VarChar, sanger) 
       .input('exac', mssql.VarChar, exac)
       .input('exac_east_asia', mssql.VarChar, exac_east_asia)
       .input('krgdb', mssql.VarChar, krgdb)
@@ -208,19 +209,19 @@ const  updateHandler = async (req) => {
       
       return result;
   } catch (error) {
-    logger.error("[205][mutationMapper update]err=" + error.message);
+    logger.error("[205][mutation update]err=" + error.message);
   }
 }
 
 exports.updateMutation = (req, res, next) => {
-  logger.info('[258][mutationmapper update]req' + JSON.stringify(req.body));
+  logger.info('[258][mutation update]req' + JSON.stringify(req.body));
 
 	const result = updateHandler(req);
     result.then(data => {
           res.json(data);
      })
      .catch( error => {
-      logger.error("[265][mutationMapper update]err=" + error.message); 
+      logger.error("[265][mutation update]err=" + error.message); 
        res.sendStatus(500);
       });
 }
