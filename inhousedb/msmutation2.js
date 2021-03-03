@@ -68,7 +68,9 @@ function loadData(filePath) {
    }
 }
 
-function delData() {
+async function delData() {
+  
+  await poolConnect;
 
   const sql2 =`
     delete from mutation 
@@ -77,31 +79,35 @@ function delData() {
   logger.info('[77][msmutation2]sql=' + sql2);
 
   try {      
-  const request2 = pool.request();
+    const request2 = pool.request();
 
-  //let result =  '';
-  const result2 = request2.query(sql2); /*, (err, recordset) => {
-    if (err)
-    {
-         console.log("err=", err.message);  
-    }
-    console.log("recordset=", recordset);
+    //let result =  '';
+    const result2 = request2.query(sql2); /*, (err, recordset) => {
+      if (err)
+      {
+          console.log("err=", err.message);  
+      }
+      console.log("recordset=", recordset);
 
-    result = recordset;
-  });*/
-  result2.then(data => {
-    console.dir(data);
-  }).catch( err => console.log(err));
+      result = recordset;
+    });*/
+    result2.then(data => {
+      console.dir(data);
+    }).catch( err => console.log(err));
 
   }   catch(err) {
     logger.error('[97][msmutation2]del err=' + err.message);
   } 
+
+  return 1;
 }
 
 var tsvData = '../inhouseupload/mutation4.txt';
 var rowCount = 0;
 
-delData();
+var delRow =  delData();
+
+logger.info('[104][msmutation2]del=' + delRow);
 
 var rowData = loadData(tsvData);
 
