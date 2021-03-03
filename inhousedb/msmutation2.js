@@ -68,8 +68,40 @@ function loadData(filePath) {
    }
 }
 
-var tsvData = '../inhouseupload/mutation.txt';
+function delData() {
+
+  const sql2 =`
+    delete from mutation 
+  `; 
+
+  logger.info('[77][msmutation2]sql=' + sql2);
+
+  try {      
+  const request2 = pool.request();
+
+  //let result =  '';
+  const result2 = request2.query(sql2); /*, (err, recordset) => {
+    if (err)
+    {
+         console.log("err=", err.message);  
+    }
+    console.log("recordset=", recordset);
+
+    result = recordset;
+  });*/
+  result2.then(data => {
+    console.dir(data);
+  }).catch( err => console.log(err));
+
+  }   catch(err) {
+    logger.error('[97][msmutation2]del err=' + err.message);
+  } 
+}
+
+var tsvData = '../inhouseupload/mutation4.txt';
 var rowCount = 0;
+
+delData();
 
 var rowData = loadData(tsvData);
 
