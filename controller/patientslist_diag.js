@@ -227,7 +227,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     }
 
      
-    sql = sql + " order by prescription_date desc, specimenNo desc   ";
+    sql = sql + " order by accept_date desc, specimenNo desc   ";
 
     logger.info("sql="+sql);
     

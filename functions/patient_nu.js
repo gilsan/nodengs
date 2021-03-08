@@ -82,7 +82,7 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
   }
 
 exports.patient_nu = (testedID) => {
-	let sendUrl = '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
+	let sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
 
 	//sendUrl += data;
 
