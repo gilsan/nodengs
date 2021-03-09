@@ -4,6 +4,7 @@ const fs = require('fs');
 var multer = require('multer');
 const router = express.Router();
 const logger = require('../common/winston');
+const main_nu = require('../functions/path_patient_nu');
 
 const mssql = require('mssql');
 
@@ -355,6 +356,8 @@ router.post('/upload', function (req, res) {
     logger.info("pathologyNum" + pathologyNum ); 
     logger.info("exceluploadedFiles" + exceluploadedFiles ); 
     logger.info("returnValue" + returnValue ); 
+
+    main_nu.path_patient_nu(pathologyNum);
   
     // patientInof_path 사용자 초기화
     const PatientUpdate = updatePatient(pathologyNum);
