@@ -36,7 +36,7 @@ const  insertPatientAmlHandler = async (specimenNo, chromosomalanalysis, FLT3ITD
         const request = pool.request() // or: new sql.Request(pool1)
         .input('specimenNo', mssql.VarChar, specimenNo)
         .input('reportType',mssql.VarChar, reportType)
-        .input('chromosomalanalysis', mssql.VarChar, chromosomalanalysis)
+        .input('chromosomalanalysis', mssql.NVarChar, chromosomalanalysis)
         .input('FLT3ITD',mssql.VarChar, FLT3ITD)
         .input('leukemiaassociatedfusion',mssql.VarChar, leukemiaassociatedfusion);
         const result = await request.query(qry)
@@ -76,7 +76,7 @@ await poolConnect; // ensures that the pool has been created
         const request = pool.request() // or: new sql.Request(pool1)
             .input('specimenNo', mssql.VarChar, specimenNo)
             .input('reportType',mssql.VarChar, reportType)
-            .input('chromosomalanalysis', mssql.VarChar, chromosomalanalysis)
+            .input('chromosomalanalysis', mssql.NVarChar, chromosomalanalysis)
             .input('IKZK1Deletion',mssql.VarChar, IKZK1Deletion)
             .input('leukemiaassociatedfusion',mssql.VarChar, leukemiaassociatedfusion);
         const result = await request.query(qry)
@@ -113,7 +113,7 @@ const  insertPatientLymHandler = async (specimenNo, chromosomalanalysis, bonemar
         const request = pool.request() // or: new sql.Request(pool1)
         .input('specimenNo', mssql.VarChar, specimenNo)
         .input('reportType',mssql.VarChar, reportType)
-        .input('chromosomalanalysis', mssql.VarChar, chromosomalanalysis)
+        .input('chromosomalanalysis', mssql.NVarChar, chromosomalanalysis)
         .input('bonemarrow',mssql.VarChar, bonemarrow);
         const result = await request.query(qry)
         console.dir( result);
@@ -151,7 +151,7 @@ const  insertPatientMdsHandler = async (specimenNo, chromosomalanalysis, diagnos
         const request = pool.request() // or: new sql.Request(pool1)
         .input('specimenNo', mssql.VarChar, specimenNo)
         .input('reportType',mssql.VarChar, reportType)
-        .input('chromosomalanalysis', mssql.VarChar, chromosomalanalysis)
+        .input('chromosomalanalysis', mssql.NVarChar, chromosomalanalysis)
         .input('diagnosis',mssql.VarChar, diagnosis)
         .input('genetictest',mssql.VarChar, genetictest);
         const result = await request.query(qry)
