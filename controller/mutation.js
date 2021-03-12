@@ -75,8 +75,8 @@ const  messageHandler = async (req) => {
 
   try {
       const request = pool.request()
-        .input('igv', mssql.VarChar, igv) 
-        .input('sanger', mssql.VarChar, sanger) 
+        .input('igv', mssql.NVarChar, igv) 
+        .input('sanger', mssql.NVarChar, sanger) 
         .input('patient_name', mssql.NVarChar, patient_name) 
         .input('register_number', mssql.VarChar, register_number) 
         .input('gene', mssql.VarChar, gene) 
@@ -195,8 +195,8 @@ const  updateHandler = async (req) => {
       .input('cosmic_id', mssql.VarChar, cosmic_id) 
 	    .input('sift_polyphen_mutation_taster', mssql.VarChar, sift_polyphen_mutation_taster) 
 	    .input('buccal2', mssql.VarChar, buccal2) 
-		  .input('igv', mssql.VarChar, igv) 
-      .input('sanger', mssql.VarChar, sanger) 
+		  .input('igv', mssql.NVarChar, igv) 
+      .input('sanger', mssql.NVarChar, sanger) 
       .input('exac', mssql.VarChar, exac)
       .input('exac_east_asia', mssql.VarChar, exac_east_asia)
       .input('krgdb', mssql.VarChar, krgdb)

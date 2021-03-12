@@ -239,8 +239,8 @@ exports.patientLists = (req,res,next) => {
            .input('vaf', mssql.VarChar, vaf)
            .input('reference', mssql.VarChar, reference)
            .input('cosmic_id', mssql.VarChar, cosmic_id)
-           .input('igv', mssql.VarChar, igv)
-           .input('sanger', mssql.VarChar, sanger)
+           .input('igv', mssql.NVarChar, igv)
+           .input('sanger', mssql.NVarChar, sanger)
            .input('type', mssql.VarChar, type);
            
           result = await request.query(qry);         
@@ -401,8 +401,8 @@ const updateHandler = async (specimenNo, detected_variants) => {
               .input('vaf', mssql.VarChar, vaf)
               .input('reference', mssql.VarChar, reference)
               .input('cosmic_id', mssql.VarChar, cosmic_id)
-              .input('igv', mssql.VarChar, igv)
-              .input('sanger', mssql.VarChar, sanger)
+              .input('igv', mssql.NVarChar, igv)
+              .input('sanger', mssql.NVarChar, sanger)
               .input('type', mssql.VarChar, type);
               
              result = await request.query(qry);         

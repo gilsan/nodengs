@@ -2,7 +2,7 @@ const app = require('express');
 const querystring = require('querystring');
 const router = app.Router();
 const axios = require('axios');
-const parser = require('fast-xml-parser');
+const xml2js = require('xml2js');
 const logger = require('../common/winston');
 //const he = require('he');
 
@@ -13,26 +13,7 @@ const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 // 교육
-//let sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
-
-const options = {
-	 attributeNamePrefix : "@_", 
-	 attrNodeName: "attr", //default is 'false' 
-	 textNodeName : "#text", 
-	 ignoreAttributes : true, 
-	 ignoreNameSpace : false, 
-	 allowBooleanAttributes : false, 
-	 parseNodeValue : true, 
-	 parseAttributeValue : false, 
-	 trimValues: true, 
-	 cdataTagName: "__cdata", //default is 'false' 
-	 cdataPositionChar: "\\c", 
-	 parseTrueNumberOnly: false, 
-	 arrayMode: false , //"strict" 
-	 //attrValueProcessor: (val, attrName) => he.decode(val, {isAttributeValue: true}), //default is a=>a 
-	 //tagValueProcessor : (val, tagName) => he.decode(val), //default is a=>a 
-	 stopNodes: ["parse-me-as-string"] 
-};
+//const sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
 
 // patientid/gender/age/name no update 
 const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1,
@@ -82,7 +63,7 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
   }
 
 exports.patient_nu = (testedID) => {
-	let sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
+	let sendUrl = 'http://emr012.cmcnu.or.kr/cmcnu/.live?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
 
 	//sendUrl += data;
 
@@ -100,61 +81,56 @@ exports.patient_nu = (testedID) => {
 
 		let res_data =  response.data;
 
-		if( parser.validate(res_data) === true) { //optional (it'll return an object in case it's not valid) 
-			var jsonObj = parser.parse(res_data,options); 
-			//console.log("resultCode:", jsonObj.response.header.resultCode); 
-			var patientJson = JSON.stringify(jsonObj); 
-			logger.info('[114][patient_nu]json=' +  patientJson); 
+		const parser = new xml2js.Parser(/* options */); 
+		parser.parseStringPromise(res_data).then(function (result) {
 
-			let patientObj = JSON.parse(patientJson);
+			logger.info('[114][path_patient_nu]json=' + JSON.stringify( result.root.worklist[0]));
+				
+			let res_json = result.root.worklist[0];
 
-			//console.log(patientObj.root.worklist.worklist);
+			res_json.worklist.forEach(item => {
+				let bcnno = item.bcno;
+				let patnm = item.patnm;
+				let tclsscmnm = item.tclsscrnnm[0];
+				let pid = item.pid;
+				let spcacptdt = item.spcacptdt;
+				let spccd = item.spccd;
+				let spcnm = item.spcnm;
+				let ikzk1 = item.ikzk1;
+				let chormosomal = item.chormosomal;
+				let orddeptcd = item.orddeptcd;
+				let orddrid = item.orddrid;
+				let orddrnm = item.orddrnm;
+				let orddeptnm = item.orddeptnm;
 
-			let worklist  = patientObj.root.worklist.worklist;
+				let execprcpuniqno = item.execprcpuniqno;
+				let prcpdd = item.prcpdd;
+				let testcd = item.testcd;
+				let sex = item.sex;
+				let birth = item.brthdd;
+				let ftl3 = item.ftl3;
 
-			let bcnno = worklist.bcno;
-			let patnm = worklist.patnm;
-			let tclsscmnm = worklist.tclsscrnnm[0];
-			let pid = worklist.pid;
-			let spcacptdt = worklist.spcacptdt;
-			let spccd = worklist.spccd;
-			let spcnm = worklist.spcnm;
-			let ikzk1 = worklist.ikzk1;
-			let chormosomal = worklist.chormosomal;
-			let orddeptcd = worklist.orddeptcd;
-			let orddrid = worklist.orddrid;
-			let orddrnm = worklist.orddrnm;
-			let orddeptnm = worklist.orddeptnm;
-
-			let execprcpuniqno = worklist.execprcpuniqno;
-			let prcpdd = worklist.prcpdd;
-			let testcd = worklist.testcd;
-			let sex = worklist.sex;
-			let birth = worklist.brthdd;
-			let ftl3 = worklist.ftl3;
-
-			logger.info('[143][patient_nu]bcnno=' +  bcnno + ', patnm=' + patnm + ', tclsscmnm=' + tclsscmnm 
+				logger.info('[143][patient_nu]bcnno=' +  bcnno + ', patnm=' + patnm + ', tclsscmnm=' + tclsscmnm 
 							+ ', pid=' + pid + ', spcacptdt=' + spcacptdt + ', spccd=' + spccd + ', spcnm=' + spcnm
 							+ ', ikzk1=' + ikzk1 + ', chormosomal=' + chormosomal + ', orddeptcd= ' + orddeptcd + ',orddrid=' + orddrid
 							+ ', orddrnm= ' + orddrnm + ', orddeptnm=' + orddeptnm + ', execprcpuniqno=' + execprcpuniqno + ', prcpdd= ' + prcpdd
 							+ ', testcd=' + testcd + ', sex=' + sex + ', birth=' + birth + ', ftl3=' + ftl3 ); 
 
-			  
-
-           // 2021.02.15  patientinfo_nu
-		   const result6 =  patientinfo_nu(bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1, 
+           		// 2021.02.15  patientinfo_nu
+		   		const result6 =  patientinfo_nu(bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1, 
 			                            chormosomal, orddeptcd, orddrid, orddrnm,  orddeptnm,
 										execprcpuniqno, prcpdd, testcd, sex, birth, ftl3);
-		   result6.then(data => {
+		   		result6.then(data => {
  
-			 console.log(data);
-			 //res.json(data);
-		   })
-		   .catch( error => {
-			 logger.error('[161][[patient_nu] update patientinfo err=' + error.message)
-		   });	  
+					 console.log(data);
+			 		//res.json(data);
+		   		})
+		   		.catch( error => {
+			 	logger.error('[161][[patient_nu] update patientinfo err=' + error.message)
+		   		});	  
 		
-		}
+			});
        
-    });
+    	});
+	});	
 }

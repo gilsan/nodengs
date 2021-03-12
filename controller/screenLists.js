@@ -294,8 +294,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('vaf', mssql.VarChar, vaf)
             .input('reference', mssql.VarChar, reference)
             .input('cosmic_id', mssql.VarChar, cosmic_id)
-            .input('igv', mssql.VarChar, igv)
-            .input('sanger', mssql.VarChar, sanger)
+            .input('igv', mssql.NVarChar, igv)
+            .input('sanger', mssql.NVarChar, sanger)
             .input('type', mssql.VarChar, type)
             .input('checked', mssql.VarChar, checked);
             
