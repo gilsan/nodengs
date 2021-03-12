@@ -37,8 +37,8 @@ const  messageHandler = async (req) => {
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
   const zygosity          = nvl(req.body.zygosity, "");
-  const vaf               = nvl(req.body.vaf, "");
-  const reference         = nvl(req.body.reference, "");
+  const vaf               = nvl(req.body.vafPercent, "");
+  const reference         = nvl(req.body.references, "");
   const cosmic_id         = nvl(req.body.cosmicID, "");
   const buccal            = nvl(req.body.buccal, "");
   const buccal2           = nvl(req.body.buccal2, "");
@@ -52,7 +52,7 @@ const  messageHandler = async (req) => {
   logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
   logger.info('[47][mutation]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
   logger.info('[47][mutation]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
-  logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
+  logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + ' reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[47][mutation]buccal=' + buccal  + ' buccal2=' + buccal2);
   logger.info('[47][mutation]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
   logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
@@ -139,10 +139,10 @@ const  updateHandler = async (req) => {
   const exon_intro        = req.body.exonIntro;
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = nvl(req.body.zygosity, "");
-  const vaf               = nvl(req.body.vaf, "");
-  const reference         = nvl(req.body.reference, "");
-  const cosmic_id         = nvl(req.body.cosmicId, "");
+  const zygosity          = nvl(req.body.zygosity, "");  
+  const vaf               = nvl(req.body.vafPercent, "");
+  const reference         = nvl(req.body.references, "");
+  const cosmic_id         = nvl(req.body.cosmicID, "");
   const	sift_polyphen_mutation_taster  = nvl(req.body.siftPolyphenMutationTaster, "");
   const buccal2			  = nvl(req.body.buccal2, "");
   const igv				  = nvl(req.body.igv, "");

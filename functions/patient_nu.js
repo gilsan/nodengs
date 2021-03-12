@@ -47,7 +47,7 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
 		.input('spccd', mssql.VarChar, spccd)
 		.input('ikzk1', mssql.VarChar, ikzk1)
 		.input('chormosomal', mssql.NVarChar, chormosomal)
-		.input('orddeptnm', mssql.NVarChar, orddeptcd + '/' + orddeptnm)
+		.input('orddeptnm', mssql.NVarChar, orddrnm + '/' + orddeptnm)
 		.input('execprcpuniqno', mssql.VarChar, execprcpuniqno)
 		.input('prcpdd', mssql.VarChar, prcpdd)
 		.input('testcd', mssql.VarChar, testcd)

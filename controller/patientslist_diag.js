@@ -190,6 +190,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,case when IsNULL( left(report_date, 4 ), '' ) = '1900'  \
             then '' \
             else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date \
+            , accept_date accept_date2 \
             ,isnull(test_code, '') test_code  \
             ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
             ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
@@ -228,7 +229,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
 
      
     //sql = sql + " order by accept_date desc, specimenNo desc   ";
-    sql = sql + " order by accept_date desc  ";
+    sql = sql + " order by accept_date2 asc  ";
 
     logger.info("sql="+sql);
     

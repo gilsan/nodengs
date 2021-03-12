@@ -50,14 +50,14 @@ const manageFunctionsRouter      = require('./routes/manageFunctionsRouter');
 //함수 상세 
 const detailFunctionsRouter      = require('./routes/detailFunctionsRouter');
 
-const commentsRouters        = require('./routes/ngscommentsRouter');
+const commentsRouters     = require('./routes/ngscommentsRouter');
 const artifactsRouters       = require('./routes/ngsartifactsRouter');
 const benignRouters          = require('./routes/ngsbenignRouter');
-//const mutationRouters        = require('./routes/ngsmutationRouter');
+const mutationRouters     = require('./routes/ngsmutationRouter');
 
 
 // inhouse 
-const commentsRouter        = require('./routes/commentsRouter');
+const commentsRouter     = require('./routes/commentsRouter');
 const artifactsRouter       = require('./routes/artifactsRouter');
 const benignRouter          = require('./routes/benignRouter');
 const mutationRouter        = require('./routes/mutationRouter');
@@ -186,10 +186,15 @@ app.use('/artifactsInsert',artifactsInsertRouter);
 app.use('/benign', benignRouter);
 app.use('/benignCount', benignCountRouter);
 app.use('/benignInsert',benignInsertRouter);
+// Mutation
+app.use('/mutationMapper', mutationRouter);
 
+// 결과지
 app.use('/ngscomments', commentsRouters);
 app.use('/ngsartifacts', artifactsRouters);
 app.use('/ngsbenign', benignRouters);
+// Mutation
+app.use('/mutation', mutationRouters);
 
 // 유전체 정보로 comment 레코드에서 정보 가져오기
 app.use('/findGeneComment', geneCommentRouter);
