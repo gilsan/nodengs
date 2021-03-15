@@ -17,7 +17,12 @@ const  messageHandler = async (req) => {
   const specimenNo = req.body.specimenNo;
   logger.info('[17][screenList][find detected_variant]specimenNo=' + specimenNo); 
 
-  const sql ="select * from [dbo].[report_detected_variants] where specimenNo=@specimenNo ";
+  const sql ="select specimenNo, report_date, gene, \
+  functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
+  vaf, reference, cosmic_id, igv, sanger, type, checked, isnull(functional_code, '') functional_code \
+   from [dbo].[report_detected_variants] \
+   where specimenNo=@specimenNo \
+   order by functional_code, gene, amino_acid_change ";
   logger.info('[20][screenList][find detectd_variant]sql=' + sql); 
 
   try {
@@ -209,8 +214,8 @@ const insertCommentHandler = async(specimenNo, comments) => {
     const comment    = comments[i].comment;
     const reference  = comments[i].reference;
 
-    logger.info('[214][screenList][insert comments]gene=' + gene + ', variants=', variants
-                                   + ', comment=' +comment + ', reference=' + reference );
+    logger.info('[214][screenList][insert comments]gene=' + gene + ', variants=' + variants
+                                   + ', comment=' + comment + ', reference=' + reference );
 
 	  //insert Query 생성
 	  const qry = "insert into report_comments (specimenNo, report_date, \
@@ -262,10 +267,23 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const reference         = detected_variants[i].references;
     const cosmic_id         = detected_variants[i].cosmicID;
     const type              = detected_variants[i].type;
-    const checked           = detected_variants[i].checked
-    
+    const checked           = detected_variants[i].checked;
+
+    let functional_code = '';
+
+    if (functional_impact == 'Pathogenic') {
+      functional_code = '1';
+    } else if (functional_impact == 'Likely Pathogenic'){
+      functional_code = '2'; 
+    } else if (functional_impact == 'VUS')  {
+      functional_code = '3';
+    } else {
+      functional_code = '4';
+    } 
+
     logger.info('[267][screenList][insert detected_variants]igv=' + igv + ', sanger=' + sanger
-                          + ', gene=' + gene + ', functional_impact=' + functional_impact
+                          + ', gene=' + gene 
+                          + ', functional_impact=' + functional_impact + ', functional_code = ' + functional_code
                           + ', transcript= ' + transcript + ', exon=' + exon 
                           + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                           + ', zygosity=' + zygosity + ', vaf=' + vaf + ', reference=' + reference 
@@ -274,10 +292,10 @@ const insertHandler = async (specimenNo, detected_variants) => {
     //insert Query 생성;
     const qry = "insert into report_detected_variants (specimenNo, report_date, gene, \
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
-              vaf, reference, cosmic_id, igv, sanger, type, checked) \
+              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code) \
               values(@specimenNo, getdate(),  @gene,\
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked)";
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code)";
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -286,6 +304,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('specimenNo', mssql.VarChar, specimenNo)
             .input('gene', mssql.VarChar, gene)
             .input('functional_impact', mssql.VarChar, functional_impact)
+            .input('functional_code', mssql.VarChar, functional_code)
             .input('transcript', mssql.VarChar, transcript)
             .input('exon', mssql.VarChar, exon)
             .input('nucleotide_change', mssql.VarChar, nucleotide_change)
