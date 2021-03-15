@@ -22,7 +22,7 @@ const  messageHandler = async (req) => {
   vaf, reference, cosmic_id, igv, sanger, type, checked, isnull(functional_code, '') functional_code \
    from [dbo].[report_detected_variants] \
    where specimenNo=@specimenNo \
-   order by functional_code, gene, amino_acid_change ";
+   order by functional_code, gene, nucleotide_change ";
   logger.info('[20][screenList][find detectd_variant]sql=' + sql); 
 
   try {
