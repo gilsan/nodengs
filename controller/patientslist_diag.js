@@ -395,7 +395,13 @@ exports.resetScreenStatus = (req, res, next) => {
     
     let specimenNo = req.body.specimenNo.trim();
     let num        = req.body.num;
-    let userid     = req.body.userid;
+    //let userid     = req.body.userid;
+
+    //const userid = req.body.userid;
+    let userinfo = JSON.parse(req.body.userid); 
+  
+    let userid = userinfo.userid; 
+    //  const pw= userinfo.pwd; 
     let type     = req.body.type;
     logger.info('[372][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
     logger.info('[373][patientinfo_diag resetScreen]num=' + num);
