@@ -573,7 +573,14 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   logger.info('[screenList][547][finishPathologyScreen]data=' + JSON.stringify(req.body));
 
   const pathologyNum = req.body.pathologyNum;
-  const userid = req.body.userid;
+  //const userid = req.body.userid;
+
+  //const userid = req.body.userid;
+  const userinfo = JSON.parse(req.body.userid); 
+  
+  const userid = userinfo.userid; 
+//  const pw= userinfo.pwd; 
+
   logger.info('[screenList][551][finishPathologyScreen]pathologyNum=' + pathologyNum);
   logger.info('[screenList][552][finishPathologyScreen]userid=' + userid);
 
