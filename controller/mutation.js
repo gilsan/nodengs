@@ -29,7 +29,8 @@ const  messageHandler = async (req) => {
   const igv               = nvl(req.body.igv, "");
   const sanger            = nvl(req.body.sanger, "");  
   const patient_name      = req.body.name;
-  const register_number   = req.body.patientID;
+  const register_number   = req.body.registerNumber;
+  const fusion			  = req.body.fusion;
   const gene              = req.body.gene;
   const functional_impact = req.body.functionalImpact;
   const transcript        = req.body.transcript;
@@ -49,7 +50,7 @@ const  messageHandler = async (req) => {
   const etc2           = nvl(req.body.etc2, "");
   const etc3           = nvl(req.body.etc3, "");
 
-  logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
+  logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene + ' fusion=' +  fusion);   
   logger.info('[47][mutation]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
   logger.info('[47][mutation]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
   logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + ' reference=' +  reference + ' cosmic_id= ' + cosmic_id);
@@ -58,13 +59,13 @@ const  messageHandler = async (req) => {
   logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
 
   let sql ="insert into mutation   ";
-  sql = sql + " (igv, sanger,patient_name,register_number,  ";
+  sql = sql + " (igv, sanger,patient_name,register_number,  fusion,  ";
   sql = sql + " gene,functional_impact,transcript,  ";
   sql = sql + " exon_intro,nucleotide_change,  ";
   sql = sql + " amino_acid_change,zygosity,vaf,  ";
   sql = sql + " reference,cosmic_id, buccal, buccal2,   ";
   sql = sql + " exac, exac_east_asia, krgdb, etc1, etc2, etc3)   ";
-  sql = sql + " values (@igv, @sanger, @patient_name, @register_number,  ";
+  sql = sql + " values (@igv, @sanger, @patient_name, @register_number,  @fusion, ";
   sql = sql + " @gene, @functional_impact, @transcript,  ";
   sql = sql + " @exon_intro, @nucleotide_change,  ";
   sql = sql + " @amino_acid_change, @zygosity, @vaf,  ";
@@ -79,6 +80,7 @@ const  messageHandler = async (req) => {
         .input('sanger', mssql.NVarChar, sanger) 
         .input('patient_name', mssql.NVarChar, patient_name) 
         .input('register_number', mssql.VarChar, register_number) 
+        .input('fusion', mssql.VarChar, fusion) 
         .input('gene', mssql.VarChar, gene) 
         .input('functional_impact', mssql.VarChar, functional_impact) 
         .input('transcript', mssql.VarChar, transcript) 
@@ -154,7 +156,7 @@ const  updateHandler = async (req) => {
   const etc2			  = nvl(req.body.etc2, "");
   const etc3			  = nvl(req.body.etc3, "");
 
-  logger.info('[160][mutation update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
+  logger.info('[160][mutation update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene + ' fusion=' +  fusion);   
   logger.info('[163][mutation update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
   logger.info('[163][mutation update]nucleotide_change=' + nucleotide_change + ' amino_acid_change=' +  amino_acid_change) ;
   logger.info('[163][mutation update]zygosity=' + zygosity  + ' vaf=' + vaf  + 'reference=' +  reference + ' cosmic_id= ' + cosmic_id);
@@ -250,9 +252,9 @@ const  messageHandler2 = async (req) => {
 
 exports.deleteMutation = (req, res, next) => {
   
-     const id = req.body.id;
+     //const id = req.body.id;
         
-     const result = messageHandler2(id);
+     const result = messageHandler2(req);
      result.then(data => {
  
        //  console.log(json.stringfy());
