@@ -81,9 +81,12 @@ exports.locations = (locations_data) =>  {
 			  const locations_exonic = locations_items.includes('exonic');              
 			  const locations_utr    = locations_items.includes('utr_5');               
 			  const upstream         = locations_items.includes('upstream');
+			  const splicesite_3     = locations_items.includes('splicesite_3');
+			  const splicesite_5     = locations_items.includes('splicesite_5');
+   
 			 			  
 			  if (!upstream || (upstream && locations_exonic)) {
-			     if (locations_exonic || (locations_exonic && locations_utr)) {
+			     if (locations_exonic || (locations_exonic && locations_utr) || splicesite_5 || splicesite_3) {
 				    if (locations_length === 0) {
 					    loc1 = '';
 					    loc2 = '';
