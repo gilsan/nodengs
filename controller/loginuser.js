@@ -34,7 +34,8 @@ const  messageHandler = async (user, dept) => {
  
   const sql= `select user_id, password from users \
          where user_id = @user \
-         and dept = @dept`;
+         and dept = @dept
+         and approved = 'Y'`;
   logger.info('[38][loginUser 진검]sql=' + sql);  
   try {
       const request = pool.request()
@@ -127,7 +128,8 @@ const  messageHandler2 = async (user, dept) => {
 
   const sql= `select user_id, password from users 
          where user_id = @user 
-         and dept = @dept`;
+         and dept = @dept
+         and approved = 'Y'`;
   
   logger.info('[132][loginUser 병리]sql=' + sql);
 
