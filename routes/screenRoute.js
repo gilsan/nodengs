@@ -9,5 +9,6 @@ router.post('/query',  screenController.screenLists);
 router.post('/comments', screenController.commentLists);  // 코멘트 가져오기
 router.post('/insert', screenController.insertScreen);
 router.post('/tempsave', screenController.saveScreen);
+router.post('/tempsave2', screenController.saveScreen2);
 router.post('/finish', screenController.finishScreen);
 module.exports = router;

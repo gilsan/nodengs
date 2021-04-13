@@ -116,11 +116,15 @@ const clinically = require('./routes/clinically');
 const clinical = require('./routes/clinical');
 const prevalent = require('./routes/prevalent');
 
+ 
 // 12-20
 // mentlists
 const mentlists = require('./routes/mentlists.js');
  
 const polymorphismRouter = require('./routes/polymorphismRouter');
+
+const dvbeforsortingRouter = require('./routes/dvsortingRouter');
+const dvaftersortingRouter = require('./routes/dvsortingRouter');
 
 //나중에 확인후 삭제할것.
 // const allRouter           = require('./routes/allRouter');       //allRouter.js 파일을 선언한다.
@@ -274,7 +278,9 @@ app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 �
 
  // 12-20
  app.use('/mentlists', mentlists);
-
+// detected variants sort
+app.use('/dvbeforsorting', dvbeforsortingRouter);
+app.use('/dvaftersorting', dvaftersortingRouter);
 
  // 화일 내려받기
  app.use('/download', function(req, res) {
@@ -285,6 +291,8 @@ app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 �
      res.download(file);
 
  });
+
+ 
 
  // 제거 유전자 목록
  app.use('/polymorphism', polymorphismRouter);

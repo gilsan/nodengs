@@ -269,17 +269,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const type              = detected_variants[i].type;
     const checked           = detected_variants[i].checked;
 
-    let functional_code = '';
-
-    if (functional_impact == 'Pathogenic') {
-      functional_code = '1';
-    } else if (functional_impact == 'Likely Pathogenic'){
-      functional_code = '2'; 
-    } else if (functional_impact == 'VUS')  {
-      functional_code = '3';
-    } else {
-      functional_code = '4';
-    } 
+    let functional_code = i;
 
     logger.info('[267][screenList][insert detected_variants]igv=' + igv + ', sanger=' + sanger
                           + ', gene=' + gene 
@@ -327,6 +317,92 @@ const insertHandler = async (specimenNo, detected_variants) => {
   } // End of For Loop
     return result;
  }
+
+ //////////////////////////////////////////////////////////////////////////////////
+ // 스크린 완료 Detected Variants 
+ const insertHandler2 = async (specimenNo, detected_variants) => {
+  // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
+  logger.info('[246][screenList2][insert detected_variants]specimenNo=' + specimenNo);
+  logger.info('[246][screenList2][insert detected_variants]detected_variants=' + JSON.stringify(detected_variants));
+ 
+   let result;
+    
+   for (i = 0; i < detected_variants.length; i++)
+   {
+     const igv               = detected_variants[i].igv;
+     const sanger            = detected_variants[i].sanger;
+     const gene              = detected_variants[i].gene;
+     const functional_impact = detected_variants[i].functionalImpact;
+     const transcript        = detected_variants[i].transcript;
+     
+     const exon              = detected_variants[i].exonIntro;
+     const nucleotide_change = detected_variants[i].nucleotideChange;
+     const amino_acid_change = detected_variants[i].aminoAcidChange;
+     const zygosity          = detected_variants[i].zygosity;
+     const vaf               = detected_variants[i].vafPercent;
+     const reference         = detected_variants[i].references;
+     const cosmic_id         = detected_variants[i].cosmicID;
+     const type              = detected_variants[i].type;
+     const checked           = detected_variants[i].checked;
+ 
+     let functional_code = '';
+ 
+     if (functional_impact == 'Pathogenic') {
+       functional_code = '1';
+     } else if (functional_impact == 'Likely Pathogenic'){
+       functional_code = '2'; 
+     } else if (functional_impact == 'VUS')  {
+       functional_code = '3';
+     } else {
+       functional_code = '4';
+     } 
+ 
+     logger.info('[267][screenList][insert detected_variants]igv=' + igv + ', sanger=' + sanger
+                           + ', gene=' + gene 
+                           + ', functional_impact=' + functional_impact + ', functional_code = ' + functional_code
+                           + ', transcript= ' + transcript + ', exon=' + exon 
+                           + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
+                           + ', zygosity=' + zygosity + ', vaf=' + vaf + ', reference=' + reference 
+                           + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked);
+  
+     //insert Query 생성;
+     const qry = "insert into report_detected_variants (specimenNo, report_date, gene, \
+               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
+               vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code) \
+               values(@specimenNo, getdate(),  @gene,\
+                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
+               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code)";
+             
+       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
+ 
+       try {
+           const request = pool.request()
+             .input('specimenNo', mssql.VarChar, specimenNo)
+             .input('gene', mssql.VarChar, gene)
+             .input('functional_impact', mssql.VarChar, functional_impact)
+             .input('functional_code', mssql.VarChar, functional_code)
+             .input('transcript', mssql.VarChar, transcript)
+             .input('exon', mssql.VarChar, exon)
+             .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+             .input('amino_acid_change', mssql.VarChar, amino_acid_change)
+             .input('zygosity', mssql.VarChar, zygosity)
+             .input('vaf', mssql.VarChar, vaf)
+             .input('reference', mssql.VarChar, reference)
+             .input('cosmic_id', mssql.VarChar, cosmic_id)
+             .input('igv', mssql.NVarChar, igv)
+             .input('sanger', mssql.NVarChar, sanger)
+             .input('type', mssql.VarChar, type)
+             .input('checked', mssql.VarChar, checked);
+             
+             result = await request.query(qry);         
+     
+       } catch (error) {
+         logger.error('[304][screenList][insert detected_variants]err=' + error.message);
+       }
+       
+   } // End of For Loop
+     return result;
+  }
 
 // 검체 검출 여부 등록
 const updateDetectedHandler = async (specimenNo, detectedtype) => {
@@ -711,6 +787,59 @@ const result2 = deleteHandler(specimenNo);
 result2.then(data => {
 
   const result = insertHandler(specimenNo, detected_variants);
+  result.then(data => {
+
+    // console.log('[157][insertScreen]', data);
+    const commentResult2 = deleteCommentHandler(specimenNo, comments);
+    commentResult2.then(data => {
+    
+      // console.log('[157][insertScreen]', data);
+      const commentResult = insertCommentHandler(specimenNo, comments);
+      commentResult.then(data => {
+          const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
+          detectedResult.then(data => {
+            // 검사자 상태변경
+            const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
+            statusResult.then(data => {
+                  res.json({message: 'OK'});
+              });
+          });
+
+        });
+    });
+  });
+        
+  })
+  .catch( error  => {
+    logger.info('[714][screenList][saveScreen]err=' + error.message);
+    res.sendStatus(500)
+  });
+};
+
+// 임시저장
+exports.saveScreen2 = (req, res, next) => {
+
+logger.info('[744][screenList][saveScreen2]req=' + JSON.stringify(req.body));
+
+const chron = req.body.chron ;
+const flt3ITD = req.body.flt3itd ; 
+const leukemia = req.body.leukemia;
+
+const specimenNo        = req.body.specimenNo;
+const detected_variants = req.body.detected_variants;
+const comments          = req.body.comments;
+const detectedtype      = req.body.resultStatus;
+const examin            = req.body.patientInfo.examin;
+const recheck           = req.body.patientInfo.recheck;
+const screenstatus      = req.body.patientInfo.screenstatus;
+const vusmsg            = req.body.patientInfo.vusmsg;
+
+logger.info('[761][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
+                              + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia + ", vusmsg=" +vusmsg); 
+const result2 = deleteHandler(specimenNo);
+result2.then(data => {
+
+  const result = insertHandler2(specimenNo, detected_variants);
   result.then(data => {
 
     // console.log('[157][insertScreen]', data);
