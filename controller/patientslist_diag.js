@@ -3,25 +3,6 @@ const router = express.Router();
 const mssql = require('mssql');
 //const config = require('./config.js');
 const logger = require('../common/winston');
-/*
-const config = {
-    user: 'ngs',
-    password: 'ngs12#$',
-    server: 'localhost',
-    database: 'ngs_data',  
-    pool: {
-        max: 200,
-        min: 100,
-        idleTimeoutMillis: 30000
-    },
-    enableArithAbort: true,
-    options: {
-        encrypt:false
-    }
-}
-
-const pool = new mssql.ConnectionPool(config);
-*/
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -79,6 +60,59 @@ function nvl(st, defaultStr){
     return st ;
 }
 
+////////////////////////////////////////////////////////////
+// 2021.04.15 진검 환자 검색
+const getPatientDiagHandler = async (specimenNo) => {
+    logger.info('[86][screenList][find patient]specimenNo=' + specimenNo);
+    const sql ="select isnull(name, '') name  ,isnull(patientID, '') patientID \
+                ,isnull(age,  '') age ,isnull(gender, '') gender \
+                ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
+                ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease \
+                ,isnull(method, '') method ,isnull(specimen, '') specimen \
+                ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
+                ,isnull(worker, '') worker \
+                ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
+                ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
+                ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
+                ,isnull(tsvFilteredFilename, '') tsvFilteredFilename \
+                ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+                    then '' \
+                    else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate \
+                ,isnull(tsvFilteredStatus, '') tsvFilteredStatus \
+                ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+                    then '' \
+                    else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate \
+                ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR \
+                ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  \
+                    then '' \
+                    else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate \
+                ,case when IsNULL( left(report_date, 4 ), '' ) = '1900'  \
+                then '' \
+                else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date \
+                ,isnull(test_code, '') test_code  \
+                ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected \
+                ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  \
+                    then '' \
+                    else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date \
+                ,isnull(examin, '') examin, isnull(recheck, '') recheck \
+                ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
+                , isnull(vusmsg, '') vusmsg  \
+                from [dbo].[patientinfo_diag] where specimenNo=@specimenNo ";
+    logger.info('[118][screenList][find patient]sql=' + sql);
+  
+    try {
+        const request = pool.request()
+          .input('specimenNo', mssql.VarChar, specimenNo); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+        console.dir( result);
+        
+        return result.recordset;
+    } catch (error) {
+      logger.error('[128][screenList][find patient]err=' + error.message);
+    }
+  
+}
+
 // 진검 오늘 환자 검색
 // 2021.01.29 prescription_date -> accept_date 조회 조건 변경
 const  messageHandler = async (today) => {
@@ -130,10 +164,10 @@ const  messageHandler = async (today) => {
     } catch (error) {
         logger.error('[110][patientinfo_diag list]err=' + error.message);
     }
-  }
+}
 
-  // diag 오늘 검사자 조회
- exports.getDiagLists = (req,res, next) => {
+// diag 오늘 검사자 조회
+exports.getDiagLists = (req,res, next) => {
     
 	 const  now = new Date();
      const today = getFormatDate2(now);
@@ -242,13 +276,13 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     } catch (err) {
         console.error('SQL error', err);
     }
-  }
+}
 
 // diag 날자별 환자ID, 검사ID 로 검사자 조회  
 exports.getPatientDiagLists = (req, res,next) => {
 
     logger.info('data=' + JSON.stringify( req.body));
-//console.log(req);
+    //console.log(req);
    let start =  req.body.start; //.replace("-", "");
    let end   =  req.body.end; //.replace("-", "");
    let patientID   =  req.body.patientID.trim(); // 환자 id
@@ -366,10 +400,11 @@ const messageHandlerStat_diag = async (specimenNo, userid, type ) => {
 const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[291][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
-    logger.info('[292][patientinfo_diag resetScreen]seq=' + seq);
+    logger.info('[291][patientinfo_diag resetscreenstatus]specimenNo=' + specimenNo);
+    logger.info('[292][patientinfo_diag resetscreenstatus]seq=' + seq);
     let sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
-    logger.info('[294][patientinfo_diag resetScreen]sql=' + sql);
+    logger.info('[294][patientinfo_diag resetscreenstatus]sql=' + sql);
+    
     try {
 
         const request = pool.request()
@@ -378,8 +413,50 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         const result = await request.query(sql); 
       
     } catch(error) {
-        logger.error('[304][patientinfo_diag resetScreen]err=' + error.message);
+        logger.error('[304][patientinfo_diag resetscreenstatus]err=' + error.message);
     }
+
+    let prescription_no = '';
+    let prescription_date = '';
+    let test_code = '';
+    let specimen = '';
+
+    // 2021.04.15 진검 cdw file copy
+    const result_path = getPatientDiagHandler(specimenNo);
+    result_path.then(data => {
+        //res.json(data);
+        logger.info('[patientinfo_diag][304][resetscreenstatus]data=' + JSON.stringify(data));
+
+        logger.info('[patientinfo_diag][304][resetscreenstatus]prescription_no=' + data.prescription_no);
+        logger.info('[patientinfo_diag][304][resetscreenstatus]prescription_date=' + data.prescription_date);
+        logger.info('[patientinfo_diag][304][resetscreenstatus]test_code=' + data.test_code);
+        logger.info('[patientinfo_diag][304][resetscreenstatus]specimen=' + data.specimen);
+        logger.info('[patientinfo_diag][304][resetscreenstatus]path=' + data.path);
+        logger.info('[patientinfo_diag][304][resetscreenstatus]file=' + data.tsvFilteredFilename);
+
+        prescription_no  = data.prescription_no;
+        prescription_date  = data.prescription_date;
+        test_code  = data.test_code;
+        specimen  = data.specimen;
+
+        let ngs_path = './' + data.path ;
+        let ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
+        logger.info('[screenList][552][resetscreenstatus]ngs_file=' + ngs_file);
+
+        let cdw_path = 'D:\\HuminTec\\NGS_Test\\' ;
+        let cdw_file = cdw_path + '012_' + prescription_no + '_' 
+               + prescription_date + '_' 
+               + test_code + '_' 
+               + specimen + '_' 
+               + specimenNo + '.tsv'
+        logger.info('[screenList][552][resetscreenstatus]file=' + cdw_file);
+    
+        // destination will be created or overwritten by default.
+        fs.copyFile(ngs_file, cdw_file, (err) => {
+        if (err) throw err;
+        logger.info('[screenList][552]File was copied to destination');
+        });  
+    }); 
 
     const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
     logger.info('[screenList][350][patientinfo_diag resetScreen]result=' + resultLog); 

@@ -5,9 +5,11 @@ const router = express.Router();
 const mssql = require('mssql');
 const amlReportInsert = require('./amlReportInsert');
 const logger = require('../common/winston');
+const fs = require('fs');
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const { error } = require('winston');
+const { json } = require('body-parser');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -38,7 +40,7 @@ const  messageHandler = async (req) => {
 }
 
 // report_detected_variants 를 specimenNo 로  조회
- exports.screenLists = (req,res, next) => {
+exports.screenLists = (req,res, next) => {
     
   logger.info('[37][screenList][detected_variants]req=' + JSON.stringify(req.body));
     const result = messageHandler(req);
@@ -52,10 +54,10 @@ const  messageHandler = async (req) => {
     logger.error('[47][screenList][find detected variant]err=' + error.message);
     res.sendStatus(500);
   });
- };
+};
 
- ////////////////////////////////////////////////////////////
- const commentHander = async (specimenNo) => {
+////////////////////////////////////////////////////////////
+const commentHander = async (specimenNo) => {
     logger.info('[54][screenList][find comments]specimenNo=' + specimenNo); 
     const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
     logger.info('[56][screenList][find comments]sql=' +sql);
@@ -71,10 +73,10 @@ const  messageHandler = async (req) => {
       logger.error('[66][screenList][find comments]error=' + error.message);
     }
 
- }
+}
 
- // report_comments 에서 specimenNo 로 조회
- exports.commentLists = (req,res,next) => {
+// report_comments 에서 specimenNo 로 조회
+exports.commentLists = (req,res,next) => {
     logger.info('[73][screenList][find comments]req=' + JSON.stringify(req.body));
      const result = commentHander(req.body.specimenNo);
      result.then(data => {
@@ -83,11 +85,76 @@ const  messageHandler = async (req) => {
      .catch(error => {
       logger.error('[79][screenList][find comments]err=' + error.message);
      })
- }
+}
 
+// 2021.04.15 병리 검체로 환자정보 알아오기
+const getPatientPathInfo = async (pathologyNum) => {
+  await poolConnect; // ensures that the pool has been created
+  
+  let sql = "select isnull(FLT3ITD, '') FLT3ITD, \
+        isnull(accept_date, '') accept_date, \
+        isnull(age, '') age, \
+        isnull(appoint_doc, '') appoint_doc, \
+        isnull(bamFilename, '') bamFilename, \
+        case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  \
+            then '' \
+            else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, \
+        isnull(dna_rna_ext, '') dna_rna_ext, \
+        isnull(examin, '') examin, \
+        isnull(gender, '') gender, \
+        isnull(id, '') id, \
+        isnull(irpath, '') irpath, \
+        isnull(key_block, '') key_block, \
+        isnull(management, '') management, \
+        isnull(msiscore, '') msiscore, \
+        isnull(name, '') name, \
+        isnull(organ, '') organ, \
+        isnull(orpath, '')  orpath, \
+        isnull(pathological_dx, '') pathological_dx, \
+        isnull(pathology_num, '') pathology_num, \
+        isnull(patientID, '') patientID, \
+        isnull(prescription_code, '') prescription_code, \
+        isnull(prescription_date, '') prescription_date, \
+        isnull(prescription_no, '') prescription_no, \
+        isnull(recheck, '') recheck, \
+        isnull(rel_pathology_num, '') rel_pathology_num, \
+        case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  \
+            then '' \
+            else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, \
+        isnull(screenstatus, '') screenstatus, \
+        isnull(sendEMR, '') sendEMR, \
+        case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  \
+            then '' \
+            else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, \
+        isnull(test_code, '') test_code, \
+        case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  \
+            then '' \
+            else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, \
+        isnull(tsvFilteredFilename, '') tsvFilteredFilename, \
+        isnull(tsvFilteredStatus, '') tsvFilteredStatus, \
+        isnull(tsvirfilename, '') tsvirfilename, \
+        isnull(tsvorfilename, '') tsvorfilename, \
+        isnull(tumor_cell_per, '') tumor_cell_per, \
+        isnull(tumor_type, '') tumor_type, \
+        isnull(tumorburden, '') tumorburden, \
+        isnull(worker, '') worker  from [dbo].[patientinfo_path] \
+             where  pathology_num=@pathologyNum";
+  logger.info('[141][screenList][find path patient]sql=' + sql);
+     
+  try {
+      const request = pool.request()
+       .input('pathologyNum', mssql.VarChar, pathologyNum); // or: new sql.Request(pool1)
+      const result = await request.query(sql)
+     // console.dir( result);
+      
+      return result.recordset[0];
+  } catch (error) {
+      logger.error("[151][patientinfo_path select]err=" + error.message);
+  }
+}
 
- ////////////////////////////////////////////////////////////
- const patientHandler = async (specimenNo) => {
+////////////////////////////////////////////////////////////
+const patientHandler = async (specimenNo) => {
   logger.info('[86][screenList][find patient]specimenNo=' + specimenNo);
   const sql ="select isnull(name, '') name  ,isnull(patientID, '') patientID \
               ,isnull(age,  '') age ,isnull(gender, '') gender \
@@ -644,6 +711,7 @@ const messageHandlerEMR = async (pathologyNum) => {
 
 }
 
+// 2021.04.15 진검 cdw file copy
 exports.finishPathologyEMRScreen = (req, res, next) => {
 
   logger.info('[screenList][547][finishPathologyScreen]data=' + JSON.stringify(req.body));
@@ -655,10 +723,49 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   const userinfo = JSON.parse(req.body.userid); 
   
   const userid = userinfo.userid; 
-//  const pw= userinfo.pwd; 
+
+  //  const pw= userinfo.pwd; 
 
   logger.info('[screenList][551][finishPathologyScreen]pathologyNum=' + pathologyNum);
   logger.info('[screenList][552][finishPathologyScreen]userid=' + userid);
+
+  let prescription_no = '';
+  let prescription_date = '';
+  let prescription_code = '';
+
+  // 2021.04.15 병리 cdw file copy
+  const result_path = getPatientPathInfo(pathologyNum);
+  result_path.then(data => {
+    //res.json(data);
+    logger.info('[screenList][552][finishPathologyScreen]data=' + JSON.stringify(data));
+
+    logger.info('[screenList][552][finishPathologyScreen]prescription_no=' + data.prescription_no);
+    logger.info('[screenList][552][finishPathologyScreen]irpath=' + data.irpath);
+    logger.info('[screenList][552][finishPathologyScreen]irfile=' + data.tsvirfilename);
+    
+    prescription_no  = data.prescription_no;
+    prescription_date  = data.prescription_date;
+    prescription_code  = data.prescription_code;
+
+    let ngs_path = './' + data.irpath ;
+    let ngs_file = ngs_path + '/' + data.tsvirfilename;
+    logger.info('[screenList][552][finishPathologyScreen]ngs_file=' + ngs_file);
+
+    let cdw_path = 'D:\\HuminTec\\NGS_Path_Test\\' ;
+    let cdw_file = cdw_path + '012_' + prescription_no + '_' 
+               + prescription_date + '_' 
+               + prescription_code + '_TMO870_' 
+               + pathologyNum + '.tsv'
+    logger.info('[screenList][552][finishPathologyScreen]file=' + cdw_file);
+    
+    // destination will be created or overwritten by default.
+    fs.copyFile(ngs_file, cdw_file, (err) => {
+      if (err) throw err;
+      logger.info('[screenList][552]File was copied to destination');
+    });
+    
+      
+  }); 
 
   const resultLog = messageHandlerStat_log(pathologyNum, userid);
   logger.info('[screenList][555][finishPathologyScreen]result=' + resultLog); 
