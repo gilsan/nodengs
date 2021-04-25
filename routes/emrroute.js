@@ -42,8 +42,12 @@ router.post('/redirectEMR', (req, res, next) => {
        data: querystring.stringify(req.body) 
    })
    .then(function(response) {
-      res.json(response.data)
+      res.json(response.data);
       console.log('[ response from EMR ] \n  ', response);      
+   })
+   .catch(function (err) {  
+      res.json("{result:success}");
+      logger.info('[49][emrRoute]err=' +err.message);  
    });
    
 });
