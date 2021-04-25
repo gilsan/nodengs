@@ -3,6 +3,7 @@ const router = express.Router();
 const mssql = require('mssql');
 //const config = require('./config.js');
 const logger = require('../common/winston');
+const fs = require('fs');
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -106,7 +107,7 @@ const getPatientDiagHandler = async (specimenNo) => {
         const result = await request.query(sql)
         console.dir( result);
         
-        return result.recordset;
+        return result.recordset[0];
     } catch (error) {
       logger.error('[128][screenList][find patient]err=' + error.message);
     }
