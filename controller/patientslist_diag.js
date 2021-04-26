@@ -72,7 +72,7 @@ const getPatientDiagHandler = async (specimenNo) => {
                 ,isnull(method, '') method ,isnull(specimen, '') specimen \
                 ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc \
                 ,isnull(worker, '') worker \
-                ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date \
+                ,isnull(prescription_no, '') prescription_no  ,isnull(prescription_date, '') prescription_date \
                 ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code \
                 ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion \
                 ,isnull(tsvFilteredFilename, '') tsvFilteredFilename \
