@@ -737,11 +737,11 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   const result_path = getPatientPathInfo(pathologyNum);
   result_path.then(data => {
     //res.json(data);
-    logger.info('[screenList][552][finishPathologyScreen]data=' + JSON.stringify(data));
+    logger.info('[screenList][552][getPatientPathInfo]data=' + JSON.stringify(data));
 
-    logger.info('[screenList][552][finishPathologyScreen]prescription_no=' + data.prescription_no);
-    logger.info('[screenList][552][finishPathologyScreen]irpath=' + data.irpath);
-    logger.info('[screenList][552][finishPathologyScreen]irfile=' + data.tsvirfilename);
+    logger.info('[screenList][552][getPatientPathInfo]prescription_no=' + data.prescription_no);
+    logger.info('[screenList][552][getPatientPathInfo]irpath=' + data.irpath);
+    logger.info('[screenList][552][getPatientPathInfo]irfile=' + data.tsvirfilename);
     
     prescription_no  = data.prescription_no;
     prescription_date  = data.prescription_date;
@@ -749,18 +749,18 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
 
     let ngs_path = './' + data.irpath ;
     let ngs_file = ngs_path + '/' + data.tsvirfilename;
-    logger.info('[screenList][552][finishPathologyScreen]ngs_file=' + ngs_file);
+    logger.info('[screenList][552][getPatientPathInfo]ngs_file=' + ngs_file);
 
     let cdw_path = 'D:\\HuminTec\\NGS_Path_Test\\' ;
     let cdw_file = cdw_path + '012_' + prescription_no + '_' 
                + prescription_date + '_' 
                + prescription_code + '_TMO870_' 
                + pathologyNum + '.tsv'
-    logger.info('[screenList][552][finishPathologyScreen]file=' + cdw_file);
+    logger.info('[screenList][552][getPatientPathInfo]file=' + cdw_file);
     
     // destination will be created or overwritten by default.
     fs.copyFile(ngs_file, cdw_file, (err) => {
-      if (err) throw err;
+      if (err) logger.error('[552][screenList getPatientPathInfo]err=' + err.message);
       logger.info('[screenList][552]File was copied to destination');
     });
     

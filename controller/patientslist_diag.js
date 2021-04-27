@@ -442,7 +442,7 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
 
         let ngs_path = './' + data.path ;
         let ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
-        logger.info('[screenList][552][resetscreenstatus]ngs_file=' + ngs_file);
+        logger.info('[patientinfo_diag][552][resetscreenstatus]ngs_file=' + ngs_file);
 
         let cdw_path = 'D:\\HuminTec\\NGS_Test\\' ;
         let cdw_file = cdw_path + '012_' + prescription_no + '_' 
@@ -450,17 +450,17 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
                + test_code + '_' 
                + specimen + '_' 
                + specimenNo + '.tsv'
-        logger.info('[screenList][552][resetscreenstatus]file=' + cdw_file);
+        logger.info('[patientinfo_diag][552][resetscreenstatus]file=' + cdw_file);
     
         // destination will be created or overwritten by default.
         fs.copyFile(ngs_file, cdw_file, (err) => {
-        if (err) throw err;
-        logger.info('[screenList][552]File was copied to destination');
+        if (err) logger.error('[457][patientinfo_diag getPatientDiagHandler]err=' + err.message);
+        logger.info('[patientinfo_diag][552]File was copied to destination');
         });  
     }); 
 
     const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
-    logger.info('[screenList][350][patientinfo_diag resetScreen]result=' + resultLog); 
+    logger.info('[patientinfo_diag][350][patientinfo_diag resetScreen]result=' + resultLog); 
         //  res.json({message: 'SUCCESS'});
           
     return resultLog;        
