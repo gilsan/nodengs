@@ -195,6 +195,7 @@ router.post('/upload', function (req, res) {
         }
         
         let today ='';
+        let dirPath2 = '' ; 
          
       console.log("len", req.files.length);
 
@@ -251,16 +252,36 @@ router.post('/upload', function (req, res) {
           
             if (day1 < 10) {
               today = year1 + '-' + thismonth + '-' + thisday;
+              dirPath2 = 'path_temp/' + year1 + '/' + thismonth + '/' + thisday;
             } else {
               today = year1 + '-' + thismonth + '-' + day1;
+              dirPath2 = 'path_temp/' + year1 + '/' + thismonth + '/' + day1;
             }
           } else {
             if (day1 < 10) {
               today = year1 + '-' + month1 + '-' + thisday;
+              dirPath2 = 'path_temp/' + year1 + '/' + month1 + '/' + thisday;
             } else {
               today = year1 + '-' + month1 + '-' + day1;
+              dirPath2 = 'path_temp/' + year1 + '/' + month1 + '/' + day1;
             }       
           }
+
+          // directory check  
+          let isDirExists = fs.existsSync(dirPath2) && fs.lstatSync(dirPath2).isDirectory();
+          
+          if (!isDirExists){
+              fs.mkdirSync( dirPath2, { recursive: true });
+          }
+             
+        // destination will be created or overwritten by default.
+        fs.copyFile(dirPath + '/' + filename, dirPath2 + '/' + filename, (err) => {
+          if (err) logger.error('[293][fileupload uplod]err=' + err.message);
+          logger.info('[screenList][293][fileupload uplod]File was copied to destination');
+        });
+
+
+
           /////////////////////////////////////////////////////////////////////////////////////////////////  
           ///    (originalname, dirPath, pathology_num)
           logger.info('[73][dieaseupload]diseaseupload [230][검체번호] ' + pathologyNum + '  [경로] ' + dirPath

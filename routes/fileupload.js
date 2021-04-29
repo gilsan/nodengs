@@ -241,6 +241,7 @@ router.post('/upload', function (req, res) {
         let uploadedFiles = [];
         let today ='';
         let testedID = '';
+        let dirPath2 = '' ; 
 
         for(let item of req.files) {
             uploadedFiles.push({filename: item.originalname});
@@ -265,16 +266,33 @@ router.post('/upload', function (req, res) {
             
               if (day1 < 10) {
                 today = year1 + '-' + thismonth + '-' + thisday;
+                dirPath2 = 'diag_temp/' + year1 + '/' + thismonth + '/' + thisday;
               } else {
                 today = year1 + '-' + thismonth + '-' + day1;
+                dirPath2 = 'diag_temp/' + year1 + '/' + thismonth + '/' + day1;
               }
             } else {
               if (day1 < 10) {
                 today = year1 + '-' + month1 + '-' + thisday;
+                dirPath2 = 'diag_temp/' + year1 + '/' + month1 + '/' + thisday;
               } else {
                 today = year1 + '-' + month1 + '-' + day1;
+                dirPath2 = 'diag_temp/' + year1 + '/' + month1 + '/' + day1;
               }
             }
+
+      // directory check  
+      let isDirExists = fs.existsSync(dirPath2) && fs.lstatSync(dirPath2).isDirectory();
+      
+      if (!isDirExists){
+          fs.mkdirSync( dirPath2, { recursive: true });
+      }
+         
+    // destination will be created or overwritten by default.
+    fs.copyFile(dirPath + '/' + item.originalname, dirPath2 + '/' + item.originalname, (err) => {
+      if (err) logger.error('[293][fileupload uplod]err=' + err.message);
+      logger.info('[screenList][293][fileupload uplod]File was copied to destination');
+    });
 	     
             ///////////////////////////////////////////////////////////////////////////////////////////////////////  
             // 기존 count 체크
@@ -384,4 +402,3 @@ router.post('/upload', function (req, res) {
 });
 
 module.exports = router;
-  

@@ -8,3 +8,7 @@ diag
 log/.2b2d2834ecc95e2e47fc5d9e26040aac4f8e1183-audit.json
 *.txt
 *.log.1
+diag_temp
+path_temp
+path_success
+diag_success
