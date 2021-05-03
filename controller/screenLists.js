@@ -756,7 +756,7 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
   logger.info('[screenList][551][finishPathologyScreen]pathologyNum=' + pathologyNum);
   logger.info('[screenList][552][finishPathologyScreen]userid=' + userid);
   
-  /*
+  
   let prescription_no = '';
   let prescription_date = '';
   let prescription_code = '';
@@ -775,11 +775,13 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
     prescription_date  = data.prescription_date;
     prescription_code  = data.prescription_code;
 
-    let ngs_path = './' + data.irpath ;
+    let ngs_path_a = data.irpath.split('/') ;
+    
+    let ngs_path = './' + ngs_path_a[0] + '_success/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
     let ngs_file = ngs_path + '/' + data.tsvirfilename;
     logger.info('[screenList][552][getPatientPathInfo]ngs_file=' + ngs_file);
 
-    let cdw_path = 'D:\\HuminTec\\NGS_Path_Test\\' ;
+    let cdw_path = 'C:\\NGS_Path\\' ;
     let cdw_file = cdw_path + '012_' + prescription_no + '_' 
                + prescription_date + '_' 
                + prescription_code + '_TMO870_' 
@@ -791,9 +793,8 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
       if (err) logger.error('[552][screenList getPatientPathInfo]err=' + err.message);
       logger.info('[screenList][552]File was copied to destination');
     });
-      
   }); 
-  */
+  
 
   const resultLog = messageHandlerStat_log(pathologyNum, userid);
   logger.info('[screenList][555][finishPathologyScreen]result=' + resultLog); 

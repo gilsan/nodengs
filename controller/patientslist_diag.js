@@ -417,6 +417,7 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         logger.error('[304][patientinfo_diag resetscreenstatus]err=' + error.message);
     }
 
+    
     let prescription_no = '';
     let prescription_date = '';
     let test_code = '';
@@ -440,11 +441,13 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         test_code  = data.test_code;
         specimen  = data.specimen;
 
-        let ngs_path = './' + data.path ;
+        let ngs_path_a = data.path.split('/') ;
+        
+        let ngs_path = './' + ngs_path_a[0] + '_success/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
         let ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
         logger.info('[patientinfo_diag][552][resetscreenstatus]ngs_file=' + ngs_file);
 
-        let cdw_path = 'D:\\HuminTec\\NGS_Test\\' ;
+        let cdw_path = 'C:\\\NGS_LAB\\' ;
         let cdw_file = cdw_path + '012_' + prescription_no + '_' 
                + prescription_date + '_' 
                + test_code + '_' 
@@ -458,7 +461,8 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         logger.info('[patientinfo_diag][552]File was copied to destination');
         });  
     }); 
-
+    
+   
     const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
     logger.info('[patientinfo_diag][350][patientinfo_diag resetScreen]result=' + resultLog); 
         //  res.json({message: 'SUCCESS'});
