@@ -447,7 +447,7 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         let ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
         logger.info('[patientinfo_diag][552][resetscreenstatus]ngs_file=' + ngs_file);
 
-        let cdw_path = 'C:\\\NGS_LAB\\' ;
+        let cdw_path = 'C:\\NGS_LAB\\' ;
         let cdw_file = cdw_path + '012_' + prescription_no + '_' 
                + prescription_date + '_' 
                + test_code + '_' 
