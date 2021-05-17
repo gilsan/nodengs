@@ -365,6 +365,11 @@ const insertHandler = async (specimenNo, detected_variants) => {
 
     let functional_code = i;
 
+    if (i < 10) {
+      functional_code = '0' + i;
+    }
+
+
     logger.info('[267][screenList][insert detected_variants]igv=' + igv + ', sanger=' + sanger
                           + ', gene=' + gene 
                           + ', functional_impact=' + functional_impact + ', functional_code = ' + functional_code
