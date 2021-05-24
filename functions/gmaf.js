@@ -1,4 +1,6 @@
 
+const logger = require('../common/winston');
+
 // 7.0E-4 => 0.0001 * 7.0 => 0.0007 로 변환
 function convert(sample) {
  const result =sample.split('E');
@@ -11,13 +13,17 @@ function convert(sample) {
  let tempValue="0.";
  for(let i=1; i <= value; i++) {
     if (i === value) {
-		tempValue += "1";
+		//tempValue += "1";
     } else {
        tempValue += "0";
 	}
     
  }
- const newValue = Number(tempValue) * firstVal;
+
+ logger.info('[23][gmaf]' + tempValue);
+ //const newValue = Number(tempValue) * firstVal;
+ const newValue = tempValue + firstVal;
+ 
  return newValue;
 }
 
@@ -41,6 +47,9 @@ function convert(sample) {
 	   
 	    if (result_gmaf !== -1 && gmaf.length) {
 		    gmaf = convert(gmaf); // 7.0E-4 같은 경우처리 
+			
+			logger.info('[45][gmaf]' + gmaf);
+
 			 const result = gmafprocess(gmaf, val);
             return  { gmaf, result };
 	    } else {

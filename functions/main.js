@@ -140,7 +140,9 @@ exports.main = (data, filename, testedID) => {
 			// console.log('[4][main]', i, locations_result);
 			// gmaf: 0.01 미만 남김 미만인경우: true, 이상인 경우: false
            	let gmaf_result
-          	if (gmaf.length === 0) { // 길이가 0 이면 true
+			logger.info('[8][main]' + genes + ',' + gmaf)
+
+			if (gmaf.length === 0) { // 길이가 0 이면 true
               gmaf_result = true;
 		   	} else {
               const temp_gmaf_result = gmaf_mod.gmafProcess(gmaf, 0.01);
