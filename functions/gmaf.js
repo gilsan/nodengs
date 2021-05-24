@@ -46,7 +46,9 @@ function convert(sample) {
 	   const result_gmaf = gmaf.indexOf('E');
 	   
 	    if (result_gmaf !== -1 && gmaf.length) {
-		    gmaf = convert(gmaf); // 7.0E-4 같은 경우처리 
+		    //gmaf = convert(gmaf); // 7.0E-4 같은 경우처리 
+
+			gmaf = Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(gmaf);
 			
 			logger.info('[45][gmaf]' + gmaf);
 
