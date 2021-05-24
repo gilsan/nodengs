@@ -8,6 +8,7 @@ const gmaf_mod           = require('./gmaf');
 const infotype_mod       = require('./infotype');
 const krgdb_mod          = require('./krgdb');
 const inputdb_mod        = require('./inputdb');
+const logger             = require('../common/winston');
 
 // 7.0E-4 => 0.0001 * 7.0 => 0.0007 로 변환
 function convert(sample) {
@@ -154,6 +155,7 @@ exports.main = (data, filename, testedID) => {
 			 info_result = infotype_mod.infotype(info, type);
        		//  console.log('[7][main]', i,  info_result);
 	  		//   console.log('[8][main]', i,  locations_result + ',' + varian_effect_resultt + ',' + phredQualScore_resultt + ',' + gmaf_resultt + ',' + krgdbt + ',' + info_result)		 
+	  		logger.info('[8][main]' + i + genes + ',' + coding + ',' + locations + ',' + locations_result + ',' + varian_effect_result + ',' + phredQualScore_result + ',' + gmaf_result + ',' + krgdb + ',' + info_result)
 			/////////////////////////////////////////////////////////////////////////////////////////
 			if(locations_result && varian_effect_result && phredQualScore_result && gmaf_result  && krgdb && info_result) {	
  				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 

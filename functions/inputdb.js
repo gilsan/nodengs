@@ -2,6 +2,8 @@
 //  select  id, locus, locations, variant_effect, gmaf, phred_qual_score, type,info, krgdb_622_lukemia, krgdb_1100_leukemia from filtered_raw_tsv where type != 'REF' and info != 'HS'
 //  select   count(*) as cnt from filtered_raw_tsv where type != 'REF' and info != 'HS' 
 const mssql = require('mssql');
+const logger             = require('../common/winston');
+
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
@@ -106,6 +108,30 @@ const  messageHandler = async (
     krgdb_1100_leukemia = krgdb_1100_leukemia.replace(/;/g, ",");
      */
 
+    logger.info ('[244][inputdb]locus=' + locus + ', genotype=' + genotype + ', filter= ' + filter );
+    logger.info ('[244][inputdb]ref=' + ref + ', observed_allele=' + observed_allele  );
+    logger.info ('[244][inputdb]type =' + type + ', no_call_reason=' + no_call_reason + ', genes=' + genes );
+    logger.info ('[244][inputdb]locations=' + locations + ', length=' + length);
+    logger.info ('[244][inputdb]info=' + info + ', variant_id=' + variant_id + ', variant_name=' + variant_name );
+    logger.info ('[244][inputdb]frequency=' + frequency + ', strand=' + strand + ', exon=' + exon );
+    logger.info ('[244][inputdb]transcript=' + transcript + ', coding=' + coding + ', amino_acid_change=' + amino_acid_change );
+    logger.info ('[244][inputdb]variant_effect=' + variant_effect + ', phylop=' + phylop );
+    logger.info ('[244][inputdb]sift=' + sift + ', grantham=' + grantham + ', polyphen=' + polyphen + ', fathmm=' + fathmm + ', pfam=' + pfam );
+    logger.info ('[244][inputdb]dbsnp=' + dbsnp + ', dgv=' + dgv + ', maf=' + maf + ', emaf=' + emaf + ', amaf=' + amaf );
+    logger.info ('[244][inputdb]gmaf=' + gmaf + ', ucsc_common_snps=' + ucsc_common_snps );
+    logger.info ('[244][inputdb]exac_laf=' + exac_laf + ', exac_eaaf=' + exac_eaaf + ', exac_oaf=' + exac_oaf );
+    logger.info ('[244][inputdb]exac_efaf=' + exac_efaf + ', exac_saaf=' + exac_saaf + ', exac_enfaf=' +exac_enfaf );
+    logger.info ('[244][inputdb]exac_aaf=' + exac_aaf + ', exac_gaf=' + exac_gaf );
+    logger.info ('[244][inputdb]cosmic=' + cosmic + ', omim=' + omim + ', gene_ontology=' + gene_ontology );
+    logger.info ('[244][inputdb]drugbank=' + drugbank + ', clinvar=' + clinvar );
+    logger.info ('[244][inputdb]allele_coverage=' + allele_coverage + ', allele_ratio=' + allele_ratio );
+    logger.info ('[244][inputdb]p_value=' + p_value + ', phred_qual_score=' + phred_qual_score );
+    logger.info ('[244][inputdb]ref_ref_var_var=' + ref_ref_var_var + ', homopolymer_length=' + homopolymer_length + ', subset_of=' + subset_of );
+    logger.info ('[244][inputdb]krgdb_622_lukemia=' + krgdb_622_lukemia + ', krgdb_1100_leukemia=' + krgdb_1100_leukemia + ', filename=' + filename );
+    logger.info ('[244][inputdb]loc1=' + loc1 + ', loc2=' + loc2 + ', loc3=' + loc3 + ', loc4=' + loc4);
+    logger.info ('[244][inputdb]loc5=' + loc5 + ', loc6=' + loc6 + ', loc7=' + loc7 + ', testedID=' + testedID );
+    
+
   const sql2 =`insert into filtered_raw_tsv (		   
      locus, genotype, filter, ref, observed_allele,
      type, no_call_reason, genes, locations, length,
@@ -206,6 +232,7 @@ const  messageHandler = async (
       return result;
   } catch (err) {
       console.error('SQL error', err);
+      logger.error ('[244][inputdb]err=' + err.message);
   }
 }
 
