@@ -7,9 +7,9 @@ const axios = require('axios');
 const logger = require('../common/winston');
 
 // 교육
-//let url = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
+let url = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
 //운영
-let url = 'http://emr012.cmcnu.or.kr/cmcnu/.live';
+//let url = 'http://emr012.cmcnu.or.kr/cmcnu/.live';
  
 router.post('/redirectEMR', (req, res, next) => {  
    console.log('[웹에서 받은 데이타]', req.body);
@@ -17,6 +17,7 @@ router.post('/redirectEMR', (req, res, next) => {
    //logger.info ('[웹에서 받은 데이타]data=' + req.body);
    axios({
        method: 'post',
+       timeout: 3000,
        url,
        data: querystring.stringify(req.body) 
    })
