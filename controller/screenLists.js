@@ -854,9 +854,9 @@ exports.pathologyReportUpdate = (req, res, next) => {
 
 // 2021.05.28 병리 최종 상태 update
 exports.finishPathologyEMR = (req, res, next) => {
-  logger.info('[857][screenList][finishPathologyEMR]req=' + JSON.stringify(req.body));
-  const pathologyNum = req.body.spcno;
-  const patientID = req.body.patientID;
+  logger.info('[857][screenList][finishPathologyEMR]req=' + JSON.stringify(req.query));
+  const pathologyNum = req.query.spcno;
+  const patientID = req.query.patientID;
   console.log('[screenList][593][finishPathologyEMR]',pathologyNum);
   console.log('[screenList][593][finishPathologyEMR]',patientID);
 

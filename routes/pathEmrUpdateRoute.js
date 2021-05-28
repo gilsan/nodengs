@@ -10,6 +10,6 @@ router.post('/pathEmrSendUpdate', emrSendUpdateController.emrSendUpdate);  // �
 router.post('/pathologyEmrSendUpdate', emrSendUpdateController.finishPathologyScreen);
 router.post('/finishPathologyEMRScreen', emrSendUpdateController.finishPathologyEMRScreen); // 마지막
 router.post('/pathologyReportUpdate', emrSendUpdateController.pathologyReportUpdate); // 2번으로 변경
-router.post('/finishPathologyEMR', emrSendUpdateController.finishPathologyEMR); // 마지막
+router.get('/finishPathologyEMR', emrSendUpdateController.finishPathologyEMR); // 마지막
 
 module.exports = router;
