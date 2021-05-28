@@ -852,27 +852,52 @@ exports.pathologyReportUpdate = (req, res, next) => {
   });
 }
 
+
+
+// 병리 EMR전송 완료
+const  messageHandlerPath2 = async (pathologyNum) => {
+  logger.info('[571][screenList][finishPathologyEMR]pathologyNum=' + pathologyNum); 
+  let sql ="update [dbo].[patientinfo_path] \
+          set screenstatus='4' \
+          where pathology_num=@pathologyNum ";
+
+ try {
+     const request = pool.request()
+         .input('pathologyNum', mssql.VarChar, pathologyNum); // or: new sql.Request(pool1)
+           
+     const result = await request.query(sql)
+     console.dir( result);
+     
+     return result;
+ } catch (error) {
+  logger.error('[585][screenList][finishPathologyEMR]err=' + error.message);
+ }
+
+}
+
 // 2021.05.28 병리 최종 상태 update
 exports.finishPathologyEMR = (req, res, next) => {
-  logger.info('[857][screenList][finishPathologyEMR]req=' + JSON.stringify(req.query));
+  logger.info('[883][screenList][finishPathologyEMR]req=' + JSON.stringify(req.query));
   const pathologyNum = req.query.spcno;
   const patientID = req.query.patientID;
-  console.log('[screenList][593][finishPathologyEMR]',pathologyNum);
-  console.log('[screenList][593][finishPathologyEMR]',patientID);
+  console.log('[screenList][887][finishPathologyEMR]',pathologyNum);
+  console.log('[screenList][888][finishPathologyEMR]',patientID);
 
-  res.json({data: '1'});
-  /*
-  const result = messageHandlerPath(pathologyNum);
+  //res.json({data: '1'});
+  
+  const result = messageHandlerPath2(pathologyNum);
   result.then(data => {
-    console.log('[screenList][596][finishPathologyEMR]',data); 
-      res.json({message: 'SUCCESS'});
+    console.log('[screenList][890][finishPathologyEMR]',data); 
+
+    if (data.rowsAffected[0] == 1 )
+      res.json({message: '1'});
+    else
+      res.json({message: '0'});
   }) 
   .catch( error => {
-    logger.error('[600][screenList][finishPathologyEMR]err=' + error.message);
+    logger.error('[898][screenList][finishPathologyEMR]err=' + error.message);
     res.sendStatus(500);
   });
-  */
-
 }
 
 // 판독 완료
