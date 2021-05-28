@@ -242,6 +242,7 @@ app.use('/tests', function(req, res, next) {
 // EMR 전송후 진검 갱신
 // EMR 전송후 병리 갱신
   app.use('/pathEmrUpdate', pathEmrUpdateRouter);
+  app.use('/screenlists', pathEmrUpdateRouter);
   
 //screen 
 app.use('/screen', screenRouter);                //AML screen => 디렉토리 파일명
