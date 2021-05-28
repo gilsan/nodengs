@@ -1,34 +1,63 @@
 
-const xml2js = require('xml2js');
+const parser = require('fast-xml-parser');
 
-var jsondata = `<?xml version='1.0' encoding='utf-8'?>
-<root><morphmetricworklist><worklist><instcd></instcd><relaptno><![CDATA[S20047294]]></relaptno><ptno><![CDATA[M20016807]]></ptno><pid><![CDATA[35476641]]></pid><hngnm><![CDATA[박윤희]]></hngnm><sex><![CDATA[F]]></sex><age><![CDATA[F/68]]></age><sa></sa><acptdd><![CDATA[20201219]]></acptdd><testcd><![CDATA[PMO12096]]></testcd><testhngnm><![CDATA[TB/NTM real-time PCR]]></testhngnm><acptstatcd><![CDATA[3]]></acptstatcd><orddeptcd></orddeptcd><orddeptnm><![CDATA[혈액내과]]></orddeptnm><orddrid><![CDATA[98620389]]></orddrid><orddrnm><![CDATA[조병식]]></orddrnm><appeorddrid><![CDATA[-]]></appeorddrid><appeorddrnm></appeorddrnm><grosdrid><![CDATA[21903910]]></grosdrid><grosrnm><![CDATA[홍석호]]></grosrnm><readdd><![CDATA[20201229]]></readdd><readtm><![CDATA[161942]]></readtm><csteno><![CDATA[4]]></csteno><readdrid><![CDATA[21800989]]></readdrid><readdrnm><![CDATA[송인혜]]></readdrnm><brthdd><![CDATA[19530106]]></brthdd><bcolldd><![CDATA[20201219]]></bcolldd><prcpdd><![CDATA[20201219]]></prcpdd><spcnm><![CDATA[조직검체 small intestine]]></spcnm><wardnm><![CDATA[내과중환자실 MICU5]]></wardnm><opcnfmdd><![CDATA[20201219]]></opcnfmdd><accessionno><![CDATA[M2016807]]></accessionno><execprcpuniqno><![CDATA[1462695827]]></execprcpuniqno><spccd><![CDATA[TM1260]]></spccd><prcpgenrflag><![CDATA[I]]></prcpgenrflag><fstreaddrid></fstreaddrid><fstreaddrnm></fstreaddrnm><diagcnts><![CDATA[Small intestine, segmental resection;
-   Segmental mucosal and transmural necrosis (see comment).]]></diagcnts></worklist>
-   <worklist><instcd></instcd><relaptno><![CDATA[S200472941]]></relaptno><ptno><![CDATA[M200168071]]></ptno><pid><![CDATA[35476642]]></pid><hngnm><![CDATA[박윤희]]></hngnm><sex><![CDATA[F]]></sex><age><![CDATA[F/68]]></age><sa></sa><acptdd><![CDATA[20201219]]></acptdd><testcd><![CDATA[PMO12096]]></testcd><testhngnm><![CDATA[TB/NTM real-time PCR]]></testhngnm><acptstatcd><![CDATA[3]]></acptstatcd><orddeptcd></orddeptcd><orddeptnm><![CDATA[혈액내과]]></orddeptnm><orddrid><![CDATA[98620389]]></orddrid><orddrnm><![CDATA[조병식]]></orddrnm><appeorddrid><![CDATA[-]]></appeorddrid><appeorddrnm></appeorddrnm><grosdrid><![CDATA[21903910]]></grosdrid><grosrnm><![CDATA[홍석호]]></grosrnm><readdd><![CDATA[20201229]]></readdd><readtm><![CDATA[161942]]></readtm><csteno><![CDATA[4]]></csteno><readdrid><![CDATA[21800989]]></readdrid><readdrnm><![CDATA[송인혜]]></readdrnm><brthdd><![CDATA[19530106]]></brthdd><bcolldd><![CDATA[20201219]]></bcolldd><prcpdd><![CDATA[20201219]]></prcpdd><spcnm><![CDATA[조직검체 small intestine]]></spcnm><wardnm><![CDATA[내과중환자실 MICU5]]></wardnm><opcnfmdd><![CDATA[20201219]]></opcnfmdd><accessionno><![CDATA[M2016807]]></accessionno><execprcpuniqno><![CDATA[1462695827]]></execprcpuniqno><spccd><![CDATA[TM1260]]></spccd><prcpgenrflag><![CDATA[I]]></prcpgenrflag><fstreaddrid></fstreaddrid><fstreaddrnm></fstreaddrnm><diagcnts><![CDATA[Small intestine, segmental resection;
-    Segmental mucosal and transmural necrosis (see comment).]]></diagcnts></worklist>
-    <resultKM error="no" type="status" clear="true" description="info||정상 처리되었습니다." updateinstance="true" source="1615201435842"/>
-</morphmetricworklist></root>`;
+const options = {
+    attributeNamePrefix : "@_", 
+    attrNodeName: "attr", //default is 'false' 
+    textNodeName : "#text", 
+    ignoreAttributes : true, 
+    ignoreNameSpace : false, 
+    allowBooleanAttributes : false, 
+    parseNodeValue : true, 
+    parseAttributeValue : false, 
+    trimValues: true, 
+    cdataTagName: "__cdata", //default is 'false' 
+    cdataPositionChar: "\\c", 
+    parseTrueNumberOnly: true, 
+    arrayMode: false , //"strict" 
+    //attrValueProcessor: (val, attrName) => he.decode(val, {isAttributeValue: true}), //default is a=>a 
+    //tagValueProcessor : (val, tagName) => he.decode(val), //default is a=>a 
+    stopNodes: ["parse-me-as-string"] 
+};
 
-const parser = new xml2js.Parser(/* options */); 
-parser.parseStringPromise(jsondata).then(function (result) { 
-    console.log("resultCode:", result.root.morphmetricworklist[0]); 
+var jsondata = `<root>
+<worklist>
+<worklist>
+<bcno>I276S0HU0</bcno>
+<patnm>이정호</patnm>
+<tclsscrnnm>급성골수성백혈병 [NGS]</tclsscrnnm>
+<pid>23248774</pid>
+<sex>M</sex>
+<spcacptdt>20210216122735</spcacptdt>
+<spccd>015</spccd>
+<spcnm>Bone marrow</spcnm>
+<ikzk1/>
+<chormosomal>46,XY,-7,+21[19]/46,XY[1]</chormosomal>
+<orddeptcd>000002010800000aaaa</orddeptcd>
+<orddrid>10500407</orddrid>
+<orddrnm>이성은</orddrnm>
+<orddeptnm>혈액내과</orddeptnm>
+<brthdd>19521015</brthdd>
+<execprcpuniqno>1479100499</execprcpuniqno>
+<prcpdd>20210216</prcpdd>
+<testcd>LPE471</testcd>
+<tclsscrnnm>급성골수성백혈병 [NGS]</tclsscrnnm>
+<ftl3>Negative</ftl3>
+</worklist>
+<resultKM error="no" type="status" clear="true" description="info||정상 처리되었습니다." updateinstance="true" source="1615509311882"/>
+</worklist>
+</root>   
+`;
 
-    let workCnt = result.root.morphmetricworklist[0].worklist.length;
+let jsonObj = parser.parse(jsondata, options)  ;
+var patientJson = JSON.stringify(jsonObj); 
+console.log('[114][patient_nu]json=' ,  patientJson);
 
-    console.log(workCnt);
 
-    result.root.morphmetricworklist[0].worklist.forEach(item => {
 
-        if (item.pid = "35476642") {
-            console.log(item.pid);
-            return true;
-        }
+let patientObj = JSON.parse(patientJson);
 
-    });
- 
-})
-.catch(function (err) {  
-    console.log(err);  });
+console.log(patientObj.root.worklist.worklist);
 
 
                 

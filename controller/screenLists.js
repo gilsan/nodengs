@@ -852,6 +852,29 @@ exports.pathologyReportUpdate = (req, res, next) => {
   });
 }
 
+// 2021.05.28 병리 최종 상태 update
+exports.finishPathologyEMR = (req, res, next) => {
+  logger.info('[857][screenList][finishPathologyEMR]req=' + JSON.stringify(req.body));
+  const pathologyNum = req.body.spcno;
+  const patientID = req.body.patientID;
+  console.log('[screenList][593][finishPathologyEMR]',pathologyNum);
+  console.log('[screenList][593][finishPathologyEMR]',patientID);
+
+  res.json({data: '1'});
+  /*
+  const result = messageHandlerPath(pathologyNum);
+  result.then(data => {
+    console.log('[screenList][596][finishPathologyEMR]',data); 
+      res.json({message: 'SUCCESS'});
+  }) 
+  .catch( error => {
+    logger.error('[600][screenList][finishPathologyEMR]err=' + error.message);
+    res.sendStatus(500);
+  });
+  */
+
+}
+
 // 판독 완료
 exports.finishScreen = (req, res, next) => {
 
