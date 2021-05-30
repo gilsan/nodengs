@@ -915,7 +915,7 @@ exports.finishPathologyEMR = (req, res, next) => {
 
   //res.json({data: '1'});
 
-  const result2 = selectHandlerPath2(user, dept);
+  const result2 = selectHandlerPath2(pathologyNum, patientID);
   result2.then(data => {
 
     let data2 =  nvl(data, "");
