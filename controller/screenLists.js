@@ -875,6 +875,36 @@ const  messageHandlerPath2 = async (pathologyNum) => {
 
 }
 
+
+// 병리 쿼리
+const  selectHandlerPath2 = async (pathologyNum, patientID) => {
+  await poolConnect; // ensures that the pool has been created
+
+  logger.info('[883][loginUser 병리]pathologyNum=' + pathologyNum + ", patientID=" + patientID);
+
+  //const uuid = uuidv4();
+
+  //console.log('uuid:', uuid);
+
+  const sql= `select count(1) as count from [dbo].[patientinfo_path] 
+         where pathologyNum = @pathologyNum 
+         and patientID = @patientID`;
+  
+  logger.info('[890][loginUser 병리]sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('pathologyNum', mssql.VarChar, pathologyNum) // pathologyNum
+        .input('patientID', mssql.VarChar, patientID); // patientID 
+      const result = await request.query(sql)
+      console.dir(result);
+      const data = result.recordset[0];
+      return data;
+  } catch (error) {
+    logger.error('[900][finishPathologyEMR]err=' + error.message);
+  }
+}
+
 // 2021.05.28 병리 최종 상태 update
 exports.finishPathologyEMR = (req, res, next) => {
   logger.info('[883][screenList][finishPathologyEMR]req=' + JSON.stringify(req.query));
@@ -884,20 +914,34 @@ exports.finishPathologyEMR = (req, res, next) => {
   console.log('[screenList][888][finishPathologyEMR]',patientID);
 
   //res.json({data: '1'});
-  
-  const result = messageHandlerPath2(pathologyNum);
-  result.then(data => {
-    console.log('[screenList][890][finishPathologyEMR]',data); 
 
-    if (data.rowsAffected[0] == 1 )
-      res.json({message: '1'});
-    else
+  const result2 = selectHandlerPath2(user, dept);
+  result2.then(data => {
+
+    let data2 =  nvl(data, "");
+
+    if (data2 === "") {
       res.json({message: '0'});
+    }
+    else
+    {
+      const result = messageHandlerPath2(pathologyNum);
+      result.then(data => {
+        console.log('[screenList][890][finishPathologyEMR]',data); 
+
+        if (data.rowsAffected[0] == 1 ) {
+          res.json({message: '1'});
+        } else {
+          res.json({message: '0'});
+        } 
+      })
+    }
   }) 
   .catch( error => {
     logger.error('[898][screenList][finishPathologyEMR]err=' + error.message);
     res.sendStatus(500);
   });
+
 }
 
 // 판독 완료
