@@ -853,6 +853,20 @@ exports.pathologyReportUpdate = (req, res, next) => {
 }
 
 
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+ function nvl(st, defaultStr){
+    
+  console.log('st=', st);
+  if(st === undefined || st == null || st == "") {
+      st = defaultStr ;
+  }
+      
+  return st ;
+}
 
 // 병리 EMR전송 완료
 const  messageHandlerPath2 = async (pathologyNum) => {
