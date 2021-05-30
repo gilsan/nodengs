@@ -889,7 +889,6 @@ const  messageHandlerPath2 = async (pathologyNum) => {
 
 }
 
-
 // 병리 쿼리
 const  selectHandlerPath2 = async (pathologyNum, patientID) => {
   await poolConnect; // ensures that the pool has been created
@@ -900,8 +899,8 @@ const  selectHandlerPath2 = async (pathologyNum, patientID) => {
 
   //console.log('uuid:', uuid);
 
-  const sql= `select count(1) as count from [dbo].[patientinfo_path] 
-         where pathologyNum = @pathologyNum 
+  const sql= `select pathology_num from [dbo].[patientinfo_path] 
+         where pathology_num = @pathologyNum 
          and patientID = @patientID`;
   
   logger.info('[890][loginUser 병리]sql=' + sql);
