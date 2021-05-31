@@ -869,15 +869,16 @@ exports.pathologyReportUpdate = (req, res, next) => {
 }
 
 // 병리 EMR전송 완료
-const  messageHandlerPath2 = async (pathologyNum) => {
-  logger.info('[571][screenList][finishPathologyEMR]pathologyNum=' + pathologyNum); 
+const  messageHandlerPath2 = async (pathologyNum, status) => {
+  logger.info('[571][screenList][finishPathologyEMR]pathologyNum=' + pathologyNum + ", status=" + status); 
   let sql ="update [dbo].[patientinfo_path] \
-          set screenstatus='4' \
+          set screenstatus=@status \
           where pathology_num=@pathologyNum ";
 
  try {
      const request = pool.request()
-         .input('pathologyNum', mssql.VarChar, pathologyNum); // or: new sql.Request(pool1)
+         .input('pathologyNum', mssql.VarChar, pathologyNum)
+         .input('status', mssql.VarChar, status); 
            
      const result = await request.query(sql)
      console.dir( result);
@@ -923,10 +924,15 @@ exports.finishPathologyEMR = (req, res, next) => {
   logger.info('[883][screenList][finishPathologyEMR]req=' + JSON.stringify(req.query));
   const pathologyNum = req.query.spcno;
   const patientID = req.query.patientID;
-  console.log('[screenList][887][finishPathologyEMR]',pathologyNum);
-  console.log('[screenList][888][finishPathologyEMR]',patientID);
+  const status = req.query.status;
+  logger.info('[screenList][887][finishPathologyEMR]pathologyNum=' + pathologyNum
+                         + ", patientID=" + patientID  + ", Status" + status);
 
-  //res.json({data: '1'});
+  const p_sts = '';
+  if (status === 'R')
+    p_sts = '4';
+  else if (status === 'C')
+    p_sts = '3';
 
   const result2 = selectHandlerPath2(pathologyNum, patientID);
   result2.then(data => {
@@ -938,7 +944,7 @@ exports.finishPathologyEMR = (req, res, next) => {
     }
     else
     {
-      const result = messageHandlerPath2(pathologyNum);
+      const result = messageHandlerPath2(pathologyNum, p_sts);
       result.then(data => {
         console.log('[screenList][890][finishPathologyEMR]',data); 
 
