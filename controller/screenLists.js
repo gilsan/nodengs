@@ -928,7 +928,7 @@ exports.finishPathologyEMR = (req, res, next) => {
   logger.info('[screenList][887][finishPathologyEMR]pathologyNum=' + pathologyNum
                          + ", patientID=" + patientID  + ", Status" + status);
 
-  const p_sts = '';
+  let p_sts = '';
   if (status === 'R')
     p_sts = '4';
   else if (status === 'C')
