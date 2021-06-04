@@ -39,7 +39,7 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
             let name      = excelDv[i].name;
             let age      = excelDv[i].age;
             let gender    = excelDv[i].gender;
-            let test_code = nvl(excelDv[i].test_code, "");
+            let test_code = nvl(excelDv[i].testcode, "");
             let gene      = excelDv[i].gene;
             let functionalImpact  = excelDv[i].functionalImpact;
             let transcript  = excelDv[i].transcript;
@@ -50,8 +50,8 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
             let vafPercent  = excelDv[i].vafPercent;
             let references  = excelDv[i].reference;
             let cosmicID  = excelDv[i].cosmicID;
-            let accept_date  = nvl(excelDv[i].accept_date, "");
-            let report_date  = nvl(excelDv[i].report_date, "");
+            let accept_date  = nvl(excelDv[i].acceptdate, "");
+            let report_date  = nvl(excelDv[i].reportdate, "");
                         
             logger.info( '[25][excelDvdata]' + specimenNo  + " " + patientID + " " + name +  " " + age + " " + gender + " " + test_code  );
             logger.info( '[25][excelDvdata]' + gene + " " + transcript + " " + exonIntro + " " + nucleotideChange + " " + aminoAcidChange);
@@ -186,7 +186,7 @@ const  excelDvSelectHandler = async () => {
             , isnull(gender, '') gender
             , isnull(age, '') age
             , isnull(gene, '') gene
-            , isnull(test_code, '') test_code
+            , isnull(test_code, '') testcode
             , isnull(functionalImpact, '') functionalImpact
             , isnull(transcript, '') transcript
             , isnull(exonIntro, '') exonIntro
@@ -196,8 +196,8 @@ const  excelDvSelectHandler = async () => {
             , isnull(vafPercent, '') vafPercent
             , isnull([references], '') reference
             , isnull(cosmicID, '') cosmicID
-            , isnull(accept_date,  '') accept_date
-            , isnull(report_date,  '') report_date
+            , isnull(accept_date,  '') acceptdate
+            , isnull(report_date,  '') reportdate
         FROM NGS_DATA.dbo.excelDV `;
 
         logger.info('[105]excelDvSelect sql=' + qry);
