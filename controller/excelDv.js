@@ -186,6 +186,7 @@ const  excelDvSelectHandler = async () => {
             , isnull(gender, '') gender
             , isnull(age, '') age
             , isnull(gene, '') gene
+            , isnull(test_code, '') test_code
             , isnull(functionalImpact, '') functionalImpact
             , isnull(transcript, '') transcript
             , isnull(exonIntro, '') exonIntro
