@@ -115,7 +115,6 @@ const tumortype = require('./routes/tumortype');  //tumortype.js 파일을 선�
 const clinically = require('./routes/clinically');
 const clinical = require('./routes/clinical');
 const prevalent = require('./routes/prevalent');
-
  
 // 12-20
 // mentlists
@@ -125,6 +124,9 @@ const polymorphismRouter = require('./routes/polymorphismRouter');
 
 const dvbeforsortingRouter = require('./routes/dvsortingRouter');
 const dvaftersortingRouter = require('./routes/dvsortingRouter');
+
+//2021-06-02
+const excelDvRouter = require('./routes/excelDvRouter');
 
 //나중에 확인후 삭제할것.
 // const allRouter           = require('./routes/allRouter');       //allRouter.js 파일을 선언한다.
@@ -282,6 +284,9 @@ app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 �
 // detected variants sort
 app.use('/dvbeforsorting', dvbeforsortingRouter);
 app.use('/dvaftersorting', dvaftersortingRouter);
+
+// 2021-06-02
+app.use('/excelDv', excelDvRouter);
 
  // 화일 내려받기
  app.use('/download', function(req, res) {
