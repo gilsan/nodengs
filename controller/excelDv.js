@@ -196,8 +196,6 @@ const  excelDvSelectHandler = async () => {
             , isnull(vafPercent, '') vafPercent
             , isnull([references], '') reference
             , isnull(cosmicID, '') cosmicID
-            , isnull(igv,  '') igv
-            , isnull(sanger, '') sanger
             , isnull(accept_date,  '') accept_date
             , isnull(report_date,  '') report_date
         FROM NGS_DATA.dbo.excelDV `;
