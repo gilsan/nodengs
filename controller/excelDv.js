@@ -48,7 +48,7 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
             let aminoAcidChange  = excelDv[i].aminoAcidChange;
             let zygosity  = excelDv[i].zygosity;
             let vafPercent  = excelDv[i].vafPercent;
-            let references  = excelDv[i].references;
+            let references  = excelDv[i].reference;
             let cosmicID  = excelDv[i].cosmicID;
             let accept_date  = nvl(excelDv[i].accept_date, "");
             let report_date  = nvl(excelDv[i].report_date, "");
