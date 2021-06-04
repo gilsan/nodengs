@@ -193,7 +193,7 @@ const  excelDvSelectHandler = async () => {
             , isnull(aminoAcidChange, '') aminoAcidChange
             , isnull(zygosity, '') zygosity
             , isnull(vafPercent, '') vafPercent
-            , isnull([references], '') references
+            , isnull([references], '') reference
             , isnull(cosmicID, '') cosmicID
             , isnull(igv,  '') igv
             , isnull(sanger, '') sanger
