@@ -52,10 +52,11 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
             let cosmicID  = excelDv[i].cosmicID;
             let accept_date  = nvl(excelDv[i].acceptdate, "");
             let report_date  = nvl(excelDv[i].reportdate, "");
+            let tsv_name  = nvl(excelDv[i].tsvname, "");
                         
             logger.info( '[25][excelDvdata]' + specimenNo  + " " + patientID + " " + name +  " " + age + " " + gender + " " + test_code  );
             logger.info( '[25][excelDvdata]' + gene + " " + transcript + " " + exonIntro + " " + nucleotideChange + " " + aminoAcidChange);
-            logger.info( '[25][excelDvdata]' + zygosity + " " + vafPercent + " " + references + " " + cosmicID + " " + accept_date + " " + report_date);
+            logger.info( '[25][excelDvdata]' + zygosity + " " + vafPercent + " " + references + " " + cosmicID + " " + accept_date + " " + report_date + " " + tsv_name);
 
             const qry = `insert into excelDv (
                     patientID
@@ -72,10 +73,11 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
                     , aminoAcidChange
                     , zygosity
                     , vafPercent
-                    , [references]
+                    , reference
                     , cosmicID
                     , accept_date
                     , report_date
+                    , tsvname
                     ) 
                     values(
                         @patientID
@@ -96,6 +98,7 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
                         , @cosmicID
                         , @accept_date
                         , @report_date
+                        , @tsv_name
                     )`; 
             logger.info('[27][excelDvdata] sql='+ qry);
             try {
@@ -117,7 +120,8 @@ const  excelDvInsertHandler = async (specimenNo, excelDv) => {
                 .input('references', mssql.VarChar, references)
                 .input('cosmicID', mssql.VarChar, cosmicID)
                 .input('accept_date', mssql.VarChar, accept_date)
-                .input('report_date', mssql.VarChar, report_date);
+                .input('report_date', mssql.VarChar, report_date)
+                .input('tsv_name', mssql.VarChar, tsv_name);
     
                 result = await request.query(qry);
     
@@ -180,7 +184,8 @@ const  excelDvSelectHandler = async () => {
 
     //select Query 생성
         const qry = `SELECT
-            isnull( patientID, '') patientID
+            isnull( tsvname, '') tsvname
+            , isnull( patientID, '') patientID
             , isnull(specimenNo, '') specimenNo
             , isnull(name, '') name
             , isnull(gender, '') gender
@@ -194,7 +199,7 @@ const  excelDvSelectHandler = async () => {
             , isnull(aminoAcidChange, '') aminoAcidChange
             , isnull(zygosity, '') zygosity
             , isnull(vafPercent, '') vafPercent
-            , isnull([references], '') reference
+            , isnull(reference, '') reference
             , isnull(cosmicID, '') cosmicID
             , isnull(accept_date,  '') acceptdate
             , isnull(report_date,  '') reportdate
