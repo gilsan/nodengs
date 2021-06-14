@@ -85,7 +85,7 @@ exports.locations = (locations_data) =>  {
 			  const splicesite_5     = locations_items.includes('splicesite_5');
    
 			 			  
-			  if (!upstream || (upstream && locations_exonic)) {
+			  if (!upstream || (upstream && locations_exonic) || (upstream && splicesite_3) || (upstream && splicesite_5)) {
 			     if (locations_exonic || (locations_exonic && locations_utr) || splicesite_5 || splicesite_3) {
 				    if (locations_length === 0) {
 					    loc1 = '';
