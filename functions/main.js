@@ -9,6 +9,13 @@ const infotype_mod       = require('./infotype');
 const krgdb_mod          = require('./krgdb');
 const inputdb_mod        = require('./inputdb');
 const logger             = require('../common/winston');
+const mssql = require('mssql');
+
+const dbConfigMssql = require('../common/dbconfig.js');
+//const { dir } = require('console');
+const pool = new mssql.ConnectionPool(dbConfigMssql);
+const poolConnect = pool.connect();
+
 
 // 7.0E-4 => 0.0001 * 7.0 => 0.0007 로 변환
 function convert(sample) {
@@ -36,6 +43,28 @@ function removeQuote(value) {
 			return value.replace(/"/g, "");
 	}
 	return value;
+}
+
+const  messageHandler_ver = async (ver_file, testedID) => {
+	await poolConnect; // ensures that the pool has been created
+	 
+	logger.info('[45][main update][messageHandler3]ver_file=' + ver_file + ", testedID" + testedID);
+	const qry=`update patientinfo_diag 
+		  set ver_file = @ver_file  
+		  where specimenNo = @testedID`;
+	logger.info('[48][main][update patientinfo_diag]sql=' +  qry) ;
+  
+	try {
+		const request = pool.request() // or: new sql.Request(pool1)
+		.input('ver_file', mssql.VarChar, ver_file)
+		.input('testedID', mssql.VarChar, testedID);
+		const result = await request.query(qry)
+		console.dir( result);
+	  //  console.log('[158][update patientinfo_diag] ', result)
+		return result;
+	} catch (error) {
+	  logger.error('[56][main]update patient diag err=' + error.message);
+	}
 }
 
 exports.main = (data, filename, testedID) => {
@@ -360,6 +389,24 @@ exports.main = (data, filename, testedID) => {
 		  /////////////////////////////////////////////////////////////////////////////////////////
 		  if(locations_result && varian_effect_result && phredQualScore_result && gmaf_result  && krgdb && info_result) {	
  			
+			let ver_path = '5.10';
+
+			if (len == 63 )
+			{
+				ver_path = '5.16'
+			}
+          
+			// patient tsv 상태 update
+			const result5 = messageHandler_ver(ver_path, testedID);
+			result5.then(data => {
+
+			console.log('[374][main] ', data);
+			//res.json(data);
+			})
+			.catch( error => {
+			logger.error('[378][main]update patient diag err=' + error.message);
+			});
+			
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 			//  console.log('locus: ', locus);
 			inputdb_mod.inputdb(

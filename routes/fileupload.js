@@ -338,9 +338,11 @@ router.post('/upload', function (req, res) {
               result.then(data => {
 
               console.log('[243][fileupload][count] ', data);
+              logger.info('[243][fileupload][count]count=' + data);
 
               const count = parseInt(data,10);
-                  
+              logger.info('[243][fileupload][count]count=' + count);
+    
               // console.log('[247] 시험용', count);
               if (count > 0) {
                 // tsv 레코드 삭제
@@ -362,6 +364,8 @@ router.post('/upload', function (req, res) {
 
               /////////////////////////////////////////////////////////////////////////////////////////////
               console.log('Next...');
+              
+              logger.info('[243][fileupload][count]next 1');
           
               // patient tsv 상태 update
               const result3 = messageHandler3(item.originalname, dirPath, testedID);
@@ -374,6 +378,7 @@ router.post('/upload', function (req, res) {
                 logger.error('[272][fileupload] update patient diag err=' + error.message);
               });
         
+              logger.info('[243][fileupload][count]next 2');
             // console.log('insert...');
           
             // jintsv insert
@@ -387,6 +392,8 @@ router.post('/upload', function (req, res) {
               logger.error('[284][fileupload] inset jintsv err=' + error.message)
             });	  
 
+            logger.info('[243][fileupload][count]next 3');
+
             // 2021.01.29  deleteDetectedVariantsHandler add
             //  deleteDetectedVariantsHandler
             const result5 =  deleteDetectedVariantsHandler(testedID);
@@ -399,20 +406,33 @@ router.post('/upload', function (req, res) {
               logger.error('[284][fileupload] inset jintsv err=' + error.message);
             });	  
 
+            logger.info('[243][fileupload][count]next 4');
+
             // 2021.02.02  deleteReportHandler add
             //  deleteReportHandler
-              const result6 =  deleteReportHandler(testedID);
-              result6.then(data => {
-    
-                console.log(data);
-                //res.json(data);
-              })
-              .catch( error => {
-                logger.error('[354][fileupload] deleteReportHandler err=' + error.message);
-              });	  
-            
+            const result6 =  deleteReportHandler(testedID);
+            result6.then(data => {
+  
+              console.log(data);
+              //res.json(data);
+            })
+            .catch( error => {
+              logger.error('[354][fileupload] deleteReportHandler err=' + error.message);
+            });	  
+          
+            logger.info('[243][fileupload][count]next 5');
+
             const surfix = item.originalname.split('.');
             if ( surfix[1] === 'tsv') {
+              console.log('필터링한 화일', surfix, item.originalname);
+                // var data = loadData(item.path);
+                // inputDB.registerDB(item.path);
+
+                main_nu.patient_nu(testedID);
+
+                main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
+            }	
+            else if ( surfix[2] === 'tsv') {
               console.log('필터링한 화일', surfix, item.originalname);
                 // var data = loadData(item.path);
                 // inputDB.registerDB(item.path);
