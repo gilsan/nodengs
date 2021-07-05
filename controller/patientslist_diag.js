@@ -237,7 +237,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             from [dbo].[patientinfo_diag] \
             where left(accept_date, 8) >= '" + start + "'" 
              + " and left(accept_date, 8) <= '" + end + "'"; 
-
+ 
     if(patient.length > 0 )
     {
         sql = sql +  " and patientID = '" +  patient + "'";

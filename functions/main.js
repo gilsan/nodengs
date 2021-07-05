@@ -393,7 +393,7 @@ exports.main = (data, filename, testedID) => {
 
 			if (len == 63 )
 			{
-				ver_path = '5.16'
+				ver_path = '5.16';
 			}
           
 			// patient tsv 상태 update
