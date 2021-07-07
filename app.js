@@ -118,10 +118,6 @@ const prevalent = require('./routes/prevalent');
  // 07-07
  // statecontrol
  const statecontrol = require('./routes/statecontrol');
-
-// 12-20
-// mentlists
-const prevalent = require('./routes/prevalent');
  
 // 12-20
 // mentlists
