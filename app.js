@@ -115,6 +115,13 @@ const tumortype = require('./routes/tumortype');  //tumortype.js 파일을 선�
 const clinically = require('./routes/clinically');
 const clinical = require('./routes/clinical');
 const prevalent = require('./routes/prevalent');
+ // 07-07
+ // statecontrol
+ const statecontrol = require('./routes/statecontrol');
+
+// 12-20
+// mentlists
+const prevalent = require('./routes/prevalent');
  
 // 12-20
 // mentlists
@@ -238,30 +245,28 @@ app.use('/tests', function(req, res, next) {
  // 검진 EMR 보내기
   app.use('/diagEMR', emrRouter);
   app.use('/sendToEMR', emrRouter);
-// 병리 EMR 보내기
+ // 병리 EMR 보내기
   app.use('/pathEMR', pathologyRouter);
 
-// EMR 전송후 진검 갱신
-// EMR 전송후 병리 갱신
+ // EMR 전송후 진검 갱신
+ // EMR 전송후 병리 갱신
   app.use('/pathEmrUpdate', pathEmrUpdateRouter);
   app.use('/screenlists', pathEmrUpdateRouter);
   
-//screen 
-app.use('/screen', screenRouter);                //AML screen => 디렉토리 파일명
-// 12.14
-// all Sceen
-app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 파일명
+ //screen 
+ app.use('/screen', screenRouter);                //AML screen => 디렉토리 파일명
+ // 12.14
+ // all Sceen
+ app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 파일명
 
 
-//2020.11.19 add
-//2020.11.21
-//진검, 병리 결과지/보고서 입력, 수정, 삭제
+ //2020.11.19 add
+ //2020.11.21
+ //진검, 병리 결과지/보고서 입력, 수정, 삭제
  app.use('/amlReportInsert', amlReportRouter);                //진검. amlReportInsert => 디렉토리 파일명
  app.use('/pathologyReportInsert', pathologyReportRouter);    //병리. pathologyReportInsert => 디렉토리 파일명
 
  app.use('/pathologyimage', pathologyImageRouter);    //병리. pathologyImageRouter => 디렉토리 파일명
-
- 
 
  app.use('/amlReportSearch', amlSearchRouter);                //진검. amlSearchRouter => 디렉토리 파일명
  app.use('/pathologyReportSearch', pathologySearchRouter);    //병리. pathologySearchRouter => 디렉토리 파일명
@@ -279,14 +284,18 @@ app.use('/allscreen', allScreenRouter);          //ALl screen => 디렉토리 �
  app.use('/clinical', clinical); 
  app.use('/prevalent', prevalent);
 
+ // 07-07
+ // statecontrol
+ app.use('/statecontrol', statecontrol);
+
  // 12-20
  app.use('/mentlists', mentlists);
-// detected variants sort
-app.use('/dvbeforsorting', dvbeforsortingRouter);
-app.use('/dvaftersorting', dvaftersortingRouter);
+ // detected variants sort
+ app.use('/dvbeforsorting', dvbeforsortingRouter);
+ app.use('/dvaftersorting', dvaftersortingRouter);
 
-// 2021-06-02
-app.use('/excelDv', excelDvRouter);
+ // 2021-06-02
+ app.use('/excelDv', excelDvRouter);
 
  // 화일 내려받기
  app.use('/download', function(req, res) {
