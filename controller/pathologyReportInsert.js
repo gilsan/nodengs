@@ -394,11 +394,100 @@ const  messageFusionPHandler = async (pathology_num, fusionP, report_gb) => {
 
 }
 
+const statecontrolSaveHandler = async (pathology_num, statecontrol ) => {
+	await poolConnect; // ensures that the pool has been created
+
+	let dnaRnasep    = statecontrol.dnaRnasep;
+	let rna18s       = statecontrol.rna18s;
+	let averageBase  = statecontrol.averageBase;
+	let uniformity   = statecontrol.uniformity;
+	let meanRead     = statecontrol.meanRead;
+	let meanRaw      = statecontrol.meanRaw;
+	let mapd         = statecontrol.mapd;
+  
+	logger.info("[406][statecontrol] pathology_num=" + pathology_num);
+	logger.info("[406][statecontrol] dnaRnasep=" + dnaRnasep);
+	logger.info("[406][statecontrol] rna18s=" + rna18s);
+	logger.info("[406][statecontrol] averageBase=" + averageBase);
+	logger.info("[406][statecontrol] uniformity=" + uniformity);
+	logger.info("[406][statecontrol] meanRead=" + meanRead);
+	logger.info("[406][statecontrol] meanRaw=" + meanRaw);
+	logger.info("[406][statecontrol] mapd=" + mapd);
+
+	//insert Query 생성
+	let sql2 = `insert into statecontrol 
+					(pathology_num, dnaRnasep, 
+					rna18s, averageBase, 
+					uniformity, meanRead, 
+					meanRaw, mapd)  
+				values(@pathology_num, @dnaRnasep, 
+					@rna18s, @averageBase, 
+					@uniformity, @meanRead,
+					@meanRaw, @mapd)`;
+
+	logger.info("[428][fusion save] sql=" + sql2);
+
+	try {
+		const request = pool.request()
+			.input('pathology_num', mssql.VarChar, pathology_num)
+			.input('dnaRnasep', mssql.NVarChar, dnaRnasep)
+			.input('rna18s', mssql.NVarChar, rna18s)
+			.input('averageBase', mssql.NVarChar, averageBase)
+			.input('uniformity', mssql.NVarChar, uniformity)
+			.input('meanRead', mssql.NVarChar, meanRead)
+			.input('meanRaw', mssql.NVarChar, meanRaw)
+			.input('mapd', mssql.NVarChar, mapd); 
+			
+			const result = await request.query(sql2)
+			
+			//return result;
+		} catch (error) {
+			logger.error('[445][statecontrol]err=' + error.message);
+		}
+}
+
+// 병리 statecontrol 결과지 입력/수정/삭제
+const  messageStatecontrolHandler = async (pathology_num, statecontrol) => {
+
+	const statecontrol_length = statecontrol.length;
+	logger.info('[452][statecontrol]data=' + JSON.stringify( statecontrol));
+	logger.info('[452][statecontrol]length=' + statecontrol.length);
+
+	let resultCnt ;
+
+	//dekete Query 생성
+	let sql2 = "delete from statecontrol where pathology_num = @pathology_num ";
+
+	logger.info('[460][statecontrol]sql=' + sql2);
+		
+	try {
+		const request = pool.request()
+			.input('pathology_num', mssql.VarChar, pathology_num); 
+			
+		const result = await request.query(sql2)
+		
+		//return result;
+	} catch (error) {
+		logger.error('[471][statecontrol]err=' + error.message);
+	}
+
+	if (statecontrol_length > 0)
+	{
+		statecontrol.forEach (item => 
+		{
+			resultCnt = statecontrolSaveHandler(pathology_num, item);
+			logger.info("[479]cnt=" + resultCnt);
+	
+		}); // foreach end
+ 	} //  if end
+
+}
+
 // 병리 결과지 입력/수정/삭제
 const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplification_c, fusion_c,
 									mutation_p, amplification_p, fusion_p, 
 									extraction, 
-									notement, generalReport, specialment,
+									notement, generalReport, specialment, statecontrol,
 									screenstatus) => {
   await poolConnect; // ensures that the pool has been created
   
@@ -413,6 +502,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   logger.info("[406->][pathologyReportInsert]amplication_p=" + JSON.stringify(amplification_p));
   logger.info("[406->][pathologyReportInsert]fusion_p=" + JSON.stringify(fusion_p));
   logger.info("[406->][pathologyReportInsert][messageHandler] screenstatus= " +  screenstatus);
+  logger.info("[406->][pathologyReportInsert][messageHandler] statecontrol= " +  JSON.stringify(statecontrol));
   
   let diagnosis = extraction.diagnosis;
   let dnarna = ''
@@ -583,8 +673,15 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 
   });
 
+  // statecontrol handler
+  resultMc = messageStatecontrolHandler(pathology_num, statecontrol);
+
+  resultMc.then(data2 => {
+	logger.info("[582][messageStatecontrolHandler] data=" + JSON.stringify(data2)); 
+  });
+
   //delete Query 생성
-  sql_del = "delete from path_comment where  pathology_num = @pathology_num ";
+  sql_del = "delete from statecontrol where  pathology_num = @pathology_num ";
 
   logger.info("[589][del path_comment]del sql=" + sql_del);
 	
@@ -598,7 +695,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 	
 	//return result;
   } catch (error) {
-	logger.info('[582][path_comment]err=', err);
+	logger.error('[582][path_comment]err=', err);
   }
 
   console.log("[604][path_comment][notement]", notement);
@@ -660,6 +757,7 @@ exports.insertReportPathology = (req,res, next) => {
   let notement = req.body.notement;
   let generalReport = req.body.generalReport;
   let specialment = req.body.specialment;
+  let statecontrol = req.body.statecontrol;
    
   logger.info("[664->][pathologyReportInsert][insert]screenstatus=" + screenstatus);
   logger.info("[664->][pathologyReportInsert][insert]pathology_num=" + pathology_num);
@@ -671,10 +769,11 @@ exports.insertReportPathology = (req,res, next) => {
   logger.info("[664->][pathologyReportInsert][insert]mutation_p=" + JSON.stringify(mutation_p));
   logger.info("[664->][pathologyReportInsert][insert]amplication_p=" + JSON.stringify(amplification_p));
   logger.info("[664->][pathologyReportInsert][insert]fusion_p=" + JSON.stringify(fusion_p));
+  logger.info("[664->][pathologyReportInsert][insert]statecontrol=" + JSON.stringify(statecontrol));
   
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 
-								   notement, generalReport, specialment, screenstatus);
+								   notement, generalReport, specialment, statecontrol, screenstatus);
   result.then(data => {
 
      //console.log(json.stringfy());
@@ -705,6 +804,7 @@ exports.updateReportPathology = (req,res, next) => {
   let notement = req.body.notement;
   let generalReport = req.body.generalReport;
   let specialment = req.body.specialment;
+  let statecontrol = req.body.statecontrol;
    
   logger.info("[709->][pathologyReportInsert][update]screenstatus=" + screenstatus);
   logger.info("[709->][pathologyReportInsert][update]pathology_num=" + pathology_num);
@@ -716,10 +816,11 @@ exports.updateReportPathology = (req,res, next) => {
   logger.info("[709->][pathologyReportInsert][update]mutation_p=" + JSON.stringify(mutation_p));
   logger.info("[709->][pathologyReportInsert][update]amplication_p=" + JSON.stringify(amplification_p));
   logger.info("[709->][pathologyReportInsert][update]fusion_p=" + JSON.stringify(fusion_p));
+  logger.info("[664->][pathologyReportInsert][insert]statecontrol=" + JSON.stringify(statecontrol));
   
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 
-								   notement, generalReport, specialment, screenstatus);
+								   notement, generalReport, specialment, statecontrol, screenstatus);
   result.then(data => {
 
      //console.log(json.stringfy());
