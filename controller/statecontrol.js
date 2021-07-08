@@ -35,17 +35,18 @@ const  statecontrolSelectHandler = async (pathologyNum) => {
             , isnull(meanRead, '') meanRead
             , isnull(meanRaw, '') meanRaw
             , isnull(mapd, '') mapd
-        FROM NGS_DATA.dbo.statecontrol 
+            , isnull(rnaMapped, '') rnaMapped
+        FROM statecontrol 
         where pathology_num=@pathologyNum`;
 
         logger.info('[50]statecontrolSelect sql=' + qry);
     
     try {
 
-        const request = pool.request();
+        const request = pool.request()
+            .input('pathologyNum', mssql.VarChar, pathologyNum);
 
-        const result = await request.query(qry)
-        .input('pathologyNum', mssql.VarChar, pathologyNum);
+        const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
         logger.error('[60]statecontrolSelectHandler err=' + error.message);
