@@ -20,6 +20,9 @@ const diseaseuploadRouter = require('./routes/diseaseupload');
 // 병리 리스트
 const patientListPathRouter = require('./routes/patientlist_path');
 
+// 2021.07.23
+// 병리 연구용리스트
+const patientListResearchRouter = require('./routes/patientlist_Research');
 
 // 진검
 const patientListRouter     = require('./routes/patientlist');
@@ -219,6 +222,11 @@ app.use('/searchpatient_path', searchpatientPathRouter);
 
 // 병리 등록환자 당일 검색
 app.use('/patients_path', patientListPathRouter);
+
+
+// 2021.07.23
+// 병리 연구용리스트
+app.use('/patients_research', patientListResearchRouter);
 
 
 // In-House 등록/수정/삭제

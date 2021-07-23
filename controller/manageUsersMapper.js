@@ -4,7 +4,7 @@ const logger = require('../common/winston');
 
 const mssql = require('mssql');
 const dbConfigMssql = require('../common/dbconfig.js');
-const { json } = require('body-parser');
+//const { json } = require('body-parser');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect(); 
 
@@ -41,11 +41,12 @@ const listHandler = async (req) => {
     logger.info('[41][manageUser list]sql=' + sql);
     try {
        const request = pool.request()
-         .input('userId', mssql.VarChar, userId)
-		 .input('userNm', mssql.VarChar, userNm)  
+         //.input('userId', mssql.VarChar, userId)
+		 //.input('userNm', mssql.VarChar, userNm)  
 		 .input('dept', mssql.VarChar, dept); 
        const result = await request.query(sql)  
-       return result.recordset;
+       console.dir(result);
+       return result.recordset[0];
    } catch (error) {
     logger.error('[17][manageUser]err=' + error.message);
    }

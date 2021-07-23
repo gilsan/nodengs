@@ -14,6 +14,21 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+ function nvl(st, defaultStr){
+    
+  console.log('st=', st);
+  if(st === undefined || st == null || st == "") {
+      st = defaultStr ;
+  }
+      
+  return st ;
+}
+
 const  tumortypeSaveHandler = async (pathologyNum, tumortype) => {
 
   //insert Query 생성;
@@ -100,7 +115,7 @@ const  tumortypeMessageHandler2 = async (req) => {
 	logger.info('[150][select]pathologyNum=' + pathologyNum);
 
 	//insert Query 생성
-	const qry = "select tumortype  from tumortype \
+	const qry = "select isnull(tumortype, '')  tumortype from tumortype \
 				where pathologyNum = @pathologyNum ";
 
 	logger.info("[116][tumortype]select sql=" + qry);

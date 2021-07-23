@@ -129,7 +129,10 @@ const  messageHandler = async (today) => {
     isnull(tumor_cell_per, '') tumor_cell_per, \
     isnull(tumor_type, '') tumor_type, \
     isnull(tumorburden, '') tumorburden, \
-    isnull(worker, '') worker  from [dbo].[patientinfo_path] where left(prescription_date, 8) = '" + today + "'";
+    isnull(worker, '') worker \
+     from [dbo].[patientinfo_path] \
+     where Research_yn = 'N' \
+     and  left(prescription_date, 8) = '" + today + "'";
     logger.info("[81][patientinfo_path select]sql=" + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
@@ -212,7 +215,8 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(tumor_type, '') tumor_type, \
     isnull(tumorburden, '') tumorburden, \
     isnull(worker, '') worker  from [dbo].[patientinfo_path] \
-               where left(prescription_date, 8) >= '" + start + "' \
+               where Research_yn = 'N' \
+               and left(prescription_date, 8) >= '" + start + "' \
                and left(prescription_date, 8) <= '" + end + "' ";
 
     let patient =  nvl(patientID, "");
@@ -455,7 +459,6 @@ const getPatientInfo = async (pathologyNum) => {
     isnull(worker, '') worker  from [dbo].[patientinfo_path] \
                where  pathology_num=@pathologyNum";
 
-        
     try {
         const request = pool.request()
          .input('pathologyNum', mssql.VarChar, pathologyNum); // or: new sql.Request(pool1)

@@ -746,7 +746,7 @@ const messageHandlerEMR = async (pathologyNum) => {
 // 2021.04.15 진검 cdw file copy
 exports.finishPathologyEMRScreen = (req, res, next) => {
 
-  logger.info('[screenList][547][finishPathologyScreen]data=' + JSON.stringify(req.body));
+  logger.info('[screenList][547][hologyScreen]data=' + JSON.stringify(req.body));
 
   const pathologyNum = req.body.pathologyNum;
   //const userid = req.body.userid;
