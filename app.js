@@ -22,7 +22,7 @@ const patientListPathRouter = require('./routes/patientlist_path');
 
 // 2021.07.23
 // 병리 연구용리스트
-const patientListResearchRouter = require('./routes/patientlist_Research');
+const patientListResearchRouter = require('./routes/patientlist_research');
 
 // 진검
 const patientListRouter     = require('./routes/patientlist');

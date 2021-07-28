@@ -235,8 +235,8 @@ exports.getPatientResearchLists = (req, res,next) => {
 console.log(req.body);
    let start           =  req.body.start; //.replace("-", "");
    let end             =  req.body.end; //.replace("-", "");
-   let patientID       =  req.body.patientID.trim(); // 환자 id
-   let pathology_num   =  req.body.pathologyNo.trim(); // 겸재 번호
+   let patientID       =  req.body.patientID; // 환자 id
+   let pathology_num   =  req.body.pathologyNo; // 겸재 번호
 
    logger.info("[159][patientinfo_path list]start=" + start);
    logger.info("[159][patientinfo_path select]end=" + end);
@@ -268,53 +268,74 @@ console.log(req.body);
 
 /**
  * 
- * @param 병리 검체자 검사자 기록
- * @param {*} res 
- * @param {*} next 
+ * 연구용 병리 정보 저장 
  */
 
-const  changeExaminer = async (pathologyNum, part, name) => {
+const  setResearch = async (pathologyNum, name, prescription_date, age, gender, patientID) => {
     
-    logger.info("[196][patientinfo_path update]part=" + part);
-    logger.info("[196][patientinfo_path update]name=" + name);
-    logger.info("[196][patientinfo_path select]pathologyNum=" + pathologyNum);
+    logger.info("[196][patientinfo_research insert]name=" + name);
+    logger.info("[196][patientinfo_research insert]pathologyNum=" + pathologyNum);
+    logger.info("[196][patientinfo_research insert]prescription_date=" + prescription_date);
+    logger.info("[196][patientinfo_research insert]age=" + age);
+    logger.info("[196][patientinfo_research insert]gender=" + gender);
+    logger.info("[196][patientinfo_research insert]patientID=" + patientID);
     
-    let sql;
-    if ( part === 'exam') {
-        sql =`update patientInfo_path set examin=@name where pathology_num=@pathologyNum`;
-    } else if (part === 'recheck') {
-        sql =`update patientInfo_path set recheck=@name where pathology_num=@pathologyNum`;
-    }
-
-    logger.info("[207][patientinfo_path update]sql=" + sql);
+    
+    let sql =`insert into  patientInfo_path (pathology_num, 
+                                name,
+                                prescription_date,
+                                age, 
+                                gender,
+                                patientID,
+                                research_yn) 
+                    values (@pathologyNum,
+                             @name,
+                             @prescription_date,
+                             @age,
+                             @gender,
+                             @patientID,
+                             'Y')`;
+    
+    logger.info("[207][patientinfo_research insert]sql=" + sql);
     
     try {
         const request = pool.request()
-        .input('name', mssql.NVarChar, name)
-        .input('pathologyNum', mssql.VarChar, pathologyNum);
+                .input('name', mssql.NVarChar, name)
+                .input('pathologyNum', mssql.VarChar, pathologyNum)
+                .input('prescription_date', mssql.VarChar, prescription_date)
+                .input('age', mssql.VarChar, age)
+                .input('gender', mssql.VarChar, gender)
+                .input('patientID', mssql.VarChar, patientID);
         
         const result = await request.query(sql);       
         return result;
     } catch (error) {
-        logger.error("[220][patientinfo_path select]err=" + error.message);
+        logger.error("[220][patientinfo_research insert]err=" + error.message);
     }    
 }
 
 exports.setResearchList = (req, res, next) => {
-    let pathologyNum   =  req.body.pathologyNum.trim(); 
-    let part =  req.body.part;  
-    let name   =  req.body.name;  
-    
-    logger.info("[226][patientinfo_path updateExaminer]pathologyNum=" + pathologyNum);
-    logger.info("[226][patientinfo_path updateExaminer]name=" + name);
-    logger.info("[226][patientinfo_path updateExaminer]part=" + part);
-    
-    const result = changeExaminer(pathologyNum, part, name);
+    console.log(req.body);
+    let pathologyNum   =  req.body.patient.pathology_num; 
+    let name   =  req.body.patient.name;  
+    let prescription_date = req.body.patient.prescription_date;
+    let age = req.body.patient.age;
+    let gender = req.body.patient.gender;
+    let patientID = req.body.patient.patientID;
+
+    logger.info("[226][patientinfo_path setResearchList]pathologyNum=" + pathologyNum);
+    logger.info("[226][patientinfo_path setResearchList]name=" + name);
+    logger.info("[226][patientinfo_path setResearchList]prescription_date=" + prescription_date);
+    logger.info("[226][patientinfo_path setResearchList]age=" + age);
+    logger.info("[226][patientinfo_path setResearchList]gender=" + gender);
+    logger.info("[226][patientinfo_path setResearchList]patientID=" + patientID);
+        
+    const result = setResearch(pathologyNum, name, prescription_date, age, gender, patientID);
     result.then( data => {
          res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[238][patinetslist_path updateExaminer]err=' + error.message);
+        logger.error('[238][patinetslist_research setResearchList]err=' + error.message);
     });
 }
 
