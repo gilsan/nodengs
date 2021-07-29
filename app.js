@@ -8,21 +8,22 @@ const fs    = require('fs');
 
 const app = express();
 // 로그인
-const loginDiagRouter         = require('./routes/loginDiag');
-const loginPathRouter         = require('./routes/loginPath');
+const loginDiagRouter     = require('./routes/loginDiag');
+const loginPathRouter     = require('./routes/loginPath');
 
 const registerRouter      = require('./routes/register');
 
 const fileuploadRouter    = require('./routes/fileupload');
-const inhouseuploadRouter = require('./routes/inhouseupload');
-const diseaseuploadRouter = require('./routes/diseaseupload');
 
 // 병리 리스트
 const patientListPathRouter = require('./routes/patientlist_path');
+const inhouseuploadRouter = require('./routes/inhouseupload');
+const diseaseuploadRouter = require('./routes/diseaseupload');
 
 // 2021.07.23
 // 병리 연구용리스트
 const patientListResearchRouter = require('./routes/patientlist_research');
+const diseaseResaearchuploadRouter = require('./routes/diseaseResarchupload');
 
 // 진검
 const patientListRouter     = require('./routes/patientlist');
@@ -109,7 +110,6 @@ const pathologySearchRouter  = require('./routes/pathologySearchRouter');  //pat
 const pathMentRouter           = require('./routes/pathMentRoute');
 
 //12/14
-
 const filteredOriginData   = require('./routes/filteredOriginData');  //filteredOriginData.js 파일을 선언한다. 
 const msiscore   = require('./routes/msiscore');  //filteredOriginData.js 파일을 선언한다.
 const tumorcellpercentage  = require('./routes/tumorcellpercentage');  //tumorcellpercentage.js 파일을 선언한다.
@@ -128,8 +128,8 @@ const mentlists = require('./routes/mentlists.js');
  
 const polymorphismRouter = require('./routes/polymorphismRouter');
 
-const dvbeforsortingRouter = require('./routes/dvsortingRouter');
-const dvaftersortingRouter = require('./routes/dvsortingRouter');
+//const dvbeforsortingRouter = require('./routes/dvsortingRouter');
+//const dvaftersortingRouter = require('./routes/dvsortingRouter');
 
 //2021-06-02
 const excelDvRouter = require('./routes/excelDvRouter');
@@ -146,13 +146,25 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
  
-app.use('/fileUpload', fileuploadRouter);
-app.use('/inhouseUplad', inhouseuploadRouter);
-app.use('/pathfileUpload', diseaseuploadRouter);
 
 // 로그인
 app.use('/loginDiag', loginDiagRouter);
 app.use('/loginPath', loginPathRouter);
+
+app.use('/fileUpload', fileuploadRouter);
+
+// 병리 등록환자 당일 검색
+app.use('/patients_path', patientListPathRouter);
+
+app.use('/inhouseUplad', inhouseuploadRouter);
+app.use('/pathfileUpload', diseaseuploadRouter);
+
+// 2021.07.23
+// 병리 연구용리스트
+app.use('/patients_research', patientListResearchRouter);
+
+app.use('/pathResearchfileUpload', diseaseResaearchuploadRouter);
+
 // 등록
 app.use('/register', registerRouter);
 
@@ -219,14 +231,6 @@ app.use('/getSavedFilePath', savedFilePathRouter);
 app.use('/searchpatient', searchpatientRouter);
 app.use('/searchpatient_diag', searchpatientDiagRouter);
 app.use('/searchpatient_path', searchpatientPathRouter);
-
-// 병리 등록환자 당일 검색
-app.use('/patients_path', patientListPathRouter);
-
-
-// 2021.07.23
-// 병리 연구용리스트
-app.use('/patients_research', patientListResearchRouter);
 
 
 // In-House 등록/수정/삭제
@@ -295,8 +299,8 @@ app.use('/tests', function(req, res, next) {
  // 12-20
  app.use('/mentlists', mentlists);
  // detected variants sort
- app.use('/dvbeforsorting', dvbeforsortingRouter);
- app.use('/dvaftersorting', dvaftersortingRouter);
+ //app.use('/dvbeforsorting', dvbeforsortingRouter);
+ //app.use('/dvaftersorting', dvaftersortingRouter);
 
  // 2021-06-02
  app.use('/excelDv', excelDvRouter);
