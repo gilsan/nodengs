@@ -819,7 +819,7 @@ exports.updateReportPathology = (req,res, next) => {
   logger.info("[709->][pathologyReportInsert][update]mutation_p=" + JSON.stringify(mutation_p));
   logger.info("[709->][pathologyReportInsert][update]amplication_p=" + JSON.stringify(amplification_p));
   logger.info("[709->][pathologyReportInsert][update]fusion_p=" + JSON.stringify(fusion_p));
-  logger.info("[709->][pathologyReportInsert][insert]statecontrol=" + JSON.stringify(statecontrol));
+  logger.info("[709->][pathologyReportInsert][update]statecontrol=" + JSON.stringify(statecontrol));
   
   const result = messageHandler(pathology_num, patientinfo,mutation_c, amplification_c, fusion_c,
 								   mutation_p, amplification_p, fusion_p, extraction, 

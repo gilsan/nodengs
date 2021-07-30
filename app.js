@@ -24,6 +24,7 @@ const diseaseuploadRouter = require('./routes/diseaseupload');
 // 병리 연구용리스트
 const patientListResearchRouter = require('./routes/patientlist_research');
 const diseaseResaearchuploadRouter = require('./routes/diseaseResarchupload');
+const pathResearchReportRouter   = require('./routes/pathResearchReportRouter'); 
 
 // 진검
 const patientListRouter     = require('./routes/patientlist');
@@ -164,6 +165,8 @@ app.use('/pathfileUpload', diseaseuploadRouter);
 app.use('/patients_research', patientListResearchRouter);
 
 app.use('/pathResearchfileUpload', diseaseResaearchuploadRouter);
+
+app.use('/pathResearchReportInsert', pathResearchReportRouter);    
 
 // 등록
 app.use('/register', registerRouter);
