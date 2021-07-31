@@ -580,7 +580,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 			   organ = @organ, tumor_type = @tumortype, \
 			   pathological_dx=@diagnosis, screenstatus = @screenstatus, sendEMRDate=@sendEMRDate, \
 			   report_date = CONVERT(varchar(10), GetDate(),126) , \
-			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck \
+			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck, \
 			   name=@name, age=@age, gender=@gender, patientid=@patinetID \
 	  		where  pathology_num = @pathology_num ";
 	  
