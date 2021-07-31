@@ -581,7 +581,7 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 			   pathological_dx=@diagnosis, screenstatus = @screenstatus, sendEMRDate=@sendEMRDate, \
 			   report_date = CONVERT(varchar(10), GetDate(),126) , \
 			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck, \
-			   name=@name, age=@age, gender=@gender, patientid=@patinetID \
+			   name=@name, age=@age, gender=@gender, patientid=@patientID \
 	  		where  pathology_num = @pathology_num ";
 	  
   logger.info("[484][pathResearchReportInsert][patientinfo][sql]" + sql_patient);
