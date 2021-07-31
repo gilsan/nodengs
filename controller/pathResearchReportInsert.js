@@ -546,11 +546,20 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		msiscore = extraction.msiscore;
 		tumorburden = extraction.tumorburden;		
 	}
-  let examin  = patientinfo.examin;  // 검사자
-  let recheck = patientinfo.recheck; // 확인자 
+ 
+	let name = patientinfo.name; 
+	let age = patientinfo.age;
+	let patientID = patientinfo.patientID;
+	let gender = patientinfo.gender;
+	let examin  = patientinfo.examin;  // 검사자
+	let recheck = patientinfo.recheck; // 확인자 
 
   logger.info("[459][pathResearchReportInsert][extraction][dnarna]" + dnarna);
   logger.info("[459->][pathResearchReportInsert][extraction][keyblock]" + keyblock);
+  logger.info("[459->][pathResearchReportInsert][extraction][name]" + name);
+  logger.info("[459->][pathResearchReportInsert][extraction][age]" + age);
+  logger.info("[459->][pathResearchReportInsert][extraction][patientID]" + patientID);
+  logger.info("[459->][pathResearchReportInsert][extraction][gender]" + gender);
   logger.info("[459->][pathResearchReportInsert][extraction][organ]" + organ);
   logger.info("[459->][pathResearchReportInsert][extraction][tumortype]" + tumortype);
   logger.info("[459->][pathResearchReportInsert][extraction][diagnosis]" + diagnosis);
@@ -565,14 +574,15 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   
   //insert Query 생성
   const sql_patient = "update patientinfo_path \
-			   set dna_rna_ext = @dnarna,  \
+			set dna_rna_ext = @dnarna,  \
 			   key_block = @keyblock, rel_pathology_num = @rel_pathology_num, \
-			tumor_cell_per = @tumorcellpercentage, \
+				tumor_cell_per = @tumorcellpercentage, \
 			   organ = @organ, tumor_type = @tumortype, \
 			   pathological_dx=@diagnosis, screenstatus = @screenstatus, sendEMRDate=@sendEMRDate, \
 			   report_date = CONVERT(varchar(10), GetDate(),126) , \
 			   msiscore=@msiscore, tumorburden=@tumorburden, examin=@examin, recheck=@recheck \
-	  where  pathology_num = @pathology_num ";
+			   name=@name, age=@age, gender=@gender, patientid=@patinetID \
+	  		where  pathology_num = @pathology_num ";
 	  
   logger.info("[484][pathResearchReportInsert][patientinfo][sql]" + sql_patient);
 	  
@@ -587,6 +597,10 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
 		  .input('diagnosis', mssql.NVarChar, diagnosis)
 		  .input('msiscore', mssql.VarChar, msiscore)
 		  .input('tumorburden', mssql.VarChar, tumorburden)
+		  .input('age', mssql.VarChar,age)
+		  .input('gender', mssql.VarChar,gender)
+		  .input('patientID', mssql.VarChar,patientID)
+		  .input('name', mssql.NVarChar,name)
 		  .input('examin', mssql.NVarChar,examin)
 		  .input('recheck',mssql.NVarChar,recheck)
 		  .input('screenstatus',mssql.NVarChar,screenstatus)
