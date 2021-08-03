@@ -31,9 +31,9 @@ const  statecontrolSelectHandler = async (pathologyNum) => {
             isnull( dnaRnasep, '') dnaRnasep
             , isnull(rna18s, '') rna18s
             , isnull(averageBase, '') averageBase
-            , isnull(uniformity, '') uniformity
-            , isnull(meanRead, '') meanRead
-            , isnull(meanRaw, '') meanRaw
+            , isnull(uniformity, '%') uniformity
+            , isnull(meanRead, 'bp') meanRead
+            , isnull(meanRaw, '%') meanRaw
             , isnull(mapd, '') mapd
             , isnull(rnaMapped, '') rnaMapped
         FROM statecontrol 
@@ -60,8 +60,27 @@ exports.statecontrolList = (req, res, next) => {
     const pathologyNum = req.body.pathologyNum;
     const result = statecontrolSelectHandler(pathologyNum);
     result.then(data => {  
-        //  console.log('[108][statecontrolList]', data);
+        //console.log('[108][statecontrolList]', data);
+         
+
+        // 2021.08.03 
+        // 정도관리 데이타 없으면 강제로 json 만들어서 클라이언트에 보낸다.
+        if (data.length == 0)
+        {
+            //console.log("000");
+
+            const json2 = '[{"dnaRnasep":"", "rna18s":"", "averageBase":"", "uniformity":"%", "meanRead":"bp", "meanRaw":"%", "mapd":"", "rnaMapped":""}]';
+            let data2 = JSON.parse(json2);
+
+            //console.log(JSON.stringify(data2));
+
+            res.json(data2);
+        }
+        else
+        {
+
           res.json(data);
+        }
     })
     .catch( error => {
         logger.error('[76]statecontrolList err=' + error.message);
