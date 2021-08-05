@@ -131,7 +131,7 @@ const  messageHandler = async (today) => {
     isnull(tumorburden, '') tumorburden, \
     isnull(worker, '') worker \
      from [dbo].[patientinfo_path] \
-     where Research_yn = 'N' \
+     where isnull(Research_yn, 'N') = 'N' \
      and  left(prescription_date, 8) = '" + today + "'";
     logger.info("[81][patientinfo_path select]sql=" + sql);
     try {
@@ -215,7 +215,7 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(tumor_type, '') tumor_type, \
     isnull(tumorburden, '') tumorburden, \
     isnull(worker, '') worker  from [dbo].[patientinfo_path] \
-               where Research_yn = 'N' \
+               where isnull(Research_yn, 'N') = 'N' \
                and left(prescription_date, 8) >= '" + start + "' \
                and left(prescription_date, 8) <= '" + end + "' ";
 
