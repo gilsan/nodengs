@@ -351,16 +351,140 @@ const searchGeneHandler =  async (gene) => {
 }
 
 exports.searchMutaionbygene = (req, res, next) => {
-  logger.info("[305][mutationMapper search]req=" + JSON.stringify(req.body)); 
+  logger.info("[354][mutationMapper search]req=" + JSON.stringify(req.body)); 
   const gene = req.body.gene;
   const result = searchGeneHandler(gene);
   result.then(data => {
     res.json(data);
   })
   .catch(error => {
-    logger.info("[205][mutationMapper search]err=" + error.message); 
+    logger.info("[361][mutationMapper search]err=" + error.message); 
     res.sendStatus(500)
   })
 
+}
+
+// 환자번호로 검색
+const getLymphomaInfo = async (registernum) => {
+  await poolConnect;
+  logger.info("[385][mutationMapper getLymphomaInfo]sql" + registernum);
+  let sql ="select "
+  +"	isnull(gene, '') gene"
+  +"	,isnull(functional_impact, '') functionalImpact"
+  +"	,isnull(transcript, '') transcript"
+  +"	,isnull(exon_intro, '') exonIntro"
+  +"	,isnull(nucleotide_change, '') nucleotideChange"
+  +"	,isnull(amino_acid_change, '') aminoAcidChange"
+  +"	,isnull(zygosity, '') zygosity"
+  +"	,isnull(vaf, '') vaf"
+  +"	,isnull(reference, '') reference"
+  +"	,isnull(cosmic_id, '') cosmicId";
+ 
+  sql = sql + " from mutation  where register_number='"+registernum+"'";
+  logger.info("[385][mutationMapper getLymphomaInfo]sql=>  " + sql);
+
+   try {
+        const request = pool.request();
+        const result = await request.query(sql);
+        
+        return result.recordset[0];
+    } catch (error) {
+        logger.error("[393][mutationMapper getLymphomaInfo]err=" + error.message);
+   }
+}
+
+
+exports.getInfoMutation = (req, res) => {
+  logger.info("[397][mutationMapper getInfoMutation=" + JSON.stringify(req.body));
+
+   const registernum = req.body.registernum;  
+   const result = getLymphomaInfo(registernum);
+   result.then(data => {
+    logger.info("[403][mutationMapper getInfoMutation==> " + data);
+     res.json(data);
+   })
+   .catch(error => {
+    logger.info("[409][mutationMapper getInfoMutation=" + error.message); 
+    res.sendStatus(500)
+  })
+}
+
+const updateLymphomaInfo = async (registernum, LymphomaInfo) => {
+  await poolConnect;
+  logger.info("[414][mutationMapper updateLymphomaInfo]sql" + registernum);
+
+  let gene = LymphomaInfo[0].gene;
+  let functionalImpact =  LymphomaInfo[0].functionalImpact ;
+  let transcript = LymphomaInfo[0].transcript;
+  let exonIntro = LymphomaInfo[0].exonIntro;
+  let nucleotideChange = LymphomaInfo[0].nucleotideChange;
+  let aminoAcidChange = LymphomaInfo[0].aminoAcidChange;
+  let zygosity = LymphomaInfo[0].zygosity;
+  let vaf = LymphomaInfo[0].vaf;
+  let references = LymphomaInfo[0].references;
+  let cosmicId = LymphomaInfo[0].cosmicId;
+  
+  logger.info("[427][mutationMapper updateLymphomaInfo]gene" + gene);
+  logger.info("[427][mutationMapper updateLymphomaInfo]functionalImpact" + functionalImpact);
+  logger.info("[427][mutationMapper updateLymphomaInfo]transcript" + transcript);
+  logger.info("[427][mutationMapper updateLymphomaInfo]exonIntro" + exonIntro);
+  logger.info("[427][mutationMapper updateLymphomaInfo]nucleotideChange" + nucleotideChange);
+  logger.info("[427][mutationMapper updateLymphomaInfo]aminoAcidChange" + aminoAcidChange);
+  logger.info("[427][mutationMapper updateLymphomaInfo]zygosity" + zygosity);
+  logger.info("[427][mutationMapper updateLymphomaInfo]vaf" + vaf);
+  logger.info("[427][mutationMapper updateLymphomaInfo]references" + references);
+  logger.info("[427][mutationMapper updateLymphomaInfo]cosmicId" + cosmicId);
+
+  let sql = ` update mutation  
+    set gene = @gene
+        , functional_impact = @functionalImpact
+        , transcript = @transcript
+        , exon_intro = @exonIntro
+        , nucleotide_change = @nucleotideChange
+        , amino_acid_change = @aminoAcidChange
+        , zygosity = @zygosity
+        , vaf = @vaf
+        , reference = @references
+        , cosmic_id = @cosmicId
+    where register_number= @+registernum ` ;
+  logger.info("[450][mutationMapper updateLymphomaInfo]sql=>  " + sql);
+
+   try {
+        const request = pool.request()
+        .input('gene', mssql.VarChar, gene)
+        .input('functionalImpact', mssql.VarChar, functionalImpact)
+        .input('transcript', mssql.VarChar, transcript) 
+        .input('exonIntro', mssql.VarChar, exonIntro) 
+        .input('nucleotideChange', mssql.VarChar, nucleotideChange) 
+        .input('aminoAcidChange', mssql.VarChar, aminoAcidChange) 
+        .input('zygosity', mssql.VarChar, zygosity) 
+        .input('vaf', mssql.VarChar, vaf) 
+        .input('references', mssql.VarChar, references)  
+        .input('cosmicId', mssql.VarChar, cosmicId) ;
+        const result = await request.query(sql);
+        
+        return result.recordset[0];
+    } catch (error) {
+        logger.error("[468][mutationMapper updateLymphomaInfo]err=" + error.message);
+   }
+
+}
+
+
+// 환자번호로 데이터 갱신
+exports.updateinfoMutation = (req, res) => {
+  logger.info("[476][mutationMapper updateinfoMutation=" + JSON.stringify(req.body));
+
+  const registernum = req.body.registernum;  
+  const LymphomaInfo = req.body.data;  
+  const result = updateLymphomaInfo(registernum, LymphomaInfo);
+  result.then(data => {
+   logger.info("[482][mutationMapper updateinfoMutation==> " + data);
+    res.json(data);
+  })
+  .catch(error => {
+   logger.info("[485][mutationMapper updateinfoMutation=" + error.message); 
+   res.sendStatus(500)
+ })
 }
 

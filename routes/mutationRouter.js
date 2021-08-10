@@ -12,4 +12,7 @@ router.post('/delete', mutationController.deleteMutation);
 router.post('/searchbygene', mutationController.searchMutaionbygene);
 router.post('/list',   mutationController.listMutation);
 
+router.post('/getinfo', mutationController.getInfoMutation);
+router.post('/updateinfo', mutationController.updateinfoMutation)
+
 module.exports = router;
