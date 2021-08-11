@@ -421,7 +421,7 @@ const updateLymphomaInfo = async (registernum, LymphomaInfo) => {
   let aminoAcidChange = LymphomaInfo[0].aminoAcidChange;
   let zygosity = LymphomaInfo[0].zygosity;
   let vaf = LymphomaInfo[0].vaf;
-  let references = LymphomaInfo[0].references;
+  let reference = LymphomaInfo[0].reference;
   let cosmicId = LymphomaInfo[0].cosmicId;
   
   logger.info("[427][mutationMapper updateLymphomaInfo]gene" + gene);
@@ -432,7 +432,7 @@ const updateLymphomaInfo = async (registernum, LymphomaInfo) => {
   logger.info("[427][mutationMapper updateLymphomaInfo]aminoAcidChange" + aminoAcidChange);
   logger.info("[427][mutationMapper updateLymphomaInfo]zygosity" + zygosity);
   logger.info("[427][mutationMapper updateLymphomaInfo]vaf" + vaf);
-  logger.info("[427][mutationMapper updateLymphomaInfo]references" + references);
+  logger.info("[427][mutationMapper updateLymphomaInfo]references" + reference);
   logger.info("[427][mutationMapper updateLymphomaInfo]cosmicId" + cosmicId);
 
   let sql = ` update mutation  
@@ -444,7 +444,7 @@ const updateLymphomaInfo = async (registernum, LymphomaInfo) => {
         , amino_acid_change = @aminoAcidChange
         , zygosity = @zygosity
         , vaf = @vaf
-        , reference = @references
+        , reference = @reference
         , cosmic_id = @cosmicId
     where register_number= @+registernum ` ;
   logger.info("[450][mutationMapper updateLymphomaInfo]sql=>  " + sql);
@@ -459,7 +459,7 @@ const updateLymphomaInfo = async (registernum, LymphomaInfo) => {
         .input('aminoAcidChange', mssql.VarChar, aminoAcidChange) 
         .input('zygosity', mssql.VarChar, zygosity) 
         .input('vaf', mssql.VarChar, vaf) 
-        .input('references', mssql.VarChar, references)  
+        .input('reference', mssql.VarChar, reference)  
         .input('cosmicId', mssql.VarChar, cosmicId) ;
         const result = await request.query(sql);
         
