@@ -10,5 +10,7 @@ router.post('/comments', screenController.commentLists);  // 코멘트 가져오
 router.post('/insert', screenController.insertScreen);
 router.post('/tempsave', screenController.saveScreen);
 router.post('/tempsave2', screenController.saveScreen2);
+router.post('/tempsave6', screenController.saveScreen6); // 선천성 면역결핍증 임시저장
+router.post('/tempsave7', screenController.saveScreen7); // sequential 임시저장
 router.post('/finish', screenController.finishScreen);
 module.exports = router;
