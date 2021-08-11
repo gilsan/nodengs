@@ -1278,7 +1278,7 @@ result2.then(data => {
 // 선천성 면역결핍증 임시저장
 exports.saveScreen6 = (req, res, next) => {
 
-  logger.info('[669][screenList][saveScreen]req=' + JSON.stringify(req.body));
+  logger.info('[669][screenList][saveScreen 6]req=' + JSON.stringify(req.body));
   
   const chron = req.body.chron ;
   const flt3ITD = req.body.flt3itd ; 
@@ -1294,7 +1294,7 @@ exports.saveScreen6 = (req, res, next) => {
   const vusmsg            = req.body.patientInfo.vusmsg;
   
   //logger.info('[684][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
-  logger.info('[684][screenList][saveScreen]specimenNo=, ' + specimenNo
+  logger.info('[684][screenList][saveScreen 6]specimenNo=, ' + specimenNo
                                 + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia + ", vusmsg=" +vusmsg); 
   const result2 = deleteHandler(specimenNo);
   result2.then(data => {
@@ -1325,7 +1325,7 @@ exports.saveScreen6 = (req, res, next) => {
           
     })
     .catch( error  => {
-      logger.info('[714][screenList][saveScreen]err=' + error.message);
+      logger.info('[714][screenList][saveScreen 6]err=' + error.message);
       res.sendStatus(500)
     });
 };
@@ -1333,7 +1333,7 @@ exports.saveScreen6 = (req, res, next) => {
 // sequential 임시저장
 exports.saveScreen7 = (req, res, next) => {
   
-    logger.info('[669][screenList][saveScreen]req=' + JSON.stringify(req.body));
+    logger.info('[669][screenList][saveScreen 7]req=' + JSON.stringify(req.body));
     
     const chron = req.body.chron ;
     const flt3ITD = req.body.flt3itd ; 
@@ -1349,7 +1349,7 @@ exports.saveScreen7 = (req, res, next) => {
     const vusmsg            = req.body.patientInfo.vusmsg;
     
     //logger.info('[684][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
-    logger.info('[684][screenList][saveScreen]specimenNo=, ' + specimenNo
+    logger.info('[684][screenList][saveScreen 7]specimenNo=, ' + specimenNo
                                   + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia + ", vusmsg=" +vusmsg); 
     const result2 = deleteHandler(specimenNo);
     result2.then(data => {
@@ -1380,7 +1380,7 @@ exports.saveScreen7 = (req, res, next) => {
             
       })
       .catch( error  => {
-        logger.info('[714][screenList][saveScreen]err=' + error.message);
+        logger.info('[714][screenList][saveScreen 7]err=' + error.message);
         res.sendStatus(500)
       });
 };
