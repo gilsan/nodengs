@@ -532,7 +532,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, type,
                exon, nucleotide_change, amino_acid_change, 
                dbSNPHGMD, cosmic_id, work_now, work_diag, functional_code) 
-               values(@specimenNo, getdate(),  @gene, @type
+               values(@specimenNo, getdate(),  @gene, @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
                   @dbSNPHGMD, @cosmic_id, @current, @diagnosis, @functional_code)`;
              
