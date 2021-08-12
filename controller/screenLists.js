@@ -533,7 +533,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
                exon, nucleotide_change, amino_acid_change, 
                dbSNPHGMD, cosmic_id, work_now, work_diag, functional_code) 
                values(@specimenNo, getdate(),  @gene, @type
-                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, 
+                  @exon, @nucleotide_change, @amino_acid_change, 
                   @dbSNPHGMD, @cosmic_id, @current, @diagnosis, @functional_code)`;
              
        logger.info('[282][screenList][insert detected_variants 7]sql=' + qry);
