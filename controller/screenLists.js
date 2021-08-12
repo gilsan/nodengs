@@ -23,7 +23,7 @@ const  messageHandler = async (req) => {
   isnull(igv, '') igv, isnull(sanger, '') sanger, 
   isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript, 
   exon, nucleotide_change, amino_acid_change, 
-  isnull(zygosity, '') zygosity, isnuul(vaf, '') vaf, isnull(reference, '') reference, cosmic_id, 
+  isnull(zygosity, '') zygosity, isnull(vaf, '') vaf, isnull(reference, '') reference, cosmic_id, 
   isnull(type, '') type, isnull(checked, '') checked, isnull(functional_code, '') functional_code, 
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
   isnull(work_now, '') work_now, isnull(work_diag, '') work_diag 
@@ -38,7 +38,7 @@ const  messageHandler = async (req) => {
       const result = await request.query(sql)
     //  console.dir( result);
       
-      return result.recordset;
+      return result.recordsets[0];
   } catch (error) {
     logger.error('[30][screenList][find detectd_varint]err=' + error.message);
   }
@@ -426,8 +426,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
 // 선천성 면역결핍증 스크린 완료 Detected Variants 
 const insertHandler_form6 = async (specimenNo, detected_variants) => {
   // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
-  logger.info('[246][screenList][insert detected_variants 6]specimenNo=' + specimenNo);
-  logger.info('[246][screenList][insert detected_variants 6]detected_variants=' + JSON.stringify(detected_variants));
+  logger.info('[429][screenList][insert detected_variants 6]specimenNo=' + specimenNo);
+  logger.info('[430][screenList][insert detected_variants 6]detected_variants=' + JSON.stringify(detected_variants));
  
    let result;
     
@@ -441,8 +441,6 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      const nucleotide_change = detected_variants[i].nucleotideChange;
      const amino_acid_change = detected_variants[i].aminoAcidChange;
      const zygosity          = detected_variants[i].zygosity;
-     const reference         = detected_variants[i].references;
-     const cosmic_id         = detected_variants[i].cosmicID;
      const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
      const gnomADEAS         = detected_variants[i].gnomADEAS;
      const OMIM              = detected_variants[i].OMIM;
@@ -454,37 +452,33 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      }
  
  
-     logger.info('[267][screenList][insert detected_variants 6]gene=' + gene 
-                           + ', functional_impact=' + functional_impact + ', functional_code = ' + functional_code
+     logger.info('[455][screenList][insert detected_variants 6]gene=' + gene 
+                           + ', functional_impact=' + functional_impact 
                            + ', transcript= ' + transcript + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
-                           + ', zygosity=' + zygosity + ', reference=' + reference 
-                           + ', cosmic_id=' + cosmic_id + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM);
+                           + ', zygosity=' + zygosity 
+                           + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM);
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-               vaf, reference, cosmic_id, dbSNPHGMD, gnomADEAS, OMIM, functional_code) 
+               dbSNPHGMD, gnomADEAS, OMIM) 
                values(@specimenNo, getdate(),  @gene,
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
-               @vaf, @reference, @cosmic_id, @dbSNPHGMD, @gnomADEAS, @OMIM, @functional_code)`;
+                @dbSNPHGMD, @gnomADEAS, @OMIM)`;
              
-       logger.info('[282][screenList][insert detected_variants 6]sql=' + qry);
+       logger.info('[470][screenList][insert detected_variants 6]sql=' + qry);
  
        try {
            const request = pool.request()
              .input('specimenNo', mssql.VarChar, specimenNo)
              .input('gene', mssql.VarChar, gene)
              .input('functional_impact', mssql.VarChar, functional_impact)
-             .input('functional_code', mssql.VarChar, functional_code)
              .input('transcript', mssql.VarChar, transcript)
              .input('exon', mssql.VarChar, exon)
              .input('nucleotide_change', mssql.VarChar, nucleotide_change)
              .input('amino_acid_change', mssql.VarChar, amino_acid_change)
              .input('zygosity', mssql.VarChar, zygosity)
-             .input('vaf', mssql.VarChar, vaf)
-             .input('reference', mssql.VarChar, reference)
-             .input('cosmic_id', mssql.VarChar, cosmic_id)
              .input('dbSNPHGMD', mssql.NVarChar, dbSNPHGMD)
              .input('gnomADEAS', mssql.NVarChar, gnomADEAS)
              .input('OMIM', mssql.VarChar, OMIM);
@@ -492,7 +486,7 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
              result = await request.query(qry);         
      
        } catch (error) {
-         logger.error('[304][screenList][insert detected_variants 6]err=' + error.message);
+         logger.error('[490] *** [screenList][insert detected_variants 6] *** err=  ****  ' + error.message);
        }
        
    } // End of For Loop
@@ -1275,107 +1269,120 @@ result2.then(data => {
   });
 };
 
+
+
 // 선천성 면역결핍증 임시저장
 exports.saveScreen6 = (req, res, next) => {
 
-  logger.info('[669][screenList][saveScreen 6]req=' + JSON.stringify(req.body));
+  logger.info('[1276][screenList][saveScreen 6]req=' + JSON.stringify(req.body));
   
-  const chron = req.body.chron ;
-  const flt3ITD = req.body.flt3itd ; 
-  const leukemia = req.body.leukemia;
+  const chron = '' ;
+  const flt3ITD = '' ; 
+  const leukemia = '';
   
   const specimenNo        = req.body.specimenNo;
-  const detected_variants = req.body.detected_variants;
-  const comments          = req.body.comments;
-  const detectedtype      = req.body.resultStatus;
+  const detected_variants = req.body.immundefi;
+  // const comments          = req.body.comments;
+  // const detectedtype      = req.body.resultStatus;
   const examin            = req.body.patientInfo.examin;
   const recheck           = req.body.patientInfo.recheck;
   //const screenstatus      = req.body.patientInfo.screenstatus;
-  const vusmsg            = req.body.patientInfo.vusmsg;
+  const vusmsg            = '';
   
   //logger.info('[684][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
-  logger.info('[684][screenList][saveScreen 6]specimenNo=, ' + specimenNo
-                                + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia + ", vusmsg=" +vusmsg); 
+  logger.info('[1292][screenList][saveScreen 6]specimenNo=, ' + specimenNo
+                                + ", immundefi=  " + detected_variants ); 
   const result2 = deleteHandler(specimenNo);
   result2.then(data => {
   
     const result = insertHandler_form6(specimenNo, detected_variants);
     result.then(data => {
   
-      // console.log('[157][insertScreen]', data);
-      const commentResult2 = deleteCommentHandler(specimenNo, comments);
-      commentResult2.then(data => {
-      
-        // console.log('[157][insertScreen]', data);
-        const commentResult = insertCommentHandler(specimenNo, comments);
-        commentResult.then(data => {
-            const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
-            detectedResult.then(data => {
-              // 검사지 변경
-              //const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
-              const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
-              statusResult.then(data => {
-                    res.json({message: 'OK'});
-                });
-            });
-  
-          });
-      });
+      const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg );
+      statusResult.then(data => {
+            res.json({message: 'OK'});
+        });
     });
           
     })
     .catch( error  => {
-      logger.info('[714][screenList][saveScreen 6]err=' + error.message);
+      logger.info('[1311][screenList][saveScreen 6]err=' + error.message);
       res.sendStatus(500)
     });
 };
 
+
+// 선천성 면역결핍증 내역
+const immundefiHandler = async (specimenNo) => {
+  await poolConnect; 
+
+  const sql=`select  isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact,
+  isnull(transcript,'') transcript, isnull(exon, '') exonIntro, isnull(nucleotide_change, '') nucleotideChange,
+  isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(dbSNPHGMD, '') dbSNPHGMD,
+  isnull(gnomADEAS, '') gnomADEAS, isnull(OMIM, '') OMIM from [dbo].[report_detected_variants] where specimenNo =@specimenNo
+  `;
+
+  try {
+      const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
+      const result = await request.query(sql)
+
+       return result.recordsets[0];
+    } catch (error) {
+         logger.error('[1332][immundefiHandler]err=' + error.message);
+    }
+  
+};
+
+
+exports.listImmundefi = (req, res, next) => {
+  const specimenNo        = req.body.specimenNo;
+
+  const dataset = immundefiHandler(specimenNo);
+  dataset.then(data => {
+    console.log('[1342][listImmundefi] ==> ', data)
+     res.json(data);
+  })
+  .catch( error  => {
+   logger.error('[1327][listImmundefi select]err=' + error.message);
+   res.status(500).send('That is Not good ')
+  }); 
+
+}
+
+
+
+
+
+
 // sequential 임시저장
 exports.saveScreen7 = (req, res, next) => {
   
-    logger.info('[669][screenList][saveScreen 7]req=' + JSON.stringify(req.body));
+    logger.info('[1316][screenList][saveScreen 7]req=' + JSON.stringify(req.body));
     
-    const chron = req.body.chron ;
-    const flt3ITD = req.body.flt3itd ; 
-    const leukemia = req.body.leukemia;
-    
+    const chron = '' ;
+    const flt3ITD = '' ; 
+    const leukemia = '';
+    const vusmsg            = '';   
     const specimenNo        = req.body.specimenNo;
-    const detected_variants = req.body.detected_variants;
-    const comments          = req.body.comments;
-    const detectedtype      = req.body.resultStatus;
+    const detected_variants = req.body.sequencing;
+ 
     const examin            = req.body.patientInfo.examin;
     const recheck           = req.body.patientInfo.recheck;
-    //const screenstatus      = req.body.patientInfo.screenstatus;
-    const vusmsg            = req.body.patientInfo.vusmsg;
+ 
     
     //logger.info('[684][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
-    logger.info('[684][screenList][saveScreen 7]specimenNo=, ' + specimenNo
-                                  + ", chron=" + chron + ", flt3ITD=" + flt3ITD + ", leukemia=" +leukemia + ", vusmsg=" +vusmsg); 
+    logger.info('[1332][screenList][saveScreen 7]specimenNo=, ' + specimenNo
+                                  + " detected_variants" + detected_variants); 
     const result2 = deleteHandler(specimenNo);
     result2.then(data => {
     
       const result = insertHandler_form7(specimenNo, detected_variants);
       result.then(data => {
-    
-        // console.log('[157][insertScreen]', data);
-        const commentResult2 = deleteCommentHandler(specimenNo, comments);
-        commentResult2.then(data => {
-        
-          // console.log('[157][insertScreen]', data);
-          const commentResult = insertCommentHandler(specimenNo, comments);
-          commentResult.then(data => {
-              const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
-              detectedResult.then(data => {
                 // 검사지 변경
-                //const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
                 const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
                 statusResult.then(data => {
                       res.json({message: 'OK'});
                   });
-              });
-    
-            });
-        });
       });
             
       })
@@ -1384,3 +1391,5 @@ exports.saveScreen7 = (req, res, next) => {
         res.sendStatus(500)
       });
 };
+
+
