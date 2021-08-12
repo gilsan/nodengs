@@ -1343,7 +1343,7 @@ exports.listImmundefi = (req, res, next) => {
      res.json(data);
   })
   .catch( error  => {
-   logger.error('[1327][listImmundefi select]err=' + error.message);
+   logger.error('[1347][listImmundefi select]err=' + error.message);
    res.status(500).send('That is Not good ')
   }); 
 
@@ -1355,10 +1355,11 @@ const SequntialHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select  isnull(gene, '') gene, isnull(type, '') type,
-  isnull(transcript,'') transcript, isnull(exon, '') location, isnull(nucleotide_change, '') nucleotideChange,
-  isnull(amino_acid_change, '') aminoAcidChange, isnull(dbSNPHGMD, '') dbSNP, isnull(cosmic_id, '') cosmicID, 
-  isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
-  isnull(work_now, '') current, isnull(work_diag, '') diagnosis from [dbo].[report_detected_variants] where specimenNo =@specimenNo
+      isnull(exon, '') location, isnull(nucleotide_change, '') nucleotideChange,
+      isnull(amino_acid_change, '') aminoAcidChange, isnull(dbSNPHGMD, '') dbSNP, isnull(cosmic_id, '') cosmicID, 
+      isnull(work_now, '') current, isnull(work_diag, '') diagnosis 
+      from [dbo].[report_detected_variants] 
+      where specimenNo =@specimenNo
   `;
 
   try {
@@ -1367,7 +1368,7 @@ const SequntialHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1332][immundefiHandler]err=' + error.message);
+         logger.error('[1370][listSequntial]err=' + error.message);
     }
   
 };
@@ -1378,11 +1379,11 @@ exports.listSequntial = (req, res, next) => {
 
   const dataset = SequntialHandler(specimenNo);
   dataset.then(data => {
-    console.log('[1342][listImmundefi] ==> ', data)
+    console.log('[1381][listSequntial] ==> ', data)
      res.json(data);
   })
   .catch( error  => {
-   logger.error('[1327][listImmundefi select]err=' + error.message);
+   logger.error('[1385][listSequntial select]err=' + error.message);
    res.status(500).send('That is Not good ')
   }); 
 
