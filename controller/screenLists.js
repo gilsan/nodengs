@@ -505,11 +505,11 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
    for (i = 0; i < detected_variants.length; i++)
    {
      const gene              = detected_variants[i].gene;
-     const type               = detected_variants[i].type;
+     const type              = detected_variants[i].type;
      
      const exon              = detected_variants[i].exonIntro;
-     const current          = detected_variants[i].current;
-     const diagnosis        = detected_variants[i].diagnosis;
+     const current           = detected_variants[i].current;
+     const diagnosis         = detected_variants[i].diagnosis;
      const nucleotide_change = detected_variants[i].nucleotideChange;
      const amino_acid_change = detected_variants[i].aminoAcidChange;
      const cosmic_id         = detected_variants[i].cosmicID;
