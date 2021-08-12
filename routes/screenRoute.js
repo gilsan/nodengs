@@ -15,6 +15,7 @@ router.post('/tempsave6', screenController.saveScreen6); // 선천성 면역결�
 router.post('/listScreen6', screenController.listImmundefi); // 선천성 면역결핍증 내역
 
 router.post('/tempsave7', screenController.saveScreen7); // sequential 임시저장
+router.post('/listScreen7', screenController.listSequntial); // sequential 내역
 
 router.post('/finish', screenController.finishScreen);
 module.exports = router;

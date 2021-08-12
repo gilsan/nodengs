@@ -508,12 +508,12 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      const type               = detected_variants[i].type;
      
      const exon              = detected_variants[i].exonIntro;
+     const current          = detected_variants[i].current;
+     const diagnosis        = detected_variants[i].diagnosis;
      const nucleotide_change = detected_variants[i].nucleotideChange;
      const amino_acid_change = detected_variants[i].aminoAcidChange;
      const cosmic_id         = detected_variants[i].cosmicID;
      const dbSNPHGMD         = detected_variants[i].dbSNP;
-     const work_now          = detected_variants[i].work_now;
-     const work_diag         = detected_variants[i].work_diag;
  
      let functional_code = i;
  
@@ -526,7 +526,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
                            + ', type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                            + ', dbSNPHGMD=' + dbSNPHGMD + ', cosmic_id=' + cosmic_id 
-                           + ', work_now=' + work_now + ', work_diag=' + work_diag );
+                           + ', current=' + current + ', diagnosis=' + diagnosis );
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, type,
@@ -534,7 +534,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
                dbSNPHGMD, cosmic_id, work_now, work_diag, functional_code) 
                values(@specimenNo, getdate(),  @gene, @type
                   @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, \
-                  @dbSNPHGMD, @cosmic_id, @work_now, @work_diag, @functional_code)`;
+                  @dbSNPHGMD, @cosmic_id, @current, @diagnosis, @functional_code)`;
              
        logger.info('[282][screenList][insert detected_variants 7]sql=' + qry);
  
@@ -549,8 +549,8 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
              .input('amino_acid_change', mssql.VarChar, amino_acid_change)
              .input('dbSNPHGMD', mssql.VarChar, dbSNPHGMD)
              .input('cosmic_id', mssql.VarChar, cosmic_id)
-             .input('work_now', mssql.VarChar, work_now)
-             .input('work_diag', mssql.VarChar, work_diag);
+             .input('current', mssql.VarChar, current)
+             .input('diagnosis', mssql.VarChar, diagnosis);
              
              result = await request.query(qry);         
      
@@ -1338,6 +1338,45 @@ exports.listImmundefi = (req, res, next) => {
   const specimenNo        = req.body.specimenNo;
 
   const dataset = immundefiHandler(specimenNo);
+  dataset.then(data => {
+    console.log('[1342][listImmundefi] ==> ', data)
+     res.json(data);
+  })
+  .catch( error  => {
+   logger.error('[1327][listImmundefi select]err=' + error.message);
+   res.status(500).send('That is Not good ')
+  }); 
+
+}
+
+
+// 선천성 면역결핍증 내역
+const SequntialHandler = async (specimenNo) => {
+  await poolConnect; 
+
+  const sql=`select  isnull(gene, '') gene, isnull(type, '') type,
+  isnull(transcript,'') transcript, isnull(exon, '') location, isnull(nucleotide_change, '') nucleotideChange,
+  isnull(amino_acid_change, '') aminoAcidChange, isnull(dbSNPHGMD, '') dbSNP, isnull(cosmic_id, '') cosmicID, 
+  isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
+  isnull(work_now, '') current, isnull(work_diag, '') diagnosis from [dbo].[report_detected_variants] where specimenNo =@specimenNo
+  `;
+
+  try {
+      const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
+      const result = await request.query(sql)
+
+       return result.recordsets[0];
+    } catch (error) {
+         logger.error('[1332][immundefiHandler]err=' + error.message);
+    }
+  
+};
+
+
+exports.listSequntial = (req, res, next) => {
+  const specimenNo        = req.body.specimenNo;
+
+  const dataset = SequntialHandler(specimenNo);
   dataset.then(data => {
     console.log('[1342][listImmundefi] ==> ', data)
      res.json(data);
