@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-const loadData_mod       = require('./readData');
 const location_mod       = require('./location');
 const variantEffect_mod  = require('./varientEffect');
 const phredQualScroe_mod = require('./phredQualScore');
@@ -85,9 +84,6 @@ exports.main = (data, filename, testedID) => {
 	let locations         = '';
 	let length2           = '';
 	let info              = '';
-	// let oncominevariantclass = '';
-	// let oncomingeneclass  = '';
-	// let readCount  = '';
 	let variant_id        = '';
 	let variant_name      = '';
 	let frequency         = '';
@@ -121,20 +117,19 @@ exports.main = (data, filename, testedID) => {
 	let cosmic            = '';
 	let omim              = '';
 	let gene_ontology     = '';
-	// let dra               = '';
 	let drugbank          = '';
 	let clinvar           = '';
 	let allele_coverage   = '';
 	let allele_ratio      = '';
 	let p_value           = '';
 	let phred_qual_score  = '';
-	let raw_coverage      = '';
 	let coverage          = '';
 	let ref_ref_var_var   = '';
 	let homopolymer_length= '';
 	let subset_of         = '';
 	let krgdb_622_lukemia = '';
 	let krgdb_1100_leukemia = '';
+	let zygosity = '';
 
 	for (let i=0; i < data.length ; i++ ) { 
  
@@ -337,7 +332,7 @@ exports.main = (data, filename, testedID) => {
 			subset_of         = removeQuote(field[53]);
 			krgdb_622_lukemia = field[54];
 			krgdb_1100_leukemia = field[55];
-			
+
 		  }
         
        	  // Varian effect: Synonymous 제거 존재하면:false, 존재하지않으면: true
@@ -421,7 +416,7 @@ exports.main = (data, filename, testedID) => {
 				cosmic,omim,gene_ontology,drugbank,clinvar,
 				allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
 				ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
-				loc1, loc2,loc3,loc4,loc5,loc6,loc7,testedID			   
+				loc1, loc2,loc3,loc4,loc5,loc6,loc7, zygosity, testedID			   
 		  	);	
 		  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                   
 		  } //

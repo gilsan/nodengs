@@ -11,6 +11,7 @@ const router = express.Router();
  
 const inputDB      = require('../controlDB/inputdb');
 const main_mod     = require('../functions/main');
+const main_form6   = require('../functions/main_form6');
 const main_nu      = require('../functions/patient_nu');
 const loadData_mod = require('../functions/readData');
 const logger = require('../common/winston');
@@ -440,6 +441,15 @@ router.post('/upload', function (req, res) {
                 main_nu.patient_nu(testedID);
 
                 main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
+            }	
+            else if ( surfix[1] === 'txt') {
+              console.log('필터링한 화일', surfix, item.originalname);
+                // var data = loadData(item.path);
+                // inputDB.registerDB(item.path);
+
+                main_nu.patient_nu(testedID);
+
+                main_form6.main(loadData_mod.loadData(item.path),item.originalname,testedID);
             }	
             
           })
