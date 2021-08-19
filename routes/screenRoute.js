@@ -12,6 +12,7 @@ router.post('/tempsave', screenController.saveScreen);
 router.post('/tempsave2', screenController.saveScreen2);
 
 router.post('/tempsave6', screenController.saveScreen6); // 선천성 면역결핍증 임시저장
+router.post('/query6',  screenController.screenLists6);
 router.post('/listScreen6', screenController.listImmundefi); // 선천성 면역결핍증 내역
 
 router.post('/tempsave7', screenController.saveScreen7); // sequential 임시저장

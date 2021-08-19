@@ -384,12 +384,12 @@ const insertHandler = async (specimenNo, detected_variants) => {
                           + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked);
  
     //insert Query 생성;
-    const qry = "insert into report_detected_variants (specimenNo, report_date, gene, \
-              functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
-              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code) \
-              values(@specimenNo, getdate(),  @gene,\
-                @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code)";
+    const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
+              functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
+              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code) 
+              values(@specimenNo, getdate(),  @gene,
+                @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code)`;
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -421,6 +421,52 @@ const insertHandler = async (specimenNo, detected_variants) => {
   } // End of For Loop
     return result;
 }
+
+const  messageHandler6 = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+
+  const specimenNo = req.body.specimenNo;
+  logger.info('[17][screenList][find detected_variant]specimenNo=' + specimenNo); 
+
+  const sql =`select specimenNo, report_date, gene,
+  isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript, 
+  exon, nucleotide_change, amino_acid_change, 
+  isnull(zygosity, '') zygosity, cosmic_id, 
+  isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM
+   from [dbo].[report_detected_variants] 
+   where specimenNo=@specimenNo 
+   order by functional_code, gene, nucleotide_change `;
+  logger.info('[20][screenList][find detectd_variant]sql=' + sql); 
+
+  try {
+      const request = pool.request()
+        .input('specimenNo', mssql.VarChar, specimenNo); // or: new sql.Request(pool1)
+      const result = await request.query(sql)
+    //  console.dir( result);
+      
+      return result.recordsets[0];
+  } catch (error) {
+    logger.error('[30][screenList][find detectd_varint]err=' + error.message);
+  }
+}
+
+// filtered_raw_tsv 를 specimenNo 로  조회
+exports.screenLists6 = (req,res, next) => {
+    
+  logger.info('[456][screenList][find detected_variants]req=' + JSON.stringify(req.body));
+    const result = messageHandler6(req);
+    result.then(data => {
+
+      // console.log('[50][screenstatus]',data);
+ 
+       res.json(data);
+  })
+  .catch( error => {
+    logger.error('[465][screenList][find  detected_variants]err=' + error.message);
+    res.sendStatus(500);
+  });
+};
+
 
 //////////////////////////////////////////////////////////////////////////////////
 // 선천성 면역결핍증 스크린 완료 Detected Variants 
