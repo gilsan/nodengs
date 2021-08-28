@@ -342,7 +342,7 @@ exports.setResearchList = (req, res, next) => {
  * 
  * 연구용 병리 정보 삭제
  */
-const  setResearchDelete = async (patientID) => {
+const  setDelete = async (patientID) => {
     
     logger.info("[196][patientinfo_research Delete]patientID=" + patientID);
     
@@ -363,13 +363,13 @@ const  setResearchDelete = async (patientID) => {
     }    
 }
 
-exports.setResearchsetResearchDelete = (req, res, next) => {
-    console.log(req.body);
-    let patientID = req.body.patient.patient;
+exports.setResearchDelete = (req, res, next) => {
+    logger.info("[226][patientinfo_path Delete]data=" + JSON.stringify(req.body));
+    let patientID = req.body.patient;
 
     logger.info("[226][patientinfo_path setResearchDelete]patientID=" + patientID);
         
-    const result = setResearchDelete(patientID);
+    const result = setDelete(patientID);
     result.then( data => {
          res.json({message: 'Ok'});
     })
