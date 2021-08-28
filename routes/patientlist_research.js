@@ -12,5 +12,7 @@ router.post('/resetResearch', patientResearchController.resetScreenStatusResearc
 //
 router.post('/screenstatusResearch', patientResearchController.getScreenStatusResearch);
 router.post('/Research',   patientResearchController.getResearchByPathNo);
+// 검진자 리스트 삭제
+router.post('/delete', patientResearchController.setResearchDelete);
 
 module.exports = router;
