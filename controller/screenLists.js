@@ -22,8 +22,8 @@ const  messageHandler = async (req) => {
   const sql =`select specimenNo, report_date, gene, 
   isnull(igv, '') igv, isnull(sanger, '') sanger, 
   isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript, 
-  exon, nucleotide_change, amino_acid_change, 
-  isnull(zygosity, '') zygosity, isnull(vaf, '') vaf, isnull(reference, '') reference, cosmic_id, 
+  isnull(exon, '') exon, isnull(nucleotide_change,'') nucleotide_change, isnull(amino_acid_change,'') amino_acid_change, 
+  isnull(zygosity, '') zygosity, isnull(vaf, '') vaf, isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, 
   isnull(type, '') type, isnull(checked, '') checked, isnull(functional_code, '') functional_code, 
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
   isnull(work_now, '') work_now, isnull(work_diag, '') work_diag 
