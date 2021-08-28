@@ -270,7 +270,6 @@ console.log(req.body);
  * 
  * 연구용 병리 정보 저장 
  */
-
 const  setResearch = async (pathologyNum, name, prescription_date, age, gender, patientID) => {
     
     logger.info("[196][patientinfo_research insert]name=" + name);
@@ -336,6 +335,46 @@ exports.setResearchList = (req, res, next) => {
     })
     .catch( error => {
         logger.error('[238][patinetslist_research setResearchList]err=' + error.message);
+    });
+}
+
+/**
+ * 
+ * 연구용 병리 정보 삭제
+ */
+const  setResearchDelete = async (patientID) => {
+    
+    logger.info("[196][patientinfo_research Delete]patientID=" + patientID);
+    
+    let sql =`delete from patientInfo_path 
+                     where patientID = @patientID
+                     and   research_yn = 'Y'`;
+    
+    logger.info("[207][patientinfo_research Delete]sql=" + sql);
+    
+    try {
+        const request = pool.request()
+                .input('patientID', mssql.VarChar, patientID);
+        
+        const result = await request.query(sql);       
+        return result;
+    } catch (error) {
+        logger.error("[220][patientinfo_research Delete]err=" + error.message);
+    }    
+}
+
+exports.setResearchsetResearchDelete = (req, res, next) => {
+    console.log(req.body);
+    let patientID = req.body.patient.patient;
+
+    logger.info("[226][patientinfo_path setResearchDelete]patientID=" + patientID);
+        
+    const result = setResearchDelete(patientID);
+    result.then( data => {
+         res.json({message: 'Ok'});
+    })
+    .catch( error => {
+        logger.error('[238][patinetslist_research setResearchDelete]err=' + error.message);
     });
 }
 
