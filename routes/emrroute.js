@@ -36,6 +36,10 @@ router.post('/redirectEMR', (req, res, next) => {
    // const url = req.query.data;
    // urlData = escape(url)
    console.log('[웹에서 받은 데이타]', req.body);
+
+   const examcd      = req.body.examcd;
+   logger.info ('[웹에서 받은 데이타]url=' + examcd);
+   
    axios({
        method: 'post',
        timeout: 3000,
