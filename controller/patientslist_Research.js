@@ -330,6 +330,9 @@ exports.setResearchList = (req, res, next) => {
     logger.info("[226][patientinfo_path setResearchList]patientID=" + patientID);
         
     const result = setResearch(pathologyNum, name, prescription_date, age, gender, patientID);
+
+    logger.info("[226][patientinfo_path setResearchList]result=" + JSON.stringify(result));
+
     result.then( data => {
          res.json({message: 'SUCCESS'});
     })
@@ -370,8 +373,11 @@ exports.setResearchDelete = (req, res, next) => {
     logger.info("[226][patientinfo_path setResearchDelete]patientID=" + patientID);
         
     const result = setDelete(patientID);
+
+    logger.info("[226][patientinfo_path Delete]result=" + JSON.stringify(result));
+
     result.then( data => {
-         res.json({message: 'Ok'});
+         res.json({message: 'OK'});
     })
     .catch( error => {
         logger.error('[238][patinetslist_research setResearchDelete]err=' + error.message);
