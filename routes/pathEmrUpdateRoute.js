@@ -11,5 +11,6 @@ router.post('/pathologyEmrSendUpdate', emrSendUpdateController.finishPathologySc
 router.post('/finishPathologyEMRScreen', emrSendUpdateController.finishPathologyEMRScreen); // 마지막
 router.post('/pathologyReportUpdate', emrSendUpdateController.pathologyReportUpdate); // 2번으로 변경
 router.get('/finishPathologyEMR', emrSendUpdateController.finishPathologyEMR); // 마지막
+router.post('/receiptcancel', emrSendUpdateController.receiptcancel ); // 접수 취소
 
 module.exports = router;

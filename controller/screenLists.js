@@ -1154,6 +1154,103 @@ exports.finishPathologyEMR = (req, res, next) => {
 
 }
 
+// 병리 접수취소 완료
+const  messageReceiptCancel = async (pathologyNum, status) => {
+  logger.info('[1159][screenList][ReceiptCancel]pathologyNum=' + pathologyNum + ", status=" + status); 
+  let sql ="update [dbo].[patientinfo_path] \
+          set screenstatus=@status \
+          where pathology_num=@pathologyNum ";
+
+ try {
+     const request = pool.request()
+         .input('pathologyNum', mssql.VarChar, pathologyNum)
+         .input('status', mssql.VarChar, status); 
+           
+     const result = await request.query(sql)
+     console.dir( result);
+     
+     return result;
+ } catch (error) {
+  logger.error('[1174][screenList][ReceiptCancel]err=' + error.message);
+ }
+
+}
+
+// 병리 접수취소 쿼리
+const  selectReceiptCancel = async (pathologyNum, patientID) => {
+  await poolConnect; // ensures that the pool has been created
+
+  logger.info('[1183][ReceiptCancel 병리]pathologyNum=' + pathologyNum + ", patientID=" + patientID);
+
+  //const uuid = uuidv4();
+
+  //console.log('uuid:', uuid);
+
+  const sql= `select pathology_num from [dbo].[patientinfo_path] 
+         where pathology_num = @pathologyNum 
+         and patientID = @patientID`;
+  
+  logger.info('[1193][ReceiptCancel 병리]sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('pathologyNum', mssql.VarChar, pathologyNum) // pathologyNum
+        .input('patientID', mssql.VarChar, patientID); // patientID 
+      const result = await request.query(sql)
+      console.dir(result);
+      const data = result.recordset[0];
+      return data;
+  } catch (error) {
+    logger.error('[1204][ReceiptCancel]err=' + error.message);
+  }
+}
+
+// 2021.08.26 병리 '접수취소'  update
+//                      post spcno=nnnnn&patientID=nnnnnn 
+exports.receiptcancel = (req, res, next) => {
+  logger.info('[1211][screenList][receiptcancel]req=' + JSON.stringify(req.body));
+  const pathologyNum = req.body.spcno;
+  const patientID = req.body.patientID;
+  logger.info('[screenList][1214][receiptcancel]pathologyNum=' + pathologyNum
+                         + ", patientID=" + patientID );
+
+  let p_sts = '5';
+  /*
+  if (status === 'R')
+    p_sts = '4';
+  else if (status === 'C')
+    p_sts = '3';
+  */
+ 
+  const result2 = selectReceiptCancel(pathologyNum, patientID);
+  result2.then(data => {
+
+    let data2 =  nvl(data, "");
+
+    if (data2 === "") {
+      res.json({message: '0'});
+    }
+    else
+    {
+      const result = messageReceiptCancel(pathologyNum, p_sts);
+      result.then(data => {
+        console.log('[screenList][1237][ReceiptCancel]',data); 
+
+        if (data.rowsAffected[0] == 1 ) {
+          res.json({message: '1'});
+        } else {
+          res.json({message: '0'});
+        } 
+      })
+    }
+  }) 
+  .catch( error => {
+    logger.error('[1248][screenList][ReceiptCancel]err=' + error.message);
+    res.sendStatus(500);
+  });
+
+}
+
 // 판독 완료
 exports.finishScreen = (req, res, next) => {
 
