@@ -99,6 +99,7 @@ const getPatientDiagHandler = async (specimenNo) => {
                 ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  
                 , isnull(vusmsg, '')  vusmsg, isnull(ver_file, '5.10') verfile  
                 , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+                , isnull(report_title) reportTitle
                 from [dbo].[patientinfo_diag] where specimenNo=@specimenNo `;
     logger.info('[118][screenList][find patient]sql=' + sql);
   
@@ -156,6 +157,7 @@ const  messageHandler = async (today) => {
     ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  
     , isnull(vusmsg, '')  vusmsg, isnull(ver_file, '5.10') verfile 
     , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+    , isnull(report_title) reportTitle
     from [dbo].[patientinfo_diag] where left(accept_date, 8) = '` + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
@@ -237,6 +239,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  
             , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+            , isnull(report_title) reportTitle
             from [dbo].[patientinfo_diag] 
             where left(accept_date, 8) >= '` + start + "'" 
              + " and left(accept_date, 8) <= '" + end + "'"; 
