@@ -1208,6 +1208,52 @@ const  selectReceiptCancel = async (pathologyNum, patientID) => {
 // 2021.08.26 병리 '접수취소'  update
 //                      post spcno=nnnnn&patientID=nnnnnn 
 exports.receiptcancel = (req, res, next) => {
+  logger.info('[1211][screenList][receiptcancel]req=' + JSON.stringify(req.query));
+  const pathologyNum = req.query.spcno;
+  const patientID = req.query.patientID;
+  logger.info('[screenList][1214][receiptcancel]pathologyNum=' + pathologyNum
+                         + ", patientID=" + patientID );
+
+  let p_sts = '5';
+  /*
+  if (status === 'R')
+    p_sts = '4';
+  else if (status === 'C')
+    p_sts = '3';
+  */
+ 
+  const result2 = selectReceiptCancel(pathologyNum, patientID);
+  result2.then(data => {
+
+    let data2 =  nvl(data, "");
+
+    if (data2 === "") {
+      res.json({message: '0'});
+    }
+    else
+    {
+      const result = messageReceiptCancel(pathologyNum, p_sts);
+      result.then(data => {
+        console.log('[screenList][1237][ReceiptCancel]',data); 
+
+        if (data.rowsAffected[0] == 1 ) {
+          res.json({message: '1'});
+        } else {
+          res.json({message: '0'});
+        } 
+      })
+    }
+  }) 
+  .catch( error => {
+    logger.error('[1248][screenList][ReceiptCancel]err=' + error.message);
+    res.sendStatus(500);
+  });
+
+}
+
+// 2021.08.26 병리 '접수취소'  update
+//                      post spcno=nnnnn&patientID=nnnnnn 
+exports.receiptcancel_post = (req, res, next) => {
   logger.info('[1211][screenList][receiptcancel]req=' + JSON.stringify(req.body));
   const pathologyNum = req.body.spcno;
   const patientID = req.body.patientID;
