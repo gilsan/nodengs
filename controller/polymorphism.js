@@ -8,9 +8,9 @@ const poolConnect = pool.connect();
 
 const geneHandler = async (req) => {
     await poolConnect;  
-    const gene			    = req.body.gene; 
-    const aminoacidchange	= req.body.amino_acid_change; 
-    const nucleotidechange	= req.body.nucleotide_change; 
+    let gene			    = req.body.gene; 
+    let aminoacidchange	= req.body.amino_acid_change; 
+    let nucleotidechange	= req.body.nucleotide_change; 
 
     const sql = `select id, gene, amino_acid_change, nucleotide_change, reason from polymorphism
     where 1 = 1 `;
@@ -73,10 +73,10 @@ const listHandler = async (req) => {
 // insert
 const insertHandler = async (req) => { 
     await poolConnect;  
-     const gene              = req.body.gene;
-     const reason            = req.body.reason;
-     const nucleotidechange  = req.body.nucleotide_change;
-     const aminoAcidChange   = req.body.amino_acid_change;
+    let gene              = req.body.gene;
+    let reason            = req.body.reason;
+    let nucleotidechange  = req.body.nucleotide_change;
+    let aminoAcidChange   = req.body.amino_acid_change;
 
      logger.info('[51]BlackList insertHandler data=' + gene + ", reason=" + reason 
                                 + ", nucleotidechange=" + nucleotidechange 
@@ -107,11 +107,11 @@ const insertHandler = async (req) => {
 // update
 const updateHandler = async (req) => { 
     await poolConnect;  
-	 const id                = req.body.id;
-     const gene              = req.body.gene;
-     const reason			 = req.body.reason;
-     const nucleotidechange  = req.body.nucleotide_change;
-     const aminoAcidChange   = req.body.amino_acid_change;
+    let id                = req.body.id;
+    let gene              = req.body.gene;
+    let reason			 = req.body.reason;
+    let nucleotidechange  = req.body.nucleotide_change;
+    let aminoAcidChange   = req.body.amino_acid_change;
 
      logger.info('[85]BlackList updateHandler data='+ id + ", gene=" + gene + ", reason=" + reason 
             + ", nucleotidechange=" + nucleotidechange + ", aminoAcidChange=" + aminoAcidChange); 
@@ -141,7 +141,7 @@ const updateHandler = async (req) => {
 // Delete
 const deleteHandler = async (req) => { 
     await poolConnect;  
-    const id        = req.body.id; 
+    let id        = req.body.id; 
     logger.info('[113]BlackList deleteHandler id-' + id);
  
     let sql = "delete polymorphism  " ; 
