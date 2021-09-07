@@ -46,8 +46,8 @@ const listHandler = async (req) => {
                 + ", nucleotidechange=" + nucleotidechange );
 	
 	let sql =`select id, gene, 
-                isnull(amino_acid_change, '') aminoacidchange, 
-                isnull(nucleotide_change, '') nucleotidechange, 
+                isnull(amino_acid_change, '') amino_acid_change, 
+                isnull(nucleotide_change, '') nucleotide_change, 
                 isnull(reason, '') reason 
             from polymorphism 
             where 1 = 1 `;
