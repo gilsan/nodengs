@@ -9,7 +9,7 @@ const poolConnect = pool.connect();
 const geneHandler = async (req) => {
     await poolConnect;  
 
-    const sql = 'select gene, amino_acid_change, nucleotide_change from polymorphism';
+    const sql = 'select id, gene, amino_acid_change, nucleotide_change, reason from polymorphism';
     logger.info('[29][polymorphism select]sql=' + sql);
     try {
         const request = pool.request();
