@@ -9,8 +9,8 @@ const poolConnect = pool.connect();
 const geneHandler = async (req) => {
     await poolConnect;  
     const gene			    = req.body.gene; 
-    const aminoacidchange	= req.body.aminoacidchange; 
-    const nucleotidechange	= req.body.nucleotidechange; 
+    const aminoacidchange	= req.body.amino_acid_change; 
+    const nucleotidechange	= req.body.nucleotide_change; 
 
     const sql = `select id, gene, amino_acid_change, nucleotide_change, reason from polymorphism
     where 1 = 1 `;
@@ -39,8 +39,8 @@ const geneHandler = async (req) => {
 const listHandler = async (req) => {
     await poolConnect;  
     const gene			    = req.body.gene; 
-    const aminoacidchange	= req.body.aminoacidchange; 
-    const nucleotidechange	= req.body.nucleotidechange; 
+    const aminoacidchange	= req.body.amino_acid_change; 
+    const nucleotidechange	= req.body.nucleotide_change; 
     logger.info('[16]BlackList listHandler gene=' + gene 
                 + ", aminoacidchange= " + aminoacidchange
                 + ", nucleotidechange=" + nucleotidechange );
@@ -74,8 +74,8 @@ const listHandler = async (req) => {
 const insertHandler = async (req) => { 
      const gene              = req.body.gene;
      const reason            = req.body.reason;
-     const nucleotidechange  = req.body.nucleotideChange;
-     const aminoAcidChange   = req.body.aminoAcidChange;
+     const nucleotidechange  = req.body.nucleotide_change;
+     const aminoAcidChange   = req.body.amino_acid_change;
 
      logger.info('[51]BlackList insertHandler data=' + gene + ", reason=" + reason 
                                 + ", nucleotidechange=" + nucleotidechange 
@@ -108,8 +108,8 @@ const updateHandler = async (req) => {
 	 const id                = req.body.id;
      const gene              = req.body.gene;
      const reason			 = req.body.reason;
-     const nucleotidechange  = req.body.nucleotideChange;
-     const aminoAcidChange   = req.body.aminoAcidChange;
+     const nucleotidechange  = req.body.nucleotide_change;
+     const aminoAcidChange   = req.body.amino_acid_change;
 
      logger.info('[85]BlackList updateHandler data='+ id + ", gene=" + gene + ", reason=" + reason 
             + ", nucleotidechange=" + nucleotidechange + ", aminoAcidChange=" + aminoAcidChange); 
@@ -161,8 +161,8 @@ const  messageHandler11 = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const gene    = req.body.gene;
-  const nucleotidechange = req.body.nucleotidechange;
-  const aminoAcidChange   = req.body.aminoAcidChange;
+  const nucleotidechange = req.body.nucleotide_change;
+  const aminoAcidChange   = req.body.amino_acid_change;
   logger.info('[480][blackList]benignInfoCount data=' + gene 
                         + ", nucleotidechange=" + nucleotidechange 
                         + ", aminoAcidChange=" + aminoAcidChange);
