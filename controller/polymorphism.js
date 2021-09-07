@@ -38,9 +38,9 @@ const geneHandler = async (req) => {
 // insert
 const listHandler = async (req) => {
     await poolConnect;  
-    const gene			    = req.body.gene; 
-    const aminoacidchange	= req.body.amino_acid_change; 
-    const nucleotidechange	= req.body.nucleotide_change; 
+    let gene			    = req.body.gene; 
+    let aminoacidchange	= req.body.amino_acid_change; 
+    let nucleotidechange	= req.body.nucleotide_change; 
     logger.info('[16]BlackList listHandler gene=' + gene 
                 + ", aminoacidchange= " + aminoacidchange
                 + ", nucleotidechange=" + nucleotidechange );
