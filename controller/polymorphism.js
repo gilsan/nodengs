@@ -72,6 +72,7 @@ const listHandler = async (req) => {
 
 // insert
 const insertHandler = async (req) => { 
+    await poolConnect;  
      const gene              = req.body.gene;
      const reason            = req.body.reason;
      const nucleotidechange  = req.body.nucleotide_change;
@@ -105,6 +106,7 @@ const insertHandler = async (req) => {
 
 // update
 const updateHandler = async (req) => { 
+    await poolConnect;  
 	 const id                = req.body.id;
      const gene              = req.body.gene;
      const reason			 = req.body.reason;
@@ -138,6 +140,7 @@ const updateHandler = async (req) => {
 
 // Delete
 const deleteHandler = async (req) => { 
+    await poolConnect;  
     const id        = req.body.id; 
     logger.info('[113]BlackList deleteHandler id-' + id);
  
