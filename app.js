@@ -26,6 +26,13 @@ const patientListResearchRouter = require('./routes/patientlist_research');
 const diseaseResaearchuploadRouter = require('./routes/diseaseResarchupload');
 const pathResearchReportRouter   = require('./routes/pathResearchReportRouter'); 
 
+// 2021.09.07
+// 병리 inhouse
+// blaklist
+const blackListRouter       = require('./routes/blackListRouter');
+const blackListCountRouter  = require('./routes/blackListCountRouter');
+const blackListInsertRouter    = require('./routes/blackListInsertRouter');
+
 // 진검
 const patientListRouter     = require('./routes/patientlist');
 
@@ -166,7 +173,14 @@ app.use('/patients_research', patientListResearchRouter);
 
 app.use('/pathResearchfileUpload', diseaseResaearchuploadRouter);
 
-app.use('/pathResearchReportInsert', pathResearchReportRouter);    
+app.use('/pathResearchReportInsert', pathResearchReportRouter);
+
+// 2021.09.07
+// 병리 inhouse
+// 유전체 정보로 blaklist 정보 가져오기
+app.use('/blackLists', blackListRouter);
+app.use('/blackListsCount', blackListCountRouter);
+app.use('/blackListsInsert',blackListInsertRouter);
 
 // 등록
 app.use('/register', registerRouter);
@@ -285,7 +299,6 @@ app.use('/tests', function(req, res, next) {
   app.use('/pathmentlist', pathMentRouter);
  
  // 12/14
- 
  app.use('/filteredOriginData', filteredOriginData);     //병리. filteredOriginData => 디렉토리 파일명
  app.use('/msiscore', msiscore);     //병리. msiscore => 디렉토리 파일명
  app.use('/tumorcellpercentage', tumorcellpercentage);     //병리. tumorcellpercentage => 디렉토리 파일명

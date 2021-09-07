@@ -9,6 +9,12 @@ const  polymorphism = require('../controller/polymorphism');
 router.get('/list', polymorphism.select);
 // router.post('/update', polymorphism.update);
 
+// 검진자 필터링된 리스스
+router.post('/search', polymorphism.listBlackList);
+router.post('/insert', polymorphism.insertBlackList);
+router.post('/update', polymorphism.updateBlackList);
+router.post('/delete', polymorphism.deleteBlackList);
+
 module.exports = router;
 
 
