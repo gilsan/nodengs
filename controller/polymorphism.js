@@ -163,9 +163,9 @@ const deleteHandler = async (req) => {
 const  messageHandler11 = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
-  const gene    = req.body.gene;
-  const nucleotidechange = req.body.nucleotide_change;
-  const aminoAcidChange   = req.body.amino_acid_change;
+  let gene    = req.body.gene;
+  let nucleotidechange = req.body.nucleotide_change;
+  let aminoAcidChange   = req.body.amino_acid_change;
   logger.info('[480][blackList]benignInfoCount data=' + gene 
                         + ", nucleotidechange=" + nucleotidechange 
                         + ", aminoAcidChange=" + aminoAcidChange);
