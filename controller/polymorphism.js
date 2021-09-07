@@ -8,20 +8,10 @@ const poolConnect = pool.connect();
 
 const geneHandler = async (req) => {
     await poolConnect;  
-    let gene			    = req.body.gene; 
-    let aminoacidchange	= req.body.amino_acid_change; 
-    let nucleotidechange	= req.body.nucleotide_change; 
 
-    const sql = `select id, gene, amino_acid_change, nucleotide_change, reason from polymorphism
+    let sql = `select id, gene, amino_acid_change, nucleotide_change, reason from polymorphism
     where 1 = 1 `;
-
-    if(gene != "") 
-        sql = sql + " and gene like '%"+gene+"%'";
-    if(aminoacidchange != "") 
-        sql = sql + " and amino_acid_change like '%"+aminoacidchange+"%'";
-    if(nucleotidechange != "") 
-        sql = sql + " and nucleotide_change like '%"+nucleotidechange+"%'";
-        sql = sql + " order by id";
+    sql = sql + " order by id";
 
     logger.info('[29][polymorphism select]sql=' + sql);
     try {
@@ -266,10 +256,11 @@ exports.deleteBlackList = (req,res,next) => {
 
 exports.select = (req, res, next) => {
 
+    /*
      const gene       = req.body.gene;
      const amino      = req.body.amino;
      const nucleotide = req.body.naucleotide;
-
+    */
      const result = geneHandler(req);
      result.then(data => { 
         //  console.log('[320][getArtifactsInfoCount]',data);
