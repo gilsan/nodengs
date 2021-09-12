@@ -49,6 +49,7 @@ const  messageHandler = async (req) => {
   const etc1           = nvl(req.body.etc1, "");
   const etc2           = nvl(req.body.etc2, "");
   const etc3           = nvl(req.body.etc3, "");
+  let type =  nvl(req.body.type, "AMLALL");
 
   logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene + ' fusion=' +  fusion);   
   logger.info('[47][mutation]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
