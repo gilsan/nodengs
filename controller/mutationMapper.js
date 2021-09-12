@@ -352,7 +352,7 @@ const searchGeneHandler =  async (gene, type) => {
 
   logger.info("[290][mutationMapper search]gene=" + gene + ", type=" + type2)  ;
   const sql = "select  count(*) as count  from mutation where gene=@gene and type=@type";
-  logger.info("[293][mutationMapper search]sql=" + sql);
+  logger.info("[355][mutationMapper search]sql=" + sql);
   try {
        const request = pool.request()
           .input('gene', mssql.VarChar, gene)

@@ -306,7 +306,7 @@ const listHandler = async (req) => {
     await poolConnect;  
     const genes		= req.body.genes; 
     const coding	= req.body.coding; 
-    const type    = req.body.type;
+    const type    = nvl(req.body.type, "AMLALL");
     logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding + ", type=" + type );
 	
 	let sql ="select id	"
