@@ -26,13 +26,6 @@ const patientListResearchRouter = require('./routes/patientlist_research');
 const diseaseResaearchuploadRouter = require('./routes/diseaseResarchupload');
 const pathResearchReportRouter   = require('./routes/pathResearchReportRouter'); 
 
-// 2021.09.07
-// 병리 inhouse
-// blaklist
-const blackListRouter       = require('./routes/blackListRouter');
-const blackListCountRouter  = require('./routes/blackListCountRouter');
-const blackListInsertRouter    = require('./routes/blackListInsertRouter');
-
 // 진검
 const patientListRouter     = require('./routes/patientlist');
 
@@ -67,7 +60,6 @@ const artifactsRouters       = require('./routes/ngsartifactsRouter');
 const benignRouters          = require('./routes/ngsbenignRouter');
 const mutationRouters     = require('./routes/ngsmutationRouter');
 
-
 // inhouse 
 const commentsRouter     = require('./routes/commentsRouter');
 const artifactsRouter       = require('./routes/artifactsRouter');
@@ -86,7 +78,6 @@ const savedFilePathRouter   = require('./routes/savedFilePathRouter');
 const searchpatientRouter   = require('./routes/searchRouter');
 const searchpatientDiagRouter   = require('./routes/searchRouter_diag');
 const searchpatientPathRouter   = require('./routes/searchRouter_path');
-
 
 const diagGeneRouter                 = require('./routes/diagGeneRouter');
  
@@ -174,13 +165,6 @@ app.use('/patients_research', patientListResearchRouter);
 app.use('/pathResearchfileUpload', diseaseResaearchuploadRouter);
 
 app.use('/pathResearchReportInsert', pathResearchReportRouter);
-
-// 2021.09.07
-// 병리 inhouse
-// 유전체 정보로 blaklist 정보 가져오기
-app.use('/blackLists', blackListRouter);
-app.use('/blackListsCount', blackListCountRouter);
-app.use('/blackListsInsert',blackListInsertRouter);
 
 // 등록
 app.use('/register', registerRouter);
