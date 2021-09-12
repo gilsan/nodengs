@@ -348,15 +348,15 @@ exports.deleteMutation = (req, res, next) => {
 // 유전자가 있는지 확인
 const searchGeneHandler =  async (gene, type) => {
   await poolConnect;
-  let type =  nvl(req.body.type, "AMLALL");
+  let type2 =  nvl(req.body.type, "AMLALL");
 
-  logger.info("[290][mutationMapper search]gene=" + gene + ", type=" + type)  ;
+  logger.info("[290][mutationMapper search]gene=" + gene + ", type=" + type2)  ;
   const sql = "select  count(*) as count  from mutation where gene=@gene and type=@type";
   logger.info("[293][mutationMapper search]sql=" + sql);
   try {
        const request = pool.request()
           .input('gene', mssql.VarChar, gene)
-          .input('type', mssql.VarChar, type);
+          .input('type', mssql.VarChar, type2);
           const result = await request.query(sql);
           return result.recordset[0].count;
   } catch(error) {

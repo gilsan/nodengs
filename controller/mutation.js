@@ -276,13 +276,13 @@ exports.deleteMutation = (req, res, next) => {
 const searchGeneHandler =  async (gene, type) => {
   await poolConnect;
 
-  let type =  nvl(type, "AMLALL");
+  let type2 =  nvl(type, "AMLALL");
 
   const sql = "select  count(*) as count  from mutation where gene=@gene and type = @type";
   try {
        const request = pool.request()
           .input('gene', mssql.VarChar, gene)
-          .input('type', mssql.VarChar, type);
+          .input('type', mssql.VarChar, type2);
           const result = await request.query(sql);
           return result.recordset[0].count;
   } catch(err) {
