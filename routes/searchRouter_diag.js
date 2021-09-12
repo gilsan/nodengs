@@ -6,17 +6,17 @@ const router = express.Router();
 // 환자 정보 검색  getPatientDiagLists
 router.post('/list', searchPatientDiagController.getPatientDiagLists); 
 // AML/ALL 검진자 리스트
-router.get('/listAml', searchPatientDiagController.getPatientDiagListsAml);
+router.post('/listAml', searchPatientDiagController.getPatientDiagListsAml);
 // MDS/MPN  검진자 리스트
-router.get('/listMdsMpn', searchPatientDiagController.getPatientDiagListsMdsMpn);
+router.post('/listMdsMpn', searchPatientDiagController.getPatientDiagListsMdsMpn);
 // 악성림프종/형질세포종 검진자 리스트
-router.get('/listLymphoma', searchPatientDiagController.getPatientDiagListsLymphoma);
+router.post('/listLymphoma', searchPatientDiagController.getPatientDiagListsLymphoma);
 // 유전성유전질환 검진자 리스트
-router.get('/listGenetic', searchPatientDiagController.getPatientDiagListsGenetic);
+router.post('/listGenetic', searchPatientDiagController.getPatientDiagListsGenetic);
 // Sequencing
-router.get('/listSequencing', searchPatientDiagController.getPatientDiagListsSequencing);
+router.post('/listSequencing', searchPatientDiagController.getPatientDiagListsSequencing);
 // MLPA
-router.get('/listMlpa', searchPatientDiagController.getPatientDiagListsMlpa);
+router.post('/listMlpa', searchPatientDiagController.getPatientDiagListsMlpa);
  
 
 module.exports = router;
