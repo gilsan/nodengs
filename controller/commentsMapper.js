@@ -25,17 +25,17 @@ function nvl(st, defaultStr){
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
-    let type =  nvl(req.body.type, "");
-    logger.info('[13][get comments list]data=' + genes+ ", type=" + type);
+    let sheet =  nvl(req.body.sheet, "AMLALL");
+    logger.info('[13][get comments list]data=' + genes+ ", sheet=" + sheet);
 	
 	let sql ="select id, type, gene, comment, reference, variant_id";
     sql = sql + " from comments ";
 	if(genes != "") 
 		sql = sql + " where gene like '%"+genes+"%'";
 
-    if(type.length > 0 )
+    if(sheet.length > 0 )
     {
-        sql = sql +  " and type = '"+ type + "'";
+        sql = sql +  " and sheet = '"+ sheet + "'";
     }
 
     sql = sql + " order by id";
@@ -58,14 +58,15 @@ const insertHandler = async (req) => {
     const variant_id        = req.body.variant_id;
     const comment           = req.body.comment;
     const reference         = req.body.reference; 
+    let sheet =  nvl(req.body.sheet, "AMLALL");
 
     logger.info('[40]insertComments data=' + type + ", " + gene + ", " + variant_id
-                               + comment + ", " + reference);
+                               + comment + ", " + reference + "," + sheet);
 
     let sql = "insert into comments " ;
-    sql = sql + "  (type, gene, variant_id, comment, reference) " 
+    sql = sql + "  (type, gene, variant_id, comment, reference, sheet) " 
     sql = sql + " values(  "
-    sql = sql + " @type, @gene, @variant_id, @comment, @reference) ";
+    sql = sql + " @type, @gene, @variant_id, @comment, @reference, @sheet) ";
     logger.info('[47]insertComments sql=' + sql); 
      
     try {
@@ -74,8 +75,10 @@ const insertHandler = async (req) => {
           .input('gene', mssql.VarChar, gene) 
 		  .input('variant_id', mssql.VarChar, variant_id) 	
           .input('comment', mssql.NVarChar, comment) 
-          .input('reference', mssql.NVarChar, reference)   
-        const result = await request.query(sql)
+          .input('reference', mssql.NVarChar, reference)  
+          .input('sheet', mssql.NVarChar, sheet)   ;
+
+        const result = await request.query(sql);
       //  console.dir( result); 
         return result;
     } catch (error) {
@@ -91,13 +94,14 @@ const updateHandler = async (req) => {
 	 const variant_id        = req.body.variant_id;
      const comment           = req.body.comment;
      const reference         = req.body.reference; 
+     let sheet =  nvl(req.body.sheet, "AMLALL");
     
      logger.info('[73]updateComments data=' + id + ', type=' + type  + ', gene=' + gene
-                            + ', comment=' + comment + ', reference=' + reference);
+                            + ', comment=' + comment + ', reference=' + reference + ', sheet=' + sheet);
 	
      let sql = "update comments set " ;
      sql = sql + "  type = @type, gene = @gene , variant_id = @variant_id ";
-     sql = sql + "  ,comment = @comment ,reference = @reference  "; 
+     sql = sql + "  ,comment = @comment ,reference = @reference, sheet=@sheet  "; 
      sql = sql + "where id = @id";
      
      logger.info('[81]updateComments sql=' + sql);
@@ -109,8 +113,10 @@ const updateHandler = async (req) => {
 		  .input('variant_id', mssql.VarChar, variant_id) 	
           .input('type', mssql.VarChar, type)  
 		  .input('comment', mssql.NVarChar, comment) 
-          .input('reference', mssql.NVarChar, reference)  
-        const result = await request.query(sql)
+          .input('reference', mssql.NVarChar, reference)   
+          .input('sheet', mssql.NVarChar, sheet);
+
+        const result = await request.query(sql);
         console.dir( result); 
         return result;
      } catch (error) {

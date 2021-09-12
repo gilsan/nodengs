@@ -57,7 +57,7 @@ const  messageHandler = async (req) => {
   logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + ' reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[47][mutation]buccal=' + buccal  + ' buccal2=' + buccal2);
   logger.info('[47][mutation]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
-  logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
+  logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3 + ", type=" + type);
 
   let sql ="insert into mutation   ";
   sql = sql + " (igv, sanger,patient_name,register_number,  fusion,  ";
@@ -65,13 +65,13 @@ const  messageHandler = async (req) => {
   sql = sql + " exon_intro,nucleotide_change,  ";
   sql = sql + " amino_acid_change,zygosity,vaf,  ";
   sql = sql + " reference,cosmic_id, buccal, buccal2,   ";
-  sql = sql + " exac, exac_east_asia, krgdb, etc1, etc2, etc3)   ";
+  sql = sql + " exac, exac_east_asia, krgdb, etc1, etc2, etc3, type)   ";
   sql = sql + " values (@igv, @sanger, @patient_name, @register_number,  @fusion, ";
   sql = sql + " @gene, @functional_impact, @transcript,  ";
   sql = sql + " @exon_intro, @nucleotide_change,  ";
   sql = sql + " @amino_acid_change, @zygosity, @vaf,  ";
   sql = sql + " @reference,@cosmic_id,@buccal,@buccal2,   ";
-  sql = sql + " @exac, @exac_east_asia, @krgdb, @etc1, @etc2, @etc3)";
+  sql = sql + " @exac, @exac_east_asia, @krgdb, @etc1, @etc2, @etc3, @type)";
 
   logger.info('[64][mutation]sql=' + sql);
 
@@ -99,8 +99,10 @@ const  messageHandler = async (req) => {
         .input('krgdb', mssql.VarChar, krgdb)
         .input('etc1', mssql.VarChar, etc1)
         .input('etc2', mssql.VarChar, etc2)
-        .input('etc3', mssql.VarChar, etc3); 
-      const result = await request.query(sql)
+        .input('etc3', mssql.VarChar, etc3)
+        .input('type', mssql.VarChar, type); 
+
+      const result = await request.query(sql);
      // console.dir( result);
       
       return result;
@@ -156,6 +158,7 @@ const  updateHandler = async (req) => {
   const etc1			  = nvl(req.body.etc1, "");
   const etc2			  = nvl(req.body.etc2, "");
   const etc3			  = nvl(req.body.etc3, "");
+  let type =  nvl(req.body.type, "AMLALL");
 
   logger.info('[160][mutation update]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene + ' fusion=' +  fusion);   
   logger.info('[163][mutation update]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);
@@ -164,7 +167,7 @@ const  updateHandler = async (req) => {
   logger.info('[163][mutation update]buccal=' + buccal  + ' buccal2=' + buccal2);
   logger.info('[163][mutation update]igv=' + igv  + ' sanger=' + sanger);
   logger.info('[163][mutation update]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
-  logger.info('[163][mutation update]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3);
+  logger.info('[163][mutation update]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3 + ', type=' + type);
 
   let sql ="update mutation set  ";
   sql = sql + " buccal = @buccal, patient_name= @patient_name, register_number = @register_number,  ";
@@ -174,7 +177,7 @@ const  updateHandler = async (req) => {
   sql = sql + " reference = @reference, cosmic_id = @cosmic_id, sift_polyphen_mutation_taster = @sift_polyphen_mutation_taster, "
   sql = sql + " buccal2 = @buccal2, igv= @igv, sanger= @sanger,   ";
   sql = sql + " exac=@exac, exac_east_asia=@exac_east_asia, krgdb=@krgdb,   ";
-  sql = sql + " etc1=@etc1, etc2=@etc2, etc3=@etc3 ";
+  sql = sql + " etc1=@etc1, etc2=@etc2, etc3=@etc3, type=@type ";
   sql = sql + " where id = @id ";
 
   logger.info('[177][mutation update]sql=' + sql);
@@ -205,9 +208,10 @@ const  updateHandler = async (req) => {
       .input('krgdb', mssql.VarChar, krgdb)
       .input('etc1', mssql.VarChar, etc1)
       .input('etc2', mssql.VarChar, etc2)
-      .input('etc3', mssql.VarChar, etc3) ; 
+      .input('etc3', mssql.VarChar, etc3)
+      .input('type', mssql.VarChar, type) ; 
 
-      const result = await request.query(sql)
+      const result = await request.query(sql);
      // console.dir( result);
       
       return result;
@@ -269,13 +273,16 @@ exports.deleteMutation = (req, res, next) => {
 }
 
 // 유전자가 있는지 확인
-const searchGeneHandler =  async (gene) => {
+const searchGeneHandler =  async (gene, type) => {
   await poolConnect;
 
-  const sql = "select  count(*) as count  from mutation where gene=@gene";
+  let type =  nvl(type, "AMLALL");
+
+  const sql = "select  count(*) as count  from mutation where gene=@gene and type = @type";
   try {
        const request = pool.request()
-          .input('gene', mssql.VarChar, gene);
+          .input('gene', mssql.VarChar, gene)
+          .input('type', mssql.VarChar, type);
           const result = await request.query(sql);
           return result.recordset[0].count;
   } catch(err) {
@@ -286,7 +293,8 @@ const searchGeneHandler =  async (gene) => {
 
 exports.searchMutaionbygene = (req, res, next) => {
 const gene = req.body.gene;
-const result = searchGeneHandler(gene);
+const type = req.body.type;
+const result = searchGeneHandler(gene, type);
 result.then(data => {
    res.json(data);
 }).catch(err => res.sendStatus(500))
@@ -296,9 +304,10 @@ result.then(data => {
 // list
 const listHandler = async (req) => {
     await poolConnect;  
-    const genes			= req.body.genes; 
-    const coding			= req.body.coding; 
-    logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding );
+    const genes		= req.body.genes; 
+    const coding	= req.body.coding; 
+    const type    = req.body.type;
+    logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding + ", type=" + type );
 	
 	let sql ="select id	"
 				+"	,buccal "
@@ -323,13 +332,20 @@ const listHandler = async (req) => {
         +" ,isnull(krgdb, '') krgdb"
         +" ,isnull(etc1, '') etc1"
         +" ,isnull(etc2, '') etc2"
-        +" ,isnull(etc3, '') etc3";
+        +" ,isnull(etc3, '') etc3"
+        +" ,isnull(type, 'AMLALL') type";
     sql = sql + " from mutation ";
 		sql = sql + " where 1=1";
+
 	if(genes != "") 
 		sql = sql + " and gene like '%"+genes+"%'";
+
   if(coding != "") 
     sql = sql + " and nucleotide_change like '%"+coding+"%'";
+
+  if(type != "") 
+    sql = sql + " and type like '%"+type+"%'";
+
   sql = sql + " order by id";
 
     logger.info("[293][mutationMapper list]sql" + sql);

@@ -25,7 +25,7 @@ const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes;  
     const coding		= req.body.coding; 
-    let type =  nvl(req.body.type, "");
+    let type =  nvl(req.body.type, "AMLALL");
 
     logger.info('[12]artifcats listHandler genes=' + genes + ", coding=" + coding + ", type=" + type);
 	
@@ -62,16 +62,18 @@ const insertHandler = async (req) => {
      const transcript        = req.body.transcript;
      const coding            = req.body.coding;
      const aminoAcidChange   = req.body.aminoAcidChange;
+     let type =  nvl(req.body.type, "AMLALL");
+
      logger.info('[39]artifcats insertHandler genes=' + genes + ', locat=' + locat + ", exon" + exon
                                     + ", transcript" + transcript + ', coding=' + coding
-                                    + ', aminoAcidChange=' + aminoAcidChange);   
+                                    + ', aminoAcidChange=' + aminoAcidChange + ', type=' + type);   
  
      let sql = "insert into artifacts " ;
      sql = sql + " (genes, location, exon, "
-     sql = sql + " transcript,coding, amino_acid_change)  "
+     sql = sql + " transcript,coding, amino_acid_change, type)  "
      sql = sql + " values(  "
 	 sql = sql + " @genes, @locat, @exon, "
-     sql = sql + " @transcript, @coding, @aminoAcidChange)";
+     sql = sql + " @transcript, @coding, @aminoAcidChange, @type)";
      
     logger.info('[50]artifcats insertHandler sql=' + sql);
 
@@ -82,7 +84,9 @@ const insertHandler = async (req) => {
           .input('exon', mssql.VarChar, exon) 
           .input('transcript', mssql.VarChar, transcript) 
           .input('coding', mssql.VarChar, coding) 
-          .input('aminoAcidChange', mssql.VarChar, aminoAcidChange); 
+          .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
+          .input('type', mssql.VarChar, type); 
+
         const result = await request.query(sql)
       //  console.dir( result); 
         return result;
@@ -100,17 +104,19 @@ const updateHandler = async (req) => {
      const transcript        = req.body.transcript;
      const coding            = req.body.coding;
      const aminoAcidChange   = req.body.aminoAcidChange;
+     let type =  nvl(req.body.type, "AMLALL");
 
     logger.info('[78]artifcats updateHandler id=' + id + ', genes=' + genes
                    + ', locat=' + locat + ", exon" + exon
      + ", transcript" + transcript + ', coding=' + coding
-     + ', aminoAcidChange=' + aminoAcidChange);   
+     + ', aminoAcidChange=' + aminoAcidChange + ', type=' + type);   
 
      let sql = "update artifacts set " ;
      sql = sql + "  genes = @genes, location = @locat, exon =  @exon "
      sql = sql + "  ,transcript = @transcript ,coding = @coding  "
-     sql = sql + "  ,amino_acid_change =  @aminoAcidChange "
+     sql = sql + "  ,amino_acid_change =  @aminoAcidChange, type = @type "
      sql = sql + "where id = @id";
+
      logger.info('[88]artifcats updateHandler sql=' + sql);
      
      try {
@@ -121,8 +127,10 @@ const updateHandler = async (req) => {
           .input('exon', mssql.VarChar, exon) 
           .input('transcript', mssql.VarChar, transcript) 
           .input('coding', mssql.VarChar, coding) 
-          .input('aminoAcidChange', mssql.VarChar, aminoAcidChange); 
-        const result = await request.query(sql)
+          .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
+          .input('type', mssql.VarChar, type); 
+
+        const result = await request.query(sql);
         console.dir( result); 
         return result;
     } catch (error) {
