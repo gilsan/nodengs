@@ -257,12 +257,12 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     if(sheet_1.length > 0 )
     {
         if (sheet_1 == 'AMLALL') {
-            sql = sql +  " and test_code in ('LPE471', 'LPE545')";
+            sql = sql +  " and test_code in ('LPE471','LPE472', 'LPE545')";
         } else if (sheet_1 == 'MDSMPN') {  // MDS/MPN 
             sql = sql +  " and test_code in ('LPE473')";
-        } else if (sheet_1 == '악성림프종') {  // 악성림프종
+        } else if (sheet_1 == 'lymphoma') {  // 악성림프종
             sql = sql +  " and test_code in ('LPE474', 'LPE475')";
-        } else if (sheet_1 == '유전성유전질환') {  // 유전성유전질환
+        } else if (sheet_1 == 'genetic') {  // 유전성유전질환
             sql = sql +   ` and test_code in ('LPE548', 'LPE439', 'LPE452', 'LPE453', 'LPE454', 'LPE455', 
                                     'LPE456', 'LPE488', 'LPE489', 'LPE490', 'LPE497', 'LPE498', 'LPE499',
                                     'LPE517', 'LPE518', 'LPE519', 'LPE520', 'LPE521', 'LPE522', 'LPE523',
@@ -270,19 +270,15 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                                     'LPE531', 'LPE532', 'LPE533', 'LPE534', 'LPE535', 'LPE536', 'LPE537',
                                     'LPE538', 'LPE539', 'LPE540', 'LPE541', 'LPE542', 'LPE543')`;
         } else if (sheet_1 == 'Sequencing') {  // Sequencing
-            sql = sql +   ` and test_code in ('LPC100', 'LPC101', 'LPC117', 'LPC118', 'LPC194',
-                                    'LPE115', 'LPE141', 'LPE156', 'LPE194', 'LPE221', 'LPE227', 'LPE229',
-                                    'LPE231', 'LPE233', 'LPE236', 'LPE237', 'LPE238', 
-                                    'LPE241', 'LPE242', 'LPE243', 'LPE245', 'LPE247', 'LPE249',
-                                    'LPE251', 'LPE258', 'LPE262', 'LPE267', 'LPE272', 'LPE276', 
-                                    'LPE280', 'LPE282', 'LPE285', 'LPE287', 'LPE289', 'LPE290', 'LPE295',
-                                    'LPE302', 'LPE306', 'LPE308', 'LPE310', 'LPE313', 'LPE316', 'LPE320',
-                                    'LPE334', 'LPE337', 'LPE340', 'LPE341', 'LPE342', 'LPE343', 'LPE349', 
-                                    'LPE352', 'LPE354', 'LPE356', 'LPE358', 'LPE360', 'LPE362', 'LPE364', 
-                                    'LPE366', 'LPE368', 'LPE371', 'LPE374', 'LPE375', 'LPE378', 'LPE379', 
-                                    'LPE384', 'LPE391', 'LPE392', 'LPE410', 'LPE412', 'LPE414', 'LPE418', 
-                                    'LPE420', 'LPE428', 'LPE431', 'LPE433', 'LPE436', 'LPE457', 'LPE460', 
-                                    'LPE462', 'LPE469', 'LPE477', 'LPE482', 'LPE494', 'LPE495') `
+            sql = sql +   ` and test_code in ('LPC100', 'LPC101', 'LPC117', 'LPC118', 'LPC194', 'LPE115', 'LPE141', 'LPE156', 'LPE194', 'LPE221',
+            'LPE227', 'LPE229', 'LPE231', 'LPE233', 'LPE236', 'LPE237', 'LPE238', 'LPE241', 'LPE243', 'LPE245',
+            'LPE247', 'LPE249', 'LPE251', 'LPE258', 'LPE262', 'LPE267', 'LPE272', 'LPE275', 'LPE276', 'LPE280',
+            'LPE282', 'LPE285', 'LPE287', 'LPE289', 'LPE290', 'LPE295', 'LPE302', 'LPE306', 'LPE308', 'LPE310',
+            'LPE313', 'LPE314', 'LPE316', 'LPE320', 'LPE334', 'LPE337', 'LPE340', 'LPE341', 'LPE342', 'LPE343',
+            'LPE349', 'LPE352', 'LPE354', 'LPE356', 'LPE358', 'LPE360', 'LPE362', 'LPE364', 'LPE366', 'LPE371',
+            'LPE374', 'LPE375', 'LPE378', 'LPE379', 'LPE384', 'LPE391', 'LPE392', 'LPE368', 'LPE410', 'LPE412',
+            'LPE414', 'LPE418', 'LPE420', 'LPE428', 'LPE431', 'LPE433', 'LPE436', 'LPE457', 'LPE460', 'LPE462',
+            'LPE469', 'LPE477', 'LPE481', 'LPE482', 'LPE494', 'LPE495') `
         } else if (sheet_1 == 'MLPA') {  // MLPA
             sql = sql +  ` and test_code in ('LPE232', 'LPE294', 'LPE322', 'LPE332', 'LPE351', 'LPE369', 
                                     'LPE377', 'LPE464')`;
