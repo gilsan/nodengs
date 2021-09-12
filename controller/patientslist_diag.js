@@ -193,7 +193,7 @@ exports.getDiagLists = (req,res, next) => {
 const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status) => {
     await poolConnect; // ensures that the pool has been created
    
-  logger.info('qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo + ' '  + sheet + ' ' +  status);
+  logger.info('[196][patientinfo_diag list]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo + ' '  + sheet + ' ' +  status);
 
     let patient =  nvl(patientID, "");
     console.log('patient 0');
@@ -258,8 +258,34 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     {
         if (sheet_1 == 'AMLALL') {
             sql = sql +  " and test_code in ('LPE471', 'LPE545')";
-        } else if (sheet_1 == 'ETC') {
-            sql = sql +  " and test_code in ('LPE473', 'LPE474')";
+        } else if (sheet_1 == 'MDSMPN') {  // MDS/MPN 
+            sql = sql +  " and test_code in ('LPE473')";
+        } else if (sheet_1 == '악성림프종') {  // 악성림프종
+            sql = sql +  " and test_code in ('LPE474', 'LPE475')";
+        } else if (sheet_1 == '유전성유전질환') {  // 유전성유전질환
+            sql = sql +   ` and test_code in ('LPE548', 'LPE439', 'LPE452', 'LPE453', 'LPE454', 'LPE455', 
+                                    'LPE456', 'LPE488', 'LPE489', 'LPE490', 'LPE497', 'LPE498', 'LPE499',
+                                    'LPE517', 'LPE518', 'LPE519', 'LPE520', 'LPE521', 'LPE522', 'LPE523',
+                                    'LPE524', 'LPE525', 'LPE526', 'LPE527', 'LPE528', 'LPE529', 'LPE530',
+                                    'LPE531', 'LPE532', 'LPE533', 'LPE534', 'LPE535', 'LPE536', 'LPE537',
+                                    'LPE538', 'LPE539', 'LPE540', 'LPE541', 'LPE542', 'LPE543')`;
+        } else if (sheet_1 == 'Sequencing') {  // Sequencing
+            sql = sql +   ` and test_code in ('LPC100', 'LPC101', 'LPC117', 'LPC118', 'LPC194',
+                                    'LPE115', 'LPE141', 'LPE156', 'LPE194', 'LPE221', 'LPE227', 'LPE229',
+                                    'LPE231', 'LPE233', 'LPE236', 'LPE237', 'LPE238', 
+                                    'LPE241', 'LPE242', 'LPE243', 'LPE245', 'LPE247', 'LPE249',
+                                    'LPE251', 'LPE258', 'LPE262', 'LPE267', 'LPE272', 'LPE276', 
+                                    'LPE280', 'LPE282', 'LPE285', 'LPE287', 'LPE289', 'LPE290', 'LPE295',
+                                    'LPE302', 'LPE306', 'LPE308', 'LPE310', 'LPE313', 'LPE316', 'LPE320',
+                                    'LPE334', 'LPE337', 'LPE340', 'LPE341', 'LPE342', 'LPE343', 'LPE349', 
+                                    'LPE352', 'LPE354', 'LPE356', 'LPE358', 'LPE360', 'LPE362', 'LPE364', 
+                                    'LPE366', 'LPE368', 'LPE371', 'LPE374', 'LPE375', 'LPE378', 'LPE379', 
+                                    'LPE384', 'LPE391', 'LPE392', 'LPE410', 'LPE412', 'LPE414', 'LPE418', 
+                                    'LPE420', 'LPE428', 'LPE431', 'LPE433', 'LPE436', 'LPE457', 'LPE460', 
+                                    'LPE462', 'LPE469', 'LPE477', 'LPE482', 'LPE494', 'LPE495') `
+        } else if (sheet_1 == 'MLPA') {  // MLPA
+            sql = sql +  ` and test_code in ('LPE232', 'LPE294', 'LPE322', 'LPE332', 'LPE351', 'LPE369', 
+                                    'LPE377', 'LPE464')`;
         } 
     }
 
@@ -272,7 +298,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     //sql = sql + " order by accept_date desc, specimenNo desc   ";
     sql = sql + " order by accept_date2 asc  ";
 
-    logger.info("sql="+sql);
+    logger.info("[301][patientinfo_diag list]sql="+sql);
     
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
@@ -281,7 +307,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
         
         return result.recordset;
     } catch (err) {
-        console.error('SQL error', err);
+        logger.error('[310][patientinfo_diag list]SQL error'+ err.message);
     }
 }
 
@@ -317,7 +343,238 @@ exports.getPatientDiagLists = (req, res,next) => {
 
       res.end();
    })
-   .catch( err  => res.sendStatus(500)); 
+   .catch( err => {
+      logger.error('[310][patientinfo_diag list]SQL error'+ err.message);
+      res.sendStatus(500);
+    }); 
+}
+
+// diag 날자별 AML/ALL 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsAml = (req, res,next) => {
+
+   logger.info('[355][patientslist_diag][getPatientDiagListsAml] data=' + JSON.stringify( req.body));
+    //console.log(req);
+   let start =  req.body.start; //.replace("-", "");
+   let end   =  req.body.end; //.replace("-", "");
+   let patientID   =  req.body.patientID; // 환자 id
+   let specimenNo   =  req.body.specimenNo; // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  'AMLALL'; // 결과지
+
+   console.log('[361][patientslist_diag][getPatientDiagListsAml] 검색', start,end, patientID, specimenNo, sheet, status);
+   
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
+   result.then(data => {
+
+      res.json(data);
+
+      res.end();
+   })
+   .catch( err  => {
+    logger.error('[385][patientinfo_diag][getPatientDiagListsAml]SQL error'+ err.message);
+    res.sendStatus(500);
+  }); 
+}
+
+// diag 날자별 MDS/MPN 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsMdsMpn = (req, res,next) => {
+
+   logger.info('[355][patientslist_diag][getPatientDiagListsMdsMpn] data=' + JSON.stringify( req.body));
+    //console.log(req);
+   let start =  req.body.start; //.replace("-", "");
+   let end   =  req.body.end; //.replace("-", "");
+   let patientID   =  req.body.patientID; // 환자 id
+   let specimenNo   =  req.body.specimenNo; // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  'MDSMPN'; // 결과지
+
+   console.log('[361][patientslist_diag][getPatientDiagListsMdsMpn] 검색', start,end, patientID, specimenNo, sheet, status);
+   
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
+   result.then(data => {
+
+      res.json(data);
+
+      res.end();
+   })
+   .catch( err  => {
+    logger.error('[385][patientinfo_diag][getPatientDiagListsMdsMpn]SQL error'+ err.message);
+    res.sendStatus(500);
+  }); 
+}
+
+// diag 날자별 악성림프종 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsLymphoma = (req, res,next) => {
+
+   logger.info('[431][patientslist_diag][getPatientDiagListsLymphoma] data=' + JSON.stringify( req.body));
+    //console.log(req);
+   let start =  req.body.start; //.replace("-", "");
+   let end   =  req.body.end; //.replace("-", "");
+   let patientID   =  req.body.patientID; // 환자 id
+   let specimenNo   =  req.body.specimenNo; // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  '악성림프종'; // 결과지
+
+   console.log('[440][patientslist_diag][getPatientDiagListsLymphoma] 검색', start,end, patientID, specimenNo, sheet, status);
+   
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
+   result.then(data => {
+
+      res.json(data);
+
+      res.end();
+   })
+   .catch( err  => {
+    logger.error('[461][patientinfo_diag][getPatientDiagListsLymphoma]SQL error'+ err.message);
+    res.sendStatus(500);
+  }); 
+}
+
+// diag 날자별 유전성유전질환 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsGenetic = (req, res,next) => {
+
+   logger.info('[431][patientslist_diag][getPatientDiagListsGenetic] data=' + JSON.stringify( req.body));
+    //console.log(req);
+   let start =  req.body.start; //.replace("-", "");
+   let end   =  req.body.end; //.replace("-", "");
+   let patientID   =  req.body.patientID; // 환자 id
+   let specimenNo   =  req.body.specimenNo; // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  '유전성유전질환'; // 결과지
+
+   console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status);
+   
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
+   result.then(data => {
+
+      res.json(data);
+
+      res.end();
+   })
+   .catch( err  => {
+    logger.error('[461][patientinfo_diag][getPatientDiagListsGenetic]SQL error'+ err.message);
+    res.sendStatus(500);
+  }); 
+}
+
+// diag 날자별 Sequencing 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsSequencing = (req, res,next) => {
+
+    logger.info('[509][patientslist_diag][getPatientDiagListsSequencing] data=' + JSON.stringify( req.body));
+     //console.log(req);
+    let start =  req.body.start; //.replace("-", "");
+    let end   =  req.body.end; //.replace("-", "");
+    let patientID   =  req.body.patientID; // 환자 id
+    let specimenNo   =  req.body.specimenNo; // 검채 번호
+    let status   =  req.body.status; // 상태
+    let sheet   =  '유전성유전질환'; // 결과지
+ 
+    console.log('[518][patientslist_diag][getPatientDiagListsSequencing] 검색', start,end, patientID, specimenNo, sheet, status);
+    
+    const  now = new Date();
+    const today = getFormatDate2(now);
+ 
+    const nowTime = new Date().getTime();
+    const requestTime = getFormatDate3(end).getTime();
+ 
+    if (requestTime > nowTime) {
+        end = today; // .replace("-", "");
+        console.log('end=', end);
+    }
+ 
+    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
+    result.then(data => {
+ 
+       res.json(data);
+ 
+       res.end();
+    })
+    .catch( err  => {
+     logger.error('[539][patientinfo_diag][getPatientDiagListsSequencing]SQL error'+ err.message);
+     res.sendStatus(500);
+   }); 
+}
+
+// diag 날자별 MLPA 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsMlpa = (req, res,next) => {
+
+    logger.info('[545][patientslist_diag][getPatientDiagListsMlpa] data=' + JSON.stringify( req.body));
+     //console.log(req);
+    let start =  req.body.start; //.replace("-", "");
+    let end   =  req.body.end; //.replace("-", "");
+    let patientID   =  req.body.patientID; // 환자 id
+    let specimenNo   =  req.body.specimenNo; // 검채 번호
+    let status   =  req.body.status; // 상태
+    let sheet   =  'MLPA'; // 결과지
+ 
+    console.log('[545][patientslist_diag][getPatientDiagListsMlpa] 검색', start,end, patientID, specimenNo, sheet, status);
+    
+    const  now = new Date();
+    const today = getFormatDate2(now);
+ 
+    const nowTime = new Date().getTime();
+    const requestTime = getFormatDate3(end).getTime();
+ 
+    if (requestTime > nowTime) {
+        end = today; // .replace("-", "");
+        console.log('end=', end);
+    }
+ 
+    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
+    result.then(data => {
+ 
+       res.json(data);
+ 
+       res.end();
+    })
+    .catch( err  => {
+     logger.error('[539][patientinfo_diag][getPatientDiagListsMlpa]SQL error'+ err.message);
+     res.sendStatus(500);
+   }); 
 }
 
 /**
