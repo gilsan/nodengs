@@ -371,17 +371,23 @@ exports.setResearchDelete = (req, res, next) => {
     let patientID = req.body.patient;
 
     logger.info("[226][patientinfo_path setResearchDelete]patientID=" + patientID);
-        
-    const result = setDelete(patientID);
+    
+    if (patientID !== "")
+    {
+        const result = setDelete(patientID);
 
-    logger.info("[226][patientinfo_path Delete]result=" + JSON.stringify(result));
+        logger.info("[226][patientinfo_path Delete]result=" + JSON.stringify(result));
 
-    result.then( data => {
-         res.json({message: 'OK'});
-    })
-    .catch( error => {
-        logger.error('[238][patinetslist_research setResearchDelete]err=' + error.message);
-    });
+        result.then( data => {
+            res.json({message: 'OK'});
+        })
+        .catch( error => {
+            logger.error('[238][patinetslist_research setResearchDelete]err=' + error.message);
+        });
+    }
+    else {
+        res.json({message: 'OK'});
+    }
 }
 
 // 병리 "수정" 버튼 누르면 screenstatus 상태를 변경
