@@ -273,3 +273,42 @@ exports.duplicateGene = (req, res, next) => {
         res.sendStatus(500);
     });    
 }
+
+// muation, gene, amino-acid-change 숫자 알아내기.
+const counterHandler = async (gene, aminoacid, specimenNo) => {
+    await poolConnect;
+
+    logger.info('[281]mutation gene amino-acid controller data=' + gene + ", " + aminoacid );
+    const sql = `select count(*) as count 
+                      from report_detected_variants 
+                      where gene=@gene and type='M' 
+                      and amino_acid_change=@aminoacid`;
+    logger.info('[286]mutation gene amino-acid controller sql=' + sql );
+  
+      try {
+          const request = pool.request()
+               .input('gene',mssql.VarChar, gene)
+               .input('specimenNo',mssql.VarChar, specimenNo)
+               .input('aminoacid',mssql.VarChar, aminoacid);           
+               const result = await request.query(sql);
+               return result.recordsets[0];
+      } catch (error) {
+          logger.error('[295][mutation gene amino-acid count err=' +  error.message);
+      } 
+}
+
+exports.count = (req,res, next) => {
+    logger.info('[300] mutation gene amino-acid -' + JSON.stringify(req.body));
+
+    const gene = req.body.gene;
+    const aminoacid= req.body.aminoacid; 
+    const specimenNo = req.body.specimenNo  
+    const result = counterHandler(gene, aminoacid, specimenNo);
+    result.then(data => {
+        res.json(data[0]);
+    })
+    .catch( error => {
+        logger.error('[309] mutation gene amino-acid  err=' + error.message);
+        res.sendStatus(500);
+    });     
+}

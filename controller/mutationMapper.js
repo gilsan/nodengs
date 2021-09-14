@@ -109,7 +109,7 @@ const  insertHandler = async (req) => {
   const etc1			  = nvl(req.body.etc1, "");
   const etc2			  = nvl(req.body.etc2, "");
   const etc3			  = nvl(req.body.etc3, "");
-  let type =  nvl(req.body.type, "AMLALL");
+  let type        =  nvl(req.body.type, "AMLALL");
 
   logger.info('[90][mutationmapper insert]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene);   
   logger.info('[90][mutationmapper insert]functional_impact=' + functional_impact + ' transcript=' + transcript + ' exon_intro=' + exon_intro);

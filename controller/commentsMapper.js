@@ -30,8 +30,9 @@ const listHandler = async (req) => {
 	
 	let sql ="select id, type, gene, comment, reference, variant_id";
     sql = sql + " from comments ";
+    sql = sql + " where 1=1 " 
 	if(genes != "") 
-		sql = sql + " where gene like '%"+genes+"%'";
+		sql = sql + " and gene like '%"+genes+"%'";
 
     if(sheet.length > 0 )
     {
@@ -43,7 +44,8 @@ const listHandler = async (req) => {
     
     try {
        const request = pool.request()
-         .input('genes', mssql.VarChar, genes); 
+         .input('genes', mssql.VarChar, genes)
+         .input('sheet', mssql.VarChar, sheet); 
        const result = await request.query(sql) 
        return result.recordset;
    } catch (error) {
