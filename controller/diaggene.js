@@ -274,22 +274,22 @@ exports.duplicateGene = (req, res, next) => {
     });    
 }
 
-// muation, gene, amino-acid-change 숫자 알아내기.
-const counterHandler = async (gene, aminoacid, specimenNo) => {
+// mutation, gene, nucleotide_change 숫자 알아내기.
+const counterHandler = async (gene, nucleotide_change, specimenNo) => {
     await poolConnect;
 
-    logger.info('[281]mutation gene amino-acid controller data=' + gene + ", " + aminoacid );
+    logger.info('[281]mutation gene amino-acid controller data=' + gene + ", " + nucleotide_change, );
     const sql = `select count(*) as count 
                       from report_detected_variants 
                       where gene=@gene and type='M' 
-                      and amino_acid_change=@aminoacid`;
+                      and nucleotide_change=@nucleotide_change`;
     logger.info('[286]mutation gene amino-acid controller sql=' + sql );
   
       try {
           const request = pool.request()
                .input('gene',mssql.VarChar, gene)
                .input('specimenNo',mssql.VarChar, specimenNo)
-               .input('aminoacid',mssql.VarChar, aminoacid);           
+               .input('nucleotide_change',mssql.VarChar, nucleotide_change);           
                const result = await request.query(sql);
                return result.recordsets[0];
       } catch (error) {
@@ -301,9 +301,9 @@ exports.count = (req,res, next) => {
     logger.info('[300] mutation gene amino-acid -' + JSON.stringify(req.body));
 
     const gene = req.body.gene;
-    const aminoacid= req.body.aminoacid; 
+    const coding= req.body.coding; 
     const specimenNo = req.body.specimenNo  
-    const result = counterHandler(gene, aminoacid, specimenNo);
+    const result = counterHandler(gene, coding, specimenNo);
     result.then(data => {
         res.json(data[0]);
     })

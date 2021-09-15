@@ -26,7 +26,7 @@ const  messageHandler = async (req) => {
   isnull(zygosity, '') zygosity, isnull(vaf, '') vaf, isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, 
   isnull(type, '') type, isnull(checked, '') checked, isnull(functional_code, '') functional_code, 
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
-  isnull(work_now, '') work_now, isnull(work_diag, '') work_diag 
+  isnull(work_now, '') work_now, isnull(work_diag, '') work_diag, isnull(cnt, '') cnt
    from [dbo].[report_detected_variants] 
    where specimenNo=@specimenNo 
    order by functional_code, gene, nucleotide_change `;
@@ -367,6 +367,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const cosmic_id         = detected_variants[i].cosmicID;
     const type              = detected_variants[i].type;
     const checked           = detected_variants[i].checked;
+    const cnt               = detected_variants[i].cnt;
 
     let functional_code = i;
 
@@ -386,10 +387,10 @@ const insertHandler = async (specimenNo, detected_variants) => {
     //insert Query 생성;
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code) 
+              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt) 
               values(@specimenNo, getdate(),  @gene,
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code)`;
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt)`;
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -410,7 +411,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('igv', mssql.NVarChar, igv)
             .input('sanger', mssql.NVarChar, sanger)
             .input('type', mssql.VarChar, type)
-            .input('checked', mssql.VarChar, checked);
+            .input('checked', mssql.VarChar, checked)
+            .input('cnt', mssql.VarChar, cnt);
             
             result = await request.query(qry);         
     
