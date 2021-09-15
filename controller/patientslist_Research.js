@@ -345,19 +345,21 @@ exports.setResearchList = (req, res, next) => {
  * 
  * 연구용 병리 정보 삭제
  */
-const  setDelete = async (patientID) => {
+const  setDelete = async (patientID, pathologyNum) => {
     
-    logger.info("[196][patientinfo_research Delete]patientID=" + patientID);
+    logger.info("[196][patientinfo_research Delete]patientID=" + patientID + ", pathologyNum=" + pathologyNum);
     
     let sql =`delete from patientInfo_path 
                      where patientID = @patientID
+                     and pathology_num = @pathologyNum
                      and   research_yn = 'Y'`;
     
     logger.info("[207][patientinfo_research Delete]sql=" + sql);
     
     try {
         const request = pool.request()
-                .input('patientID', mssql.VarChar, patientID);
+                .input('patientID', mssql.VarChar, patientID)
+                .input('pathologyNum', mssql.VarChar, pathologyNum);
         
         const result = await request.query(sql);       
         return result;
@@ -369,12 +371,11 @@ const  setDelete = async (patientID) => {
 exports.setResearchDelete = (req, res, next) => {
     logger.info("[226][patientinfo_path Delete]data=" + JSON.stringify(req.body));
     let patientID = req.body.patient;
+    let pathologyNum   =  req.body.Pathology_num; 
 
-    logger.info("[226][patientinfo_path setResearchDelete]patientID=" + patientID);
-    
-    if (patientID !== "")
-    {
-        const result = setDelete(patientID);
+    logger.info("[226][patientinfo_path setResearchDelete]patientID=" + patientID + ", pathologyNum=" + pathologyNum);
+
+        const result = setDelete(patientID, pathologyNum);
 
         logger.info("[226][patientinfo_path Delete]result=" + JSON.stringify(result));
 
@@ -384,10 +385,6 @@ exports.setResearchDelete = (req, res, next) => {
         .catch( error => {
             logger.error('[238][patinetslist_research setResearchDelete]err=' + error.message);
         });
-    }
-    else {
-        res.json({message: 'OK'});
-    }
 }
 
 // 병리 "수정" 버튼 누르면 screenstatus 상태를 변경
