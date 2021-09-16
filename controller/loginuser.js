@@ -194,7 +194,7 @@ const  listPathHandler = async (dept) => {
   await poolConnect;
   
   logger.info('[194][loginUser 병리]dept=' + dept);
-  const sql= "select user_id, user_nm, part, pickselect from users where dept=@dept";
+  const sql= "select user_id, user_nm, part, pickselect from users where dept=@dept and pickselect = 'Y'";
   logger.info('[75][loginUser 병리]sql=' + sql);
 
   try {
