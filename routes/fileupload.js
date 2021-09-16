@@ -14,6 +14,8 @@ const main_mod     = require('../functions/main');
 const main_form6   = require('../functions/main_form6');
 const main_nu      = require('../functions/patient_nu');
 const loadData_mod = require('../functions/readData');
+const loadData_xlsx = require('../functions/readData_xlsx');
+const main_xlsx   = require('../functions/main_xlsx');
 const logger = require('../common/winston');
 
 var multer = require('multer');
@@ -466,6 +468,15 @@ router.post('/upload', function (req, res) {
                 main_nu.patient_nu(testedID);
 
                 main_form6.main(loadData_mod.loadData(item.path),item.originalname,testedID);
+            }	
+            else if ( surfix[1] === 'xlsx') {
+              console.log('필터링한 화일', surfix, item.originalname);
+                // var data = loadData(item.path);
+                // inputDB.registerDB(item.path);
+
+                //main_nu.patient_nu(testedID);
+
+                main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID);
             }	
             
           })
