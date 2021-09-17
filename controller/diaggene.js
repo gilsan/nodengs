@@ -243,14 +243,14 @@ const checkHandler = async (type, gene, test_code) => {
                     from genediag 
                     where type=@type 
                     and gene=@gene
-                    and test_code=@test_cd`;
+                    and test_code=@test_code`;
   logger.info('[293]count DiagGene controller sql=' + sql );
 
     try {
         const request = pool.request()
              .input('type',mssql.VarChar, type)
              .input('gene',mssql.VarChar, gene)
-             .input('test_cd',mssql.VarChar, test_cd);           
+             .input('test_code',mssql.VarChar, test_code);           
              const result = await request.query(sql);
              return result.recordsets[0];
     } catch (error) {
