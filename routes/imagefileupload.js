@@ -16,10 +16,29 @@ const insertImage = async (pathology_num,  dirPath, img1, img2, img3) => {
   
     logger.info('[17][imageupload] update patient path]pathology_num=' + pathology_num);
     await poolConnect;
+    let imgpath1;
+    let imgpath2;
+    let imgpath3;
 
-    const imgpath1 = dirPath + '/' + img1;
-    const imgpath2 = dirPath + '/' + img2;
-    const imgpath3 = dirPath + '/' + img3;
+    if (img1.length !== 0) {
+      imgpath1 = dirPath + '/' + img1;
+    } else {
+      imgpath1 = '';
+    }
+
+    if (img2.length !== 0) {
+      imgpath2 = dirPath + '/' + img2;
+    } else {
+      imgpath2 = '';
+    } 
+
+    if (img3.length !== 0) {
+      imgpath3 = dirPath + '/' + img3;
+    } else {
+      imgpath3 = '';
+    }
+
+ 
 
     const sql ="update patientinfo_path \
                   set img1 = @imgpath1 ,  \

@@ -160,6 +160,36 @@ app.use('/inhouseUplad', inhouseuploadRouter);
 app.use('/pathfileUpload', diseaseuploadRouter);
 // 병리 그림파일 올리기 2021.9.17
 app.use('/pathimageUpload', pathimageUploadRouter);
+// 병리 그림파일 보기
+app.use('/showImage',  function(req, res) {
+    const filepath = req.query.path;
+    const filename = req.query.filename;
+    console.log('[167][download]', filepath, filename);
+    const file = `${__dirname}/${filepath}/${filename}`;
+ 
+ 
+    try {
+        const extend = filename.split('.');
+        const type = extend[1];
+        let contentType ='';
+        if (type === 'jpg') {
+            contentType = "image/jpeg";
+        } else if (type === 'png') {
+            contentType = "image/png";
+        }
+
+        res.writeHead(200, {"Content-Type": contentType });
+
+        fs.readFile(file,  (err, content)  =>{                   
+                    res.end(content);
+                });
+
+    } catch(err) {
+        logger.error('[32][show Image File]err=' + error.message);
+    }
+
+
+});
 
 // 2021.07.23
 // 병리 연구용리스트

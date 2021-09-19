@@ -191,6 +191,9 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(prescription_no, '') prescription_no, 
     isnull(recheck, '') recheck, 
     isnull(rel_pathology_num, '') rel_pathology_num, 
+    isnull(img1, '') img1,
+    isnull(img2, '') img2,
+    isnull(img3, '') img3,
     case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
         then '' 
         else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, 
