@@ -19,6 +19,7 @@ const fileuploadRouter    = require('./routes/fileupload');
 const patientListPathRouter = require('./routes/patientlist_path');
 const inhouseuploadRouter = require('./routes/inhouseupload');
 const diseaseuploadRouter = require('./routes/diseaseupload');
+const pathimageUploadRouter = require('./routes/imagefileupload');
 
 // 2021.07.23
 // 병리 연구용리스트
@@ -157,6 +158,8 @@ app.use('/patients_path', patientListPathRouter);
 
 app.use('/inhouseUplad', inhouseuploadRouter);
 app.use('/pathfileUpload', diseaseuploadRouter);
+// 병리 그림파일 올리기 2021.9.17
+app.use('/pathimageUpload', pathimageUploadRouter);
 
 // 2021.07.23
 // 병리 연구용리스트
