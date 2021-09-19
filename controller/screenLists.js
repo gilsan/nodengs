@@ -775,7 +775,7 @@ result2.then(data => {
         
   })
   .catch( error  => {
-    logger.info('[730][screenList][insertScreen]err=' + error.message);
+    logger.error('[730][screenList][insertScreen]err=' + error.message);
     res.sendStatus(500)
   });
 };
@@ -1455,12 +1455,10 @@ result2.then(data => {
         
   })
   .catch( error  => {
-    logger.info('[714][screenList][saveScreen]err=' + error.message);
+    logger.error('[714][screenList][saveScreen]err=' + error.message);
     res.sendStatus(500)
   });
 };
-
-
 
 // 선천성 면역결핍증 임시저장
 exports.saveScreen6 = (req, res, next) => {
@@ -1497,7 +1495,7 @@ exports.saveScreen6 = (req, res, next) => {
           
     })
     .catch( error  => {
-      logger.info('[1311][screenList][saveScreen 6]err=' + error.message);
+      logger.error('[1311][screenList][saveScreen 6]err=' + error.message);
       res.sendStatus(500)
     });
 };
@@ -1553,6 +1551,8 @@ const SequntialHandler = async (specimenNo) => {
       where specimenNo =@specimenNo
   `;
 
+  logger.info('[1385][listSequntial select]sql=' + sql);
+
   try {
       const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
       const result = await request.query(sql)
@@ -1579,8 +1579,6 @@ exports.listSequntial = (req, res, next) => {
   }); 
 
 }
-
-
 
 // sequential 임시저장
 exports.saveScreen7 = (req, res, next) => {
@@ -1614,9 +1612,260 @@ exports.saveScreen7 = (req, res, next) => {
             
       })
       .catch( error  => {
-        logger.info('[1430][screenList][saveScreen 7]err=' + error.message);
+        logger.error('[1430][screenList][saveScreen 7]err=' + error.message);
         res.sendStatus(500)
       });
+};
+
+
+// MLPA report 내역
+const ReportMlpalHandler = async (specimenNo) => {
+  await poolConnect; 
+
+  const sql=`select  
+      isnull(site, '') site, isnull(result, '') result,
+      isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
+      from [dbo].[report_mlpa] 
+      where specimenNo =@specimenNo
+  `;
+
+  logger.info('[1385][listReportMlpa select]sql=' + sql);
+
+  try {
+      const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
+      const result = await request.query(sql)
+
+       return result.recordsets[0];
+    } catch (error) {
+         logger.error('[1370][listReportMlpa]err=' + error.message);
+    }
+  
+};
+
+exports.listReportMlpa = (req, res, next) => {
+  const specimenNo        = req.body.specimenNo;
+
+  const dataset = ReportMlpalHandler(specimenNo);
+  dataset.then(data => {
+    console.log('[1381][listReportMlpa] ==> ', data)
+     res.json(data);
+  })
+  .catch( error  => {
+   logger.error('[1385][listReportMlpa select]err=' + error.message);
+   res.status(500).send('That is Not good ')
+  }); 
+
+}
+
+// Mlpa 내역
+const MlpalHandler = async (specimenNo) => {
+  await poolConnect; 
+  const sql=`select  
+      isnull(report_type, '') report_type, isnull(result, '') result,
+      isnull(conclusion, '') conclusion, isnull(technique, '') technique
+      from [dbo].[report_patientsInfo] 
+      where specimenNo =@specimenNo
+  `;
+
+  logger.info('[1385][listMlpa select]sql=' + sql);
+
+  try {
+      const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
+      const result = await request.query(sql)
+
+       return result.recordsets[0];
+    } catch (error) {
+         logger.error('[1370][listMlpa]err=' + error.message);
+    }
+  
+};
+
+exports.listMlpa = (req, res, next) => {
+  const specimenNo        = req.body.specimenNo;
+
+  const dataset = MlpalHandler(specimenNo);
+  dataset.then(data => {
+    console.log('[1381][listMlpa] ==> ', data)
+     res.json(data);
+  })
+  .catch( error  => {
+   logger.error('[1385][listMlpa select]err=' + error.message);
+   res.status(500).send('That is Not good ')
+  }); 
+
+}
+
+const deleteHandlerMlpa = async (specimenNo) => {
+   
+  logger.info('[761][screenList]delete Mlpa]specimenNo=' + specimenNo);
+    //delete Query 생성;    
+    const qry ="delete report_patientsInfo where specimenNo=@specimenNo";
+            
+    logger.info("[765][screenList][del Mlpa]del sql=" + qry);
+  
+    try {
+        const request = pool.request()
+          .input('specimenNo', mssql.VarChar, specimenNo);
+          
+          result = await request.query(qry);         
+  
+    } catch (error) {
+      logger.error('[774][screenList][del Mlpa]err=' +  error.message);
+    }
+      
+    return result;
+}
+
+// report_mlpa
+const deleteHandlerReportMlpa = async (specimenNo) => {
+   
+  logger.info('[761][screenList]delete report_mlpa]specimenNo=' + specimenNo);
+    //delete Query 생성;    
+    const qry ="delete report_mlpa where specimenNo=@specimenNo";
+            
+    logger.info("[765][screenList][del report_mlpa]del sql=" + qry);
+  
+    try {
+        const request = pool.request()
+          .input('specimenNo', mssql.VarChar, specimenNo);
+          
+          result = await request.query(qry);         
+  
+    } catch (error) {
+      logger.error('[774][screenList][del report_mlpa]err=' +  error.message);
+    }
+      
+    return result;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// MLPA 스크린 완료 
+const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, technique) => {
+  
+  logger.info('[1710][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
+  logger.info('[1710][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
+  logger.info('[1722][screenList][insert report_patientsInfo]conclusion=' + conclusion);
+  logger.info('[1722][screenList][insert report_patientsInfo]technique=' + technique );
+
+  //insert Query 생성;
+  const qry = `insert into report_patientsInfo (specimenNo, report_date, title, report_type,
+      result, conclusion, technique) 
+      values(@specimenNo, getdate(),  @title, @type,
+      @result2, @conclusion, @technique)`;
+    
+  logger.info('[1732][screenList][insert report_patientsInfo]sql=' + qry);
+
+  try {
+    const request = pool.request()
+      .input('specimenNo', mssql.VarChar, specimenNo)
+      .input('type', mssql.VarChar, type)
+      .input('title', mssql.NVarChar, title)
+      .input('result2', mssql.VarChar, result2)
+      .input('conclusion', mssql.NVarChar, conclusion)
+      .input('technique', mssql.NVarChar, technique);
+      
+    let result = await request.query(qry);         
+
+  } catch (error) {
+  logger.error('[1746][screenList][insert report_mlpa]err=' + error.message);
+  }
+}
+
+// MLPA 스크린 완료 
+const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
+  // for 루프를 돌면서 report_mlpa 카운트 만큼       //report_mlpa Count
+  logger.info('[500][screenList][insert report_mlpa]specimenNo=' + specimenNo);
+  logger.info('[501][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
+
+  for (i = 0; i < report_mlpa.length; i++)
+  {
+    let site              = report_mlpa[i].site;
+    let result            = report_mlpa[i].result;
+    let deletion          = report_mlpa[i].deletion;
+    let methylation       = nvl(report_mlpa[i].methylation, '');
+
+    let seq = i;
+
+    if (i < 10) {
+      seq = '0' + i;
+    }
+
+    logger.info('[1765][screenList][insert report_mlpa]seq = ' + seq + ', site=' + site 
+                          + ', deletion=' + deletion + ', methylation=' + methylation );
+
+    //insert Query 생성;
+    const qry = `insert into report_mlpa (specimenNo, site,
+        result, deletion, methylation, seq) 
+              values(@specimenNo, @site,
+                @result, @deletion, @methylation, @seq)`;
+            
+      logger.info('[1775][screenList][insert report_mlpa]sql=' + qry);
+
+      try {
+          const request = pool.request()
+            .input('specimenNo', mssql.VarChar, specimenNo)
+            .input('site', mssql.VarChar, site)
+            .input('seq', mssql.VarChar, seq)
+            .input('result', mssql.VarChar, result)
+            .input('deletion', mssql.VarChar, deletion)
+            .input('methylation', mssql.VarChar, methylation);
+            
+          let result2 = await request.query(qry);         
+    
+      } catch (error) {
+        logger.error('[1789][screenList][insert report_mlpa]err=' + error.message);
+      }
+      
+  } // End of For Loop
+}
+
+// MLPA 임시저장
+exports.saveScreenMlpa = (req, res, next) => {
+  
+    logger.info('[1316][screenList][saveScreenMlpa]req=' + JSON.stringify(req.body));
+    
+    const chron = '' ;
+    const flt3ITD = '' ; 
+    const leukemia = '';
+    const vusmsg            = '';   
+
+    const specimenNo        = req.body.specimenNo;
+    let type = req.body.type;
+    let title = req.body.title;
+    let result2 = req.body.result;
+    let conclusion = req.body.conclusion;
+    let technique = req.body.technique;
+    const report_mlpa = req.body.data;
+ 
+    const examin            = '';
+    const recheck           = '';
+ 
+    logger.info('[1414][screenList][saveScreenMlpa]specimenNo=, ' + specimenNo); 
+    const result6 = deleteHandlerMlpa(specimenNo);
+    result6.then(data => {
+
+      const result3 = deleteHandlerReportMlpa(specimenNo);
+      result3.then(data => {
+    
+        const result4 = insertHandlerMlpa (specimenNo, type, title, result2, conclusion, technique);
+        result4.then(data => {
+    
+          const result5 = insertHandlerReporMlpa (specimenNo, report_mlpa);
+          result5.then(data => {
+              // 검사지 변경
+              const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
+              statusResult.then(data => {
+                    res.json({message: 'OK'});
+                });
+            });
+        });
+      });
+            
+    })
+    .catch( error  => {
+      logger.error('[1430][screenList][saveScreenMlpa]err=' + error.message);
+      res.sendStatus(500)
+    });
 };
 
 
