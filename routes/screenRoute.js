@@ -18,5 +18,9 @@ router.post('/listScreen6', screenController.listImmundefi); // 선천성 면역
 router.post('/tempsave7', screenController.saveScreen7); // sequential 임시저장
 router.post('/listScreen7', screenController.listSequntial); // sequential 내역
 
+router.post('/tempsave_mlpa', screenController.saveScreenMlpa); // MLPA 임시저장
+router.post('/listMlpa', screenController.listMlpa); // MLPA 내역
+router.post('/listReportMLPA', screenController.listReportMlpa); // MLPA report 내역
+
 router.post('/finish', screenController.finishScreen);
 module.exports = router;
