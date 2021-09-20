@@ -134,6 +134,9 @@ const polymorphismRouter = require('./routes/polymorphismRouter');
 //2021-06-02
 const excelDvRouter = require('./routes/excelDvRouter');
 
+// MLPA Router
+const mlpaRouter = require('./routes/mlpaRouter');
+
 //나중에 확인후 삭제할것.
 // const allRouter           = require('./routes/allRouter');       //allRouter.js 파일을 선언한다.
 // const mdsmpnRouter        = require('./routes/mdsmpnRouter');    //mdsmpnRouter.js 파일을 선언한다.
@@ -337,6 +340,9 @@ app.use('/tests', function(req, res, next) {
 
  // 2021-06-02
  app.use('/excelDv', excelDvRouter);
+// MLPA
+ app.use('/mlpa', mlpaRouter);
+
 
  // 화일 내려받기
  app.use('/download', function(req, res) {
