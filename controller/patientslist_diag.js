@@ -313,6 +313,55 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     }
 }
 
+
+
+// 2021.09.22
+// 진검 mutation gene coding count 검색
+const  counterHandler = async (gene, coding) => {
+    await poolConnect; // ensures that the pool has been created
+   
+  logger.info('[324][patientinfo_diag mutation cnt]qry gene=' + gene + ', coding=' + coding );
+
+    let gene2 =  nvl(gene, "");
+    let coding2 =  nvl(coding, "");
+ 
+    let sql = `SELECT count (1) cnt
+        FROM [ngs_data].[dbo].[report_detected_variants]
+        where [type] = 'M'
+        and  [gene] = @gene
+        and [nucleotide_change] = @coding`
+
+    logger.info("[335][patientinfo_diag mutation cnt]sql="+sql);
+    
+    try {
+        const request = pool.request()
+        .input('gene', mssql.NVarChar, gene2)
+        .input('coding', mssql.VarChar, coding2);
+
+        const result = await request.query(sql);
+       // console.dir( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[346][patientinfo_diag mutation cnt]SQL error'+ err.message);
+    }
+}
+
+exports.count = (req,res, next) => {
+    logger.info('[351] patientinfo_diag mutation cnt -' + JSON.stringify(req.body));
+
+    const gene = req.body.gene;
+    const coding= req.body.coding; 
+    const result = counterHandler(gene, coding);
+    result.then(data => {
+        res.json(data[0]);
+    })
+    .catch( error => {
+        logger.error('[360] patientinfo_diag mutation cnt  err=' + error.message);
+        res.sendStatus(500);
+    });     
+}
+
 // diag 날자별 환자ID, 검사ID 로 검사자 조회  
 exports.getPatientDiagLists = (req, res,next) => {
 
@@ -437,7 +486,7 @@ exports.getPatientDiagListsLymphoma = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  '악성림프종'; // 결과지
+   let sheet   =  'lymphoma'; // 결과지
 
    console.log('[440][patientslist_diag][getPatientDiagListsLymphoma] 검색', start,end, patientID, specimenNo, sheet, status);
    
@@ -475,7 +524,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  '유전성유전질환'; // 결과지
+   let sheet   =  'genetic'; // 결과지
 
    console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status);
    
@@ -513,7 +562,7 @@ exports.getPatientDiagListsSequencing = (req, res,next) => {
     let patientID   =  req.body.patientID; // 환자 id
     let specimenNo   =  req.body.specimenNo; // 검채 번호
     let status   =  req.body.status; // 상태
-    let sheet   =  '유전성유전질환'; // 결과지
+    let sheet   =  'Sequencing'; // 결과지
  
     console.log('[518][patientslist_diag][getPatientDiagListsSequencing] 검색', start,end, patientID, specimenNo, sheet, status);
     

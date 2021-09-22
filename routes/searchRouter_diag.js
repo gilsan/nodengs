@@ -17,6 +17,8 @@ router.post('/listGenetic', searchPatientDiagController.getPatientDiagListsGenet
 router.post('/listSequencing', searchPatientDiagController.getPatientDiagListsSequencing);
 // MLPA
 router.post('/listMlpa', searchPatientDiagController.getPatientDiagListsMlpa);
+// Mutatio gene count 검색 
+router.post('/count', searchPatientDiagController.count);
  
 
 module.exports = router;
