@@ -149,7 +149,7 @@ const excelDvDeleteHandler = async (specimenNo) => {
             result = await request.query(qry);         
     
       } catch (error) {
-        logger.error('[428][screenList][del detected_variant]err=' +  error.message);
+        logger.error('[428][excelDv][del excelDvDeleteHandler]err=' +  error.message);
       }
         
       return result;

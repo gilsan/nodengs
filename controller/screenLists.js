@@ -367,7 +367,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const cosmic_id         = detected_variants[i].cosmicID;
     const type              = detected_variants[i].type;
     const checked           = detected_variants[i].checked;
-    const cnt               = detected_variants[i].cnt;
+    const cnt               = nvl(detected_variants[i].cnt, '');
 
     let functional_code = i;
 
@@ -382,7 +382,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
                           + ', transcript= ' + transcript + ', exon=' + exon 
                           + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                           + ', zygosity=' + zygosity + ', vaf=' + vaf + ', reference=' + reference 
-                          + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked);
+                          + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked + ', cnt=' + cnt);
  
     //insert Query 생성;
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
@@ -492,6 +492,7 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
      const gnomADEAS         = detected_variants[i].gnomADEAS;
      const OMIM              = detected_variants[i].OMIM;
+     const cnt               = nvl(detected_variants[i].cnt, '');
  
      let functional_code = i;
  
@@ -505,15 +506,15 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
                            + ', transcript= ' + transcript + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                            + ', zygosity=' + zygosity 
-                           + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM);
+                           + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM + ', cnt=' + cnt);
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-               dbSNPHGMD, gnomADEAS, OMIM) 
+               dbSNPHGMD, gnomADEAS, OMIM, cnt) 
                values(@specimenNo, getdate(),  @gene,
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
-                @dbSNPHGMD, @gnomADEAS, @OMIM)`;
+                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt)`;
              
        logger.info('[470][screenList][insert detected_variants 6]sql=' + qry);
  
@@ -529,7 +530,8 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
              .input('zygosity', mssql.VarChar, zygosity)
              .input('dbSNPHGMD', mssql.NVarChar, dbSNPHGMD)
              .input('gnomADEAS', mssql.NVarChar, gnomADEAS)
-             .input('OMIM', mssql.VarChar, OMIM);
+             .input('OMIM', mssql.VarChar, OMIM)
+             .input('cnt', mssql.VarChar, cnt);
              
              result = await request.query(qry);         
      
@@ -562,6 +564,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      const amino_acid_change = detected_variants[i].aminoAcidChange;
      const cosmic_id         = detected_variants[i].cosmicID;
      const dbSNPHGMD         = detected_variants[i].dbSNP;
+     const cnt               = nvl(detected_variants[i].cnt, '');
  
      let functional_code = i;
  
@@ -574,15 +577,15 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
                            + ', type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                            + ', dbSNPHGMD=' + dbSNPHGMD + ', cosmic_id=' + cosmic_id 
-                           + ', work_now=' + work_now + ', diagnosis=' + diagnosis );
+                           + ', work_now=' + work_now + ', diagnosis=' + diagnosis + ', cnt=' + cnt );
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, type,
                exon, nucleotide_change, amino_acid_change, 
-               dbSNPHGMD, cosmic_id, work_now, work_diag, functional_code) 
+               dbSNPHGMD, cosmic_id, work_now, work_diag, functional_code, cnt) 
                values(@specimenNo, getdate(),  @gene, @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @dbSNPHGMD, @cosmic_id, @work_now, @diagnosis, @functional_code)`;
+                  @dbSNPHGMD, @cosmic_id, @work_now, @diagnosis, @functional_code, @cnt)`;
              
        logger.info('[539][screenList][insert detected_variants 7]sql=' + qry);
  
@@ -598,7 +601,8 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
              .input('dbSNPHGMD', mssql.VarChar, dbSNPHGMD)
              .input('cosmic_id', mssql.VarChar, cosmic_id)
              .input('work_now', mssql.VarChar, work_now)
-             .input('diagnosis', mssql.VarChar, diagnosis);
+             .input('diagnosis', mssql.VarChar, diagnosis)
+             .input('cnt', mssql.VarChar, cnt);
              
              result = await request.query(qry);         
      
@@ -636,6 +640,7 @@ const insertHandler2 = async (specimenNo, detected_variants) => {
      const cosmic_id         = detected_variants[i].cosmicID;
      const type              = detected_variants[i].type;
      const checked           = detected_variants[i].checked;
+     const cnt               = nvl(detected_variants[i].cnt, '');
  
      let functional_code = '';
  
@@ -655,15 +660,15 @@ const insertHandler2 = async (specimenNo, detected_variants) => {
                            + ', transcript= ' + transcript + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                            + ', zygosity=' + zygosity + ', vaf=' + vaf + ', reference=' + reference 
-                           + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked);
+                           + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked + ', cnt=' + cnt);
   
      //insert Query 생성;
      const qry = "insert into report_detected_variants (specimenNo, report_date, gene, \
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
-               vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code) \
+               vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt) \
                values(@specimenNo, getdate(),  @gene,\
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
-               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code)";
+               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, cnt)";
              
        logger.info('[620][screenList][insert detected_variants]sql=' + qry);
  
@@ -684,7 +689,8 @@ const insertHandler2 = async (specimenNo, detected_variants) => {
              .input('igv', mssql.NVarChar, igv)
              .input('sanger', mssql.NVarChar, sanger)
              .input('type', mssql.VarChar, type)
-             .input('checked', mssql.VarChar, checked);
+             .input('checked', mssql.VarChar, checked)
+             .input('cnt', mssql.VarChar, cnt);
              
              result = await request.query(qry);         
      
