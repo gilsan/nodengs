@@ -268,7 +268,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             sql = sql +  " and test_code in ('LPE473')";
         } else if (sheet_1 == 'lymphoma') {  // 악성림프종
             sql = sql +  " and test_code in ('LPE474', 'LPE475')";
-        } else if (sheet_1 == 'HRDT') {  // 유전성유전질환
+        } else if (sheet_1 == 'genetic') {  // 유전성유전질환
             sql = sql +   ` and test_code in ('LPE548', 'LPE439', 'LPE452', 'LPE453', 'LPE454', 'LPE455', 
                                     'LPE456', 'LPE488', 'LPE489', 'LPE490', 'LPE497', 'LPE498', 'LPE499',
                                     'LPE517', 'LPE518', 'LPE519', 'LPE520', 'LPE521', 'LPE522', 'LPE523',
@@ -288,7 +288,10 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
         } else if (sheet_1 == 'MLPA') {  // MLPA
             sql = sql +  ` and test_code in ('LPE232', 'LPE294', 'LPE322', 'LPE332', 'LPE351', 'LPE369', 
                                     'LPE377', 'LPE464')`;
-        } 
+        } else {
+            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+        }
+             
     }
 
     if(status_1.length == 1 )
@@ -410,7 +413,7 @@ exports.getPatientDiagListsAml = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  'AMLALL'; // 결과지
+   let sheet   =  nvl(req.body.sheet, 'AMLALL'); // 결과지
 
    console.log('[361][patientslist_diag][getPatientDiagListsAml] 검색', start,end, patientID, specimenNo, sheet, status);
    
@@ -448,7 +451,7 @@ exports.getPatientDiagListsMdsMpn = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  'MDSMPN'; // 결과지
+   let sheet   =  nvl(req.body.sheet, 'MDSMPN'); // 결과지
 
    console.log('[361][patientslist_diag][getPatientDiagListsMdsMpn] 검색', start,end, patientID, specimenNo, sheet, status);
    
@@ -486,7 +489,7 @@ exports.getPatientDiagListsLymphoma = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  'lymphoma'; // 결과지
+   let sheet   =  nvl(req.body.sheet, 'lymphoma'); // 결과지
 
    console.log('[440][patientslist_diag][getPatientDiagListsLymphoma] 검색', start,end, patientID, specimenNo, sheet, status);
    
@@ -524,7 +527,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  'HRDT'; // 결과지
+   let sheet   =  nvl(req.body.sheet, 'genetic'); // 결과지
 
    console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status);
    
@@ -562,7 +565,7 @@ exports.getPatientDiagListsSequencing = (req, res,next) => {
     let patientID   =  req.body.patientID; // 환자 id
     let specimenNo   =  req.body.specimenNo; // 검채 번호
     let status   =  req.body.status; // 상태
-    let sheet   =  'Sequencing'; // 결과지
+    let sheet   =  nvl(req.body.sheet, 'Sequencing'); // 결과지
  
     console.log('[518][patientslist_diag][getPatientDiagListsSequencing] 검색', start,end, patientID, specimenNo, sheet, status);
     
@@ -600,7 +603,7 @@ exports.getPatientDiagListsMlpa = (req, res,next) => {
     let patientID   =  req.body.patientID; // 환자 id
     let specimenNo   =  req.body.specimenNo; // 검채 번호
     let status   =  req.body.status; // 상태
-    let sheet   =  'MLPA'; // 결과지
+    let sheet   =  nvl(req.body.sheet, 'MLPA'); // 결과지
  
     console.log('[545][patientslist_diag][getPatientDiagListsMlpa] 검색', start,end, patientID, specimenNo, sheet, status);
     
