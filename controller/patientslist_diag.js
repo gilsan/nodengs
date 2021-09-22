@@ -268,7 +268,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             sql = sql +  " and test_code in ('LPE473')";
         } else if (sheet_1 == 'lymphoma') {  // 악성림프종
             sql = sql +  " and test_code in ('LPE474', 'LPE475')";
-        } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+        } else if (sheet_1 == 'HRDT') {  // 유전성유전질환
             sql = sql +   ` and test_code in ('LPE548', 'LPE439', 'LPE452', 'LPE453', 'LPE454', 'LPE455', 
                                     'LPE456', 'LPE488', 'LPE489', 'LPE490', 'LPE497', 'LPE498', 'LPE499',
                                     'LPE517', 'LPE518', 'LPE519', 'LPE520', 'LPE521', 'LPE522', 'LPE523',
@@ -524,7 +524,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  'genetic'; // 결과지
+   let sheet   =  'HRDT'; // 결과지
 
    console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status);
    
