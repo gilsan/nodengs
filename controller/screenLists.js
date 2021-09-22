@@ -668,7 +668,7 @@ const insertHandler2 = async (specimenNo, detected_variants) => {
                vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt) \
                values(@specimenNo, getdate(),  @gene,\
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
-               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, cnt)";
+               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt)";
              
        logger.info('[620][screenList][insert detected_variants]sql=' + qry);
  
