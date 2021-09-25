@@ -290,14 +290,15 @@ const  messageHandler7 = async (req) => {
   const transcript        = req.body.transcript;
   const coding            = req.body.coding;
 	const amino_acid_change = req.body.aminoAcidChange;
+	const type              = req.body.type;
   logger.info('[292][geneinfo]insertArtifacts data=' + gene + ", " + locat + ", " + exon
-                           + ", " + transcript + ", " + coding + ", " + amino_acid_change );
+                           + ", " + transcript + ", " + coding + ", " + amino_acid_change + type );
 
   let sql = "insert into artifacts "
     sql = sql + "  (genes, location, exon, "
-    sql = sql + " transcript,coding, amino_acid_change)  "
+    sql = sql + " transcript,coding, amino_acid_change, [type])  "
     sql = sql + " values( @gene, @locat, @exon, "
-    sql = sql + " @transcript, @coding, @amino_acid_change)";
+    sql = sql + " @transcript, @coding, @amino_acid_change, @type)";
   logger.info('[299][geneinfo]insertArtifacts sql=' + sql); 
 
   try {
@@ -307,7 +308,8 @@ const  messageHandler7 = async (req) => {
       .input('exon', mssql.VarChar, exon) 
       .input('transcript', mssql.VarChar, transcript) 
       .input('coding', mssql.VarChar, coding) 
-      .input('amino_acid_change', mssql.VarChar, amino_acid_change); 
+      .input('amino_acid_change', mssql.VarChar, amino_acid_change)
+      .input('type', mssql.VarChar, type); 
     const result = await request.query(sql)
     // console.dir( result);
     
