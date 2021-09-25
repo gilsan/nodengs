@@ -554,16 +554,13 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
     
    for (i = 0; i < detected_variants.length; i++)
    {
-     const gene              = detected_variants[i].gene;
      const type              = detected_variants[i].type;
      
-     const exon              = detected_variants[i].location;
-     const work_now          = detected_variants[i].workNow;
-     const diagnosis         = detected_variants[i].diagnosis;
-     const nucleotide_change = detected_variants[i].nucleotideChange;
-     const amino_acid_change = detected_variants[i].aminoAcidChange;
-     const cosmic_id         = detected_variants[i].cosmicID;
-     const dbSNPHGMD         = detected_variants[i].dbSNP;
+     const exon              = detected_variants[i].exonintron;
+     const nucleotide_change = detected_variants[i].nuclchange;
+     const amino_acid_change = detected_variants[i].aminochange;
+     const cosmic_id         = detected_variants[i].rsid ;
+     const zygosity         = detected_variants[i].zygosity;
      const cnt               = nvl(detected_variants[i].cnt, '');
  
      let functional_code = i;
@@ -573,35 +570,30 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      }
  
  
-     logger.info('[525][screenList][insert detected_variants]gene=' + gene 
-                           + ', type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon 
+     logger.info('[525][screenList][insert detected_variants], type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
-                           + ', dbSNPHGMD=' + dbSNPHGMD + ', cosmic_id=' + cosmic_id 
-                           + ', work_now=' + work_now + ', diagnosis=' + diagnosis + ', cnt=' + cnt );
+                           + ', zygosity=' + zygosity + ', cosmic_id=' + cosmic_id + ', cnt=' + cnt );
   
      //insert Query 생성;
-     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, type,
+     const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               dbSNPHGMD, cosmic_id, work_now, work_diag, functional_code, cnt) 
-               values(@specimenNo, getdate(),  @gene, @type,
+               cosmic_id, functional_code, cnt) 
+               values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @dbSNPHGMD, @cosmic_id, @work_now, @diagnosis, @functional_code, @cnt)`;
+                  @cosmic_id, @functional_code, @cnt)`;
              
        logger.info('[539][screenList][insert detected_variants 7]sql=' + qry);
  
        try {
            const request = pool.request()
              .input('specimenNo', mssql.VarChar, specimenNo)
-             .input('gene', mssql.VarChar, gene)
              .input('type', mssql.VarChar, type)
              .input('functional_code', mssql.VarChar, functional_code)
              .input('exon', mssql.VarChar, exon)
              .input('nucleotide_change', mssql.VarChar, nucleotide_change)
              .input('amino_acid_change', mssql.VarChar, amino_acid_change)
-             .input('dbSNPHGMD', mssql.VarChar, dbSNPHGMD)
+             .input('zygosity', mssql.VarChar, zygosity)
              .input('cosmic_id', mssql.VarChar, cosmic_id)
-             .input('work_now', mssql.VarChar, work_now)
-             .input('diagnosis', mssql.VarChar, diagnosis)
              .input('cnt', mssql.VarChar, cnt);
              
              result = await request.query(qry);         
@@ -1550,9 +1542,8 @@ const SequntialHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select   isnull(type, '') type,
-      isnull(exon, '') location, isnull(nucleotide_change, '') nucleotideChange,
-      isnull(amino_acid_change, '') aminoAcidChange, isnull(dbSNPHGMD, '') dbSNP, isnull(cosmic_id, '') cosmicID, 
-      isnull(work_now, '') workNow, isnull(work_diag, '') diagnosis 
+      isnull(exon, '') exonintron, isnull(nucleotide_change, '') exonintron,
+      isnull(amino_acid_change, '') exonintron, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid , 
       from [dbo].[report_detected_variants] 
       where specimenNo =@specimenNo
   `;
