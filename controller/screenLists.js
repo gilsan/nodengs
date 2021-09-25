@@ -1543,7 +1543,7 @@ const SequntialHandler = async (specimenNo) => {
 
   const sql=`select   isnull(type, '') type,
       isnull(exon, '') exonintron, isnull(nucleotide_change, '') exonintron,
-      isnull(amino_acid_change, '') exonintron, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid , 
+      isnull(amino_acid_change, '') exonintron, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid 
       from [dbo].[report_detected_variants] 
       where specimenNo =@specimenNo
   `;
