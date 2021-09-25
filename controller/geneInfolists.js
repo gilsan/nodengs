@@ -10,6 +10,23 @@ const e = require('express');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
+
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+ function nvl(st, defaultStr){
+    
+  console.log('st=', st);
+  if(st === undefined || st == null || st == "") {
+      st = defaultStr ;
+  }
+      
+  return st ;
+}
+
+
 // select mutation
 const  messageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
@@ -360,7 +377,7 @@ const  messageHandler8 = async (req) => {
   const gene      = req.body.gene;
   const coding    = req.body.coding;
   const type      = nvl(req.body.type, '');
-  logger.info('[340][geneinfo]getArtifactsInfoCount data=' + gene + ", " + coding + ", type = " + type);
+  logger.info('[363][geneinfo]getArtifactsInfoCount data=' + gene + ", " + coding + ", type = " + type);
 
 	let sql =`select count(*) as count  
             from artifacts 
