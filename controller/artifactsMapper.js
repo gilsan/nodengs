@@ -25,11 +25,11 @@ const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes;  
     const coding		= req.body.coding; 
-    let type =  nvl(req.body.type, "AMLALL");
+    let type =  nvl(req.body.type, "");
 
     logger.info('[12]artifcats listHandler genes=' + genes + ", coding=" + coding + ", type=" + type);
 	
-	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change ";
+	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change, type ";
     sql = sql + " from artifacts ";
     sql = sql + " where 1=1 " 
 	if(genes != "") 

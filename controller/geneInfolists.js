@@ -16,14 +16,18 @@ const  messageHandler = async (req) => {
 
   const gene =  req.body.gene;	 
   const nucleotide_change = req.body.coding;
+  const type = nvl(req.body.type, '');
 
-  logger.info('[17][geneinfo]select data=' + gene + ", " + nucleotide_change); 
+  logger.info('[17][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + type); 
  
-  const sql ="select top 1 functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id \
-                from mutation \
-                where gene=@gene \
-                and nucleotide_change =@nucleotide_change \
-                order by id desc";
+  const sql =`select top 1 functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id, type
+                from mutation 
+                where gene=@gene 
+                and nucleotide_change =@nucleotide_change `
+  if (type !== '') {
+    sql = sql +  `and type='` + type + `'`;
+  }
+  sql = sql +  `order by id desc`;
   logger.info('[26][geneinfo]list sql=' + sql);
 
   try {
@@ -63,10 +67,17 @@ const  messageHandler2 = async (req) => {
   const id   =  req.body.id;
   const gene =  req.body.gene;	 
   const nucleotide_change = req.body.coding;
-  logger.info('[60][geneinfo]getGeneExist data=' +  id + ", " + gene + "," + nucleotide_change);
+  const type = nvl(req.body.type, 'AMLALL');
+  logger.info('[60][geneinfo]getGeneExist data=' +  id + ", " + gene + "," + nucleotide_change + ", type=" + type) ;
  
   let sql ="select  count(*) as count from mutation where gene=@gene"; 
-  sql = sql  + "  and nucleotide_change =@nucleotide_change order by desc";
+  sql = sql  + "  and nucleotide_change =@nucleotide_change "
+
+  if (type !== '') {
+    sql = sql +  `and type='` + type + `'`;
+  }
+
+  sql = sql +  " order by desc";
   logger.info('[64][geneinfo]getGeneExist sql=' + sql);
  
   try {
@@ -107,14 +118,15 @@ const  messageHandler3 = async (req) => {
 	const transcript      = req.body.transcript;
 	const nucleotide_change = req.body.coding;
 	const cosmicID        = req.body.cosmicID;
+  const type = nvl(req.body.type, 'AMLALL');
   logger.info('[104][geneinfo]addGeneToMutation data=' + patientName + ", " + patientID + ", " + gene
-                      + ", " + transcript + "," + nucleotide_change  + "," + cosmicID); 
+                      + ", " + transcript + "," + nucleotide_change  + "," + cosmicID + ", type=" + type); 
   
   let sql ="insert into mutation ";
   sql = sql + " (patient_name, register_number,gene,";
-  sql = sql + "   transcript, amino_acid_change, cosmic_id) ";
+  sql = sql + "   transcript, amino_acid_change, cosmic_id, type) ";
   sql = sql + " values(@patientName, @patientID, @gene, ";
-  sql = sql + "        @transcript, @nucleotide_change, @cosmicID)";
+  sql = sql + "        @transcript, @nucleotide_change, @cosmicID, @type)";
   logger.info('[112][geneinfo]addGeneMutation sql=' + sql );
 	 
   try {
@@ -124,7 +136,8 @@ const  messageHandler3 = async (req) => {
         .input('transcript', mssql.VarChar, transcript) 
         .input('cosmicID', mssql.VarChar, cosmicID) 
         .input('gene', mssql.VarChar, gene) 
-        .input('nucleotide_change', mssql.VarChar, nucleotide_change); 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('type', mssql.VarChar, type); 
     const result = await request.query(sql)
     // console.dir( result);
     
@@ -242,12 +255,18 @@ const  messageHandler6 = async (req) => {
  
   const gene   = req.body.gene;
   const coding = req.body.coding;
-  logger.info('[244][geneinfo]getArtifactInfoLists data=' + gene + ", " + coding);
+  const type = nvl(req.body.type, '');
+  logger.info('[244][geneinfo]getArtifactInfoLists data=' + gene + ", " + coding  + ", type=" + type );
 
-	let sql ="select  transcript, amino_acid_change "
-    sql = sql + " from artifacts "
-    sql = sql + " where gene=@gene "
-    sql = sql + " and coding=@coding";
+	let sql =`select  transcript, amino_acid_change "
+              from artifacts "
+              where gene=@gene "
+              and coding=@coding`;
+
+  if (type !== '') {
+    sql = sql +  `and type='` + type + `'`;
+  }
+
   logger.info('[250][geneinfo]getArtifactInfoLists sql=' + sql);
     
   try {
@@ -290,13 +309,13 @@ const  messageHandler7 = async (req) => {
   const transcript        = req.body.transcript;
   const coding            = req.body.coding;
 	const amino_acid_change = req.body.aminoAcidChange;
-	const type              = req.body.type;
+	const type              = nvl(req.body.type, 'AMLALL');
   logger.info('[292][geneinfo]insertArtifacts data=' + gene + ", " + locat + ", " + exon
-                           + ", " + transcript + ", " + coding + ", " + amino_acid_change + type );
+                           + ", " + transcript + ", " + coding + ", " + amino_acid_change + ", type = " + type );
 
   let sql = "insert into artifacts "
     sql = sql + "  (genes, location, exon, "
-    sql = sql + " transcript,coding, amino_acid_change, [type])  "
+    sql = sql + " transcript,coding, amino_acid_change, type)  "
     sql = sql + " values( @gene, @locat, @exon, "
     sql = sql + " @transcript, @coding, @amino_acid_change, @type)";
   logger.info('[299][geneinfo]insertArtifacts sql=' + sql); 
@@ -338,14 +357,20 @@ exports.insertArtifacts = (req, res,next) => {
 const  messageHandler8 = async (req) => {
   await poolConnect; // ensures that the pool has been created
     
-  const gene              = req.body.gene;
-  const coding            = req.body.coding;
-  logger.info('[340][geneinfo]getArtifactsInfoCount data=' + gene + "," + coding);
+  const gene      = req.body.gene;
+  const coding    = req.body.coding;
+  const type      = nvl(req.body.type, '');
+  logger.info('[340][geneinfo]getArtifactsInfoCount data=' + gene + ", " + coding + ", type = " + type);
 
-	let sql ="select   count(*) as count  ";
-    sql = sql + " from artifacts "
-    sql = sql + " where genes=@gene "
-    sql = sql + " and coding=@coding";
+	let sql =`select count(*) as count  
+            from artifacts 
+            where genes=@gene 
+            and coding=@coding `;
+
+    if (type !== '') {
+      sql = sql +  "and type='" + type + "'";
+    }
+
   logger.info('[346][geneinfo]getArtifactsInfoCount sql=' + sql);
 
   try {
@@ -383,12 +408,13 @@ const  messageHandler9 = async (req) => {
  
   const gene   = req.body.gene;
   const coding = req.body.coding;
-  logger.info('[383][geneinfo]get benignInfolists data=' + gene + ", " + coding);
+  logger.info('[383][geneinfo]get benignInfolists data=' + gene + ", " + coding );
 	
-	let sql ="select  transcript, amino_acid_change  ";
-    sql = sql + " from benign ";
-    sql = sql + " where genes=@gene ";
-    sql = sql + " and coding=@coding";
+	let sql =`select  transcript, amino_acid_change  
+              from benign 
+              where genes=@gene 
+              and coding=@coding`;
+
   logger.info('[390][geneinfo]get benignInfolists sql=' + sql);
     
   try {
@@ -585,35 +611,35 @@ const insertCommentHandler = async(comments) => {
       if (resultCnt > 0)
       {
         //update Query 생성
-        qry = "update comments \
-                  set comment = @comment, \
-                      reference = @reference, \
-                      variant_id = @variant_id \
-                  where  gene = @gene \
-                  and  type =   @type  ";
-        }
-        else
-        {
+        qry = `update comments 
+                set comment = @comment, 
+                    reference = @reference, 
+                    variant_id = @variant_id 
+                where  gene = @gene 
+                and  type =   @type  `;
+      }
+      else
+      {
         //insert Query 생성
-        qry = "insert into comments (gene, type, comment, reference, variant_id )   \
-                        values( @gene, @type, @comment, @reference, @variant_id )";
-        }
+        qry = `insert into comments (gene, type, comment, reference, variant_id )
+                        values( @gene, @type, @comment, @reference, @variant_id ) `;
+      }
 
-        logger.info('[602][geneinfo]Comments Insert sql=' +qry);
+      logger.info('[602][geneinfo]Comments Insert sql=' +qry);
           
-        try {
-          const request = pool.request()
-            .input('gene', mssql.VarChar, gene)
-            .input('type', mssql.VarChar, type)
-            .input('comment', mssql.NVarChar, comment)
-            .input('reference', mssql.NVarChar, reference)
-            .input('variant_id', mssql.VarChar, variant_id); 
-            
-          commentResult = request.query(qry);
-                    
-        } catch (error) {
-          logger.error('[615][geneinfo]insert Comment err=', error.message);
-        }
+      try {
+        const request = pool.request()
+          .input('gene', mssql.VarChar, gene)
+          .input('type', mssql.VarChar, type)
+          .input('comment', mssql.NVarChar, comment)
+          .input('reference', mssql.NVarChar, reference)
+          .input('variant_id', mssql.VarChar, variant_id); 
+          
+        commentResult = request.query(qry);
+                  
+      } catch (error) {
+        logger.error('[615][geneinfo]insert Comment err=', error.message);
+      }
     })
     .catch( error => {
       logger.error('[619][geneinfo]insertCommentHandler count err=' + error.message);
