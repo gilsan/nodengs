@@ -7,6 +7,7 @@ const logger = require('../common/winston');
 
 const dbConfigMssql = require('../common/dbconfig.js');
 const e = require('express');
+const { input } = require('../common/winston');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -35,9 +36,9 @@ const  messageHandler = async (req) => {
   const nucleotide_change = req.body.coding;
   const type = nvl(req.body.type, '');
 
-  logger.info('[17][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + type); 
+  logger.info('[39][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + type); 
  
-  const sql =`select top 1 functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id, type
+  let sql =`select top 1 functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id, type
                 from mutation 
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change `
@@ -45,18 +46,19 @@ const  messageHandler = async (req) => {
     sql = sql +  `and type='` + type + `'`;
   }
   sql = sql +  `order by id desc`;
-  logger.info('[26][geneinfo]list sql=' + sql);
+  logger.info('[49][geneinfo]list sql=' + sql);
 
   try {
       const request = pool.request()
         .input('gene', mssql.VarChar, gene) 
-        .input('nucleotide_change', mssql.VarChar, nucleotide_change); 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('type', mssql.VarChar, type); 
       const result = await request.query(sql);
     //  console.dir( result);
       
       return result.recordset;
   } catch (error) {
-    logger.error('[32][geneinfo]list err=' + error.message);
+    logger.error('[61][geneinfo]list err=' + error.message);
   }
 }
 
@@ -72,7 +74,7 @@ exports.getMutationInfoLists = (req,res, next) => {
        res.json(data);
   })
   .catch( error  => {
-    logger.error('[54][geneinfo]getMutation err=' + error.message);
+    logger.error('[77][geneinfo]getMutation err=' + error.message);
     res.sendStatus(500);
   });
 }
@@ -85,7 +87,7 @@ const  messageHandler2 = async (req) => {
   const gene =  req.body.gene;	 
   const nucleotide_change = req.body.coding;
   const type = nvl(req.body.type, 'AMLALL');
-  logger.info('[60][geneinfo]getGeneExist data=' +  id + ", " + gene + "," + nucleotide_change + ", type=" + type) ;
+  logger.info('[90][geneinfo]getGeneExist data=' +  id + ", " + gene + "," + nucleotide_change + ", type=" + type) ;
  
   let sql ="select  count(*) as count from mutation where gene=@gene"; 
   sql = sql  + "  and nucleotide_change =@nucleotide_change "
@@ -95,7 +97,7 @@ const  messageHandler2 = async (req) => {
   }
 
   sql = sql +  " order by desc";
-  logger.info('[64][geneinfo]getGeneExist sql=' + sql);
+  logger.info('[100][geneinfo]getGeneExist sql=' + sql);
  
   try {
        const request = pool.request()
@@ -106,12 +108,12 @@ const  messageHandler2 = async (req) => {
        
        return result.recordset;
   } catch (error) {
-    logger.error('[81][geneinfo]geneExist err=' + error.message);
+    logger.error('[111][geneinfo]geneExist err=' + error.message);
   }
 }
 
 exports.getGeneExist = (req,res,next) => {
-  logger.info('[80][geneinfo]geneExist req=' + JSON.stringify(req.body));
+  logger.info('[116][geneinfo]geneExist req=' + JSON.stringify(req.body));
   
   const result = messageHandler2(req);
   result.then(data => {
@@ -136,7 +138,7 @@ const  messageHandler3 = async (req) => {
 	const nucleotide_change = req.body.coding;
 	const cosmicID        = req.body.cosmicID;
   const type = nvl(req.body.type, 'AMLALL');
-  logger.info('[104][geneinfo]addGeneToMutation data=' + patientName + ", " + patientID + ", " + gene
+  logger.info('[141][geneinfo]addGeneToMutation data=' + patientName + ", " + patientID + ", " + gene
                       + ", " + transcript + "," + nucleotide_change  + "," + cosmicID + ", type=" + type); 
   
   let sql ="insert into mutation ";
@@ -144,7 +146,7 @@ const  messageHandler3 = async (req) => {
   sql = sql + "   transcript, amino_acid_change, cosmic_id, type) ";
   sql = sql + " values(@patientName, @patientID, @gene, ";
   sql = sql + "        @transcript, @nucleotide_change, @cosmicID, @type)";
-  logger.info('[112][geneinfo]addGeneMutation sql=' + sql );
+  logger.info('[149][geneinfo]addGeneMutation sql=' + sql );
 	 
   try {
     const request = pool.request()
@@ -160,14 +162,14 @@ const  messageHandler3 = async (req) => {
     
     return result.recordset;
   } catch (error) {
-    logger.error('[132][geneinfo]mutation insert err=' + error.message);
+    logger.error('[165][geneinfo]mutation insert err=' + error.message);
   }
 }
 
 // add gene to mutation
 exports.addGeneToMutation = (req, res, next) => {
 
-  logger.info('[139][geneinfo]addGeneToMutation req=' + JSON.stringify(req.body));
+  logger.info('[172][geneinfo]addGeneToMutation req=' + JSON.stringify(req.body));
 
   const result = messageHandler3(req);
   result.then(data => {
@@ -176,7 +178,7 @@ exports.addGeneToMutation = (req, res, next) => {
           res.json(data);
   })
   .catch( error => {
-    logger.error('[150][geneinfo]addGeneToMutation err=' + error.message);
+    logger.error('[181][geneinfo]addGeneToMutation err=' + error.message);
     res.sendStatus(500);
   });
  };
@@ -187,13 +189,13 @@ const  messageHandler4 = async (req) => {
 
   const gene   = req.body.gene;
   const type   = req.body.type;
-  logger.info('[159][geneinfo]comments select data=' + gene + ", " + type);
+  logger.info('[192][geneinfo]comments select data=' + gene + ", " + type);
 
   let sql ="select gene, comment, reference, variant_id ";
   sql = sql + " from comments ";
   sql = sql + " where gene=@gene ";
   sql = sql + " and type=@type";
-  logger.info('[165][geneinfo]comments selet sql' + sql);
+  logger.info('[198][geneinfo]comments selet sql' + sql);
 
   try {
       const request = pool.request()
@@ -211,7 +213,7 @@ const  messageHandler4 = async (req) => {
 // In house Comments
 exports.getCommentInfoLists = (req, res, next) => {
 
-  logger.info('[183][geneinfo]getCommentInfoLists req=' + JSON.stringify(req.body));
+  logger.info('[216][geneinfo]getCommentInfoLists req=' + JSON.stringify(req.body));
 
   const result = messageHandler4(req);
   result.then(data => {
@@ -220,7 +222,7 @@ exports.getCommentInfoLists = (req, res, next) => {
         res.json(data);
   })
   .catch( error => {
-    logger.error('[191][geneinfo]getCommentInfoLists err=' + error.message);
+    logger.error('[225][geneinfo]getCommentInfoLists err=' + error.message);
     res.sendStatus(500);
   });
 };
@@ -230,13 +232,13 @@ const  messageHandler5 = async (req) => {
 
   const gene   = req.body.gene;
   const type   = req.body.type;
-  logger.info('[202][geneinfo]getCommentCounts data=' + gene + ", " + type);
+  logger.info('[235][geneinfo]getCommentCounts data=' + gene + ", " + type);
 
 	let sql ="select   count(*) as count ";
     sql = sql + " from comments "
     sql = sql + " where gene=@gene "
     sql = sql + " and type=@type";
-  logger.info('[207][geneinfo]getCommentCounts sql=' + sql);
+  logger.info('[241][geneinfo]getCommentCounts sql=' + sql);
     
   try {
       const request = pool.request()
@@ -247,13 +249,13 @@ const  messageHandler5 = async (req) => {
        
       return result.recordset;
   } catch (error) {
-    logger.error('[219][geneinfo]getCommentInfoCount err=' + error.message);
+    logger.error('[252][geneinfo]getCommentInfoCount err=' + error.message);
   }
 }
 
 exports.getCommentInfoCount = (req, res, next) => {
 
-  logger.info('[225][geneinfo]getCommentInfoCount req=' + JSON.stringify(req.body));
+  logger.info('[258][geneinfo]getCommentInfoCount req=' + JSON.stringify(req.body));
 
   const result = messageHandler5(req);
   result.then(data => {
@@ -262,7 +264,7 @@ exports.getCommentInfoCount = (req, res, next) => {
     res.json(data);
   })
   .catch( error  => {
-    logger.error('[234][geneinfo]getCommentInfoCount err=' + error.message);
+    logger.error('[267][geneinfo]getCommentInfoCount err=' + error.message);
     res.sendStatus(500);
   });
 };
@@ -273,7 +275,7 @@ const  messageHandler6 = async (req) => {
   const gene   = req.body.gene;
   const coding = req.body.coding;
   const type = nvl(req.body.type, '');
-  logger.info('[244][geneinfo]getArtifactInfoLists data=' + gene + ", " + coding  + ", type=" + type );
+  logger.info('[278][geneinfo]getArtifactInfoLists data=' + gene + ", " + coding  + ", type=" + type );
 
 	let sql =`select  transcript, amino_acid_change "
               from artifacts "
@@ -284,7 +286,7 @@ const  messageHandler6 = async (req) => {
     sql = sql +  `and type='` + type + `'`;
   }
 
-  logger.info('[250][geneinfo]getArtifactInfoLists sql=' + sql);
+  logger.info('[289][geneinfo]getArtifactInfoLists sql=' + sql);
     
   try {
     const request = pool.request()
@@ -295,14 +297,14 @@ const  messageHandler6 = async (req) => {
        
     return result.recordset;
   } catch (error) {
-    logger.error('[260][geneinfo]getArtifactInfoLists err=' + error.message);
+    logger.error('[300][geneinfo]getArtifactInfoLists err=' + error.message);
   }
 }
 
 // In house Artifacts
 exports.getArtifactInfoLists = (req, res, next) => {
 
-  logger.info('[268][geneinfo]getArtifactInfoLists req=' + JSON.stringify(req.body));
+  logger.info('[307][geneinfo]getArtifactInfoLists req=' + JSON.stringify(req.body));
   const result = messageHandler6(req);
   result.then(data => {
    
@@ -310,7 +312,7 @@ exports.getArtifactInfoLists = (req, res, next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[276][geneinfo]getArtifactInfoLists err=' + error.message);
+    logger.error('[315][geneinfo]getArtifactInfoLists err=' + error.message);
     res.sendStatus(500);
   });
 
@@ -327,7 +329,7 @@ const  messageHandler7 = async (req) => {
   const coding            = req.body.coding;
 	const amino_acid_change = req.body.aminoAcidChange;
 	const type              = nvl(req.body.type, 'AMLALL');
-  logger.info('[292][geneinfo]insertArtifacts data=' + gene + ", " + locat + ", " + exon
+  logger.info('[332][geneinfo]insertArtifacts data=' + gene + ", " + locat + ", " + exon
                            + ", " + transcript + ", " + coding + ", " + amino_acid_change + ", type = " + type );
 
   let sql = "insert into artifacts "
@@ -335,7 +337,7 @@ const  messageHandler7 = async (req) => {
     sql = sql + " transcript,coding, amino_acid_change, type)  "
     sql = sql + " values( @gene, @locat, @exon, "
     sql = sql + " @transcript, @coding, @amino_acid_change, @type)";
-  logger.info('[299][geneinfo]insertArtifacts sql=' + sql); 
+  logger.info('[340][geneinfo]insertArtifacts sql=' + sql); 
 
   try {
     const request = pool.request()
@@ -351,14 +353,14 @@ const  messageHandler7 = async (req) => {
     
     return result.recordset;
   } catch (error) {
-    logger.error('[315][geneinfo]insertArtifacts err=' + error.message);
+    logger.error('[356][geneinfo]insertArtifacts err=' + error.message);
   }
 }
 
 // Artifacts 입력
 exports.insertArtifacts = (req, res,next) => {
 
-  logger.info('[322][geneinfo]insertArtifacts req' + JSON.stringify(req.body));
+  logger.info('[363][geneinfo]insertArtifacts req' + JSON.stringify(req.body));
   const result = messageHandler7(req);
   result.then(data => {
   
@@ -366,7 +368,7 @@ exports.insertArtifacts = (req, res,next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[330][geneinfo]insertArtifacts err=' + error.message); 
+    logger.error('[371][geneinfo]insertArtifacts err=' + error.message); 
     res.sendStatus(500);
   });
 }
@@ -377,7 +379,7 @@ const  messageHandler8 = async (req) => {
   const gene      = req.body.gene;
   const coding    = req.body.coding;
   const type      = nvl(req.body.type, '');
-  logger.info('[363][geneinfo]getArtifactsInfoCount data=' + gene + ", " + coding + ", type = " + type);
+  logger.info('[382][geneinfo]getArtifactsInfoCount data=' + gene + ", " + coding + ", type = " + type);
 
 	let sql =`select count(*) as count  
             from artifacts 
@@ -388,7 +390,7 @@ const  messageHandler8 = async (req) => {
       sql = sql +  "and type='" + type + "'";
     }
 
-  logger.info('[346][geneinfo]getArtifactsInfoCount sql=' + sql);
+  logger.info('[393][geneinfo]getArtifactsInfoCount sql=' + sql);
 
   try {
     const request = pool.request()
@@ -399,13 +401,13 @@ const  messageHandler8 = async (req) => {
     //  console.log('[308][getArtifactsInfoCount] ', result);
     return result.recordset;
   } catch (error) {
-    logger.error('[357][geneinfo]getArtifactsInfoCount err=' + error.message);
+    logger.error('[404][geneinfo]getArtifactsInfoCount err=' + error.message);
   }
 }
 
 // get Artifacts Info Count
 exports.getArtifactsInfoCount = (req, res, next) => {
-  logger.info('[363][geneinfo]getArtifactsInfoCount req=' + JSON.stringify(req.body) );
+  logger.info('[410][geneinfo]getArtifactsInfoCount req=' + JSON.stringify(req.body) );
   
   const result = messageHandler8(req);
   result.then(data => {
@@ -414,7 +416,7 @@ exports.getArtifactsInfoCount = (req, res, next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[371][geneinfo]getArtifactsInfoCount err=' + error.message);
+    logger.error('[419][geneinfo]getArtifactsInfoCount err=' + error.message);
     res.sendStatus(500);
   });
 };
@@ -425,14 +427,14 @@ const  messageHandler9 = async (req) => {
  
   const gene   = req.body.gene;
   const coding = req.body.coding;
-  logger.info('[383][geneinfo]get benignInfolists data=' + gene + ", " + coding );
+  logger.info('[430][geneinfo]get benignInfolists data=' + gene + ", " + coding );
 	
 	let sql =`select  transcript, amino_acid_change  
               from benign 
               where genes=@gene 
               and coding=@coding`;
 
-  logger.info('[390][geneinfo]get benignInfolists sql=' + sql);
+  logger.info('[437][geneinfo]get benignInfolists sql=' + sql);
     
   try {
     const request = pool.request()
@@ -443,14 +445,14 @@ const  messageHandler9 = async (req) => {
        
     return result.recordset;
   } catch (error) {
-    logger.error('[401][geneinfo]get benignInfolists err=' + error.message);
+    logger.error('[448][geneinfo]get benignInfolists err=' + error.message);
   }
 }
 
 // In-House benign
 exports.benignInfolists = (req, res, next) => {
 
-  logger.info('[407][geneinfo]get benignInfolists req=' + JSON.stringify(req.body));
+  logger.info('[455][geneinfo]get benignInfolists req=' + JSON.stringify(req.body));
    
   const result = messageHandler9(req);
   result.then(data => {
@@ -459,7 +461,7 @@ exports.benignInfolists = (req, res, next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[416][geneinfo]get benignInfolists err=' + error.messageP);
+    logger.error('[464][geneinfo]get benignInfolists err=' + error.messageP);
     res.sendStatus(500);
   });
 };
@@ -473,7 +475,7 @@ const  messageHandler10 = async (req) => {
   const transcript        = req.body.transcript;
   const coding            = req.body.coding;
   const amino_acid_change = req.body.aminoAcidChange;
-  logger.info('[431][geneinfo]insertBenign data=' + gene + ", " + locat
+  logger.info('[478][geneinfo]insertBenign data=' + gene + ", " + locat
                           + ", " + exon + ", " + transcript + ", " + coding + ", " + amino_acid_change);
 
   let sql = "insert into benign " ;
@@ -481,7 +483,7 @@ const  messageHandler10 = async (req) => {
   sql = sql + " transcript,coding, amino_acid_change)  "
   sql = sql + " values( @gene, @locat, @exon, "
   sql = sql + " @transcript, @coding, @amino_acid_change)";
-  logger.info('[439][geneinfo]insertBenign sql=' + sql);
+  logger.info('[486][geneinfo]insertBenign sql=' + sql);
     
   try {
     const request = pool.request()
@@ -503,7 +505,7 @@ const  messageHandler10 = async (req) => {
 // insert Benign
 exports.insertBenign = (req,res,next) => {
   
-  logger.info('[460][geneinfo]insertBenign req=' + JSON.stringify(req.body));
+  logger.info('[508][geneinfo]insertBenign req=' + JSON.stringify(req.body));
   const result = messageHandler10(req);
   result.then(data => {
   
@@ -511,7 +513,7 @@ exports.insertBenign = (req,res,next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[468][geneinfo]insertBenign err=' + error.message)
+    logger.error('[516][geneinfo]insertBenign err=' + error.message)
     res.sendStatus(500);
   });
 }
@@ -522,13 +524,13 @@ const  messageHandler11 = async (req) => {
 
   const gene    = req.body.gene;
   const coding = req.body.coding;
-  logger.info('[480][geneinfo]benignInfoCount data=' + gene + ", " + coding );
+  logger.info('[527][geneinfo]benignInfoCount data=' + gene + ", " + coding );
 
   let sql ="select  count(*) as count  ";
   sql = sql + " from benign "
   sql = sql + " where genes=@gene "
   sql = sql + " and coding=@coding";
-  logger.info('[486][geneinfo]benignInfoCount sql=' + sql);
+  logger.info('[533][geneinfo]benignInfoCount sql=' + sql);
   
   try {
       const request = pool.request()
@@ -539,14 +541,14 @@ const  messageHandler11 = async (req) => {
       
       return result.recordset;
   } catch (error) {
-    logger.error('[497][geneinfo]benignInfoCount err=' + error.message);
+    logger.error('[544][geneinfo]benignInfoCount err=' + error.message);
   }
 }
 
 // get benign Info Count
 exports.benignInfoCount = (req, res, next) => {
 
-  logger.info('[504][geneinfo]get benignInfoCount req=' + JSON.stringify(req.body)); 
+  logger.info('[551][geneinfo]get benignInfoCount req=' + JSON.stringify(req.body)); 
   const result = messageHandler11(req);
   result.then(data => {
 
@@ -554,7 +556,7 @@ exports.benignInfoCount = (req, res, next) => {
     res.json(data);
   })
   .catch( error  => {
-    logger.error('[512][geneinfo]get benignInfoCount err=' + error.message);
+    logger.error('[559][geneinfo]get benignInfoCount err=' + error.message);
     res.sendStatus(500);
   });
 
@@ -564,10 +566,10 @@ exports.benignInfoCount = (req, res, next) => {
 const commentCountHandler = async (gene, type) => {
   await poolConnect; // ensures that the pool has been created
  
-  logger.info('[523][geneinfo]get commentCount data=' + gene + ", " + type);
+  logger.info('[569][geneinfo]get commentCount data=' + gene + ", " + type);
   const sql ="select count(1) as count from comments \
            where gene = '" + gene + "' and type = '" + type + "'";
-  logger.info('[526][geneinfo]get commentCountHandler sql=' + sql);  
+  logger.info('[572][geneinfo]get commentCountHandler sql=' + sql);  
 
   try {
     const request = pool.request(); 
@@ -576,14 +578,14 @@ const commentCountHandler = async (gene, type) => {
     
     return result.recordset;
   } catch (error) {
-    logger.error('[535][geneinfo]commentCountHandler err=' + error.message);
+    logger.error('[581][geneinfo]commentCountHandler err=' + error.message);
   }
 }
 
 //get Comment Counts
 exports.getCommentCounts = (req,res, next) => {
 
-  logger.info('[542][geneinfo]getCommentCounts req=' + JSON.stringify(req.body));
+  logger.info('[588][geneinfo]getCommentCounts req=' + JSON.stringify(req.body));
    const gene =  req.body.gene;
    const type =  req.body.type;
     
@@ -594,7 +596,7 @@ exports.getCommentCounts = (req,res, next) => {
       res.json(data[0].cnt);
   })
   .catch( error  => {
-    logger.error('[553][geneinfo]getCommentCounts err=' + error.message);
+    logger.error('[599][geneinfo]getCommentCounts err=' + error.message);
     res.sendStatus(500);
   });
 }
@@ -604,8 +606,8 @@ const insertCommentHandler = async(comments) => {
   //for 루프를 돌면서 Commencts 만큼       //Commencts Count
   let commentResult;
 
-  logger.info('[563][geneinfo]insertCommentHandler req' + JSON.stringify(req.body));
-  logger.info('[563][geneinfo]insertCommentHandler length=' + comments.length);  
+  logger.info('[609][geneinfo]insertCommentHandler req' + JSON.stringify(req.body));
+  logger.info('[610][geneinfo]insertCommentHandler length=' + comments.length);  
 
   for (i = 0; i < comments.length; i++)
   {
@@ -614,7 +616,7 @@ const insertCommentHandler = async(comments) => {
     const comment    = comments[i].comment;
     const reference  = comments[i].reference;
     const variant_id  = comments[i].variant_id;
-    logger.info('[574][geneinfo]insertCommentHandler data=' + gene + "," + type
+    logger.info('[619][geneinfo]insertCommentHandler data=' + gene + "," + type
                                   + ", " + comment + ", " + reference + ", " + variant_id);
 
     let result = commentCountHandler(gene, type);
@@ -655,11 +657,11 @@ const insertCommentHandler = async(comments) => {
         commentResult = request.query(qry);
                   
       } catch (error) {
-        logger.error('[615][geneinfo]insert Comment err=', error.message);
+        logger.error('[660][geneinfo]insert Comment err=', error.message);
       }
     })
     .catch( error => {
-      logger.error('[619][geneinfo]insertCommentHandler count err=' + error.message);
+      logger.error('[664][geneinfo]insertCommentHandler count err=' + error.message);
       res.sendStatus(500);
     });
   } // End of For Loop
@@ -670,7 +672,7 @@ const insertCommentHandler = async(comments) => {
 // Comment Insert
 exports.getCommentInsert = (req,res, next) => {
  
-  logger.info('[630][geneinfo]getCommentInsert req=' + JSON.stringify(req.body));
+  logger.info('[675][geneinfo]getCommentInsert req=' + JSON.stringify(req.body));
   const comments =  req.body.comments;
   
   const result = insertCommentHandler(comments);
@@ -680,7 +682,7 @@ exports.getCommentInsert = (req,res, next) => {
     res.json("1");
   })
   .catch( error => {
-    logger.error('[638][geneinfo]getCommentInsert err=' +error.message);
+    logger.error('[685][geneinfo]getCommentInsert err=' +error.message);
     res.sendStatus(500);
   });
 }
