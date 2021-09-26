@@ -7,4 +7,5 @@ const  mlpaController = require('../controller/mlpa');
 router.post('/saveScreenMlpa', mlpaController.saveScreenMlpa);
 router.post('/mlpaData', mlpaController.mlpaDatas);
 router.post('/mlpaList', mlpaController.mlpaContent);
+
 module.exports = router;

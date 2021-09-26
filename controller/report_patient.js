@@ -375,14 +375,14 @@ const  patientSelectAllHandler = async (specimenNo, type) => {
 const  patientSelectLymHandler = async (specimenNo, type) => {
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[105][report_patient] patientSelectHandler specimenNo=' + specimenNo + ", type=" + type);
+    logger.info('[378][report_patient] patientSelectHandler specimenNo=' + specimenNo + ", type=" + type);
     //insert Query 생성
     const sql = "select chromosomalanalysis, bonemarrow \
                 from report_patientsInfo \
                 where specimenNo = @specimenNo \
                 and report_type = @type ";
 
-    logger.info('[105][report_patient] patientSelectHandler sql=' + sql);
+    logger.info('[378][report_patient] patientSelectHandler sql=' + sql);
     
     try {
 
@@ -393,7 +393,7 @@ const  patientSelectLymHandler = async (specimenNo, type) => {
         const result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
-        logger.error('[117][report_patient]patientSelectHandler err=' + error.message);
+        logger.error('[396][report_patient]patientSelectHandler err=' + error.message);
     }
 }
 

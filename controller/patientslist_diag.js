@@ -714,6 +714,8 @@ const messageHandlerStat_diag = async (specimenNo, userid, type ) => {
 	} // try end
 }
 
+
+
 // 진검 "수정" 버튼 누르면 screenstatus 상태를 변경
 const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
     await poolConnect; // ensures that the pool has been created
@@ -985,6 +987,57 @@ exports.getPatientinfo  = (req, res, next) => {
  .catch( error => {
      logger.error('[455][patientinfo_diag getPatientinfo]err=' + error.message);
  });
+}
+
+
+// screenstatus 상태를 변경
+const changescreenstatus = async (specimenNo, seq, userid, type) =>{
+    await poolConnect; // ensures that the pool has been created
+
+    logger.info('[997][patientinfo_diag resetscreenstatus]specimenNo=' + specimenNo);
+    logger.info('[1000][patientinfo_diag resetscreenstatus]seq=' + seq);
+    let sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
+    logger.info('[1000][patientinfo_diag resetscreenstatus]sql=' + sql);
+    
+    try {
+
+        const request = pool.request()
+                 .input('seq', mssql.VarChar, seq)
+                 .input('specimenNo', mssql.VarChar, specimenNo);
+        const result = await request.query(sql); 
+      
+    } catch(error) {
+        logger.error('[1010][patientinfo_diag resetscreenstatus]err=' + error.message);
+    }
+
+}
+
+exports.changestatus = (req, res, next) => {
+
+    logger.info('[1017][patientinfo_diag resetScreen]data=' + JSON.stringify(req.body));
+    
+    let specimenNo = req.body.specimenNo.trim();
+    let num        = req.body.num;
+    //let userid     = req.body.userid;
+
+    //const userid = req.body.userid;
+    let userinfo = JSON.parse(req.body.userid); 
+  
+    let userid = userinfo.userid; 
+    //  const pw= userinfo.pwd; 
+    let type     = req.body.type;
+    logger.info('[1029][patientinfo_diag resetScreen]specimenNo=' + specimenNo);
+    logger.info('[1029][patientinfo_diag resetScreen]num=' + num);
+    logger.info('[1029][patientinfo_diag resetScreen]userid=' + userid);
+    logger.info('[1029]][patientinfo_diag resetScreen]type=' + type);
+
+    const result = changescreenstatus(specimenNo, num, userid, type);
+    result.then(data => {
+         res.json({message: "SUCCESS"});
+    })
+    .catch( error => {
+        logger.error('[1029][patientinfo_diag resetScreen]err=' + error.message);
+    })
 }
 
 

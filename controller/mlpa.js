@@ -217,7 +217,7 @@ exports.mlpaContent = (req,res, next) => {
         res.json(data);           
     })
     .catch( error  => {
-      logger.error('[210][screenList][saveScreenMlpa]err=' + error.message);
+      logger.error('[220][screenList][saveScreenMlpa]err=' + error.message);
       res.sendStatus(500)
     });
 

@@ -16,4 +16,6 @@ router.post('/setEMRSendCount', patientDiagController.setEMRSendCount);
 router.post('/getEMRSendCount', patientDiagController.getEMRSendCount);
 // 개인 검사자 정보 찿기
 router.post('/patientinfo', patientDiagController.getPatientinfo);
+// 진검 screenstatus 변경
+router.post('/changestatus', patientDiagController.changestatus)
 module.exports = router;
