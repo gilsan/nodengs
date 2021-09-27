@@ -281,25 +281,52 @@ router.post('/upload', function (req, res) {
 
                 patient_id = data;
 
-                const patientID = item.originalname.split('_');
-                logger.info('[283]testedID=' + patient_id);
-                logger.info('[284]patientID=' + patientID[1]);
+                const surfix = item.originalname.split('.');
+                const patientID = surfix[0].split('_');
 
-                let patient = patientID[1]
+                if ( surfix[1] === 'xlsx') {
+                  
+                  logger.info('[283]testedID=' + patient_id);
+                  logger.info('[284]patientID=' + patientID[4]);
 
-                if ( patient !== patient_id) {
+                  let patient = patientID[4];
 
-                  let patientNo = patientID[0].split('-');
+                  if ( patient !== patient_id) {
 
-                  logger.info('[290]patientID=' + patientNo[1]);
-                  if(patientNo[1] !== patient_id) {
-                    logger.error('[292][fileupload] patient dismatch' );
-                    return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                    let patientNo = patientID[0].split('-');
+
+                    logger.info('[290]patientID=' + patientNo[1]);
+                    if(patientNo[1] !== patient_id) {
+                      logger.error('[292][fileupload] patient dismatch' );
+                      return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                    }
+                    else if ( patientNo.length === 0) 
+                    {
+                      logger.error('[298][fileupload] patient dismatch' );
+                      return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                    }
                   }
-                  else if ( patientNo.length === 0) 
-                  {
-                    logger.error('[298][fileupload] patient dismatch' );
-                    return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                }
+                else {
+                  logger.info('[283]testedID=' + patient_id);
+                  logger.info('[284]patientID=' + patientID[1]);
+
+                  let patient = patientID[1]
+
+                  if ( patient !== patient_id) {
+
+                    let patientNo = patientID[0].split('-');
+
+                    logger.info('[290]patientID=' + patientNo[1]);
+                    if(patientNo[1] !== patient_id) {
+                      logger.error('[292][fileupload] patient dismatch' );
+                      return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                    }
+                    else if ( patientNo.length === 0) 
+                    {
+                      logger.error('[298][fileupload] patient dismatch' );
+                      return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                    }
                   }
                 }    
         
@@ -438,7 +465,7 @@ router.post('/upload', function (req, res) {
           
             logger.info('[243][fileupload][count]next 5');
 
-            const surfix = item.originalname.split('.');
+            //const surfix = item.originalname.split('.');
 
             logger.info('[243][fileupload]surfix=' + surfix[1] );
 

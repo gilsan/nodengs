@@ -52,7 +52,7 @@ const deleteMlpaDataHandler = async (type) => {
 };
 
 // MLPA 입력
-const insertMlpaHandler = async (type, title, result, conclusion, technique, comment) => {
+const insertMlpaHandler = async (type, title, result, conclusion, technique, comment ) => {
     await poolConnect;
  
     const  sql =`insert  into mlpa (type, title, result,comment, technique, conclusion)
@@ -91,12 +91,7 @@ const insertMlpaDataHandler = async (type, mlpaData) => {
     let result            = mlpaData[i].result;
     let seq               = mlpaData[i].seq;
 
-    // let seq = i;
-
-    // if (i < 10) {
-    //   seq = '0' + i;
-    // }
-
+ 
     logger.info('[101][insertMlpaDataHandler][insert mlpa data]seq = ' + seq + ', site=' + site 
                           + ', result=' + result + ', type=' + type );
 
