@@ -192,7 +192,7 @@ const  messageHandler3 = async (originalname, dirPath, testedID) => {
 
   try {
       const request = pool.request() // or: new sql.Request(pool1)
-      .input('originalname', mssql.VarChar, originalname)
+      .input('originalname', mssql.NVarChar, originalname)
       .input('dirPath',mssql.VarChar, dirPath)
       .input('testedID', mssql.VarChar, testedID);
       const result = await request.query(qry)
@@ -215,7 +215,7 @@ const  messageHandler4 = async (originalname, dirPath, testedID) => {
        
   try {
       const request = pool.request() // or: new sql.Request(pool1)
-      .input('originalname', mssql.VarChar, originalname)
+      .input('originalname', mssql.NVarChar, originalname)
       .input('dirPath', mssql.VarChar, dirPath)
       .input('testedID', mssql.VarChar, testedID);
       const result = await request.query(sql)
