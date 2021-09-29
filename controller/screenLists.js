@@ -13,6 +13,21 @@ const { json } = require('body-parser');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+function nvl(st, defaultStr){
+    
+  console.log('st=', st);
+  if(st === undefined || st == null || st == "") {
+      st = defaultStr ;
+  }
+      
+  return st ;
+}
+
 const  messageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
@@ -361,12 +376,15 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const exon              = detected_variants[i].exonIntro;
     const nucleotide_change = detected_variants[i].nucleotideChange;
     const amino_acid_change = detected_variants[i].aminoAcidChange;
-    const zygosity          = detected_variants[i].zygosity;
-    const vaf               = detected_variants[i].vafPercent;
-    const reference         = detected_variants[i].references;
+    const zygosity          = nvl(detected_variants[i].zygosity, '');
+    const vaf               = nvl(detected_variants[i].vafPercent, '');
+    const reference         = nvl(detected_variants[i].references, '');
     const cosmic_id         = detected_variants[i].cosmicID;
     const type              = detected_variants[i].type;
     const checked           = detected_variants[i].checked;
+    const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
+    const gnomADEAS         = detected_variants[i].gnomADEAS;
+    const OMIM              = detected_variants[i].OMIM;
     const cnt               = nvl(detected_variants[i].cnt, '');
 
     let functional_code = i;
@@ -381,15 +399,19 @@ const insertHandler = async (specimenNo, detected_variants) => {
                           + ', functional_impact=' + functional_impact + ', functional_code = ' + functional_code
                           + ', transcript= ' + transcript + ', exon=' + exon 
                           + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
-                          + ', zygosity=' + zygosity + ', vaf=' + vaf + ', reference=' + reference 
+                          + ', zygosity=' + zygosity 
+                          + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM 
+                          + ', vaf=' + vaf + ', reference=' + reference 
                           + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked + ', cnt=' + cnt);
  
     //insert Query 생성;
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
+              dbSNPHGMD, gnomADEAS, OMIM,
               vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt) 
               values(@specimenNo, getdate(),  @gene,
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
+                @dbSNPHGMD, @gnomADEAS, @OMIM,
               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt)`;
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
@@ -411,6 +433,9 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('igv', mssql.NVarChar, igv)
             .input('sanger', mssql.NVarChar, sanger)
             .input('type', mssql.VarChar, type)
+            .input('dbSNPHGMD', mssql.NVarChar, dbSNPHGMD)
+            .input('gnomADEAS', mssql.NVarChar, gnomADEAS)
+            .input('OMIM', mssql.VarChar, OMIM)
             .input('checked', mssql.VarChar, checked)
             .input('cnt', mssql.VarChar, cnt);
             
