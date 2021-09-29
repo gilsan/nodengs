@@ -56,18 +56,18 @@ const insertHandler = async (req) => {
     const rechecker         = req.body.rechecker;
     const title             = req.body.title;
     const descriptionCode   = req.body.descriptionCode;
-    const testCode          = req.body.testCode
-
+    const testCode          = req.body.testCode;
+    const patientid         = req.body.patientid;
     logger.info('[61]sequencing insertHandler mutation=' + mutation + ', reportDate=' + reportDate + ", examiner" + examiner
                                    + ", rechecker" + rechecker + ', title=' + title
-                                   + ', descriptionCode=' + descriptionCode + ', testCode=' + testCode);   
+                                   + ', descriptionCode=' + descriptionCode + ', patientid=' + patientid);   
 
     let sql = "insert into sequencing_path " ;
     sql = sql + " (mutation, reportDate, examiner, "
-    sql = sql + " rechecker,title, descriptionCode, testCode)  "
+    sql = sql + " rechecker,title, descriptionCode, patientid)  "
     sql = sql + " values(  "
     sql = sql + " @mutation, @reportDate, @examiner, "
-    sql = sql + " @rechecker, @title, @descriptionCode, @testCode)";
+    sql = sql + " @rechecker, @title, @descriptionCode, @patientid)";
     
    logger.info('[72] sequencing insertHandler sql=' + sql);
 
@@ -79,7 +79,7 @@ const insertHandler = async (req) => {
          .input('rechecker', mssql.NVarChar, rechecker) 
          .input('title', mssql.NVarChar, title) 
          .input('descriptionCode', mssql.VarChar, descriptionCode)
-         .input('testCode', mssql.VarChar, testCode); 
+         .input('patientid', mssql.VarChar, patientid); 
 
        const result = await request.query(sql)
        return result;
@@ -93,9 +93,9 @@ const insertHandler = async (req) => {
 exports.insertsequencing = (req,res,next) => {
     logger.info('[94] sequencing insertHandler req=' + JSON.stringify(req.body));
 
-    const testCode          = req.body.testCode
-
-    const result = deleteHandler(testCode);
+    const testCode          = req.body.testCode;
+    const patientid         = req.body.patientid;
+    const result = deleteHandler(patientid);
     result.then(() => { 
         const result = insertHandler(req);
         result.then(data => {
