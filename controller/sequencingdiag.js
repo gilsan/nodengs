@@ -58,16 +58,17 @@ const insertHandler = async (req) => {
     const descriptionCode   = req.body.descriptionCode;
     const testCode          = req.body.testCode;
     const patientid         = req.body.patientid;
+    const comments          = req.body.comments;
     logger.info('[61]sequencing insertHandler mutation=' + mutation + ', reportDate=' + reportDate + ", examiner" + examiner
                                    + ", rechecker" + rechecker + ', title=' + title
                                    + ', descriptionCode=' + descriptionCode + ', patientid=' + patientid);   
 
     let sql = "insert into sequencing_path " ;
     sql = sql + " (mutation, reportDate, examiner, "
-    sql = sql + " rechecker,title, descriptionCode, patientid)  "
+    sql = sql + " rechecker,title, descriptionCode, patientid, comments)  "
     sql = sql + " values(  "
     sql = sql + " @mutation, @reportDate, @examiner, "
-    sql = sql + " @rechecker, @title, @descriptionCode, @patientid)";
+    sql = sql + " @rechecker, @title, @descriptionCode, @patientid, @comments)";
     
    logger.info('[72] sequencing insertHandler sql=' + sql);
 
@@ -79,7 +80,8 @@ const insertHandler = async (req) => {
          .input('rechecker', mssql.NVarChar, rechecker) 
          .input('title', mssql.NVarChar, title) 
          .input('descriptionCode', mssql.VarChar, descriptionCode)
-         .input('patientid', mssql.VarChar, patientid); 
+         .input('patientid', mssql.VarChar, patientid)
+         .input('comments', mssql.NVarChar, comments);
 
        const result = await request.query(sql)
        return result;
@@ -87,7 +89,6 @@ const insertHandler = async (req) => {
        logger.error('[87]sequencing insertHandler err=' + error.message);
    }
 }
-
 
 
 exports.insertsequencing = (req,res,next) => {
@@ -108,3 +109,47 @@ exports.insertsequencing = (req,res,next) => {
         res.sendStatus(500);
     });
  };
+
+// List Sequencing
+
+const listHandler= async (patientid) => {
+    await poolConnect;
+
+    
+    logger.info('[119][sequencing list]data=' + patientid );
+	
+	let sql =`select   isnull(mutation,'') mutation ,
+	            isnull(reportDate, '') reportDate, isnull(examiner, '') examiner,
+                isnull(rechecker, '') rechecker, patientid, isnull(title, '') title.
+                isnull(descriptionCode, '') descriptionCode, isnull(comments, '') comments
+                from sequencing_path  
+	            where patientid = @patientid `;
+ 
+    logger.info('[128][sequencing list]sql=' + sql);
+    try {
+       const request = pool.request()
+		 .input('patientid', mssql.VarChar, patientid); 
+       const result = await request.query(sql)  
+       console.dir(result);
+       return result.recordset;
+   } catch (error) {
+    logger.error('[136][sequencing ]err=' + error.message);
+   }
+
+};
+
+
+ exports.listequencing = (req,res,next) => {
+    logger.info('[143] sequencing listequencing req=' + JSON.stringify(req.body));
+
+    const result = listHandler(patientid);
+    result.then((data) => { 
+        res.json(data);         
+    })
+    .catch( error => {
+        logger.error('[151] sequencing insertHandler err=' + error.body);
+        res.sendStatus(500);
+    });
+ };
+
+
