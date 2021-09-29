@@ -382,9 +382,9 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const cosmic_id         = detected_variants[i].cosmicID;
     const type              = detected_variants[i].type;
     const checked           = detected_variants[i].checked;
-    const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
-    const gnomADEAS         = detected_variants[i].gnomADEAS;
-    const OMIM              = detected_variants[i].OMIM;
+    const dbSNPHGMD         = nvl(detected_variants[i].dbSNPHGMD, '');
+    const gnomADEAS         = nvl(detected_variants[i].gnomADEAS, '');
+    const OMIM              = nvl(detected_variants[i].OMIM,'');
     const cnt               = nvl(detected_variants[i].cnt, '');
 
     let functional_code = i;
@@ -506,6 +506,9 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
     
    for (i = 0; i < detected_variants.length; i++)
    {
+ 
+     const igv               = detected_variants[i].igv;
+     const sanger            = detected_variants[i].sanger;
      const gene              = detected_variants[i].gene;
      const functional_impact = detected_variants[i].functionalImpact;
      const transcript        = detected_variants[i].transcript;
@@ -513,12 +516,17 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      const exon              = detected_variants[i].exonIntro;
      const nucleotide_change = detected_variants[i].nucleotideChange;
      const amino_acid_change = detected_variants[i].aminoAcidChange;
-     const zygosity          = detected_variants[i].zygosity;
+     const zygosity          = nvl(detected_variants[i].zygosity, '');
+     const type              = detected_variants[i].type;
+     const checked           = detected_variants[i].checked;
      const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
      const gnomADEAS         = detected_variants[i].gnomADEAS;
      const OMIM              = detected_variants[i].OMIM;
      const cnt               = nvl(detected_variants[i].cnt, '');
- 
+
+
+
+
      let functional_code = i;
  
      if (i < 10) {
@@ -542,6 +550,7 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
                 @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt)`;
              
        logger.info('[470][screenList][insert detected_variants 6]sql=' + qry);
+       
  
        try {
            const request = pool.request()
