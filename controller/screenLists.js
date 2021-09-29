@@ -1492,14 +1492,15 @@ exports.saveScreen6 = (req, res, next) => {
   const flt3ITD = '' ; 
   const leukemia = '';
   
+
   const specimenNo        = req.body.specimenNo;
-  const detected_variants = req.body.immundefi;
-  // const comments          = req.body.comments;
-  // const detectedtype      = req.body.resultStatus;
+  const detected_variants = req.body.detected_variants;
+  const comments          = req.body.comments;
+  const detectedtype      = req.body.resultStatus;
   const examin            = req.body.patientInfo.examin;
   const recheck           = req.body.patientInfo.recheck;
-  //const screenstatus      = req.body.patientInfo.screenstatus;
   const vusmsg            = '';
+
   
   //logger.info('[684][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
   logger.info('[1292][screenList][saveScreen 6]specimenNo=, ' + specimenNo
