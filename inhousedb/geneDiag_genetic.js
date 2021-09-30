@@ -67,9 +67,46 @@ function loadData(filePath) {
      return [];
    }
 }
+
+async function delData() {
+
+  await poolConnect;
+  
+  const sql2 =`
+    delete from genediag 
+    where type = 'genetic'
+  `; 
+
+  logger.info('[77][genediag]sql=' + sql2);
+
+  try {      
+  const request2 = pool.request();
+
+  //let result =  '';
+  const result2 = request2.query(sql2); /*, (err, recordset) => {
+    if (err)
+    {
+         console.log("err=", err.message);  
+    }
+    console.log("recordset=", recordset);
+
+    result = recordset;
+  });*/
+  result2.then(data => {
+    console.dir(data);
+  }).catch( err => console.log(err));
+
+  }   catch(err) {
+    logger.error('[97][artifacts]del err=' + err.message);
+  } 
+}
   
 var tsvData = '../inhouseupload/genetic.txt';
 var rowCount = 0;
+
+var type = '';
+
+delData()
 
 var rowData = loadData(tsvData);
 
@@ -81,8 +118,6 @@ rowData.forEach ( async (row, index) =>  {
   if (rowCount >= 0) {
 
     logger.info('length =' + row.length);
-
-      var type = 'genetic';
 
       var test_code = nvl(row[0].replace( /"/gi, ''), "");
       logger.info('[84][genediag]test_code=' + test_code);
