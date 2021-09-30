@@ -346,7 +346,7 @@ app.use('/tests', function(req, res, next) {
  app.use('/mlpa', mlpaRouter);
 
 // 병리 돌연변이 sequencing 입력
-app.use('/sequencingdiag', sequencingdiagRouter)
+app.use('/sequencingdiag',sequencingdiagRouter);
 
  // 화일 내려받기
  app.use('/download', function(req, res) {

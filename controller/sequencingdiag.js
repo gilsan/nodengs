@@ -26,16 +26,16 @@ const poolConnect = pool.connect();
 }
 
 // 병리 sequencing 삭제
-const deleteHandler = async (testCode) => { 
+const deleteHandler = async (patientid) => { 
     await poolConnect;
     let sql = "delete sequencing_path " ; 
-    sql = sql + "where testCode = @testCode";
+    sql = sql + "where patientid = @patientid";
     
-    logger.info('[34] sequencing deleteHandler testCode=' + testCode); 
+    logger.info('[34] sequencing deleteHandler testCode=' + patientid); 
 
     try {
         const request = pool.request()
-		  .input('testCode', mssql.VarChar, testCode) 
+		  .input('patientid', mssql.VarChar, patientid) 
         const result = await request.query(sql)
         console.dir( result); 
         return result;
@@ -50,7 +50,7 @@ const deleteHandler = async (testCode) => {
 const insertHandler = async (req) => { 
     await poolConnect;
 
-    const mutation          = req.body.nutation;
+    const mutation          = req.body.mutation;
     const reportDate	    = req.body.reportDate;
     const examiner          = req.body.examiner;
     const rechecker         = req.body.rechecker;
@@ -120,7 +120,7 @@ const listHandler= async (patientid) => {
 	
 	let sql =`select   isnull(mutation,'') mutation ,
 	            isnull(reportDate, '') reportDate, isnull(examiner, '') examiner,
-                isnull(rechecker, '') rechecker, patientid, isnull(title, '') title.
+                isnull(rechecker, '') rechecker, isnull(patientid, '') patientid, isnull(title, '') title,
                 isnull(descriptionCode, '') descriptionCode, isnull(comments, '') comments
                 from sequencing_path  
 	            where patientid = @patientid `;
@@ -139,9 +139,9 @@ const listHandler= async (patientid) => {
 };
 
 
- exports.listequencing = (req,res,next) => {
+ exports.listsequencing = (req,res,next) => {
     logger.info('[143] sequencing listequencing req=' + JSON.stringify(req.body));
-
+    const patientid = req.body.patientid;
     const result = listHandler(patientid);
     result.then((data) => { 
         res.json(data);         
