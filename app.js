@@ -345,7 +345,7 @@ app.use('/tests', function(req, res, next) {
 // MLPA
  app.use('/mlpa', mlpaRouter);
 
-// 병리 동연변이 sequencing 입력
+// 병리 돌연변이 sequencing 입력
 app.use('/sequencingdiag', sequencingdiagRouter)
 
  // 화일 내려받기
