@@ -36,7 +36,9 @@ const listHandler = async (req) => {
 
     if(sheet.length > 0 )
     {
-        sql = sql +  " and type = '"+ sheet + "'";
+        if (sheet !== "AMLALL") {
+            sql = sql +  " and type = '"+ sheet + "'";
+        }
     }
 
     sql = sql + " order by id";
@@ -48,6 +50,7 @@ const listHandler = async (req) => {
          .input('sheet', mssql.VarChar, sheet); 
        const result = await request.query(sql) 
        return result.recordset;
+
    } catch (error) {
     logger.error('[28][get comments list]err=' + error.message);
    }
@@ -149,7 +152,8 @@ const deleteHandler = async (req) => {
 exports.listComments = (req, res, next) => { 
     logger.info('[120][listComments]req=' + JSON.stringify(req.body));
     const result = listHandler(req);
-    result.then(data => { 
+    result.then(data => {
+          console.log('=========>', data , '\n ========= '); 
           res.json(data);
     })
     .catch( error => {
