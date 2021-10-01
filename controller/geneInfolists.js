@@ -283,7 +283,7 @@ const  messageHandler6 = async (req) => {
               and coding=@coding`;
 
   if (type !== '') {
-    sql = sql +  `and type='` + type + `'`;
+    sql = sql +  ` and type='` + type + `'`;
   }
 
   logger.info('[289][geneinfo]getArtifactInfoLists sql=' + sql);
@@ -387,7 +387,7 @@ const  messageHandler8 = async (req) => {
             and coding=@coding `;
 
     if (type !== '') {
-      sql = sql +  "and type='" + type + "'";
+      sql = sql +  " and type='" + type + "'";
     }
 
   logger.info('[393][geneinfo]getArtifactsInfoCount sql=' + sql);
