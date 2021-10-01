@@ -191,7 +191,7 @@ const  messageHandler4 = async (req) => {
   const type   = req.body.type;
   logger.info('[192][geneinfo]comments select data=' + gene + ", " + type);
 
-  let sql ="select gene, comment, reference, variant_id ";
+  let sql ="select gene, comment, reference, isnull(variant_id, '') variant_id ";
   sql = sql + " from comments ";
   sql = sql + " where gene=@gene ";
   sql = sql + " and type=@type";

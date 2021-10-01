@@ -28,7 +28,7 @@ const listHandler = async (req) => {
     let sheet =  nvl(req.body.sheet, "AMLALL");
     logger.info('[13][get comments list]data=' + genes+ ", sheet=" + sheet);
 	
-	let sql ="select id, type, gene, comment, reference, variant_id, sheet ";
+	let sql ="select id, type, gene, comment, reference, isnull(variant_id, '') variant_id, isnull(sheet, 'AMLALL') sheet ";
     sql = sql + " from comments ";
     sql = sql + " where 1=1 " 
 	if(genes != "") 
