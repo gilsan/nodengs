@@ -36,7 +36,7 @@ const listHandler = async (req) => {
 
     if(sheet.length > 0 )
     {
-        sql = sql +  " and sheet = '"+ sheet + "'";
+        sql = sql +  " and type = '"+ sheet + "'";
     }
 
     sql = sql + " order by id";
