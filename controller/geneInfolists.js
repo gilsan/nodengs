@@ -43,9 +43,9 @@ const  messageHandler = async (req) => {
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change `
   if (type !== '') {
-    sql = sql +  `and type='` + type + `'`;
+    sql = sql +  ` and type='` + type + `'`;
   }
-  sql = sql +  `order by id desc`;
+  sql = sql +  ` order by id desc`;
   logger.info('[49][geneinfo]list sql=' + sql);
 
   try {
@@ -93,7 +93,7 @@ const  messageHandler2 = async (req) => {
   sql = sql  + "  and nucleotide_change =@nucleotide_change "
 
   if (type !== '') {
-    sql = sql +  `and type='` + type + `'`;
+    sql = sql +  ` and type='` + type + `'`;
   }
 
   sql = sql +  " order by desc";
