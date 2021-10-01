@@ -25,8 +25,8 @@ function nvl(st, defaultStr){
 const listHandler = async (req) => {
     await poolConnect;  
     const genes			= req.body.genes; 
-    let sheet =  nvl(req.body.sheet, "AMLALL");
-    logger.info('[13][get comments list]data=' + genes+ ", sheet=" + sheet);
+    let sheet =  nvl(req.body.sheet, "");
+    logger.info('[13][get comments list]genes=' + genes+ ", sheet=" + sheet);
 	
 	let sql ="select id, type, gene, comment, reference, isnull(variant_id, '') variant_id, isnull(sheet, 'AMLALL') sheet ";
     sql = sql + " from comments ";
