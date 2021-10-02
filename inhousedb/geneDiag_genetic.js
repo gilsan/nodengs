@@ -104,7 +104,7 @@ async function delData() {
 var tsvData = '../inhouseupload/genetic.txt';
 var rowCount = 0;
 
-var type = '';
+var type = 'genetic';
 
 delData()
 
