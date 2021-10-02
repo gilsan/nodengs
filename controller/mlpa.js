@@ -227,7 +227,7 @@ const getMlpaDataHandler = async (type) => {
     logger.info('[231][getMlpaContentHandler][sql]=' + sql);
     try {
         const request = pool.request()
-                .input('type', mssql.NVarChar, type); 
+                .input('specimenno', mssql.NVarChar, specimenno); 
         const finish = await request.query(sql)
         return finish.recordsets[0];
     }  catch (err) {
@@ -237,9 +237,9 @@ const getMlpaDataHandler = async (type) => {
 
 exports.mlpaDatas = (req,res, next) => {
     logger.info('[243][screenList][mlpaLists]req=' +  req.body.type);
-    let type = req.body.type;
+    let type       = req.body.type
 
-    const mlpaContents =  getMlpaDataHandler(type);
+    const mlpaContents =  getMlpaDataHandler(specimenno, type);
     mlpaContents.then(data => {
         res.json(data);          
     })
