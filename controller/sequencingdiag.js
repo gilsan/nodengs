@@ -59,6 +59,22 @@ const insertHandler = async (req) => {
     const testCode          = req.body.testCode;
     const patientid         = req.body.patientid;
     const comments          = req.body.comments;
+
+    const examin  = req.body.patientinfo.examin;  // 검사자
+    const recheck = req.body.patientinfo.recheck; // 확인자 
+
+    const   qry = "update patientinfo_path set examin=@examin, recheck=@recheck  where  patientID = @patientid ";
+    try {
+        const request = pool.request()
+        .input('examin', mssql.NVarChar, examin)
+        .input('recheck', mssql.NVarChar, recheck)
+        .input('patientid', mssql.VarChar, patientid);
+        const result = await request.query(qry)
+    } catch (error) {
+       logger.error('[70]sequencing insertHandler err=' + error.message);
+   }
+
+
     logger.info('[61]sequencing insertHandler mutation=' + mutation + ', reportDate=' + reportDate + ", examiner" + examiner
                                    + ", rechecker" + rechecker + ', title=' + title
                                    + ', descriptionCode=' + descriptionCode + ', patientid=' + patientid);   
