@@ -57,7 +57,7 @@ const listHandler = async (req) => {
 // insert
 const insertHandler = async (req) => { 
      const genes             = req.body.genes;
-     const locat	         = req.body.locat;
+     const locat	         = nvl(req.body.locat, '');
      const exon              = req.body.exon;
      const transcript        = req.body.transcript;
      const coding            = req.body.coding;
