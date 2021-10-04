@@ -665,7 +665,8 @@ const changeExaminer = async (specimenNo, part, name) => {
 exports.updateExaminer = (req, res, next) => {
     let specimenNo   =  req.body.specimenNo.trim(); 
     let part =  req.body.part;  
-    let name   =  req.body.name;  
+    let name   =  req.body.name; 
+    console.log('[669][updateExaminer] ===> ', specimenNo, part, name);
     const result = changeExaminer(specimenNo, part, name);
     result.then( data => {
          res.json({message: 'SUCCESS'});
@@ -988,7 +989,6 @@ exports.getPatientinfo  = (req, res, next) => {
      logger.error('[455][patientinfo_diag getPatientinfo]err=' + error.message);
  });
 }
-
 
 // screenstatus 상태를 변경
 const changescreenstatus = async (specimenNo, seq, userid, type) =>{
