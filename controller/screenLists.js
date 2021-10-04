@@ -66,8 +66,7 @@ exports.screenLists = (req,res, next) => {
     const result = messageHandler(req);
     result.then(data => {
 
-      // console.log('[50][screenstatus]',data);
- 
+      console.log('[50][screenstatus]',data);
        res.json(data);
   })
   .catch( error => {
@@ -1702,7 +1701,7 @@ const MlpalHandler = async (specimenNo) => {
       where a.specimenNo =@specimenNo
   `;
 
-  logger.info('[1385][listMlpa select]sql=' + sql);
+  logger.info('[1385][listMlpa select]sql=' + sql + '  ' + specimenNo);
 
   try {
       const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
@@ -1794,7 +1793,7 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
       @result2, @conclusion, @technique,
       @target, @testmethod, @analyzedgene, @comment)`;
     
-  logger.info('[1732][screenList][insert report_patientsInfo]sql=' + qry);
+  logger.info('[1797][screenList][insert report_patientsInfo]sql=' + qry);
 
   try {
     const request = pool.request()
@@ -1812,15 +1811,15 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
     let result = await request.query(qry);         
 
   } catch (error) {
-  logger.error('[1746][screenList][insert report_mlpa]err=' + error.message);
+  logger.error('[1815][screenList][insert report_mlpa]err=' + error.message);
   }
 }
 
 // MLPA 스크린 완료 
 const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
   // for 루프를 돌면서 report_mlpa 카운트 만큼       //report_mlpa Count
-  logger.info('[500][screenList][insert report_mlpa]specimenNo=' + specimenNo);
-  logger.info('[501][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
+  logger.info('[1822][screenList][insert report_mlpa]specimenNo=' + specimenNo);
+  logger.info('[1823][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
 
   for (i = 0; i < report_mlpa.length; i++)
   {
@@ -1829,7 +1828,7 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
   //  let deletion          = report_mlpa[i].deletion;
   //  let methylation       = nvl(report_mlpa[i].methylation, '');
 
-    let seq = i;
+    let seq = i + 1;
 
     // if (i < 10) {
     //   seq = '0' + i;
