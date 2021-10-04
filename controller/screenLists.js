@@ -578,11 +578,37 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // sequential 스크린 완료 Detected Variants 
-const insertHandler_form7 = async (specimenNo, detected_variants) => {
+const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype) => {
   // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
   logger.info('[500][screenList][insert detected_variants 7]specimenNo=' + specimenNo);
   logger.info('[501][screenList][insert detected_variants 7]detected_variants=' + JSON.stringify(detected_variants));
  
+  let detectedType;
+  if ( detectedtype === 'detected') {
+    detectedType = '0';
+  } else {
+    detectedType = '1';
+  }
+  
+  logger.info('[593][screenList][update patientinfo_diag]specimenNo=' + specimenNo
+                      + ', detectedtype=' + detectedtype + ', type=' + detectedType);
+
+  let query ="update [dbo].[patientinfo_diag] \
+  set detected=@detectedType  where specimenNo=@specimenNo ";  
+  logger.info('[598][screenList][update patientinfo_diag]sql=' + sql);
+
+try {
+  const request = pool.request()
+    .input('specimenNo', mssql.VarChar, specimenNo)
+    .input('detectedType', mssql.VarChar, detectedType);
+    
+    result = await request.query(query);         
+
+} catch (error) {
+  logger.error('[608][screenList][update patientinfo_diag]err=' + error.message);
+}
+
+
    let result;
     
    for (i = 0; i < detected_variants.length; i++)
@@ -1620,6 +1646,7 @@ exports.saveScreen7 = (req, res, next) => {
     const flt3ITD = '' ; 
     const leukemia = '';
     const vusmsg            = '';   
+    const resultStatus      = req.body.resultStatus;
     const specimenNo        = req.body.specimenNo;
     const detected_variants = req.body.sequencing;
  
@@ -1632,7 +1659,7 @@ exports.saveScreen7 = (req, res, next) => {
     const result2 = deleteHandler(specimenNo);
     result2.then(data => {
     
-      const result = insertHandler_form7(specimenNo, detected_variants);
+      const result = insertHandler_form7(specimenNo, detected_variants, resultStatus);
       result.then(data => {
                 // 검사지 변경
                 const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
@@ -1774,7 +1801,7 @@ const deleteHandlerReportMlpa = async (specimenNo) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // MLPA 스크린 완료 
-const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment) => {
+const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, detectedtype) => {
   
   logger.info('[1710][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
   logger.info('[1710][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
@@ -1784,6 +1811,34 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
   logger.info('[1722][screenList][insert report_patientsInfo]testmethod=' + testmethod );
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + comment );
+  logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
+
+  let detectedType
+  if ( detectedtype === 'detected') {
+    detectedType = '0';
+  } else {
+    detectedType = '1';
+  }
+
+  logger.info('[1795][screenList][insert report_patientsInfo]specimenNo=' + specimenNo
+  + ', detectedtype=' + detectedtype + ', type=' + detectedType);
+
+let query ="update [dbo].[patientinfo_diag] \
+set detected=@detectedType  where specimenNo=@specimenNo ";  
+logger.info('[1801][screenList][update patientinfo_diag]sql=' + query);
+
+try {
+const request = pool.request()
+.input('specimenNo', mssql.VarChar, specimenNo)
+.input('detectedType', mssql.VarChar, detectedType);
+
+result = await request.query(query);         
+
+} catch (error) {
+logger.error('[1811][screenList][update patientinfo_diag]err=' + error.message);
+}
+
+
 
   //insert Query 생성;
   const qry = `insert into report_patientsInfo (specimenNo, report_date, title, report_type,
@@ -1793,7 +1848,7 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
       @result2, @conclusion, @technique,
       @target, @testmethod, @analyzedgene, @comment)`;
     
-  logger.info('[1797][screenList][insert report_patientsInfo]sql=' + qry);
+  logger.info('[1824][screenList][insert report_patientsInfo]sql=' + qry);
 
   try {
     const request = pool.request()
@@ -1811,15 +1866,15 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
     let result = await request.query(qry);         
 
   } catch (error) {
-  logger.error('[1815][screenList][insert report_mlpa]err=' + error.message);
+  logger.error('[1842][screenList][insert report_mlpa]err=' + error.message);
   }
 }
 
 // MLPA 스크린 완료 
 const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
   // for 루프를 돌면서 report_mlpa 카운트 만큼       //report_mlpa Count
-  logger.info('[1822][screenList][insert report_mlpa]specimenNo=' + specimenNo);
-  logger.info('[1823][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
+  logger.info('[1849][screenList][insert report_mlpa]specimenNo=' + specimenNo);
+  logger.info('[1850][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
 
   for (i = 0; i < report_mlpa.length; i++)
   {
@@ -1834,13 +1889,13 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
     //   seq = '0' + i;
     // }
 
-    logger.info('[1765][screenList][insert report_mlpa]seq = ' + seq + ', site=' + site  );
+    logger.info('[1865][screenList][insert report_mlpa]seq = ' + seq + ', site=' + site  );
 
     //insert Query 생성;
     const qry = `insert into report_mlpa (specimenNo, site,  result, seq) 
               values(@specimenNo, @site,  @result,  @seq)`;
             
-      logger.info('[1775][screenList][insert report_mlpa]sql=' + qry);
+      logger.info('[1877][screenList][insert report_mlpa]sql=' + qry);
 
       try {
           const request = pool.request()
@@ -1852,7 +1907,7 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
           let result2 = await request.query(qry);         
     
       } catch (error) {
-        logger.error('[1789][screenList][insert report_mlpa]err=' + error.message);
+        logger.error('[1883][screenList][insert report_mlpa]err=' + error.message);
       }
       
   } // End of For Loop
@@ -1861,13 +1916,14 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
 // MLPA 임시저장
 exports.saveScreenMlpa = (req, res, next) => {
   
-    logger.info('[1316][screenList][saveScreenMlpa]req=' + JSON.stringify(req.body));
+    logger.info('[1892][screenList][saveScreenMlpa]req=' + JSON.stringify(req.body));
     
     const chron = '' ;
     const flt3ITD = '' ; 
     const leukemia = '';
     const vusmsg            = '';   
 
+    const resultStatus = req.body.resultStatus;
     const specimenNo        = req.body.specimenNo;
     let type = req.body.type;
     let title = req.body.title;
@@ -1884,14 +1940,14 @@ exports.saveScreenMlpa = (req, res, next) => {
     const examin            = '';
     const recheck           = '';
  
-    logger.info('[1414][screenList][saveScreenMlpa]specimenNo=, ' + specimenNo); 
+    logger.info('[1916][screenList][saveScreenMlpa]specimenNo=, ' + specimenNo); 
     const result6 = deleteHandlerMlpa(specimenNo);
     result6.then(data => {
 
       const result3 = deleteHandlerReportMlpa(specimenNo);
       result3.then(data => {
     
-        const result4 = insertHandlerMlpa (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment);
+        const result4 = insertHandlerMlpa (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, resultStatus);
         result4.then(data => {
     
           const result5 = insertHandlerReporMlpa (specimenNo, report_mlpa);
@@ -1907,7 +1963,7 @@ exports.saveScreenMlpa = (req, res, next) => {
             
     })
     .catch( error  => {
-      logger.error('[1430][screenList][saveScreenMlpa]err=' + error.message);
+      logger.error('[1939][screenList][saveScreenMlpa]err=' + error.message);
       res.sendStatus(500)
     });
 };
