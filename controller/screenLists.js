@@ -578,11 +578,14 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // sequential 스크린 완료 Detected Variants 
-const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype) => {
+const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype, comment, comment1,comment2) => {
   // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
-  logger.info('[500][screenList][insert detected_variants 7]specimenNo=' + specimenNo);
-  logger.info('[501][screenList][insert detected_variants 7]detected_variants=' + JSON.stringify(detected_variants));
- 
+  logger.info('[583][screenList][insert detected_variants 7]specimenNo=' + specimenNo);
+  logger.info('[584][screenList][insert detected_variants 7]detected_variants=' + JSON.stringify(detected_variants));
+  logger.info('[585][screenList][insert detected_variants 7]detectedtype=' + detectedtype);
+  logger.info('[585][screenList][insert detected_variants 7]comment=' + comment);
+  logger.info('[585][screenList][insert detected_variants 7]comment1=' + comment1);
+  logger.info('[585][screenList][insert detected_variants 7]comment2=' + comment2);
   let detectedType;
   if ( detectedtype === 'detected') {
     detectedType = '0';
@@ -595,14 +598,14 @@ const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype) 
 
   let query ="update [dbo].[patientinfo_diag] \
   set detected=@detectedType  where specimenNo=@specimenNo ";  
-  logger.info('[598][screenList][update patientinfo_diag]sql=' + sql);
+  logger.info('[598][screenList][update patientinfo_diag]sql=' + query);
 
 try {
   const request = pool.request()
     .input('specimenNo', mssql.VarChar, specimenNo)
     .input('detectedType', mssql.VarChar, detectedType);
     
-    result = await request.query(query);         
+  const  execute = await request.query(query);         
 
 } catch (error) {
   logger.error('[608][screenList][update patientinfo_diag]err=' + error.message);
@@ -616,12 +619,12 @@ try {
      const type              = detected_variants[i].type;
      
      const exon              = detected_variants[i].exonintron;
-     const nucleotide_change = detected_variants[i].nuclchange;
-     const amino_acid_change = detected_variants[i].aminochange;
+     const nucleotide_change = detected_variants[i].nucleotideChange;
+     const amino_acid_change = detected_variants[i].aminoAcidChange;
      const cosmic_id         = detected_variants[i].rsid ;
      const zygosity         = detected_variants[i].zygosity;
      const cnt               = nvl(detected_variants[i].cnt, '');
- 
+
      let functional_code = i;
  
      if (i < 10) {
@@ -636,10 +639,10 @@ try {
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               cosmic_id, functional_code, cnt) 
+               cosmic_id, functional_code, cnt, zygosity, comment, comment1,comment2) 
                values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @cosmic_id, @functional_code, @cnt)`;
+                  @cosmic_id, @functional_code, @cnt, @zygosity, @comment, @comment1,@comment2)`;
              
        logger.info('[539][screenList][insert detected_variants 7]sql=' + qry);
  
@@ -653,7 +656,10 @@ try {
              .input('amino_acid_change', mssql.VarChar, amino_acid_change)
              .input('zygosity', mssql.VarChar, zygosity)
              .input('cosmic_id', mssql.VarChar, cosmic_id)
-             .input('cnt', mssql.VarChar, cnt);
+             .input('cnt', mssql.VarChar, cnt)
+             .input('comment', mssql.NVarChar, comment)
+             .input('comment1', mssql.NVarChar, comment1)
+             .input('comment2', mssql.NVarChar, comment2);
              
              result = await request.query(qry);         
      
@@ -1602,8 +1608,9 @@ const SequntialHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select   isnull(type, '') type,
-      isnull(exon, '') exonintron, isnull(nucleotide_change, '') exonintron,
-      isnull(amino_acid_change, '') exonintron, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid 
+      isnull(exon, '') exonintron, isnull(nucleotide_change, '') nucleotideChange,
+      isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid,
+      isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment
       from [dbo].[report_detected_variants] 
       where specimenNo =@specimenNo
   `;
@@ -1645,21 +1652,22 @@ exports.saveScreen7 = (req, res, next) => {
     const chron = '' ;
     const flt3ITD = '' ; 
     const leukemia = '';
-    const vusmsg            = '';   
+    const vusmsg            = '';       
     const resultStatus      = req.body.resultStatus;
     const specimenNo        = req.body.specimenNo;
     const detected_variants = req.body.sequencing;
  
     const examin            = req.body.patientInfo.examin;
     const recheck           = req.body.patientInfo.recheck;
- 
-    
-    logger.info('[1414][screenList][saveScreen 7]specimenNo=, ' + specimenNo
+    const comment           = req.body.comment;
+    const comment1          = req.body.comment1;
+    const comment2          = req.body.comment2;
+    logger.info('[1657][screenList][saveScreen 7]specimenNo=, ' + specimenNo  + ' resultStatus= ' + resultStatus
                                   + " detected_variants" + detected_variants); 
     const result2 = deleteHandler(specimenNo);
     result2.then(data => {
     
-      const result = insertHandler_form7(specimenNo, detected_variants, resultStatus);
+      const result = insertHandler_form7(specimenNo, detected_variants, resultStatus, comment, comment1,comment2);
       result.then(data => {
                 // 검사지 변경
                 const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
