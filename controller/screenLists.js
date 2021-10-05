@@ -265,14 +265,14 @@ const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, exam
 
 // 2021.04.29 스크린 상태 변경 안 함
 // 임시 저장
-const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, recheck, vusmsg) => {
+const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, recheck, vusmsg, comment2) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[149][screenList][update screen]data=' + specimenNo + ", " + chron + ", "  + flt3ITD + ", " + leukemia
-                                       + ", vusmsg=" + vusmsg + + ", " + examin  + ", " + recheck,); 
+                                       + ", vusmsg=" + vusmsg +  ", " + examin  + ", " + recheck + ", " + comment2); 
 
     let sql ="update [dbo].[patientinfo_diag] \
-             set examin=@examin, recheck=@recheck, vusmsg = @vusmsg \
+             set examin=@examin, recheck=@recheck, vusmsg = @vusmsg , worker = @comment2\
              where specimenNo=@specimenNo ";   
     logger.info('[158][screenList][set screen]sql=' + sql);
     try {
@@ -280,7 +280,8 @@ const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, rech
             .input('examin', mssql.NVarChar, examin)
             .input('recheck', mssql.NVarChar, recheck)
             .input('vusmsg', mssql.NVarChar, vusmsg)
-            .input('specimenNo', mssql.VarChar, specimenNo); 
+            .input('specimenNo', mssql.VarChar, specimenNo)
+            .input('comment2', mssql.NVarChar, comment2); 
         const result = await request.query(sql)
        // console.dir( result);
         
@@ -1422,7 +1423,7 @@ logger.info('[669][screenList][saveScreen]req=' + JSON.stringify(req.body));
 const chron = req.body.chron ;
 const flt3ITD = req.body.flt3itd ; 
 const leukemia = req.body.leukemia;
-
+const comment2          = req.body.comment2;
 const specimenNo        = req.body.specimenNo;
 const detected_variants = req.body.detected_variants;
 const comments          = req.body.comments;
@@ -1452,7 +1453,7 @@ result2.then(data => {
           detectedResult.then(data => {
             // 검사지 변경
             //const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
-            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, comment2);
             statusResult.then(data => {
                   res.json({message: 'OK'});
               });
@@ -1506,7 +1507,7 @@ result2.then(data => {
           const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
           detectedResult.then(data => {
             // 검사지 변경
-            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, '');
             statusResult.then(data => {
                   res.json({message: 'OK'});
               });
@@ -1551,7 +1552,7 @@ exports.saveScreen6 = (req, res, next) => {
     const result = insertHandler_form6(specimenNo, detected_variants);
     result.then(data => {
   
-      const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg );
+      const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, '' );
       statusResult.then(data => {
             res.json({message: 'OK'});
         });
@@ -1670,7 +1671,7 @@ exports.saveScreen7 = (req, res, next) => {
       const result = insertHandler_form7(specimenNo, detected_variants, resultStatus, comment, comment1,comment2);
       result.then(data => {
                 // 검사지 변경
-                const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
+                const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, '');
                 statusResult.then(data => {
                       res.json({message: 'OK'});
                   });
@@ -1960,11 +1961,12 @@ exports.saveScreenMlpa = (req, res, next) => {
     
           const result5 = insertHandlerReporMlpa (specimenNo, report_mlpa);
           result5.then(data => {
+            res.json({message: 'OK'});
               // 검사지 변경
-              const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
-              statusResult.then(data => {
-                    res.json({message: 'OK'});
-                });
+              // const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
+              // statusResult.then(data => {
+              //       
+              //   });
             });
         });
       });
