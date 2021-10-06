@@ -32,7 +32,7 @@ const  messageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const specimenNo = req.body.specimenNo;
-  logger.info('[17][screenList][find detected_variant]specimenNo=' + specimenNo); 
+  logger.info('[35][screenList][find detected_variant]specimenNo=' + specimenNo); 
 
   const sql =`select specimenNo, report_date, gene, 
   isnull(igv, '') igv, isnull(sanger, '') sanger, 
@@ -45,7 +45,7 @@ const  messageHandler = async (req) => {
    from [dbo].[report_detected_variants] 
    where specimenNo=@specimenNo 
    order by functional_code, gene, nucleotide_change `;
-  logger.info('[20][screenList][find detectd_variant]sql=' + sql); 
+  logger.info('[48][screenList][find detectd_variant]sql=' + sql); 
 
   try {
       const request = pool.request()
@@ -55,31 +55,31 @@ const  messageHandler = async (req) => {
       
       return result.recordsets[0];
   } catch (error) {
-    logger.error('[30][screenList][find detectd_varint]err=' + error.message);
+    logger.error('[58][screenList][find detectd_varint]err=' + error.message);
   }
 }
 
 // report_detected_variants 를 specimenNo 로  조회
 exports.screenLists = (req,res, next) => {
     
-  logger.info('[37][screenList][detected_variants]req=' + JSON.stringify(req.body));
+  logger.info('[65][screenList][detected_variants]req=' + JSON.stringify(req.body));
     const result = messageHandler(req);
     result.then(data => {
 
-      console.log('[50][screenstatus]',data);
+      console.log('[69][screenstatus]',data);
        res.json(data);
   })
   .catch( error => {
-    logger.error('[47][screenList][find detected variant]err=' + error.message);
+    logger.error('[73][screenList][find detected variant]err=' + error.message);
     res.sendStatus(500);
   });
 };
 
 ////////////////////////////////////////////////////////////
 const commentHander = async (specimenNo) => {
-    logger.info('[54][screenList][find comments]specimenNo=' + specimenNo); 
+    logger.info('[80][screenList][find comments]specimenNo=' + specimenNo); 
     const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
-    logger.info('[56][screenList][find comments]sql=' +sql);
+    logger.info('[82][screenList][find comments]sql=' +sql);
 
     try {
         const request = pool.request()
@@ -89,20 +89,20 @@ const commentHander = async (specimenNo) => {
         
         return result.recordset;
     } catch (error) {
-      logger.error('[66][screenList][find comments]error=' + error.message);
+      logger.error('[92][screenList][find comments]error=' + error.message);
     }
 
 }
 
 // report_comments 에서 specimenNo 로 조회
 exports.commentLists = (req,res,next) => {
-    logger.info('[73][screenList][find comments]req=' + JSON.stringify(req.body));
+    logger.info('[99][screenList][find comments]req=' + JSON.stringify(req.body));
      const result = commentHander(req.body.specimenNo);
      result.then(data => {
            res.json(data);
      })
      .catch(error => {
-      logger.error('[79][screenList][find comments]err=' + error.message);
+      logger.error('[105][screenList][find comments]err=' + error.message);
      })
 }
 
@@ -158,7 +158,7 @@ const getPatientPathInfo = async (pathologyNum) => {
         isnull(tumorburden, '') tumorburden, \
         isnull(worker, '') worker  from [dbo].[patientinfo_path] \
              where  pathology_num=@pathologyNum";
-  logger.info('[141][screenList][find path patient]sql=' + sql);
+  logger.info('[161][screenList][find path patient]sql=' + sql);
      
   try {
       const request = pool.request()
@@ -168,13 +168,13 @@ const getPatientPathInfo = async (pathologyNum) => {
       
       return result.recordset[0];
   } catch (error) {
-      logger.error("[151][patientinfo_path select]err=" + error.message);
+      logger.error("[171][patientinfo_path select]err=" + error.message);
   }
 }
 
 ////////////////////////////////////////////////////////////
 const patientHandler = async (specimenNo) => {
-  logger.info('[86][screenList][find patient]specimenNo=' + specimenNo);
+  logger.info('[177][screenList][find patient]specimenNo=' + specimenNo);
   const sql ="select isnull(name, '') name  ,isnull(patientID, '') patientID \
               ,isnull(age,  '') age ,isnull(gender, '') gender \
               ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion \
@@ -209,7 +209,7 @@ const patientHandler = async (specimenNo) => {
               ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
               , isnull(vusmsg, '') vusmsg  \
               from [dbo].[patientinfo_diag] where specimenNo=@specimenNo ";
-  logger.info('[118][screenList][find patient]sql=' + sql);
+  logger.info('[212][screenList][find patient]sql=' + sql);
 
   try {
       const request = pool.request()
@@ -219,20 +219,20 @@ const patientHandler = async (specimenNo) => {
       
       return result.recordset;
   } catch (error) {
-    logger.error('[128][screenList][find patient]err=' + error.message);
+    logger.error('[222][screenList][find patient]err=' + error.message);
   }
 
 }
 
 // report_comments 에서 specimenNo 로 조회
 exports.patientLists = (req,res,next) => {
-  logger.info('[135][screenList][find patient]req=' + JSON.stringify(req.body));
+  logger.info('[229][screenList][find patient]req=' + JSON.stringify(req.body));
    const result = patientHandler(req.body.specimenNo);
    result.then(data => {
          res.json(data);
    })
    .catch(error => {
-    logger.error('[140][screenList][find patient]err=' + error.message);
+    logger.error('[235][screenList][find patient]err=' + error.message);
    })
 }
 
@@ -240,13 +240,13 @@ exports.patientLists = (req,res,next) => {
 const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, examin, recheck, vusmsg) => {
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[149][screenList][update screen]data=' + status + ", " + specimenNo + ", " + chron + ", "  + flt3ITD + ", " + leukemia
+    logger.info('[243][screenList][update screen]data=' + status + ", " + specimenNo + ", " + chron + ", "  + flt3ITD + ", " + leukemia
                                        + ", vusmsg=" + vusmsg + + ", examin=" + examin  + ", recheck=" + recheck); 
 
     let sql =`update [dbo].[patientinfo_diag] 
              set screenstatus=@status, examin=@examin, recheck=@recheck, vusmsg = @vusmsg 
              where specimenNo=@specimenNo `;   
-    logger.info('[158][screenList][set screen]sql=' + sql);
+    logger.info('[249][screenList][set screen]sql=' + sql);
     try {
         const request = pool.request()
             .input('status', mssql.VarChar, status)
@@ -259,7 +259,7 @@ const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, exam
         
         return result.recordset;
     } catch (error) {
-      logger.error('[173][screenList][set screen]err=' + error.message);
+      logger.error('[262][screenList][set screen]err=' + error.message);
     }
 }
 
@@ -274,7 +274,7 @@ const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, rech
     let sql =`update [dbo].[patientinfo_diag] 
              set examin=@examin, recheck=@recheck, vusmsg = @vusmsg 
              where specimenNo=@specimenNo `;   
-    logger.info('[274][screenList][set screen]sql=' + sql);
+    logger.info('[277][screenList][set screen]sql=' + sql);
     try {
         const request = pool.request()
             .input('examin', mssql.NVarChar, examin)
@@ -294,7 +294,7 @@ const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, rech
 const  messageHandler3 = async (specimenNo, status) => {
   await poolConnect; // ensures that the pool has been created
 
-  logger.info('[181][screenList][update screen 2]data=' + status + ", " + specimenNo);
+  logger.info('[297][screenList][update screen 2]data=' + status + ", " + specimenNo);
    let sql ="update [dbo].[patientinfo_diag] \
            set screenstatus=@status \
            where specimenNo=@specimenNo ";
@@ -359,8 +359,8 @@ const insertCommentHandler = async(specimenNo, comments) => {
 // 스크린 완료 Detected Variants 
 const insertHandler = async (specimenNo, detected_variants) => {
  // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
- logger.info('[246][screenList][insert detected_variants]specimenNo=' + specimenNo);
- logger.info('[246][screenList][insert detected_variants]detected_variants=' + JSON.stringify(detected_variants));
+ logger.info('[362]][screenList][insert detected_variants]specimenNo=' + specimenNo);
+ logger.info('[363][screenList][insert detected_variants]detected_variants=' + JSON.stringify(detected_variants));
 
   let result;
    
@@ -597,7 +597,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype, 
     detectedType = '1';
   }
   
-  logger.info('[593][screenList][update patientinfo_diag]specimenNo=' + specimenNo
+  logger.info('[600][screenList][update patientinfo_diag]specimenNo=' + specimenNo
                       + ', detectedtype=' + detectedtype + ', type=' + detectedType);
 
   let query ="update [dbo].[patientinfo_diag] \
@@ -612,7 +612,7 @@ try {
   const  execute = await request.query(query);         
 
 } catch (error) {
-  logger.error('[608][screenList][update patientinfo_diag]err=' + error.message);
+  logger.error('[615][screenList][update patientinfo_diag]err=' + error.message);
 }
 
 
@@ -1744,15 +1744,15 @@ const SequencingCountHandler = async (type) => {
 const insertHandlerSequencing = async (specimenNo, type, title, result2, detectedtype,  
                             target, testmethod, analyzedgene, specimen,  comment, identified_variations) => {
   
-  logger.info('[1710][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
-  logger.info('[1710][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
-  logger.info('[1722][screenList][insert report_patientsInfo]target=' + target );
-  logger.info('[1722][screenList][insert report_patientsInfo]testmethod=' + testmethod );
-  logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
-  logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + comment );
-  logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
-  logger.info('[1722][screenList][insert report_patientsInfo]identified_variations=' + identified_variations );
-  logger.info('[1710][screenList][insert report_patientsInfo]specimen=' + specimen);
+  logger.info('[1747][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
+  logger.info('[1747][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
+  logger.info('[1747][screenList][insert report_patientsInfo]target=' + target );
+  logger.info('[1747][screenList][insert report_patientsInfo]testmethod=' + testmethod );
+  logger.info('[1747][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
+  logger.info('[1747][screenList][insert report_patientsInfo]analyzedgene=' + comment );
+  logger.info('[1747][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
+  logger.info('[1747][screenList][insert report_patientsInfo]identified_variations=' + identified_variations );
+  logger.info('[1747][screenList][insert report_patientsInfo]specimen=' + specimen);
   
   let detectedType
   if ( detectedtype === 'detected') {
@@ -1766,7 +1766,7 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
 
   let query =`update [dbo].[patientinfo_diag] 
               set detected=@detectedType  where specimenNo=@specimenNo `;  
-  logger.info('[1801][screenList][update patientinfo_diag]sql=' + query);
+  logger.info('[1769][screenList][update patientinfo_diag]sql=' + query);
 
   try {
     const request = pool.request()
@@ -1776,7 +1776,7 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
     result = await request.query(query);         
 
   } catch (error) {
-    logger.error('[1811][screenList][update patientinfo_diag]err=' + error.message);
+    logger.error('[1779][screenList][update patientinfo_diag]err=' + error.message);
   }
 
   //insert Query 생성;
@@ -1807,7 +1807,7 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
     let result = await request.query(qry);         
 
   } catch (error) {
-    logger.error('[1842][screenList][insert report_mlpa]err=' + error.message);
+    logger.error('[1810][screenList][insert report_mlpa]err=' + error.message);
   }
 }
 
@@ -1816,7 +1816,7 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
 const insertHandlerSequence = async (type,  
                             target, testmethod, analyzedgene, specimen,  identified_variations, comment1, comment2 ) => {
   
-  logger.info('[1710][screenList][insert sequncing_list]specimenNo=' + specimenNo);
+  logger.info('[1819][screenList][insert sequncing_list]specimenNo=' + specimenNo);
   logger.info('[1710][screenList][insert sequncing_list]type=' + type  );
   logger.info('[1722][screenList][insert sequncing_list]target=' + target );
   logger.info('[1722][screenList][insert sequncing_list]testmethod=' + testmethod );
@@ -1834,7 +1834,7 @@ const insertHandlerSequence = async (type,
       @target, @testmethod, @analyzedgene, @comment1, @comment2,
       @identified_variations, @specimen)`;
     
-  logger.info('[1824][screenList][insert sequncing_list]sql=' + qry);
+  logger.info('[1837][screenList][insert sequncing_list]sql=' + qry);
 
   try {
     const request = pool.request()
@@ -1850,7 +1850,7 @@ const insertHandlerSequence = async (type,
     let result = await request.query(qry);         
 
   } catch (error) {
-    logger.error('[1842][screenList][insertHandlerSequence]err=' + error.message);
+    logger.error('[1853][screenList][insertHandlerSequence]err=' + error.message);
   }
 }
 
@@ -1859,7 +1859,7 @@ const insertHandlerSequence = async (type,
 const updateHandlerSequence = async (type,  
                             target, testmethod, analyzedgene, specimen,  identified_variations, comment1, comment2 ) => {
   
-  logger.info('[1856][screenList][update sequncing_list]type=' + type  );
+  logger.info('[1862][screenList][update sequncing_list]type=' + type  );
   logger.info('[1856][screenList][update sequncing_list]target=' + target );
   logger.info('[1856][screenList][update sequncing_list]testmethod=' + testmethod );
   logger.info('[1856][screenList][update sequncing_list]analyzedgene=' + analyzedgene );
@@ -1871,10 +1871,10 @@ const updateHandlerSequence = async (type,
   //insert Query 생성;
   const qry = `update sequncing_list 
       set  target =@target, method = @testmethod, analyzedgene = @analyzedgene, 
-      comment1 = @comment1, comment2 = @comment2
+      comment1 = @comment1, comment2 = @comment2,
       identified_variations = @identified_variations,  specimen =  @specimen `;
     
-  logger.info('[1824][screenList][insert updateHandlerSequence]sql=' + qry);
+  logger.info('[1877][screenList][insert updateHandlerSequence]sql=' + qry);
 
   try {
     const request = pool.request()
@@ -1890,14 +1890,14 @@ const updateHandlerSequence = async (type,
     let result = await request.query(qry);         
 
   } catch (error) {
-    logger.error('[1842][screenList][insert report_mlpa]err=' + error.message);
+    logger.error('[1893][screenList][insert report_mlpa]err=' + error.message);
   }
 }
 
 // sequential 임시저장
 exports.saveScreen7 = (req, res, next) => {
   
-    logger.info('[1316][screenList][saveScreen 7]req=' + JSON.stringify(req.body));
+    logger.info('[1900][screenList][saveScreen 7]req=' + JSON.stringify(req.body));
     
     const chron = '' ;
     const flt3ITD = '' ; 
@@ -1922,7 +1922,7 @@ exports.saveScreen7 = (req, res, next) => {
     let testmethod  = nvl(req.body.testmethod, '');
     let analyzedgene =  nvl(req.body.analyzedgene, '');
 
-    logger.info('[1657][screenList][saveScreen 7]specimenNo= ' + specimenNo  + ', resultStatus= ' + resultStatus
+    logger.info('[1925][screenList][saveScreen 7]specimenNo= ' + specimenNo  + ', resultStatus= ' + resultStatus
                                   + ", detected_variants=" + detected_variants); 
     const result = deleteHandler(specimenNo);
     result.then(data => {
@@ -1956,7 +1956,7 @@ exports.saveScreen7 = (req, res, next) => {
                   else
                   {
                     const result8 = updateHandlerSequence (type, title,
-                      target, testmethod, analyzedgene, specimen, comment1, comment2);
+                      target, testmethod, analyzedgene, specimen, identified_variations,comment1, comment2);
                       result8.then(data => {
                         res.json({message: 'OK'});
                       })
@@ -2104,15 +2104,15 @@ const deleteHandlerReportMlpa = async (specimenNo) => {
 // MLPA 스크린 완료 
 const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, detectedtype) => {
   
-  logger.info('[1710][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
-  logger.info('[1710][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
-  logger.info('[1722][screenList][insert report_patientsInfo]conclusion=' + conclusion);
-  logger.info('[1722][screenList][insert report_patientsInfo]technique=' + technique );
-  logger.info('[1722][screenList][insert report_patientsInfo]target=' + target );
-  logger.info('[1722][screenList][insert report_patientsInfo]testmethod=' + testmethod );
+  logger.info('[2107][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
+  logger.info('[2107]][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
+  logger.info('[2107]][screenList][insert report_patientsInfo]conclusion=' + conclusion);
+  logger.info('[2107]][screenList][insert report_patientsInfo]technique=' + technique );
+  logger.info('[2107]][screenList][insert report_patientsInfo]target=' + target );
+  logger.info('[2107]][screenList][insert report_patientsInfo]testmethod=' + testmethod );
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + comment );
-  logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
+  logger.info('[2107]][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
 
   let detectedType
   if ( detectedtype === 'detected') {
@@ -2121,12 +2121,12 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
     detectedType = '1';
   }
 
-  logger.info('[1795][screenList][insert report_patientsInfo]specimenNo=' + specimenNo
+  logger.info('[2124][screenList][insert report_patientsInfo]specimenNo=' + specimenNo
   + ', detectedtype=' + detectedtype + ', type=' + detectedType);
 
 let query ="update [dbo].[patientinfo_diag] \
 set detected=@detectedType  where specimenNo=@specimenNo ";  
-logger.info('[1801][screenList][update patientinfo_diag]sql=' + query);
+logger.info('[2129][screenList][update patientinfo_diag]sql=' + query);
 
 try {
 const request = pool.request()
@@ -2136,7 +2136,7 @@ const request = pool.request()
 result = await request.query(query);         
 
 } catch (error) {
-logger.error('[1811][screenList][update patientinfo_diag]err=' + error.message);
+logger.error('[2139][screenList][update patientinfo_diag]err=' + error.message);
 }
 
 
@@ -2149,7 +2149,7 @@ logger.error('[1811][screenList][update patientinfo_diag]err=' + error.message);
       @result2, @conclusion, @technique,
       @target, @testmethod, @analyzedgene, @comment)`;
     
-  logger.info('[1824][screenList][insert report_patientsInfo]sql=' + qry);
+  logger.info('[2152][screenList][insert report_patientsInfo]sql=' + qry);
 
   try {
     const request = pool.request()
@@ -2167,15 +2167,15 @@ logger.error('[1811][screenList][update patientinfo_diag]err=' + error.message);
     let result = await request.query(qry);         
 
   } catch (error) {
-  logger.error('[1842][screenList][insert report_mlpa]err=' + error.message);
+  logger.error('[2179][screenList][insert report_mlpa]err=' + error.message);
   }
 }
 
 // MLPA 스크린 완료 
 const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
   // for 루프를 돌면서 report_mlpa 카운트 만큼       //report_mlpa Count
-  logger.info('[1849][screenList][insert report_mlpa]specimenNo=' + specimenNo);
-  logger.info('[1850][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
+  logger.info('[2177][screenList][insert report_mlpa]specimenNo=' + specimenNo);
+  logger.info('[2178][screenList][insert report_mlpa]report_mlpa=' + JSON.stringify(report_mlpa));
 
   for (i = 0; i < report_mlpa.length; i++)
   {
@@ -2196,7 +2196,7 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
     const qry = `insert into report_mlpa (specimenNo, site,  result, seq) 
               values(@specimenNo, @site,  @result,  @seq)`;
             
-      logger.info('[1877][screenList][insert report_mlpa]sql=' + qry);
+      logger.info('[2199][screenList][insert report_mlpa]sql=' + qry);
 
       try {
           const request = pool.request()
@@ -2208,7 +2208,7 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
           let result2 = await request.query(qry);         
     
       } catch (error) {
-        logger.error('[1883][screenList][insert report_mlpa]err=' + error.message);
+        logger.error('[2211][screenList][insert report_mlpa]err=' + error.message);
       }
       
   } // End of For Loop
@@ -2217,7 +2217,7 @@ const insertHandlerReporMlpa = async (specimenNo, report_mlpa) => {
 // MLPA 임시저장
 exports.saveScreenMlpa = (req, res, next) => {
   
-    logger.info('[1892][screenList][saveScreenMlpa]req=' + JSON.stringify(req.body));
+    logger.info('[220][screenList][saveScreenMlpa]req=' + JSON.stringify(req.body));
     
     const chron = '' ;
     const flt3ITD = '' ; 
@@ -2241,7 +2241,7 @@ exports.saveScreenMlpa = (req, res, next) => {
     const examin            = '';
     const recheck           = '';
  
-    logger.info('[1916][screenList][saveScreenMlpa]specimenNo=, ' + specimenNo); 
+    logger.info('[2244][screenList][saveScreenMlpa]specimenNo=, ' + specimenNo); 
     const result6 = deleteHandlerMlpa(specimenNo);
     result6.then(data => {
 
@@ -2265,7 +2265,7 @@ exports.saveScreenMlpa = (req, res, next) => {
             
     })
     .catch( error  => {
-      logger.error('[1939][screenList][saveScreenMlpa]err=' + error.message);
+      logger.error('[2268][screenList][saveScreenMlpa]err=' + error.message);
       res.sendStatus(500)
     });
 };
