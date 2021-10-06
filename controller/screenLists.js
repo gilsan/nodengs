@@ -521,6 +521,8 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
      const gnomADEAS         = detected_variants[i].gnomADEAS;
      const OMIM              = detected_variants[i].OMIM;
+     const comment2          = detected_variants[i].comment2;
+      
      const cnt               = nvl(detected_variants[i].cnt, '');
 
 
@@ -537,16 +539,16 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
                            + ', functional_impact=' + functional_impact 
                            + ', transcript= ' + transcript + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
-                           + ', zygosity=' + zygosity 
-                           + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM + ', cnt=' + cnt);
+                           + ', zygosity=' + zygosity + ', comment2 =' + comment2
+                           + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM + ', cnt=' + cnt );
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-               dbSNPHGMD, gnomADEAS, OMIM, cnt) 
+               dbSNPHGMD, gnomADEAS, OMIM, cnt, comment2) 
                values(@specimenNo, getdate(),  @gene,
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
-                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt)`;
+                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt, @comment2)`;
              
        logger.info('[470][screenList][insert detected_variants 6]sql=' + qry);
        
@@ -564,6 +566,7 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
              .input('dbSNPHGMD', mssql.NVarChar, dbSNPHGMD)
              .input('gnomADEAS', mssql.NVarChar, gnomADEAS)
              .input('OMIM', mssql.VarChar, OMIM)
+             .input('comment2', mssql.VarChar, comment2)
              .input('cnt', mssql.VarChar, cnt);
              
              result = await request.query(qry);         
@@ -624,7 +627,7 @@ try {
      const amino_acid_change = detected_variants[i].aminoAcidChange;
      const cosmic_id         = detected_variants[i].rsid ;
      const zygosity          = detected_variants[i].zygosity;
-     const GenbankAccesionNo = nvl(detected_variants[i].GenbankAccesionNo, '');
+     const GenbankAccesionNo = nvl(detected_variants[i].genbankaccesion, '');
      const cnt               = nvl(detected_variants[i].cnt, '');
 
      let functional_code = i;
@@ -1540,7 +1543,7 @@ exports.saveScreen6 = (req, res, next) => {
 
   const specimenNo        = req.body.specimenNo;
   const detected_variants = req.body.detected_variants;
-  const comments          = req.body.comments;
+  const comment2          = req.body.comment2;
   const detectedtype      = req.body.resultStatus;
   const examin            = req.body.patientInfo.examin;
   const recheck           = req.body.patientInfo.recheck;
@@ -1577,7 +1580,8 @@ const immundefiHandler = async (specimenNo) => {
   const sql=`select  isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact,
   isnull(transcript,'') transcript, isnull(exon, '') exonIntro, isnull(nucleotide_change, '') nucleotideChange,
   isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(dbSNPHGMD, '') dbSNPHGMD,
-  isnull(gnomADEAS, '') gnomADEAS, isnull(OMIM, '') OMIM from [dbo].[report_detected_variants] where specimenNo =@specimenNo
+  isnull(gnomADEAS, '') gnomADEAS, isnull(OMIM, '') OMIM, isnull(comment2, '') comment2
+   from [dbo].[report_detected_variants] where specimenNo =@specimenNo
   `;
 
   try {
@@ -1616,7 +1620,7 @@ const SequntialHandler = async (specimenNo) => {
       isnull(exon, '') exonintron, isnull(nucleotide_change, '') nucleotideChange,
       isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid,
       isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment2,
-      isnull(GenbankAccesionNo, '') GenbankAccesionNo, isnull(seqcomment, '') seqcomment
+      isnull(GenbankAccesionNo, '') genbankaccesion, isnull(seqcomment, '') seqcomment
       from [dbo].[report_detected_variants]  
       where specimenNo =@specimenNo
   `;
