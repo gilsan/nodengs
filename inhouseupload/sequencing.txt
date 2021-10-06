@@ -1,0 +1,120 @@
+LPE323	Achondroplasia (FGFR3 G380R)
+LPE262	APC Gene Sequencing
+LPC178	"APC, family (부분)"
+LPE482	"AVP gene, mutation [sequencing]"
+LPC160	BRCA1 고위험군gene mutation(sequencing)
+LPC161	BRCA2 고위험군gene mutation(sequencing)
+LPC100	"BRCA1 gene, Mutation[sequencing]"
+LPC101	"BRCA2 gene, Mutation[sequencing]"
+LPE247	BTK gene test
+LPE249	CDH1 gene test
+LPE333	CEBPA gene test
+LPE494	"CFH gene, mutation [sequencing]"
+LPE340	CFTR gene mutation
+LPE462	"CHD7 gene, mutation [sequencing]"
+LPE354	COL1A1 gene test 
+LPE356	COL1A2 gene test 
+LPE410	"CSF3R gene, Mutation [sequencing]"
+LPE227	Congenital adrenal hyperplasia gene test (CYP21A2) 
+LPE341	DHCR7 gene test
+LPE435	"DMD, family (부분)"
+LPE420	"DMD gene, Mutation [sequencing]"
+LPE360	DNMT3A gene [sequencing]
+LPE361	DNMT3A gene(부분)
+LPE303	DYT1 (TOR1A) gene test
+LPE233	ELA2 Gene Test 
+LPE436	"EPOR gene, Mutation [sequencing]"
+LPE319	"FANCA, family (부분)"
+LPE316	FANCA gene 정밀 검사
+LPE457	"FANCG gene, mutation [sequencing]"
+LPE141	Marfan syndrome gene test (FBN1)
+LPE350	"FBN1, family (부분)"
+LPE280	FGFR2 gene test
+LPE413	"FLCN, family (부분)"
+LPE412	"FLCN gene, Mutation [sequencing]"
+LPE477	"GNAS gene, mutation [sequencing]"
+LPE418	"HAX1 gene, Mutation [Sequencing]"
+LPE391	"HBA1. gene, mutation (α-thalassemia) [sequencing]"
+LPE392	"HBA2. gene, mutation (α-thalassemia) [sequencing]"
+LPE306	HNF1A gene (MODY3) test 
+LPE231	Hypochondroplasia gene test (FGFR3)
+LPE431	"IKBKG gene, Mutation [sequencing]"
+LPC174	JAK 2 gene exon 12 Mutation 
+LPE237	KCNH2 gene test (Long QT syndrome)
+LPE238	KCNQ1 gene test (Long QT syndrome)
+LPE255	KCNQ1 gene test (부분) 
+LPE290	KRAS gene test
+LPE115	"LDLR gene, mutation [Sequencing]"
+LPE302	LHON gene test (sequencing)
+LPE334	MAPT (Frontotemporal dementia) gene test
+LPE196	"MELAS, MT-TL1 gene [sequencing]"
+LPE310	MEN1 gene test  
+LPE325	"MEN1, family (부분)"
+LPC117	"hMLH1 (Mutation identification Test), Confirmatory"
+LPE428	"MLL2 gene, Mutation [sequencing]"
+LPC118	"hMSH2 (Mutation identification Test), Confirmatory"
+LPE156	"MYD88 gene, Mutation [sequencing]"
+LPE343	MUTYH gene test
+LPE440	NAT2 genotyping [sequencing]
+LPE245	Neurofibromatosis 1 (NF1) gene test
+LPE246	"NF1, family (부분)"
+LPE241	Neurofibromatosis 2 (NF2) gene test
+LPE243	"CADASIL, NOTCH3 gene test"
+LPE244	"고위험군 CADASIL, NOTCH3 유전자검사 (부분)"
+LPE329	NPM1 gene test (Sequencing)
+LPE289	NRAS gene test
+LPE460	"NSD1 gene, mutation [sequencing]"
+LPE153	NUDT15 Genotyping [sequencing]
+LPE330	OPA1 (optic atrophy 1) gene test 
+LPE331	"OPA1, family (부분)"
+LPE379	PANK2 gene test
+LPE221	"PARK2 gene, Mutation[sequencing]"
+LPE285	PAX6 gene test
+LPE286	"PAX6, family (부분)"
+LPE275	PKD 1 gene test
+LPE277	"PKD1, family (부분)"
+LPE276	PKD 2 gene test
+LPE278	"PKD2, family (부분)"
+LPE414	"PKHD1 gene, Mutation [sequencing]"
+LPE313	PRF1 gene test
+LPE433	"PRRT2, gene test [Sequencing]"
+LPE308	PTEN gene (hamartoma tumor syndrome) test 
+LPE267	PTPN11 Gene Mutation
+LPE297	"PTPN11, family (부분)  "
+LPE287	RET gene test
+LPE479	RNF213(p.R4810K) mutation [sequencing]
+LPE337	RPS19 gene test
+LPE338	"RPS19, family (부분)"
+LPC194	"RUNX1 gene, mutation [sequencing]"
+LPE236	"SCN5A gene test (Long QT syndrome, Brugada syndrome)"
+LPE253	SCN5A gene test (부분)
+LPE495	"SLC12A3 gene, mutation [Sequencing]"
+LPE342	STAR gene test
+LPE251	"STK11 gene, Mutation[sequencing]"
+LPE230	Family-Corneal dystrophy gene test (TGFBI-부분)
+LPE229	patient-Corneal dystrophy gene test (TGFBI)
+LPE481	"TGFBI (Exon4,11,12,14) screening [sequencing]"
+LPE374	TGFBR1 gene sequencing
+LPE375	TGFBR2 gene sequencing
+LPE368	THRB gene test 
+LPE376	"THRB, Family(부분)"
+LPE295	TP53 gene test
+LPE296	"TP53, family (부분)"
+LPE336	TPMT genotyping
+LPE282	TSC1  gene test
+LPE283	"TSC1, family (부분)"
+LPE258	TSC2 gene test
+LPE284	"TSC2, family (부분)"
+LPE469	"TTR gene, mutation [sequencing]"
+LPE378	UGT1A1 (UDP-glucuronyl transferase) gene test
+LPE314	UNC13D gene test
+LPE318	"UNC13D, family (부분)"
+LPE194	VHL Gene Mutation 
+LPE272	WAS Gene Test (Wiskott-Aldrich syndrome)
+LPE279	"WAS, family (부분)"
+LPE320	Wilson disease (ATP7B Whole Sequencing)
+LPE321	"ATP7B, family (부분)"
+LPE349	β-Thalassemia (HBB)[sequencing]
+LPE328	"β-Thalassemia(HBB), family (부분)"
+LPE154	유전성유전질환 Family (부분) [sequencing]
+LPE155	"유전성유전질환 Family (비급여,부분) [sequencing]"

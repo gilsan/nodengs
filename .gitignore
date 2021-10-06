@@ -1,7 +1,7 @@
 node_modules
 path
 diag
-*.txt
+
 *.log.1
 diag_temp
 path_temp

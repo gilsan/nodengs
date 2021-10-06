@@ -1611,8 +1611,11 @@ const SequntialHandler = async (specimenNo) => {
   const sql=`select   isnull(type, '') type,
       isnull(exon, '') exonintron, isnull(nucleotide_change, '') nucleotideChange,
       isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid,
-      isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment2
-      from [dbo].[report_detected_variants] 
+      isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment2,
+      isnull(b.target, '') target,  isnull(b.testmethod, '') testmethod, isnull(b.analyzedgene, '') analyzedgene
+      from [dbo].[report_detected_variants]  a
+      left outer join [dbo].[mlpa_list] b
+      on a.type = b.report_type
       where specimenNo =@specimenNo
   `;
 
