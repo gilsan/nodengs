@@ -1661,15 +1661,15 @@ const PatientSequntialHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
       isnull(a.report_type, '') report_type, isnull(a.result, '') result, 
-      isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
-      isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen
+      isnull(a.target, '') target,  isnull(b.method, '') method, isnull(a.analyzedgene, '') analyzedgene,
+      isnull(a.identified_variations, '') identified_variations, isnull(a.specimen, '') specimen
       from [dbo].[report_patientsInfo]  a
       left outer join [dbo].[sequncing_list] b
       on a.report_type = b.report_type
       where a.specimenNo =@specimenNo
   `;
 
-  logger.info('[1385][listPatientSequntial select]sql=' + sql + '  ' + specimenNo);
+  logger.info('[1672][listPatientSequntial select]sql=' + sql + '  ' + specimenNo);
 
   try {
       const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
@@ -1677,7 +1677,7 @@ const PatientSequntialHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1370][listPatientSequntial]err=' + error.message);
+         logger.error('[1680][listPatientSequntial]err=' + error.message);
     }
   
 };
@@ -1686,13 +1686,13 @@ exports.listPatientSequntial = (req, res, next) => {
   const specimenNo        = req.body.specimenNo;
 
   const dataset = PatientSequntialHandler(specimenNo);
-  logger.info('[1657][screenList][listPatientSequntial]specimenNo=, ' + specimenNo )
+  logger.info('[1689][screenList][listPatientSequntial]specimenNo=, ' + specimenNo )
   dataset.then(data => {
-    console.log('[1381][listPatientSequntial] ==> ', data)
+    console.log('[1691][listPatientSequntial] ==> ', data)
      res.json(data);
   })
   .catch( error  => {
-   logger.error('[1385][listPatientSequntial select]err=' + error.message);
+   logger.error('[1695][listPatientSequntial select]err=' + error.message);
    res.status(500).send('That is Not good ')
   }); 
 
@@ -1700,11 +1700,11 @@ exports.listPatientSequntial = (req, res, next) => {
 
 const deleteHandlerSequntial = async (specimenNo) => {
    
-  logger.info('[761][screenList]delete Sequntial]specimenNo=' + specimenNo);
+  logger.info('[1703][screenList]delete Sequntial]specimenNo=' + specimenNo);
     //delete Query 생성;    
     const qry ="delete report_patientsInfo where specimenNo=@specimenNo";
             
-    logger.info("[765][screenList][del Sequntial]del sql=" + qry);
+    logger.info("[1707][screenList][del Sequntial]del sql=" + qry);
   
     try {
         const request = pool.request()
@@ -1713,7 +1713,7 @@ const deleteHandlerSequntial = async (specimenNo) => {
           result = await request.query(qry);         
   
     } catch (error) {
-      logger.error('[774][screenList][del Sequntial]err=' +  error.message);
+      logger.error('[1716][screenList][del Sequntial]err=' +  error.message);
     }
       
     return result;
@@ -1723,7 +1723,7 @@ const deleteHandlerSequntial = async (specimenNo) => {
 const SequencingCountHandler = async (type) => {
   await poolConnect; // ensures that the pool has been created
  
-  logger.info('[569][screenList]get SequencingCountHandler type=' + type);
+  logger.info('[1726][screenList]get SequencingCountHandler type=' + type);
   const sql ="select count(1) as count from sequncing_list \
            where report_type = '" + type + "'";
   logger.info('[572][screenList]get SequencingCountHandler sql=' + sql);  
@@ -1749,8 +1749,8 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
   logger.info('[1747][screenList][insert report_patientsInfo]target=' + target );
   logger.info('[1747][screenList][insert report_patientsInfo]testmethod=' + testmethod );
   logger.info('[1747][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
-  logger.info('[1747][screenList][insert report_patientsInfo]analyzedgene=' + comment );
-  logger.info('[1747][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
+  logger.info('[1747][screenList][insert report_patientsInfo]comment=' + comment );
+  logger.info('[1747][screenList][insert report_patientsInfo]detectedtype=' + detectedtype );
   logger.info('[1747][screenList][insert report_patientsInfo]identified_variations=' + identified_variations );
   logger.info('[1747][screenList][insert report_patientsInfo]specimen=' + specimen);
   
@@ -1907,13 +1907,13 @@ exports.saveScreen7 = (req, res, next) => {
     let title = nvl(req.body.patientInfo.title, '');
     let result2 = nvl(req.body.result, '');
     const resultStatus      = req.body.resultStatus;
-    const specimenNo        = req.body.specimenNo;
-    const specimen          = nvl(req.body.patientInfo.specimen, '');
+    const specimen        = req.body.specimen;
+    const specimenNo          = nvl(req.body.patientInfo.specimenNo, '');
     const detected_variants = req.body.sequencing;
  
     const examin            = req.body.patientInfo.examin;
     const recheck           = req.body.patientInfo.recheck;
-    const identified_variations  = nvl(req.body.patientInfo.identified_variations, '');
+    const identified_variations  = nvl(req.body.identified_variations, '');
     const comment           = req.body.comment;
     const comment1          = req.body.comment1;
     const comment2          = req.body.comment2;
