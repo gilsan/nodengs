@@ -14,7 +14,7 @@ function findChar(findChar) {
 	if(check === -1) {
 		result = findChar;
 	} else {
-        result = findChar.replace( /"/gi, ' ');
+        result = findChar.replace( /"/gi, '');
 	}
 
 	return result;
@@ -37,7 +37,7 @@ function nvl(st, defaultStr){
 }
 
 function parse_tsv(s, f) {
-  s = s.replace(/"/g, " ");
+  s = s.replace(/"/g, " ").replace( "\r", '');
   var ix_end = 0;
   for (var ix = 0; ix < s.length; ix = ix_end + 1) {
     ix_end = s.indexOf('\n', ix);
@@ -110,8 +110,8 @@ rowData.forEach ( async (row, index) =>  {
       logger.info('[84][sequncing]report_type=' + report_type);
 
       var temp_data = nvl(row[1].replace( /"/gi, ''), "");
-      var target = findChar(temp_data);   
-      logger.info('[87][sequncing][target]=' + target);
+      var method = findChar(temp_data);   
+      logger.info('[87][sequncing][method]=' + method);
             
       const sql =`insert_Sequncings` ;
 
@@ -119,7 +119,7 @@ rowData.forEach ( async (row, index) =>  {
           
           const request = pool.request()
             .input('report_type', mssql.VarChar, report_type)
-            .input('target', mssql.VarChar, target)  
+            .input('method', mssql.NVarChar, method)  
             .output('TOTALCNT', mssql.int, 0);
           
         let result =  '';
