@@ -578,7 +578,7 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // sequential 스크린 완료 Detected Variants 
-const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype, comment, comment1,comment2) => {
+const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype, comment, comment1,comment2, seqcomment) => {
   // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
   logger.info('[583][screenList][insert detected_variants 7]specimenNo=' + specimenNo);
   logger.info('[584][screenList][insert detected_variants 7]detected_variants=' + JSON.stringify(detected_variants));
@@ -586,6 +586,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype, 
   logger.info('[585][screenList][insert detected_variants 7]comment=' + comment);
   logger.info('[585][screenList][insert detected_variants 7]comment1=' + comment1);
   logger.info('[585][screenList][insert detected_variants 7]comment2=' + comment2);
+  logger.info('[585][screenList][insert detected_variants 7]seqcomment=' + seqcomment);
   let detectedType;
   if ( detectedtype === 'detected') {
     detectedType = '0';
@@ -635,15 +636,16 @@ try {
  
      logger.info('[525][screenList][insert detected_variants]type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon );
      logger.info('[525][screenList][insert detected_variants]nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change );
-     logger.info('[525][screenList][insert detected_variants]zygosity=' + zygosity + ', cosmic_id=' + cosmic_id + ', cnt=' + cnt + ', GenbankAccesionNo='+ GenbankAccesionNo);
+     logger.info('[525][screenList][insert detected_variants]zygosity=' + zygosity + ', cosmic_id=' + cosmic_id + ', cnt=' + cnt 
+     + ', GenbankAccesionNo='+ GenbankAccesionNo + ', seqcomment=' + seqcomment);
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               cosmic_id, functional_code, cnt, zygosity, comment, comment1,comment2, GenbankAccesionNo) 
+               cosmic_id, functional_code, cnt, zygosity, comment, comment1,comment2, GenbankAccesionNo, seqcomment) 
                values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @cosmic_id, @functional_code, @cnt, @zygosity, @comment, @comment1,@comment2, @GenbankAccesionNo)`;
+                  @cosmic_id, @functional_code, @cnt, @zygosity, @comment, @comment1,@comment2, @GenbankAccesionNo, @seqcomment)`;
              
        logger.info('[539][screenList][insert detected_variants 7]sql=' + qry);
  
@@ -661,7 +663,8 @@ try {
              .input('comment', mssql.NVarChar, comment)
              .input('comment1', mssql.NVarChar, comment1)
              .input('comment2', mssql.NVarChar, comment2)
-             .input('GenbankAccesionNo', mssql.NVarChar, GenbankAccesionNo);
+             .input('GenbankAccesionNo', mssql.NVarChar, GenbankAccesionNo)
+             .input('seqcomment', mssql.NVarChar, seqcomment) ;
              
              result = await request.query(qry);         
      
@@ -1613,7 +1616,7 @@ const SequntialHandler = async (specimenNo) => {
       isnull(exon, '') exonintron, isnull(nucleotide_change, '') nucleotideChange,
       isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid,
       isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment2,
-      isnull(GenbankAccesionNo, '') GenbankAccesionNo
+      isnull(GenbankAccesionNo, '') GenbankAccesionNo, isnull(seqcomment, '') seqcomment
       from [dbo].[report_detected_variants]  
       where specimenNo =@specimenNo
   `;
@@ -1653,7 +1656,7 @@ exports.listSequntial = (req, res, next) => {
 const PatientSequntialHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
-      isnull(a.report_type, '') report_type, isnull(a.result, '') result,
+      isnull(a.report_type, '') report_type, isnull(a.result, '') result, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
       isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen
       from [dbo].[report_patientsInfo]  a
@@ -1910,6 +1913,7 @@ exports.saveScreen7 = (req, res, next) => {
     const comment           = req.body.comment;
     const comment1          = req.body.comment1;
     const comment2          = req.body.comment2;
+    const seqcomment        = req.body.seqcomment;
     let target = nvl(req.body.target, '');
     let testmethod  = nvl(req.body.testmethod, '');
     let analyzedgene =  nvl(req.body.analyzedgene, '');
@@ -1919,7 +1923,7 @@ exports.saveScreen7 = (req, res, next) => {
     const result = deleteHandler(specimenNo);
     result.then(data => {
     
-      const result3 = insertHandler_form7(specimenNo, detected_variants, resultStatus, comment, comment1,comment2);
+      const result3 = insertHandler_form7(specimenNo, detected_variants, resultStatus, comment, comment1,comment2, seqcomment);
       result3.then(data => {
     
         const result4 = deleteHandlerSequntial(specimenNo);
