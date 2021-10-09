@@ -1661,8 +1661,8 @@ const PatientSequntialHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
       isnull(a.report_type, '') report_type, isnull(a.result, '') result, 
-      isnull(a.target, '') target,  isnull(b.method, '') method, isnull(a.analyzedgene, '') analyzedgene,
-      isnull(a.identified_variations, '') identified_variations, isnull(a.specimen, '') specimen
+      isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
+      isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen
       from [dbo].[report_patientsInfo]  a
       left outer join [dbo].[sequncing_list] b
       on a.report_type = b.report_type
