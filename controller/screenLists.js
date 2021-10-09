@@ -1856,10 +1856,11 @@ const insertHandlerSequence = async (type,
 
 //////////////////////////////////////////////////////////////////////////////////
 // Sequencing list 수정
-const updateHandlerSequence = async (type,  
+const updateHandlerSequence = async (type,  title,
                             target, testmethod, analyzedgene, specimen,  identified_variations, comment1, comment2 ) => {
   
   logger.info('[1862][screenList][update sequncing_list]type=' + type  );
+  logger.info('[1856][screenList][update sequncing_list]title=' + title );
   logger.info('[1856][screenList][update sequncing_list]target=' + target );
   logger.info('[1856][screenList][update sequncing_list]testmethod=' + testmethod );
   logger.info('[1856][screenList][update sequncing_list]analyzedgene=' + analyzedgene );
@@ -1872,7 +1873,8 @@ const updateHandlerSequence = async (type,
   const qry = `update sequncing_list 
       set  target =@target, method = @testmethod, analyzedgene = @analyzedgene, 
       comment1 = @comment1, comment2 = @comment2,
-      identified_variations = @identified_variations,  specimen =  @specimen `;
+      identified_variations = @identified_variations,  specimen =  @specimen
+      where report_type= @type `;
     
   logger.info('[1877][screenList][insert updateHandlerSequence]sql=' + qry);
 
