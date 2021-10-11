@@ -2098,7 +2098,7 @@ const PatientMlpaHandler = async (specimenNo) => {
   const sql=`select  
             isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq
         from [dbo].[patientinfo_diag]  a
-        left outer join [dbo].[report_mlpa] b
+        left outer join [dbo].[mlpaData] b
         on a.test_code = b.type
         where a.specimenNo =@specimenNo  
   `;
@@ -2123,7 +2123,7 @@ const ReportMlpalHandler = async (specimenNo) => {
   const sql=`select  
       isnull(site, '') site, isnull(result, '') result,
       isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
-      from [dbo].[mlpaData] 
+      from [dbo].[report_mlpa] 
       where specimenNo =@specimenNo
   `;
 
@@ -2154,11 +2154,11 @@ exports.listReportMlpa = (req, res, next) => {
     {
       const result7 = PatientMlpaHandler (specimenNo);
         result7.then(data => {
-          console.log('[1691][PatientMlpaHandler] ==> ', data)
+          console.log('[1691][listReportMlpa] ==> ', data)
            res.json(data);
         })
         .catch( error  => {
-         logger.error('[1695][PatientMlpaHandler select]err=' + error.message);
+         logger.error('[1695][listReportMlpa select]err=' + error.message);
          res.status(500).send('That is Not good ')
         }); 
     }
@@ -2172,11 +2172,11 @@ exports.listReportMlpa = (req, res, next) => {
         {
           const result7 = ReportMlpalHandler (specimenNo);
             result7.then(data => {
-              console.log('[1691][PatientMlpaHandler] ==> ', data)
+              console.log('[1691][listReportMlpa] ==> ', data)
                res.json(data);
             })
             .catch( error  => {
-             logger.error('[1695][PatientMlpaHandler select]err=' + error.message);
+             logger.error('[1695][listReportMlpa select]err=' + error.message);
              res.status(500).send('That is Not good ')
             }); 
         }
@@ -2184,11 +2184,11 @@ exports.listReportMlpa = (req, res, next) => {
         {
           const result9 = PatientMlpaHandler (specimenNo);
             result9.then(data => {
-              console.log('[1691][PatientMlpaHandler] ==> ', data)
+              console.log('[1691][listReportMlpa] ==> ', data)
                res.json(data);
             })
             .catch( error  => {
-             logger.error('[1695][PatientMlpaHandler select]err=' + error.message);
+             logger.error('[1695][listReportMlpa select]err=' + error.message);
              res.status(500).send('That is Not good ')
             }); 
         }
@@ -2202,6 +2202,32 @@ exports.listReportMlpa = (req, res, next) => {
 const MlpalHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
+      isnull(a.test_code, '') report_type,  '' result,
+      '' conclusion,  '' technique, '' comment,
+      isnull(b.target, '') target,  isnull(b.testmethod, '') testmethod, isnull(b.analyzedgene, '') analyzedgene
+      from [dbo].[patientInfo_diag]  a
+      left outer join [dbo].[mlpa_list] b
+      on a.test_code = b.report_type
+      where a.specimenNo =@specimenNo
+  `;
+
+  logger.info('[1385][MlpalHandler select]sql=' + sql + '  ' + specimenNo);
+
+  try {
+      const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
+      const result = await request.query(sql)
+
+       return result.recordsets[0];
+    } catch (error) {
+         logger.error('[1370][MlpalHandler]err=' + error.message);
+    }
+  
+};
+
+// Mlpa Report 내역
+const reportMlpalHandler = async (specimenNo) => {
+  await poolConnect; 
+  const sql=`select  
       isnull(a.report_type, '') report_type, isnull(a.result, '') result,
       isnull(a.conclusion, '') conclusion, isnull(a.technique, '') technique, isnull(a.comment, '') comment,
       isnull(b.target, '') target,  isnull(b.testmethod, '') testmethod, isnull(b.analyzedgene, '') analyzedgene
@@ -2211,7 +2237,7 @@ const MlpalHandler = async (specimenNo) => {
       where a.specimenNo =@specimenNo
   `;
 
-  logger.info('[1385][listMlpa select]sql=' + sql + '  ' + specimenNo);
+  logger.info('[1385][reportMlpalHandler select]sql=' + sql + '  ' + specimenNo);
 
   try {
       const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
@@ -2219,23 +2245,64 @@ const MlpalHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1370][listMlpa]err=' + error.message);
+         logger.error('[1370][reportMlpalHandler]err=' + error.message);
     }
   
 };
 
+
 exports.listMlpa = (req, res, next) => {
   const specimenNo        = req.body.specimenNo;
 
-  const dataset = MlpalHandler(specimenNo);
-  dataset.then(data => {
-    console.log('[1381][listMlpa] ==> ', data)
-     res.json(data);
-  })
-  .catch( error  => {
-   logger.error('[1385][listMlpa select]err=' + error.message);
-   res.status(500).send('That is Not good ')
-  }); 
+  const result6 = patientsInfoCountHandler (specimenNo);
+  result6.then(data => {
+
+    let cnt = data[0].count;
+    if (cnt === 0)
+    {
+      const result7 = MlpalHandler (specimenNo);
+        result7.then(data => {
+          console.log('[1691][listMlpa] ==> ', data)
+           res.json(data);
+        })
+        .catch( error  => {
+         logger.error('[1695][listMlpa select]err=' + error.message);
+         res.status(500).send('That is Not good ')
+        }); 
+    }
+    else
+    {
+      const result8 = patientsInfoStautsHandler (specimenNo);
+      result8.then(data => {
+    
+        let cnt = data[0].screenstaus;
+        if (cnt !== '0')
+        {
+          const result7 = reportMlpalHandler (specimenNo);
+            result7.then(data => {
+              console.log('[1691][listMlpa] ==> ', data)
+               res.json(data);
+            })
+            .catch( error  => {
+             logger.error('[1695][listMlpa select]err=' + error.message);
+             res.status(500).send('That is Not good ')
+            }); 
+        }
+        else
+        {
+          const result9 = MlpalHandler (specimenNo);
+            result9.then(data => {
+              console.log('[1691][listMlpa] ==> ', data)
+               res.json(data);
+            })
+            .catch( error  => {
+             logger.error('[1695][listMlpa select]err=' + error.message);
+             res.status(500).send('That is Not good ')
+            }); 
+        }
+      })
+    }
+  });
 
 }
 
