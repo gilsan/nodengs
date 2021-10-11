@@ -1609,7 +1609,7 @@ const PatientSequntialHandler = async (specimenNo) => {
       isnull(a.test_code, '') report_type, '' result, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
       isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen,
-      isnull(b.comment, '') comment, isnull(b.comment2, '') comment2
+      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2
       from [dbo].[patientinfo_diag]  a
       left outer join [dbo].[sequncing_list] b
       on a.test_code = b.report_type
