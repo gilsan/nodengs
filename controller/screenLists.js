@@ -2098,7 +2098,7 @@ const PatientMlpaHandler = async (specimenNo) => {
   const sql=`select  
             isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq
         from [dbo].[patientinfo_diag]  a
-        left outer join [dbo].[mlpaData] b
+        left outer join [dbo].[report_mlpa] b
         on a.test_code = b.type
         where a.specimenNo =@specimenNo  
   `;
@@ -2123,7 +2123,7 @@ const ReportMlpalHandler = async (specimenNo) => {
   const sql=`select  
       isnull(site, '') site, isnull(result, '') result,
       isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
-      from [dbo].[report_mlpa] 
+      from [dbo].[mlpaData] 
       where specimenNo =@specimenNo
   `;
 
