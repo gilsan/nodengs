@@ -1516,13 +1516,16 @@ exports.listImmundefi = (req, res, next) => {
 const SequntialHandler = async (specimenNo) => {
   await poolConnect; 
 
-  const sql=`select   isnull(type, '') type,
-      isnull(exon, '') exonintron, isnull(nucleotide_change, '') nucleotideChange,
-      isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(cosmic_id, '') rsid,
-      isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment2,
-      isnull(GenbankAccesionNo, '') genbankaccesion, isnull(seqcomment, '') seqcomment
-      from [dbo].[report_detected_variants]  
-      where specimenNo =@specimenNo
+  const sql=`select   isnull(a.type, '') type,
+      isnull(a.exon, '') exonintron, isnull(a.nucleotide_change, '') nucleotideChange,
+      isnull(a.amino_acid_change, '') aminoAcidChange, isnull(a.zygosity, '') zygosity, isnull(a.cosmic_id, '') rsid,
+      isnull(a.GenbankAccesionNo, '') genbankaccesion,
+      isnull(b.comment, '') comment, isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2,
+      isnull(b.seqcomment, '') seqcomment
+      from [dbo].[report_detected_variants]  a
+      inner join report_patientsInfo b
+      on a.specimenNo = b.specimenNo
+      where a.specimenNo =@specimenNo
   `;
 
   logger.info('[1385][listSequntial select]sql=' + sql);
@@ -1605,7 +1608,8 @@ const PatientSequntialHandler = async (specimenNo) => {
   const sql=`select  
       isnull(a.test_code, '') report_type, '' result, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
-      isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen
+      isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen,
+      isnull(b.comment, '') comment, isnull(b.comment2, '') comment2
       from [dbo].[patientinfo_diag]  a
       left outer join [dbo].[sequncing_list] b
       on a.test_code = b.report_type
