@@ -1923,7 +1923,7 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
     let result = await request.query(qry);         
 
   } catch (error) {
-    logger.error('[1810][screenList][insert report_mlpa]err=' + error.message);
+    logger.error('[1810][screenList][insert report_patientsInfo]err=' + error.message);
   }
 }
 
@@ -2091,16 +2091,16 @@ exports.saveScreen7 = (req, res, next) => {
     });
 };
 
-
 // MLPA report 내역
-const ReportMlpalHandler = async (specimenNo) => {
+const PatientMlpaHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select  
-      isnull(site, '') site, isnull(result, '') result,
-      isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
-      from [dbo].[report_mlpa] 
-      where specimenNo =@specimenNo
+            isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq
+        from [dbo].[patientinfo_diag]  a
+        left outer join [dbo].[mlpaData] b
+        on a.test_code = b.type
+        where a.specimenNo =@specimenNo  
   `;
 
   logger.info('[1385][listReportMlpa select]sql=' + sql);
@@ -2116,18 +2116,85 @@ const ReportMlpalHandler = async (specimenNo) => {
   
 };
 
+
+// mlpa patient 내역
+const ReportMlpalHandler = async (specimenNo) => {
+  await poolConnect; 
+  const sql=`select  
+      isnull(site, '') site, isnull(result, '') result,
+      isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
+      from [dbo].[report_mlpa] 
+      where specimenNo =@specimenNo
+  `;
+
+  logger.info('[1672][PatientMlpaHandler select]sql=' + sql + '  ' + specimenNo);
+
+  try {
+      const request = pool.request()
+                    .input('specimenNo', mssql.VarChar, specimenNo); 
+
+      const result = await request.query(sql);
+
+       return result.recordsets[0];
+    } catch (error) {
+         logger.error('[1680][PatientMlpaHandler]err=' + error.message);
+    }
+  
+};
+
+
 exports.listReportMlpa = (req, res, next) => {
   const specimenNo        = req.body.specimenNo;
 
-  const dataset = ReportMlpalHandler(specimenNo);
-  dataset.then(data => {
-    console.log('[1381][listReportMlpa] ==> ', data)
-     res.json(data);
-  })
-  .catch( error  => {
-   logger.error('[1385][listReportMlpa select]err=' + error.message);
-   res.status(500).send('That is Not good ')
-  }); 
+  const result6 = patientsInfoCountHandler (specimenNo);
+  result6.then(data => {
+
+    let cnt = data[0].count;
+    if (cnt === 0)
+    {
+      const result7 = PatientMlpaHandler (specimenNo);
+        result7.then(data => {
+          console.log('[1691][PatientMlpaHandler] ==> ', data)
+           res.json(data);
+        })
+        .catch( error  => {
+         logger.error('[1695][PatientMlpaHandler select]err=' + error.message);
+         res.status(500).send('That is Not good ')
+        }); 
+    }
+    else
+    {
+      const result8 = patientsInfoStautsHandler (specimenNo);
+      result8.then(data => {
+    
+        let cnt = data[0].screenstaus;
+        if (cnt !== '0')
+        {
+          const result7 = ReportMlpalHandler (specimenNo);
+            result7.then(data => {
+              console.log('[1691][PatientMlpaHandler] ==> ', data)
+               res.json(data);
+            })
+            .catch( error  => {
+             logger.error('[1695][PatientMlpaHandler select]err=' + error.message);
+             res.status(500).send('That is Not good ')
+            }); 
+        }
+        else
+        {
+          const result9 = PatientMlpaHandler (specimenNo);
+            result9.then(data => {
+              console.log('[1691][PatientMlpaHandler] ==> ', data)
+               res.json(data);
+            })
+            .catch( error  => {
+             logger.error('[1695][PatientMlpaHandler select]err=' + error.message);
+             res.status(500).send('That is Not good ')
+            }); 
+        }
+      })
+    }
+  });
 
 }
 
@@ -2239,30 +2306,28 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
   logger.info('[2124][screenList][insert report_patientsInfo]specimenNo=' + specimenNo
   + ', detectedtype=' + detectedtype + ', type=' + detectedType);
 
-let query ="update [dbo].[patientinfo_diag] \
-set detected=@detectedType  where specimenNo=@specimenNo ";  
-logger.info('[2129][screenList][update patientinfo_diag]sql=' + query);
+  let query ="update [dbo].[patientinfo_diag] \
+  set detected=@detectedType  where specimenNo=@specimenNo ";  
+  logger.info('[2129][screenList][update patientinfo_diag]sql=' + query);
 
-try {
-const request = pool.request()
-.input('specimenNo', mssql.VarChar, specimenNo)
-.input('detectedType', mssql.VarChar, detectedType);
+  try {
+  const request = pool.request()
+  .input('specimenNo', mssql.VarChar, specimenNo)
+  .input('detectedType', mssql.VarChar, detectedType);
 
-result = await request.query(query);         
+  result = await request.query(query);         
 
-} catch (error) {
-logger.error('[2139][screenList][update patientinfo_diag]err=' + error.message);
-}
-
-
+  } catch (error) {
+  logger.error('[2139][screenList][update patientinfo_diag]err=' + error.message);
+  }
 
   //insert Query 생성;
   const qry = `insert into report_patientsInfo (specimenNo, report_date, title, report_type,
       result, conclusion, technique, 
-      target, testmethod, analyzedgene, comment) 
+      target, testmethod, analyzedgene, comment, screenstatus) 
       values(@specimenNo, getdate(),  @title, @type,
       @result2, @conclusion, @technique,
-      @target, @testmethod, @analyzedgene, @comment)`;
+      @target, @testmethod, @analyzedgene, @comment, '2')`;
     
   logger.info('[2152][screenList][insert report_patientsInfo]sql=' + qry);
 
