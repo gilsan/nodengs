@@ -274,6 +274,7 @@ router.post('/upload', function (req, res) {
             testedID = req.body.testedID;
 
             let patient_id = '';
+            let patient = '';
 
             const res_patient = patientHandler(testedID);
               res_patient.then(data => {       
@@ -282,12 +283,62 @@ router.post('/upload', function (req, res) {
                 patient_id = data;
 
                 const surfix = item.originalname.split('.');
-                const patientID = surfix[0].split('_');
+                let patientID = surfix[0].split('_');
 
-                if ( surfix[1] === 'xlsx') {
-                  
-                  logger.info('[283]testedID=' + patient_id);
-                  logger.info('[284]patientID=' + patientID[4]);
+                logger.info('[283]item.originalname=' + item.originalname);
+
+                if (surfix.length == 1) {
+                  if ( surfix[1] === 'xlsx') {
+                    
+                    logger.info('[283]testedID=' + patient_id);
+                    logger.info('[284]surfix=' + surfix[0]);
+
+                    patient = patientID[4];
+
+                    if ( patient !== patient_id) {
+
+                      let patientNo = patientID[0].split('-');
+
+                      logger.info('[290]patientID=' + patientNo[1]);
+                      if(patientNo[1] !== patient_id) {
+                        logger.error('[292][fileupload] patient dismatch' );
+                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                      }
+                      else if ( patientNo.length === 0) 
+                      {
+                        logger.error('[298][fileupload] patient dismatch' );
+                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                      }
+                    } else {
+                      logger.info('[314]testedID=' + patient_id);
+                      logger.info('[314]patientID=' + patientID[1]);
+    
+                      patient = patientID[1]
+    
+                      if ( patient !== patient_id) {
+    
+                        let patientNo = patientID[0].split('-');
+    
+                        logger.info('[323]patientID=' + patientNo[1]);
+                        if(patientNo[1] !== patient_id) {
+                          logger.error('[325][fileupload] patient dismatch' );
+                          return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                        }
+                        else if ( patientNo.length === 0) 
+                        {
+                          logger.error('[330][fileupload] patient dismatch' );
+                          return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                        }
+                      }
+                    }    
+                  }
+                }
+                else if ( surfix[2] === 'xlsx') {
+
+                  patientID = surfix[1].split('_');
+
+                  logger.info('[339]testedID=' + patient_id);
+                  logger.info('[339]surfix=' + surfix[1]);
 
                   let patient = patientID[4];
 
@@ -306,29 +357,7 @@ router.post('/upload', function (req, res) {
                       return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
                     }
                   }
-                }
-                else {
-                  logger.info('[283]testedID=' + patient_id);
-                  logger.info('[284]patientID=' + patientID[1]);
-
-                  let patient = patientID[1]
-
-                  if ( patient !== patient_id) {
-
-                    let patientNo = patientID[0].split('-');
-
-                    logger.info('[290]patientID=' + patientNo[1]);
-                    if(patientNo[1] !== patient_id) {
-                      logger.error('[292][fileupload] patient dismatch' );
-                      return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
-                    }
-                    else if ( patientNo.length === 0) 
-                    {
-                      logger.error('[298][fileupload] patient dismatch' );
-                      return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
-                    }
-                  }
-                }    
+                } 
         
                 // 금일 날자와 검체번호로 존재 하는지 조사.
                 const year1  = new Date().getFullYear();
