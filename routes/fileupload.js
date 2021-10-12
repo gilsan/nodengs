@@ -534,6 +534,15 @@ router.post('/upload', function (req, res) {
 
                 main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID);
             }	
+            else if ( surfix[2] === 'xlsx') {
+              console.log('필터링한 화일', surfix, item.originalname);
+                // var data = loadData(item.path);
+                // inputDB.registerDB(item.path);
+
+                //main_nu.patient_nu(testedID);
+
+                main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID);
+            }	
             
           })
           .catch( error  => {
