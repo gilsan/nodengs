@@ -306,7 +306,7 @@ const  listDiagHandler = async (dept) => {
   await poolConnect;
   
   logger.info('[307][loginUser 진검]list data=' + dept);
-  const sql= "select user_id, user_nm, part, pickselect from users where dept=@dept";
+  const sql= "select user_id, user_nm, part, pickselect from users where dept=@dept and pickselect = 'Y'";
   logger.info('[309][loginUser 진검]lust sql=' + sql);
 
   try {
