@@ -2525,9 +2525,11 @@ const  findRefIdHandler = async (gene, nucleotideChange) => {
       const qry = `SELECT
           isnull(reference, '') reference
           , isnull(cosmicID, '') cosmicID
+          , isnull(report_date,  '') reportdate
         FROM dbo.excelDV
         where gene = @gene
-        and nucleotideChange = @nucleotideChange`;
+        and nucleotideChange = @nucleotideChange
+        order by reportdate desc`;
 
       logger.info('[2533]findRefIdHandler sql=' + qry);
   
