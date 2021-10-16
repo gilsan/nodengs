@@ -363,7 +363,9 @@ app.use('/sequencingdiag',sequencingdiagRouter);
 
  });
 
- 
+ // 결과지 담당자
+ const resultmanagerRouter = require('./routes/resultmanagerRouter');
+ app.use('/resultmanager',resultmanagerRouter);
 
  // 제거 유전자 목록
  app.use('/polymorphism', polymorphismRouter);
