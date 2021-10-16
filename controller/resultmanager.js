@@ -90,4 +90,33 @@ exports.list = (req,res, next) => {
     }); 
 
  }
+ ///////////////////////////////////////////////////////////////////
+ const  listsHandler = async () => {
+    await poolConnect; // ensures that the pool has been created
+    const sql=`select   isnull(type, '') type, isnull(checker, '') checker, isnull(reader, '') reader  from resultmanager`;
+    logger.info('[97][resultmanager][listHandelr] sql=' + sql);
+
+    try {
+      const request = pool.request();
+      const result = await request.query(sql);      
+      return result.recordset;
+    } catch {
+        logger.error('[104][resultmanager][listsHandelr]  err=' + error);
+    }
+
+}
+
+exports.lists = (req,res, next) => {
+
+    const result = listsHandler(req);
+    result.then(data => {
+        console.log(data);
+       res.json(data);
+    })
+    .catch( error  => {
+        logger.error('[117][resultmanager][lists] err=' + error.message);
+        res.sendStatus(500);
+    }); 
+
+ }
 
