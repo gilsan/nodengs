@@ -3,13 +3,10 @@
 const express = require('express');
 const router = express.Router();
 const mssql = require('mssql');
-const amlReportInsert = require('./amlReportInsert');
 const logger = require('../common/winston');
 const fs = require('fs');
 
 const dbConfigMssql = require('../common/dbconfig.js');
-const { error } = require('winston');
-const { json } = require('body-parser');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -2517,4 +2514,52 @@ exports.saveScreenMlpa = (req, res, next) => {
     });
 };
 
+
+const  findRefIdHandler = async (gene, nucleotideChange) => {
+  await poolConnect; // ensures that the pool has been created
+
+  logger.info('[2522][screenList][findRefIdHandler]gene = ' + gene  );
+  logger.info('[2522][screenList][findRefIdHandler]nucleotideChange = ' + nucleotideChange  );
+  
+  //select Query 생성
+      const qry = `SELECT
+          isnull(reference, '') reference
+          , isnull(cosmicID, '') cosmicID
+        FROM dbo.excelDV
+        where gene = @gene
+        and nucleotideChange = @nucleotideChange`;
+
+      logger.info('[2533]findRefIdHandler sql=' + qry);
+  
+  try {
+
+    const request = pool.request()
+      .input('gene', mssql.VarChar, gene)
+      .input('nucleotideChange', mssql.VarChar, nucleotideChange);
+
+    const result = await request.query(qry);
+    return result.recordset; 
+  }catch (error) {
+    logger.error('[2544]findRefIdHandler err=' + error.message);
+  }
+}
+
+// get findRefId List
+exports.findRefId = (req, res, next) => {
+  logger.info('[2550]findRefId req=' + JSON.stringify(req.body));
+
+  const gene = req.body.gene;
+  const nucleotideChange = req.body.nucleotideChange;
+  const result = findRefIdHandler(gene, nucleotideChange);
+  result.then(data => {
+
+      console.log('[2556][findRefId]', data);
+      res.json(data);
+  })
+  .catch( error => {
+
+      logger.error('[2561]findRefId err=' + error.message);
+      res.sendStatus(500)
+  }); 
+};
 
