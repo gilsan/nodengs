@@ -39,6 +39,7 @@ const listHandler = async (type, test_code) => {
     if (test_cd != '') {
         sql = sql + ` and test_code = '` + test_cd + `'`;
     }
+    sql = sql + ' order by gene'
 
     logger.info('[20][diaggene]sql=' + sql);
     try {
