@@ -74,8 +74,7 @@ async function delData() {
   
   const sql2 =`
     delete from genediag 
-    where type = 'MDS
-    '
+    where type = 'MDS'
   `; 
 
   logger.info('[77][genediag]sql=' + sql2);
