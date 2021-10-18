@@ -2564,7 +2564,7 @@ const patientHandler = async(patients, res) => {
 
 exports.getList= (req, res, next) => {
 
-    let jsonObj = parser.parse(jsondata, options)  ;
+    //let jsonObj = parser.parse(jsondata, options)  ;
     var patientJson = JSON.stringify(jsonObj); 
     console.log('[114][patient_nu]json=' ,  patientJson);
 
