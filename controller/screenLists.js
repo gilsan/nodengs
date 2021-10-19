@@ -2225,7 +2225,7 @@ const MlpalHandler = async (specimenNo) => {
 const reportMlpalHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
-      isnull(a.report_type, '') report_type, isnull(a.result, '') result,
+      isnull(a.report_type, '') report_type, isnull(a.result, '') result, isnull(a.specimen, '') specimen,
       isnull(a.conclusion, '') conclusion, isnull(a.technique, '') technique, isnull(a.comment, '') comment,
       isnull(b.target, '') target,  isnull(b.testmethod, '') testmethod, isnull(b.analyzedgene, '') analyzedgene
       from [dbo].[report_patientsInfo]  a
