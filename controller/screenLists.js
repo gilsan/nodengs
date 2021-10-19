@@ -2348,7 +2348,7 @@ const deleteHandlerReportMlpa = async (specimenNo) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // MLPA 스크린 완료 
-const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, detectedtype) => {
+const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, detectedtype, specimen) => {
   
   logger.info('[2107][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
   logger.info('[2107]][screenList][insert report_patientsInfo]type=' + type + ', title = ' + title + ', result=' + result2 );
@@ -2359,7 +2359,7 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + comment );
   logger.info('[2107]][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
-
+  logger.info('[2107]][screenList][insert report_patientsInfo]specimen=' + specimen );
   let detectedType
   if ( detectedtype === 'detected') {
     detectedType = '0';
@@ -2388,10 +2388,10 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
   //insert Query 생성;
   const qry = `insert into report_patientsInfo (specimenNo, report_date, title, report_type,
       result, conclusion, technique, 
-      target, testmethod, analyzedgene, comment, screenstatus) 
+      target, testmethod, analyzedgene, comment, screenstatus,specimen) 
       values(@specimenNo, getdate(),  @title, @type,
       @result2, @conclusion, @technique,
-      @target, @testmethod, @analyzedgene, @comment, '2')`;
+      @target, @testmethod, @analyzedgene, @comment, '2', @specimen)`;
     
   logger.info('[2152][screenList][insert report_patientsInfo]sql=' + qry);
 
@@ -2406,7 +2406,8 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
       .input('target', mssql.NVarChar, target)
       .input('testmethod', mssql.NVarChar, testmethod)
       .input('analyzedgene', mssql.NVarChar, analyzedgene)
-      .input('comment', mssql.NVarChar, comment);
+      .input('comment', mssql.NVarChar, comment)
+      .input('specimen', mssql.VarChar, specimen);
       
     let result = await request.query(qry);         
 
@@ -2479,7 +2480,7 @@ exports.saveScreenMlpa = (req, res, next) => {
     let target = req.body.target;
     let testmethod  = req.body.testmethod;
     let analyzedgene =  req.body.analyzedgene;
-
+    const specimen = req.body.specimen;
     const report_mlpa = req.body.data;
  
     const examin            = '';
@@ -2492,7 +2493,7 @@ exports.saveScreenMlpa = (req, res, next) => {
       const result3 = deleteHandlerReportMlpa(specimenNo);
       result3.then(data => {
     
-        const result4 = insertHandlerMlpa (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, resultStatus);
+        const result4 = insertHandlerMlpa (specimenNo, type, title, result2, conclusion, technique, target,  testmethod, analyzedgene, comment, resultStatus, specimen);
         result4.then(data => {
     
           const result5 = insertHandlerReporMlpa (specimenNo, report_mlpa);
