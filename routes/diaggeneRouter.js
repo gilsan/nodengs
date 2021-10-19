@@ -20,4 +20,8 @@ router.post('/count',  diagGeneController.count);
 // 중복검사
 router.post('/duplicate', diagGeneController.duplicateGene);
 
+// target gene 있는지 확인
+router.post('/targetlist', diagGeneController.listTargetGene);
+
+
 module.exports = router;

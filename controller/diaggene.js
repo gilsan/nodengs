@@ -68,6 +68,46 @@ exports.listDiagGene = (req,res, next) => {
     });
 }
 
+
+// list Target Gene 목록출력
+const listTargeHandler = async (type, test_code) => {
+    await poolConnect;
+
+    let test_cd = nvl(test_code, '');
+
+    logger.info('[20][diseasediag]type=' + type + ', test_code=' + test_cd) ;
+    let sql =`select isnull(disease, '') disease  from diseasediag where type ='` + type + `'`;
+    if (test_cd != '') {
+        sql = sql + ` and test_code = '` + test_cd + `'`;
+    }
+
+    logger.info('[20][diseasediag]sql=' + sql);
+    try {
+        const request = pool.request()
+          const result = await request.query(sql) 
+          return result.recordset;
+    } catch(error) {
+        logger.error('[28]diseasediag err=' + error.message);
+    }
+}
+
+// list Target Gene
+exports.listTargetGene = (req,res, next) => {
+
+    logger.info('[32]listTargetGene req=' + JSON.stringify( req.body)); 
+    const type = req.body.type;
+    const test_code = req.body.test_code;
+
+    const result = listTargeHandler(type, test_code);
+    result.then(data => {
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[41][listTargetGene]err=' + error.message); 
+        res.sendStatus(500);
+    });
+}
+
 // 진검 유전자 목록 입력
 const inserHandler = async (type, gene, test_code) => {
     await poolConnect;
