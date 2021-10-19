@@ -7,7 +7,7 @@
 7	LPE456	Neutropenia (23 genes)
 8	LPE488	Hereditary Hearing Loss (282 genes)
 9	LPE489	Primary Immunodeficiency (363 genes)
-10	LPE490	Hereditary Aortic disorders (232 genes)
+10	LPE490	 Hereditary Aortic disorders (232 genes)
 11	LPE497	Cancer (151 genes)
 12	LPE498	Thrombotic Microangiopathy (48 genes)
 13	LPE499	Polycystic Kidney Disease (3 genes)
