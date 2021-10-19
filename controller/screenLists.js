@@ -2227,10 +2227,8 @@ const reportMlpalHandler = async (specimenNo) => {
   const sql=`select  
       isnull(a.report_type, '') report_type, isnull(a.result, '') result, isnull(a.specimen, '') specimen,
       isnull(a.conclusion, '') conclusion, isnull(a.technique, '') technique, isnull(a.comment, '') comment,
-      isnull(b.target, '') target,  isnull(b.testmethod, '') testmethod, isnull(b.analyzedgene, '') analyzedgene
+      isnull(a.target, '') target,  isnull(a.testmethod, '') testmethod, isnull(a.analyzedgene, '') analyzedgene
       from [dbo].[report_patientsInfo]  a
-      left outer join [dbo].[mlpa_list] b
-      on a.report_type = b.report_type
       where a.specimenNo =@specimenNo
   `;
 
@@ -2357,7 +2355,7 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
   logger.info('[2107]][screenList][insert report_patientsInfo]target=' + target );
   logger.info('[2107]][screenList][insert report_patientsInfo]testmethod=' + testmethod );
   logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + analyzedgene );
-  logger.info('[1722][screenList][insert report_patientsInfo]analyzedgene=' + comment );
+  logger.info('[1722][screenList][insert report_patientsInfo]comment=' + comment );
   logger.info('[2107]][screenList][insert report_patientsInfo]analyzedgene=' + detectedtype );
   logger.info('[2107]][screenList][insert report_patientsInfo]specimen=' + specimen );
   let detectedType
