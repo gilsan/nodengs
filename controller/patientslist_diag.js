@@ -815,7 +815,7 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
                 + prescription_date + '_' 
                 + test_code + '_' 
                 + specimen + '_' 
-                + specimenNo + '.tsv'
+                + specimenNo + '.txt'
             logger.info('[patientinfo_diag][819][resetscreenstatus]file=' + cdw_file);
         
             // destination will be created or overwritten by default.
