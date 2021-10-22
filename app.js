@@ -373,6 +373,10 @@ app.use('/sequencingdiag',sequencingdiagRouter);
  // app.use('/mdsmpnInsert', mdsmpnRouter);
  // app.use('/lymphomaInsert', lymphomaRouter);
 
+// 처방코드별 기본값 설정
+const codeRouter = require('./routes/codedefaultvalueRouter');
+app.use('/codedefault',codeRouter);
+
 
 	//	MDS/MPN 
 	//	Lymphoma
