@@ -8,30 +8,30 @@ const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
 
-// 목록
-const  liststHandler = async (type) => {
+// 전체목록
+const  listsHandler = async (type) => {
     await poolConnect;  
 
     const sql=`select  id, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
        isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 
        from codedefaultvalue where type=@type`;
 
-    logger.info('[19][codedefaultvalue][liststHandler] =' + sql);
+    logger.info('[19][codedefaultvalue][listsHandler] =' + sql);
     try {
         const request = pool.request()
             .input('type', mssql.VarChar, type);
         const result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
-        logger.error('[28][codedefaultvalue][liststHandler] err=' + error.message);
+        logger.error('[28][codedefaultvalue][listsHandler] err=' + error.message);
     }
 
 }
 exports.getLists = (req, res, next) => {
     logger.info('[31][codedefaultvalue][getLists] req=' + JSON.stringify(req.body)); 
-    const pathologyNum = req.body.type;
+    const type = req.body.type;
  
-    const result = liststHandler(type);
+    const result = listsHandler(type);
     result.then(data => {  
         res.json(data);
     })
@@ -56,7 +56,7 @@ const insertHandler = async (req) => {
     const comment2= req.body.comment2;
 
     sql=`insert into codedefaultvalue (type, code, report, target,specimen, analyzedgene, method, comment1, comment2)
-      vlaues(@type, @code, @report, @target, @specimen, @analyzedgene, @method, @comment1, @comment2)`
+      values(@type, @code, @report, @target, @specimen, @analyzedgene, @method, @comment1, @comment2)`
 
       logger.info('[61][codedefaultvalue][insertHandler] =' + sql);
 
@@ -67,7 +67,7 @@ const insertHandler = async (req) => {
             .input('report', mssql.VarChar, report)
             .input('target', mssql.VarChar, target)
             .input('specimen', mssql.VarChar, specimen)
-            .input(' analyzedgene', mssql.VarChar,  analyzedgene)
+            .input('analyzedgene', mssql.VarChar,  analyzedgene)
             .input('method', mssql.VarChar, method)
             .input('comment1', mssql.NVarChar, comment1)
             .input('comment2', mssql.NVarChar, comment2);
@@ -93,10 +93,10 @@ exports.itemInsert = (req, res, next) => {
     });
 }
 
-
 // 수정
 const updateHandler = async (req) => {
     await poolConnect;
+    const id = req.body.id;
     const type = req.body.type;
     const code = req.body.code
     const report= req.body.report;
@@ -107,20 +107,21 @@ const updateHandler = async (req) => {
     const comment1= req.body.comment1;
     const comment2= req.body.comment2;
 
-    sql=`update into codedefaultvalue set   code=@code, report=@report, target=@target,
+    sql=`update  codedefaultvalue set  type=@type,  code=@code, report=@report, target=@target,
     specimen=@specimen, analyzedgene=@analyzedgene, method=@method, comment1=@comment1, comment2=@comment2
-      where type=@type`;
+      where id=@id`;
 
     logger.info('[114][codedefaultvalue][updateHandler] =' + sql);
 
     try {
         const request = pool.request()
+            .input('id', mssql.Int, id)
             .input('type', mssql.VarChar, type)
             .input('code', mssql.VarChar, code)
             .input('report', mssql.VarChar, report)
             .input('target', mssql.VarChar, target)
             .input('specimen', mssql.VarChar, specimen)
-            .input(' analyzedgene', mssql.VarChar,  analyzedgene)
+            .input('analyzedgene', mssql.VarChar,  analyzedgene)
             .input('method', mssql.VarChar, method)
             .input('comment1', mssql.NVarChar, comment1)
             .input('comment2', mssql.NVarChar, comment2);
@@ -182,6 +183,259 @@ exports.itemDelete = (req, res, next) => {
         res.sendStatus(500);
     });
 
+}
 
+// 개별목록
+const  listHandler = async (code) => {
+    await poolConnect;  
+
+    const sql=`select  id, isnull(type,'') type, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
+       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 
+       from codedefaultvalue where code=@code`;
+
+    logger.info('[196][codedefaultvalue][listHandler] =' + sql);
+    try {
+        const request = pool.request()
+            .input('code', mssql.VarChar, code);
+        const result = await request.query(sql);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[203][codedefaultvalue][listHandler] err=' + error.message);
+    }
 
 }
+exports.getList = (req, res, next) => {
+    logger.info('[208][codedefaultvalue][getList] req=' + JSON.stringify(req.body)); 
+    const code = req.body.code;
+    const result = listHandler(code);
+    result.then(data => {  
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[39][codedefaultvalue][getList] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+//////////////////////////////////////////////////////////////////////////////
+// 시험코드, 시험코드 보고서, 유형 입력(임시)
+const codeinsertHandler = async (req) => {
+    await poolConnect;
+    const type = req.body.type;
+    const code = req.body.code
+    const report= req.body.report;
+ 
+    sql=`insert into testcodelists (type, code, report )
+      values(@type, @code, @report)`
+
+      logger.info('[230][codedefaultvalue][codeinsertHandler] =' + sql);
+
+      try {
+        const request = pool.request()
+            .input('type', mssql.VarChar, type)
+            .input('code', mssql.VarChar, code)
+            .input('report', mssql.NVarChar, report);
+
+        const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[241][codedefaultvalue][codeinsertHandler] err=' + error.message);
+    }     
+
+}
+
+exports.codeInsert = (req, res, next) => {
+    logger.info('[247][codedefaultvalue][codeitemInsert] req=' + JSON.stringify(req.body)); 
+ 
+    const result = codeinsertHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[254][codedefaultvalue][itemInsert] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+// 전체리스트
+const  codelistsHandler = async () => {
+    await poolConnect;  
+
+    const sql=`select id, isnull(comment, '') comment,  isnull(code, '') code, isnull(report, '') report, isnull(type, '') type from testcodelists `;
+
+    logger.info('[265][codedefaultvalue][codelistsHandler] =' + sql);
+    try {
+        const request = pool.request();
+            
+        const result = await request.query(sql);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[272][codedefaultvalue][codelistsHandler] err=' + error.message);
+    }
+}
+
+exports.getcodeLists = (req, res, next) => {
+    logger.info('[277][codedefaultvalue][getcodeLists] req=' + JSON.stringify(req.body)); 
+
+    const result = codelistsHandler();
+    result.then(data => {  
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[284][codedefaultvalue][getcodeLists] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+// 개별리스트
+const  codelistHandler = async (code) => {
+    await poolConnect;  
+
+    const sql=`select id, isnull(comment, '') comment,  isnull(code, '') code, isnull(report, '') report, 
+       isnull(type, '') type from testcodelists where code=@code `;
+
+    logger.info('[296][codedefaultvalue][codeliststHandler] =' + sql);
+    try {
+        const request = pool.request()
+        .input('code', mssql.VarChar, code);
+            
+        const result = await request.query(sql);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[304][codedefaultvalue][codelistHandler] err=' + error.message);
+    }
+}
+
+exports.getcodeList = (req, res, next) => {
+    logger.info('[308][codedefaultvalue][getcodeList] req=' + JSON.stringify(req.body)); 
+
+    const result = codelistHandler();
+    result.then(data => {  
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[316][codedefaultvalue][getcodeList] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+
+
+// 입력
+const codeinsertHandler = async (req) => {
+    await poolConnect;
+
+    const type = req.body.type;
+    const code = req.body.code
+    const comment= req.body.comment;
+ 
+    sql=`insert into testcodelists (type, code, comment, report ) values(@type, @code, @report, @comment )`
+
+      logger.info('[333][codedefaultvalue][codeinsertHandler] =' + sql);
+
+      try {
+        const request = pool.request()
+            .input('type', mssql.VarChar, type)
+            .input('code', mssql.VarChar, code)
+            .input('report', mssql.VarChar, report)
+            .input('comment', mssql.NVarChar, comment);
+
+        const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[345][codedefaultvalue][codeinsertHandler] err=' + error.message);
+    }     
+}
+
+exports.codeitemInsert = (req, res, next) => {
+    logger.info('[350][codedefaultvalue][codeitemInsert] req=' + JSON.stringify(req.body)); 
+ 
+    const result = codeinsertHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[294][codedefaultvalue][codeitemInsert] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+// 수정
+const codeupdateHandler = async (req) => {
+    await poolConnect;
+    const id = req.body.id;
+    const type = req.body.type;
+    const code = req.body.code
+    const report= req.body.report;
+    const comment= req.body.comment;
+
+    sql=`update  testcodelists set  type=@type,  code=@code, report=@report,   comment=@comment  where id=@id`;
+
+    logger.info('[373][codedefaultvalue][codeupdateHandler] =' + sql);
+
+    try {
+        const request = pool.request()
+            .input('id', mssql.Int, id)
+            .input('type', mssql.VarChar, type)
+            .input('code', mssql.VarChar, code)
+            .input('report', mssql.VarChar, report)
+            .input('comment', mssql.NVarChar, comment);
+
+    const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[381][codedefaultvalue][codeupdateHandler] err=' + error.message);
+    }  
+}
+
+exports.codeitemUpdate = (req, res, next) => {
+    logger.info('[391][codedefaultvalue][codeitemUpdate] req=' + JSON.stringify(req.body)); 
+ 
+    const result = codeupdateHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[398][codedefaultvalue][codeitemUpdate] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+// 삭제
+const codedeleteHandler = async (req) => {
+    await poolConnect;
+    const type = req.body.type;
+ 
+    sql=`delete from testcodelists  where type=@type`;
+
+    logger.info('[410][codedefaultvalue][deleteHandler] =' + sql);
+
+    try {
+        const request = pool.request()
+            .input('type', mssql.VarChar, type);
+
+    const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[419][codedefaultvalue][deleteHandler] err=' + error.message);
+    }  
+
+}
+
+
+exports.codeitemDelete = (req, res, next) => {
+    logger.info('[426][codedefaultvalue][itemDelete] req=' + JSON.stringify(req.body)); 
+ 
+    const result = codedeleteHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[433][codedefaultvalue][itemDelete] err=' + error.message);
+        res.sendStatus(500);
+    });
+
+}
+
+
+
+
