@@ -244,14 +244,14 @@ const codeinsertHandler = async (req) => {
 }
 
 exports.codeInsert = (req, res, next) => {
-    logger.info('[247][codedefaultvalue][codeitemInsert] req=' + JSON.stringify(req.body)); 
+    logger.info('[247][codedefaultvalue][codeInsert] req=' + JSON.stringify(req.body)); 
  
     const result = codeinsertHandler(req);
     result.then(data => {  
         res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[254][codedefaultvalue][itemInsert] err=' + error.message);
+        logger.error('[254][codedefaultvalue][codeInsert] err=' + error.message);
         res.sendStatus(500);
     });
 }
@@ -293,7 +293,7 @@ const  codelistHandler = async (code) => {
     const sql=`select id, isnull(comment, '') comment,  isnull(code, '') code, isnull(report, '') report, 
        isnull(type, '') type from testcodelists where code=@code `;
 
-    logger.info('[296][codedefaultvalue][codeliststHandler] =' + sql);
+    logger.info('[296][codedefaultvalue][codelisttHandler] =' + sql);
     try {
         const request = pool.request()
         .input('code', mssql.VarChar, code);
@@ -301,7 +301,7 @@ const  codelistHandler = async (code) => {
         const result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
-        logger.error('[304][codedefaultvalue][codelistHandler] err=' + error.message);
+        logger.error('[304][codedefaultvalue][codelisHandler] err=' + error.message);
     }
 }
 
@@ -319,46 +319,6 @@ exports.getcodeList = (req, res, next) => {
 }
 
 
-
-// 입력
-const codeinsertHandler = async (req) => {
-    await poolConnect;
-
-    const type = req.body.type;
-    const code = req.body.code
-    const comment= req.body.comment;
- 
-    sql=`insert into testcodelists (type, code, comment, report ) values(@type, @code, @report, @comment )`
-
-      logger.info('[333][codedefaultvalue][codeinsertHandler] =' + sql);
-
-      try {
-        const request = pool.request()
-            .input('type', mssql.VarChar, type)
-            .input('code', mssql.VarChar, code)
-            .input('report', mssql.VarChar, report)
-            .input('comment', mssql.NVarChar, comment);
-
-        const result = await request.query(sql);
-        return result; 
-    }catch (error) {
-        logger.error('[345][codedefaultvalue][codeinsertHandler] err=' + error.message);
-    }     
-}
-
-exports.codeitemInsert = (req, res, next) => {
-    logger.info('[350][codedefaultvalue][codeitemInsert] req=' + JSON.stringify(req.body)); 
- 
-    const result = codeinsertHandler(req);
-    result.then(data => {  
-        res.json({message: 'SUCCESS'});
-    })
-    .catch( error => {
-        logger.error('[294][codedefaultvalue][codeitemInsert] err=' + error.message);
-        res.sendStatus(500);
-    });
-}
-
 // 수정
 const codeupdateHandler = async (req) => {
     await poolConnect;
@@ -370,7 +330,7 @@ const codeupdateHandler = async (req) => {
 
     sql=`update  testcodelists set  type=@type,  code=@code, report=@report,   comment=@comment  where id=@id`;
 
-    logger.info('[373][codedefaultvalue][codeupdateHandler] =' + sql);
+    logger.info('[33][codedefaultvalue][codeupdateHandler] =' + sql);
 
     try {
         const request = pool.request()
@@ -388,14 +348,14 @@ const codeupdateHandler = async (req) => {
 }
 
 exports.codeitemUpdate = (req, res, next) => {
-    logger.info('[391][codedefaultvalue][codeitemUpdate] req=' + JSON.stringify(req.body)); 
+    logger.info('[351][codedefaultvalue][codeitemUpdate] req=' + JSON.stringify(req.body)); 
  
     const result = codeupdateHandler(req);
     result.then(data => {  
         res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[398][codedefaultvalue][codeitemUpdate] err=' + error.message);
+        logger.error('[358][codedefaultvalue][codeitemUpdate] err=' + error.message);
         res.sendStatus(500);
     });
 }
@@ -407,7 +367,7 @@ const codedeleteHandler = async (req) => {
  
     sql=`delete from testcodelists  where type=@type`;
 
-    logger.info('[410][codedefaultvalue][deleteHandler] =' + sql);
+    logger.info('[370][codedefaultvalue][codedeleteHandler] =' + sql);
 
     try {
         const request = pool.request()
@@ -416,21 +376,21 @@ const codedeleteHandler = async (req) => {
     const result = await request.query(sql);
         return result; 
     }catch (error) {
-        logger.error('[419][codedefaultvalue][deleteHandler] err=' + error.message);
+        logger.error('[379][codedefaultvalue][codedeleteHandler] err=' + error.message);
     }  
 
 }
 
 
 exports.codeitemDelete = (req, res, next) => {
-    logger.info('[426][codedefaultvalue][itemDelete] req=' + JSON.stringify(req.body)); 
+    logger.info('[386][codedefaultvalue][codeitemDeletee] req=' + JSON.stringify(req.body)); 
  
     const result = codedeleteHandler(req);
     result.then(data => {  
         res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[433][codedefaultvalue][itemDelete] err=' + error.message);
+        logger.error('[393][codedefaultvalue][codeitemDelete] err=' + error.message);
         res.sendStatus(500);
     });
 
