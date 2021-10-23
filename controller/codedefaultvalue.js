@@ -243,7 +243,7 @@ const codeinsertHandler = async (req) => {
 
 }
 
-exports.codeInsert = (req, res, next) => {
+exports.codeitemInsert = (req, res, next) => {
     logger.info('[247][codedefaultvalue][codeInsert] req=' + JSON.stringify(req.body)); 
  
     const result = codeinsertHandler(req);
