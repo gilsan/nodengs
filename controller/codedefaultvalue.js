@@ -61,7 +61,7 @@ const insertHandler = async (req) => {
         const request = pool.request()
             .input('type', mssql.VarChar, type)
             .input('code', mssql.VarChar, code)
-            .input('report', mssql.VarChar, report)
+            .input('report', mssql.NVarChar, report)
             .input('target', mssql.VarChar, target)
             .input('specimen', mssql.VarChar, specimen)
             .input('analyzedgene', mssql.VarChar,  analyzedgene)
@@ -115,7 +115,7 @@ const updateHandler = async (req) => {
             .input('id', mssql.Int, id)
             .input('type', mssql.VarChar, type)
             .input('code', mssql.VarChar, code)
-            .input('report', mssql.VarChar, report)
+            .input('report', mssql.NVarChar, report)
             .input('target', mssql.VarChar, target)
             .input('specimen', mssql.VarChar, specimen)
             .input('analyzedgene', mssql.VarChar,  analyzedgene)
@@ -333,7 +333,7 @@ const codeupdateHandler = async (req) => {
             .input('id', mssql.Int, id)
             .input('type', mssql.VarChar, type)
             .input('code', mssql.VarChar, code)
-            .input('report', mssql.VarChar, report)
+            .input('report', mssql.NVarChar, report)
             .input('comment', mssql.NVarChar, comment);
 
     const result = await request.query(sql);
