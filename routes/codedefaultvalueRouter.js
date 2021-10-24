@@ -16,4 +16,9 @@ router.post('/codelist', codeController.getcodeList);
 router.post('/codeinsert', codeController.codeitemInsert);
 router.post('/codeupdate', codeController.codeitemUpdate );
 router.post('/codedelete', codeController.codeitemDelete);
+
+router.post('/commentlists', codeController.getCommentLists);
+router.post('/commentinsert', codeController.insertComment);
+router.post('/commentupdate', codeController.updateComment);
+router.post('/commentdelete', codeController.deleteComment);
 module.exports = router;

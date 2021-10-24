@@ -392,6 +392,152 @@ exports.codeitemDelete = (req, res, next) => {
 
 }
 
+///////////////////// readingcomment 읽어오기
+const codeupdateHandler = async (type, code) => {
+    await poolConnect;
+    
+    sql=`select  id, type, code, comment from readingcomment where type=@type and code=@code`;
+    logger.info('[400][codedefaultvalue][commentHandler] =' + sql);
+    try {
+        const request = pool.request()
+            .input('type', mssql.VarChar, type)
+            .input('code', mssql.VarChar, code);
+
+    const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[409][codedefaultvalue][commentHandler] err=' + error.message);
+    }  
+}
+
+exports.getCommentLists = (req, res, next) => {
+    logger.info('[386][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body)); 
+ 
+    const result = commentHandler(req.body.type, req.body.code);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[421][codedefaultvalue][getCommentLists] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+//////////// 입력
+const commentInsertHandler = async (req) => {
+    await poolConnect;
+    const type = req.body.type;
+    const code = req.body.code
+    const comment= req.body.comment;
+ 
+    sql=`insert into readingcomment (type, code, comment )
+      values(@type, @code, @comment)`
+
+      logger.info('[436][codedefaultvalue][commentInsertHandler] =' + sql);
+
+      try {
+        const request = pool.request()
+            .input('type', mssql.VarChar, type)
+            .input('code', mssql.VarChar, code)
+            .input('comment', mssql.NVarChar, comment);
+
+        const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[447][codedefaultvalue][commentInsertHandler] err=' + error.message);
+    } 
+}
+
+exports.insertComment=  (req, res, next) => {
+    logger.info('[386][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body));
+
+    const result = commentInsertHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[421][codedefaultvalue][getCommentLists] err=' + error.message);
+        res.sendStatus(500);
+    });    
+}
+
+////////////// 수정
+const commentUpdateHandler = async (req) => {
+    await poolConnect;
+    
+    const id = req.body.id;
+    const type = req.body.type;
+    const code = req.body.code
+    const comment= req.body.comment;
+
+    sql=`update  readingcomment set  type=@type,  code=@code,   comment=@comment  where id=@id`;
+
+    logger.info('[475][codedefaultvalue][commentInsertHandler] =' + sql);
+
+    try {
+        const request = pool.request()
+            .input('id', mssql.Int, id)
+            .input('type', mssql.VarChar, type)
+            .input('code', mssql.VarChar, code)
+            .input('comment', mssql.NVarChar, comment);
+
+    const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[487][codedefaultvalue][codeupdateHandler] err=' + error.message);
+    }    
+}
+
+exports.updateComment=  (req, res, next) => {
+    logger.info('[492][codedefaultvalue][updateComment] req=' + JSON.stringify(req.body));
+
+    const result = commentUpdateHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[499][codedefaultvalue][updateComment] err=' + error.message);
+        res.sendStatus(500);
+    });
+
+}
+
+// 삭제
+const commentDeleteHandler = async (req) => {
+    await poolConnect;
+    const id = req.body.id;
+ 
+    sql=`delete from readingcomment  where id=@id`;
+    logger.info('[512][codedefaultvalue][commentDeleteHandler] =' + sql);
+
+    try {
+        const request = pool.request()
+            .input('id', mssql.Int, id);
+
+    const result = await request.query(sql);
+        return result; 
+    }catch (error) {
+        logger.error('[520][codedefaultvalue][commentDeleteHandler] err=' + error.message);
+    }  
+}
+
+exports.deleteComment=  (req, res, next) => {
+    logger.info('[525][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body));
+
+    const result = commentDeleteHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[421][codedefaultvalue][getCommentLists] err=' + error.message);
+        res.sendStatus(500);
+    });
+}
+
+
+
+
+
 
 
 
