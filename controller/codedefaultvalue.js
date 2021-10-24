@@ -9,17 +9,16 @@ const poolConnect = pool.connect();
 
 
 // 전체목록
-const  listsHandler = async (type) => {
+const  listsHandler = async () => {
     await poolConnect;  
 
     const sql=`select  id, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
        isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 
-       from codedefaultvalue where type=@type`;
+       from codedefaultvalue`;
 
     logger.info('[19][codedefaultvalue][listsHandler] =' + sql);
     try {
-        const request = pool.request()
-            .input('type', mssql.VarChar, type);
+        const request = pool.request();
         const result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
@@ -28,10 +27,8 @@ const  listsHandler = async (type) => {
 
 }
 exports.getLists = (req, res, next) => {
-    logger.info('[31][codedefaultvalue][getLists] req=' + JSON.stringify(req.body)); 
-    const type = req.body.type;
- 
-    const result = listsHandler(type);
+   
+    const result = listsHandler();
     result.then(data => {  
         res.json(data);
     })
@@ -152,15 +149,15 @@ exports.itemUpdate = (req, res, next) => {
 // 삭제
 const deleteHandler = async (req) => {
     await poolConnect;
-    const type = req.body.type;
+    const id = req.body.id;
  
-    sql=`delete from codedefaultvalue  where type=@type`;
+    sql=`delete from codedefaultvalue  where id=@id`;
 
     logger.info('[159][codedefaultvalue][deleteHandler] =' + sql);
 
     try {
         const request = pool.request()
-            .input('type', mssql.VarChar, type);
+            .input('id', mssql.Int, id);
 
     const result = await request.query(sql);
         return result; 
@@ -274,7 +271,6 @@ const  codelistsHandler = async () => {
 }
 
 exports.getcodeLists = (req, res, next) => {
-    logger.info('[277][codedefaultvalue][getcodeLists] req=' + JSON.stringify(req.body)); 
 
     const result = codelistsHandler();
     result.then(data => {  
@@ -363,15 +359,15 @@ exports.codeitemUpdate = (req, res, next) => {
 // 삭제
 const codedeleteHandler = async (req) => {
     await poolConnect;
-    const type = req.body.type;
+    const id = req.body.id;
  
-    sql=`delete from testcodelists  where type=@type`;
+    sql=`delete from testcodelists  where id=@id`;
 
     logger.info('[370][codedefaultvalue][codedeleteHandler] =' + sql);
 
     try {
         const request = pool.request()
-            .input('type', mssql.VarChar, type);
+            .input('id', mssql.Int, id);
 
     const result = await request.query(sql);
         return result; 
