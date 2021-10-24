@@ -257,7 +257,7 @@ exports.codeitemInsert = (req, res, next) => {
 const  codelistsHandler = async () => {
     await poolConnect;  
 
-    const sql=`select id, isnull(comment, '') comment,  isnull(code, '') code, isnull(report, '') report, isnull(type, '') type from testcodelists `;
+    const sql=`select id,    isnull(code, '') code, isnull(report, '') report, isnull(type, '') type from testcodelists `;
 
     logger.info('[262][codedefaultvalue][codelistsHandler] =' + sql);
     try {
@@ -286,7 +286,7 @@ exports.getcodeLists = (req, res, next) => {
 const  codelistHandler = async (code) => {
     await poolConnect;  
 
-    const sql=`select id, isnull(comment, '') comment,  isnull(code, '') code, isnull(report, '') report, 
+    const sql=`select id,    isnull(code, '') code, isnull(report, '') report, 
        isnull(type, '') type from testcodelists where code=@code `;
 
     logger.info('[292][codedefaultvalue][codelisttHandler] =' + sql);
@@ -324,7 +324,7 @@ const codeupdateHandler = async (req) => {
     const report= req.body.report;
     const comment= req.body.comment;
 
-    sql=`update  testcodelists set  type=@type,  code=@code, report=@report,   comment=@comment  where id=@id`;
+    sql=`update  testcodelists set  type=@type,  code=@code, report=@report,    where id=@id`;
 
     logger.info('[329][codedefaultvalue][codeupdateHandler] =' + sql);
 
@@ -393,7 +393,7 @@ exports.codeitemDelete = (req, res, next) => {
 }
 
 ///////////////////// readingcomment 읽어오기
-const codeupdateHandler = async (type, code) => {
+const commentHandler = async (type, code) => {
     await poolConnect;
     
     sql=`select  id, type, code, comment from readingcomment where type=@type and code=@code`;
