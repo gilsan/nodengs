@@ -12,7 +12,7 @@ const poolConnect = pool.connect();
 const  listsHandler = async () => {
     await poolConnect;  
 
-    const sql=`select  id, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
+    const sql=`select  id, isnull(type, '') type, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
        isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 
        from codedefaultvalue`;
 
