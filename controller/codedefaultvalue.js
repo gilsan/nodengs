@@ -511,7 +511,7 @@ exports.updateComment=  (req, res, next) => {
 const commentDeleteHandler = async (req) => {
     await poolConnect;
     const reading = req.body.reading;
-    for(let i =0; i < lists.length; i++){
+    for(let i =0; i < reading.length; i++){
         const id =  reading[i].id
         sql=`delete from readingcomment  where id=@id`;
         logger.info('[518][codedefaultvalue][commentDeleteHandler] =' + sql);
