@@ -392,7 +392,7 @@ exports.getPatientDiagLists = (req, res,next) => {
 
    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
    result.then(data => {
-
+ 
       res.json(data);
 
       res.end();
@@ -582,7 +582,7 @@ exports.getPatientDiagListsSequencing = (req, res,next) => {
  
     const result = messageHandler2(start, end, patientID, specimenNo, sheet, status);
     result.then(data => {
- 
+       
        res.json(data);
  
        res.end();

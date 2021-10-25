@@ -426,26 +426,28 @@ exports.getCommentLists = (req, res, next) => {
 //////////// 입력
 const commentInsertHandler = async (req) => {
     await poolConnect;
-    const type = req.body.type;
-    const code = req.body.code
-    const comment= req.body.comment;
- 
-    sql=`insert into readingcomment (type, code, comment )
-      values(@type, @code, @comment)`
-
-      logger.info('[436][codedefaultvalue][commentInsertHandler] =' + sql);
-
-      try {
-        const request = pool.request()
-            .input('type', mssql.VarChar, type)
-            .input('code', mssql.VarChar, code)
-            .input('comment', mssql.NVarChar, comment);
-
-        const result = await request.query(sql);
-        return result; 
-    }catch (error) {
-        logger.error('[447][codedefaultvalue][commentInsertHandler] err=' + error.message);
-    } 
+    const reading = req.body.reading;
+    
+    for ( i=0; i < reading.length; i++) {
+        const type = reading[i].type;
+        const code = reading[i].code
+        const comment= reading[i].comment;
+     
+        sql=`insert into readingcomment (type, code, comment )
+          values(@type, @code, @comment)`    
+          logger.info('[436][codedefaultvalue][commentInsertHandler] =' + sql);
+    
+          try {
+            const request = pool.request()
+                .input('type', mssql.VarChar, type)
+                .input('code', mssql.VarChar, code)
+                .input('comment', mssql.NVarChar, comment);    
+            const result = await request.query(sql);           
+        }catch (error) {
+            logger.error('[447][codedefaultvalue][commentInsertHandler] err=' + error.message);
+        }    
+    }
+    return result;
 }
 
 exports.insertComment=  (req, res, next) => {
