@@ -70,7 +70,14 @@ const getPatientDiagHandler = async (specimenNo) => {
                 ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion 
                 ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease 
                 ,isnull(method, '') method ,isnull(specimen, '') specimen 
-                ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc 
+                ,case when IsNULL( gbn, '' ) = ''  
+                    then isnull(request, '')
+                    when IsNULL( gbn, '' ) = 'cmc'
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                    when IsNULL( gbn, '' ) = '인터넷'
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+                    else isnull(request, '') end request 
+                ,isnull(appoint_doc, '')  appoint_doc 
                 ,isnull(worker, '') worker 
                 ,isnull(prescription_no, '') prescription_no  ,isnull(prescription_date, '') prescription_date 
                 ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code 
@@ -130,7 +137,13 @@ const  messageHandler = async (today) => {
     ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion 
     ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease 
     ,isnull(method, '') method ,isnull(specimen, '') specimen 
-    ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc 
+    ,case when IsNULL( gbn, '' ) = ''  
+        then isnull(request, '')
+        when IsNULL( gbn, '' ) = 'cmc'
+        then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+        when IsNULL( gbn, '' ) = '인터넷'
+        then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+        else isnull(request, '') end request, isnull(appoint_doc, '')  appoint_doc 
     ,isnull(worker, '') worker 
     ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
     ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code 
@@ -213,7 +226,14 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion 
             ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease 
             ,isnull(method, '') method ,isnull(specimen, '') specimen 
-            ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc 
+            ,case when IsNULL( gbn, '' ) = ''  
+                then isnull(request, '')
+                when IsNULL( gbn, '' ) = 'cmc'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                when IsNULL( gbn, '' ) = '인터넷'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+                else isnull(request, '') end request 
+            , isnull(appoint_doc, '')  appoint_doc 
             ,isnull(worker, '') worker 
             ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
             ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code 
@@ -978,7 +998,13 @@ const getpatientinfo = async (specimenNo) => {
             ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion 
             ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease 
             ,isnull(method, '') method ,isnull(specimen, '') specimen 
-            ,isnull(request, '') request ,isnull(appoint_doc, '')  appoint_doc 
+            ,case when IsNULL( gbn, '' ) = ''  
+            then isnull(request, '')
+            when IsNULL( gbn, '' ) = 'cmc'
+            then isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+            when IsNULL( gbn, '' ) = '인터넷'
+            then isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+            else isnull(request, '') end request ,isnull(appoint_doc, '')  appoint_doc 
             ,isnull(worker, '') worker 
             ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
             ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code 
