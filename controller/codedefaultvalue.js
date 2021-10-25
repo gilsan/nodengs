@@ -322,9 +322,9 @@ const codeupdateHandler = async (req) => {
     const type = req.body.type;
     const code = req.body.code
     const report= req.body.report;
-    const comment= req.body.comment;
+ 
 
-    sql=`update  testcodelists set  type=@type,  code=@code, report=@report,    where id=@id`;
+    sql=`update  testcodelists set  type=@type,  code=@code, report=@report  where id=@id`;
 
     logger.info('[329][codedefaultvalue][codeupdateHandler] =' + sql);
 
@@ -333,13 +333,12 @@ const codeupdateHandler = async (req) => {
             .input('id', mssql.Int, id)
             .input('type', mssql.VarChar, type)
             .input('code', mssql.VarChar, code)
-            .input('report', mssql.NVarChar, report)
-            .input('comment', mssql.NVarChar, comment);
+            .input('report', mssql.NVarChar, report);
 
     const result = await request.query(sql);
         return result; 
     }catch (error) {
-        logger.error('[381][codedefaultvalue][codeupdateHandler] err=' + error.message);
+        logger.error('[342][codedefaultvalue][codeupdateHandler] err=' + error.message);
     }  
 }
 
@@ -404,7 +403,7 @@ const commentHandler = async (type, code) => {
             .input('code', mssql.VarChar, code);
 
     const result = await request.query(sql);
-        return result; 
+        return result.recordset; 
     }catch (error) {
         logger.error('[409][codedefaultvalue][commentHandler] err=' + error.message);
     }  
@@ -415,7 +414,7 @@ exports.getCommentLists = (req, res, next) => {
  
     const result = commentHandler(req.body.type, req.body.code);
     result.then(data => {  
-        res.json({message: 'SUCCESS'});
+        res.json(data);
     })
     .catch( error => {
         logger.error('[421][codedefaultvalue][getCommentLists] err=' + error.message);
@@ -442,7 +441,7 @@ const commentInsertHandler = async (req) => {
                 .input('type', mssql.VarChar, type)
                 .input('code', mssql.VarChar, code)
                 .input('comment', mssql.NVarChar, comment);    
-            const result = await request.query(sql);           
+            result = await request.query(sql);           
         }catch (error) {
             logger.error('[447][codedefaultvalue][commentInsertHandler] err=' + error.message);
         }    
@@ -466,32 +465,36 @@ exports.insertComment=  (req, res, next) => {
 ////////////// 수정
 const commentUpdateHandler = async (req) => {
     await poolConnect;
+    const reading = req.body.reading;
+
+    for (let i =0; i < reading.length; i++ ){
+        const id = reading[i].id;
+        const type = reading[i].type;
+        const code = reading[i].code
+        const comment= reading[i].comment;
+        sql=`update  readingcomment set  type=@type,  code=@code,   comment=@comment  where id=@id`;
+
+        logger.info('[478][codedefaultvalue][commentInsertHandler] =' + sql);
     
-    const id = req.body.id;
-    const type = req.body.type;
-    const code = req.body.code
-    const comment= req.body.comment;
+        try {
+            const request = pool.request()
+                .input('id', mssql.Int, id)
+                .input('type', mssql.VarChar, type)
+                .input('code', mssql.VarChar, code)
+                .input('comment', mssql.NVarChar, comment);
+    
+        result = await request.query(sql);
+            return result; 
+        }catch (error) {
+            logger.error('[490][codedefaultvalue][codeupdateHandler] err=' + error.message);
+        } 
+    }
 
-    sql=`update  readingcomment set  type=@type,  code=@code,   comment=@comment  where id=@id`;
-
-    logger.info('[475][codedefaultvalue][commentInsertHandler] =' + sql);
-
-    try {
-        const request = pool.request()
-            .input('id', mssql.Int, id)
-            .input('type', mssql.VarChar, type)
-            .input('code', mssql.VarChar, code)
-            .input('comment', mssql.NVarChar, comment);
-
-    const result = await request.query(sql);
-        return result; 
-    }catch (error) {
-        logger.error('[487][codedefaultvalue][codeupdateHandler] err=' + error.message);
-    }    
+    return result;  
 }
 
 exports.updateComment=  (req, res, next) => {
-    logger.info('[492][codedefaultvalue][updateComment] req=' + JSON.stringify(req.body));
+    logger.info('[498][codedefaultvalue][updateComment] req=' + JSON.stringify(req.body));
 
     const result = commentUpdateHandler(req);
     result.then(data => {  
@@ -507,31 +510,37 @@ exports.updateComment=  (req, res, next) => {
 // 삭제
 const commentDeleteHandler = async (req) => {
     await poolConnect;
-    const id = req.body.id;
+    const reading = req.body.reading;
+    for(let i =0; i < lists.length; i++){
+        const id =  reading[i].id
+        sql=`delete from readingcomment  where id=@id`;
+        logger.info('[518][codedefaultvalue][commentDeleteHandler] =' + sql);
+    
+        try {
+            const request = pool.request()
+                .input('id', mssql.Int, id);
+    
+        result = await request.query(sql);
+            return result; 
+        }catch (error) {
+            logger.error('[520][codedefaultvalue][commentDeleteHandler] err=' + error.message);
+        } 
+    }
+
+    return result;
  
-    sql=`delete from readingcomment  where id=@id`;
-    logger.info('[512][codedefaultvalue][commentDeleteHandler] =' + sql);
-
-    try {
-        const request = pool.request()
-            .input('id', mssql.Int, id);
-
-    const result = await request.query(sql);
-        return result; 
-    }catch (error) {
-        logger.error('[520][codedefaultvalue][commentDeleteHandler] err=' + error.message);
-    }  
+ 
 }
 
 exports.deleteComment=  (req, res, next) => {
-    logger.info('[525][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body));
+    logger.info('[537][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body));
 
     const result = commentDeleteHandler(req);
     result.then(data => {  
         res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[532][codedefaultvalue][getCommentLists] err=' + error.message);
+        logger.error('[544][codedefaultvalue][getCommentLists] err=' + error.message);
         res.sendStatus(500);
     });
 }
