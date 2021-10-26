@@ -402,7 +402,7 @@ exports.seqlistMutation =  (req, res, next) => {
   });
 }
 
-// neucleotide change 로 찿기
+//// neucleotide change 로 찿기
 const seqcallHandler = async (req) => {
   await poolConnect;
   const nucleotideChange = req.body.coding;
