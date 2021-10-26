@@ -535,7 +535,7 @@ exports.geneticlistMutation =  (req, res, next) => {
 // genetic call
 const geneticcallHandler2 = async (req) => {
   await poolConnect;
-  const nucleotideChange = req.body.nucleotideChange;
+  const nucleotideChange = req.body.coding;
   const gene             = req.body.gene;
 
   sql=`select top 1 isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact, isnull(transcript, '') transcript,
