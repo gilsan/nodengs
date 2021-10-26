@@ -535,20 +535,20 @@ exports.geneticlistMutation =  (req, res, next) => {
 // genetic call
 const geneticcallHandler2 = async (req) => {
   await poolConnect;
-  const nucleotideChange = req.body.coding;
+  const coding = req.body.coding;
   const gene             = req.body.gene;
 
   sql=`select top 1 isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact, isnull(transcript, '') transcript,
    isnull(exon_intro, '') exonIntro,
    isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
-   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS,
-   from mutation  where type='Genetic' and gene=@gene and nucleotide_change=@nucleotideChange order by id`;
+   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS
+   from mutation  where type='Genetic' and gene=@gene and nucleotide_change=@coding order by id`;
   logger.info('[545][mutation][geneticcallHandler2] =' + sql);
 
   try {
       const request = pool.request()
            .input('gene', mssql.VarChar, gene)
-           .input('nucleotideChange', mssql.VarChar, nucleotideChange);
+           .input('coding', mssql.VarChar, coding);
       const result = await request.query(sql);
       return result.recordset; 
   }catch (error) {
