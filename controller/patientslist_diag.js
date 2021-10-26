@@ -75,7 +75,7 @@ const getPatientDiagHandler = async (specimenNo) => {
                     when IsNULL( gbn, '' ) = 'cmc'
                     then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
                     when IsNULL( gbn, '' ) = '인터넷'
-                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
                     else isnull(request, '') end request 
                 ,isnull(appoint_doc, '')  appoint_doc 
                 ,isnull(worker, '') worker 
@@ -142,7 +142,7 @@ const  messageHandler = async (today) => {
         when IsNULL( gbn, '' ) = 'cmc'
         then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
         when IsNULL( gbn, '' ) = '인터넷'
-        then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+        then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
         else isnull(request, '') end request, isnull(appoint_doc, '')  appoint_doc 
     ,isnull(worker, '') worker 
     ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
@@ -231,7 +231,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 when IsNULL( gbn, '' ) = 'cmc'
                 then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
                 when IsNULL( gbn, '' ) = '인터넷'
-                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
                 else isnull(request, '') end request 
             , isnull(appoint_doc, '')  appoint_doc 
             ,isnull(worker, '') worker 
@@ -1003,7 +1003,7 @@ const getpatientinfo = async (specimenNo) => {
             when IsNULL( gbn, '' ) = 'cmc'
             then isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
             when IsNULL( gbn, '' ) = '인터넷'
-            then isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + isnull(path_comment, '') 
+            then isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
             else isnull(request, '') end request ,isnull(appoint_doc, '')  appoint_doc 
             ,isnull(worker, '') worker 
             ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
