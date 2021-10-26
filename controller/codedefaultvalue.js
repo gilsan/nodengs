@@ -545,7 +545,41 @@ exports.deleteComment=  (req, res, next) => {
     });
 }
 
+////////////////////////////////////////////////////////////////////
+/////   Gene, nucleotide 정보로 mutation에서 다른 정보첯기
+const infofindHandler = async (req) => {
+    await poolConnect;
+    const gene = req.body.gene;
+    const nucleotide = req.body.nucleotide;
 
+    sql=`select functional_impact, reference, cosmic_id from mutation  where gene=@gene and nucleotide_change=@nucleotide order by id desc limit 1`;
+    logger.info('[556][codedefaultvalue][nucleotide] =' + sql);
+
+    try {
+        const request = pool.request()
+            .input('gene', mssql.VarChar, gene)
+            .input('nucleotide', mssql.NVarChar, nucleotide);
+
+        const result = await request.query(sql);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[566][codedefaultvalue][nucleotide] err=' + error.message);
+    } 
+}
+
+exports.findmutation=  (req, res, next) => {
+    logger.info('[572][codedefaultvalue][findmutation] req=' + JSON.stringify(req.body));
+
+    const result = infofindHandler(req);
+    result.then(data => {  
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[579][codedefaultvalue][getCommentLists] err=' + error.message);
+        res.sendStatus(500);
+    });
+
+}
 
 
 

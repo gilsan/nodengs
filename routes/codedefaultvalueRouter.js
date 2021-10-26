@@ -21,4 +21,7 @@ router.post('/commentlists', codeController.getCommentLists);
 router.post('/commentinsert', codeController.insertComment);
 router.post('/commentupdate', codeController.updateComment);
 router.post('/commentdelete', codeController.deleteComment);
+
+// Gene, nucleotide 정보로 mutation에서 다른 정보첯기
+router.post('/findinfo', codeController.findmutation);
 module.exports = router;
