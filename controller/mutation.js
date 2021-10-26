@@ -376,9 +376,9 @@ exports.listMutation = (req, res, next) => {
 const seqlistindHandler = async (req) => {
   await poolConnect;
 
-  sql=`select isnull(functional_impact, '') type, isnull(exon_intro, '') exon_intro,
-   isnull(nucleotide_change, '') nucleotide_change, isnull(amino_acid_change, '') amino_acid_change,
-   isnull(zygosity, '') zygosity, isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbank_accesion,
+  sql=`select isnull(functional_impact, '') type, isnull(exon_intro, '') exonintron,
+   isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
+   isnull(zygosity, '') zygosity, isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbankaccesion,
    from mutation  where type='SEQ'`;
   logger.info('[383][mutation][seqlistindHandler] =' + sql);
 
@@ -390,7 +390,6 @@ const seqlistindHandler = async (req) => {
       logger.error('[390][mutation][seqlistindHandler] err=' + error.message);
   } 
 }
-
 
 exports.seqlistMutation =  (req, res, next) => {
   const result = seqlistindHandler(req);
@@ -406,12 +405,12 @@ exports.seqlistMutation =  (req, res, next) => {
 // neucleotide change 로 찿기
 const seqcallHandler = async (req) => {
   await poolConnect;
-  const nucleotideChange = req.body.nucleotideChange;
+  const nucleotideChange = req.body.coding;
   const gene             = req.body.gene;
-  sql=`select isnull(functional_impact, '') type, isnull(exon_intro, '') exon_intro,
-   isnull(nucleotide_change, '') nucleotide_change, isnull(amino_acid_change, '') amino_acid_change,
-   isnull(zygosity, '') zygosity, isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbank_accesion,
-   from mutation  where type='SEQ' and  nucleotide_change= @nucleotideChange  order by id desc limit 1`;
+  sql=`select top 1 isnull(functional_impact, '') type, isnull(exon_intro, '') exonintron,
+   isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
+   isnull(zygosity, '') zygosity, isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbankaccesion
+   from mutation  where type='SEQ' and  nucleotide_change=@nucleotideChange and gene=@gene  order by id desc`;
   logger.info('[415][mutation][seqcallHandler] =' + sql);
 
   try {
@@ -444,26 +443,28 @@ const seqsaveHandler = async (req) => {
   const gene              = req.body.gene;
   const functional_impact = req.body.type;
   const patient_name      = req.body.name;
-  const register_number   = req.body.patientID;
-  const exon_intro        = req.body.exonintron;
+  const register_number   = nvl(req.body.patientID,'');
+  const exon_intro        = nvl(req.body.exonintron,'');
   const nucleotide_change = req.body.nucleotideChange;
   const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = req.body.zygosity;
-  const rsid              = req.body.rsid;
-  const genbank_accesion  = req.body.genbankaccesion;
+  const zygosity          = nvl(req.body.zygosity,'');
+  const rsid              = nvl(req.body.rsid,'');
+  const genbank_accesion  = nvl(req.body.genbankaccesion,'');
+  logger.info('[455][mutation][seqsaveHandler]register_number =' + register_number );  
 
   sql=`insert into mutation (gene, functional_impact,patient_name,register_number,exon_intro,
     nucleotide_change,amino_acid_change,zygosity,rsid,genbank_accesion, type)
     values(@gene, @functional_impact,@patient_name,@register_number,@exon_intro,
       @nucleotide_change,@amino_acid_change,@zygosity,@rsid,@genbank_accesion, 'SEQ')`;
-  logger.info('[459][mutation][seqcallHandler] =' + sql);
+ 
+  logger.info('[459][mutation][seqsaveHandler ] =' + sql);
 
   try {
       const request = pool.request()
            .input('gene',mssql.VarChar, gene)
            .input('functional_impact', mssql.VarChar,functional_impact)
            .input('patient_name', mssql.NVarChar,patient_name)
-           .input('register_number ', mssql.VarChar,register_number )
+           .input('register_number', mssql.VarChar,register_number )
            .input('exon_intro', mssql.VarChar,exon_intro)
            .input('nucleotide_change', mssql.VarChar,nucleotide_change)
            .input('amino_acid_change', mssql.VarChar,amino_acid_change)
@@ -473,7 +474,7 @@ const seqsaveHandler = async (req) => {
       const result = await request.query(sql);
       return result; 
   }catch (error) {
-      logger.error('[476][mutation][seqcallHandler] err=' + error.message);
+      logger.error('[476][mutation][seqsaveHandler ] err=' + error.message);
   } 
 }
 
@@ -502,11 +503,11 @@ exports.saveseqMutation =  (req, res, next) => {
 const geneticlistindHandler = async (req) => {
   await poolConnect;
 
-  sql=`select isnull(gene, '') gene, isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript,
-   isnull(exon_intro, '') exon_intro,
-   isnull(nucleotide_change, '') nucleotide_change, isnull(amino_acid_change, '') amino_acid_change,
-   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbsnp_hgmd, isnull(gnomad_eas, '') gnomad_eas,
-   isnull(omim, '') omim
+  sql=`select isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact, isnull(transcript, '') transcript,
+   isnull(exon_intro, '') exonIntro,
+   isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
+   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS,
+   isnull(omim, '') OMIM
    from mutation  where type='Genetic'`;
   logger.info('[508][mutation][geneticlistindHandler] =' + sql);
 
@@ -537,11 +538,11 @@ const geneticcallHandler2 = async (req) => {
   const nucleotideChange = req.body.nucleotideChange;
   const gene             = req.body.gene;
 
-  sql=`select isnull(gene, '') gene, isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript,
-   isnull(exon_intro, '') exon_intro,
-   isnull(nucleotide_change, '') nucleotide_change, isnull(amino_acid_change, '') amino_acid_change,
-   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbsnp_hgmd, isnull(gnomad_eas, '') gnomad_eas,
-   from mutation  where type='Genetic' and gene=@gene and nucleotide_change=@nucleotideChange`;
+  sql=`select top 1 isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact, isnull(transcript, '') transcript,
+   isnull(exon_intro, '') exonIntro,
+   isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
+   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS,
+   from mutation  where type='Genetic' and gene=@gene and nucleotide_change=@nucleotideChange order by id`;
   logger.info('[545][mutation][geneticcallHandler2] =' + sql);
 
   try {
@@ -571,7 +572,7 @@ const geneticcallHandler1 = async (req) => {
   await poolConnect;
   const gene             = req.body.gene;
 
-  sql=`select isnull(omim, '') omim  from mutation  where type='Genetic' and gene=@gene `;
+  sql=`select top 1 isnull(omim, '') OMIM  from mutation  where type='Genetic' and gene=@gene order by id desc`;
   logger.info('[575][mutation][geneticcallHandler1] =' + sql);
 
   try {
@@ -626,7 +627,7 @@ const geneticsaveHandler = async (req) => {
            .input('gene',mssql.VarChar, gene)
            .input('functional_impact', mssql.VarChar,functional_impact)
            .input('patient_name', mssql.NVarChar,patient_name)
-           .input('register_number ', mssql.VarChar,register_number )
+           .input('register_number', mssql.VarChar,register_number )
            .input('exon_intro', mssql.VarChar,exon_intro)
            .input('transcript', mssql.VarChar,transcript)
            .input('nucleotide_change', mssql.VarChar,nucleotide_change)
