@@ -541,7 +541,8 @@ const geneticcallHandler2 = async (req) => {
   sql=`select top 1 isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact, isnull(transcript, '') transcript,
    isnull(exon_intro, '') exonIntro,
    isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
-   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS
+   isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS,
+   isnull(igv, '') igv, isnull(sanger, '') sanger
    from mutation  where type='Genetic' and gene=@gene and nucleotide_change=@coding order by id`;
   logger.info('[545][mutation][geneticcallHandler2] =' + sql);
 
