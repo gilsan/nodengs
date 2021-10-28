@@ -55,7 +55,12 @@ const listHandler = async (req) => {
         +" ,isnull(etc1, '') etc1"
         +" ,isnull(etc2, '') etc2"
         +" ,isnull(etc3, '') etc3"
-        +" ,isnull(type, 'AMLALL') type";
+        +" ,isnull(type, 'AMLALL') type"
+        +" ,isnull(rsid, '') rsid"
+        +" ,isnull(genbank_accesion, '') genbank_accesion"
+        +" ,isnull(dbsnp_hgmd, '') dbsnp_hgmd"
+        +" ,isnull(gnomad_eas, '') gnomad_eas"
+        +" ,isnull(omim, '') omim";
   sql = sql + " from mutation ";
   sql = sql + " where 1 = 1";
 

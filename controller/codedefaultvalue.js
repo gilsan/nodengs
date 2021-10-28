@@ -33,7 +33,7 @@ exports.getLists = (req, res, next) => {
         res.json(data);
     })
     .catch( error => {
-        logger.error('[39][codedefaultvalue][getLists] err=' + error.message);
+        logger.error('[36][codedefaultvalue][getLists] err=' + error.message);
         res.sendStatus(500);
     });
 }
@@ -194,7 +194,7 @@ const  listHandler = async (code) => {
     try {
         const request = pool.request()
             .input('code', mssql.VarChar, code);
-        const result = await request.query(sql);
+        result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
         logger.error('[203][codedefaultvalue][listHandler] err=' + error.message);
@@ -206,6 +206,7 @@ exports.getList = (req, res, next) => {
     const code = req.body.code;
     const result = listHandler(code);
     result.then(data => {  
+        logger.info('[209][codedefaultvalue][getList] data=' + data);
         res.json(data);
     })
     .catch( error => {
@@ -395,7 +396,7 @@ exports.codeitemDelete = (req, res, next) => {
 const commentHandler = async (type, code) => {
     await poolConnect;
     
-    sql=`select  id, type, code, comment from readingcomment where type=@type and code=@code`;
+    sql=`select  id, type, code, comment from readingcomment where type=@type and code=@code order by id asc`;
     logger.info('[400][codedefaultvalue][commentHandler] =' + sql);
     try {
         const request = pool.request()
