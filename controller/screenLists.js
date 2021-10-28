@@ -1519,10 +1519,10 @@ const SequntialHandler = async (specimenNo) => {
       isnull(a.GenbankAccesionNo, '') genbankaccesion,
       isnull(b.comment, '') comment, isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2,
       isnull(b.seqcomment, '') seqcomment
-      from [dbo].[report_detected_variants]  a
-      inner join report_patientsInfo b
-      on a.specimenNo = b.specimenNo
-      where a.specimenNo =@specimenNo
+      from  report_patientsInfo b
+      left outer join [dbo].[report_detected_variants]  a
+      on b.specimenNo = a.specimenNo
+      where b.specimenNo =@specimenNo
   `;
 
   logger.info('[1385][listSequntial select]sql=' + sql);
