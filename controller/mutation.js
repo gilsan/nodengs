@@ -351,7 +351,7 @@ const listHandler = async (req) => {
   if(type != "") 
     sql = sql + " and type like '%"+type+"%'";
 
-  sql = sql + " order by id";
+  sql = sql + " order by id desc";
 
     logger.info("[293][mutationMapper list]sql" + sql);
     try {
