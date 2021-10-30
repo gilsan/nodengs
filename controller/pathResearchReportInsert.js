@@ -287,6 +287,7 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 	let tier              = fusion.tier;
 	let note              = fusion.note;
 	let seq               = fusion.seq;
+	let readcount 		  = nvl(fusion.readcount, '');
 
 	let seq_1 =  nvl(seq, "0");
   
@@ -294,6 +295,7 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 	logger.info("[243][fusion] gene=" + gene);
 	logger.info("[243][fusion] fusion_breakpoint=" + fusion_breakpoint);
 	logger.info("[243][fusion] fusion_function=" + fusion_function);
+	logger.info("[243][fusion] readcount=" + readcount);
 	logger.info("[243][fusion] tier=" + tier);
 	logger.info("[243][fusion] note=" + note);
 	logger.info("[243][fusion] seq=" + seq_1);
@@ -311,6 +313,7 @@ const fusionSaveHandler = async (pathology_num, fusion, report_gb ) => {
 			.input('gene', mssql.VarChar, gene)
 			.input('fusion_breakpoint', mssql.VarChar, fusion_breakpoint)
 			.input('fusion_function', mssql.VarChar, fusion_function)
+			.input('readcount', mssql.VarChar, readcount)
 			.input('tier', mssql.VarChar, tier)
 			.input('note', mssql.VarChar, note)
 			.input('seq', mssql.VarChar, seq_1)

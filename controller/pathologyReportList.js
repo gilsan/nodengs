@@ -249,7 +249,7 @@ const  messageHandler_fusion_c = async (pathologyNum) => {
 	//insert Query 생성
 	const sql = "select pathology_num, report_date, \
 					report_gb, gene, fusion_breakpoint, \
-					fusion_function, isnull(tier, '') tier, seq \
+					fusion_function, isnull(tier, '') tier, seq, isnull(readcount, '') readcount \
 					from report_fusion \
 					where pathology_num = @pathologyNum \
 					and report_gb =	@reportGb \
@@ -532,7 +532,7 @@ const  messageHandler_amplification_p = async (pathologyNum) => {
 	//insert Query 생성
 	const sql = "select pathology_num, report_date, \
 					report_gb, gene, fusion_breakpoint, \
-					fusion_function, isnull(tier, '') tier, seq \
+					fusion_function, isnull(tier, '') tier, seq, isnull(readcount, '') readcount \
 					from report_fusion \
 					where pathology_num = @pathologyNum \
 					and report_gb =	@reportGb \
