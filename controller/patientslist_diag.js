@@ -1110,7 +1110,35 @@ exports.changestatus = (req, res, next) => {
     })
 }
 
+//  진검 전체 리스트
+const allListsHandler = async () =>{
+    await poolConnect;
+    
+    const sql =`select isnull(screenstatus, '') screenstatus ,  isnull(test_code, '') test_code
+            from patientInfo_diag  `;
 
+    try {
+        const request = pool.request();
+
+        const result = await request.query(sql);
+        return result.recordset[0];
+
+    } catch(error) {
+        logger.error('[1127][patientinfo_diag allListsHandler]err=' + error.message);
+    }
+}
+
+exports.allLists = (req, res, next) => {
+    const result = allListsHandler();
+    result.then(data => {
+         res.json(data);
+    })
+    .catch( error => {
+        logger.error('[1137][patientinfo_diag allLists]err=' + error.message);
+    })
+
+
+}
  
 
  

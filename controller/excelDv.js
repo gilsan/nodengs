@@ -179,11 +179,11 @@ exports.excelDvSave = (req, res, next) => {
 
 };
 
-const  excelDvSelectHandler = async () => {
+const  excelDvSelectHandler = async (start, end ,type) => {
     await poolConnect; // ensures that the pool has been created
-
+    logger.error('[184] excelDvSelectHandler =' + start + ', ' + end + ', '+ type);
     //select Query 생성
-        const qry = `SELECT
+        let qry = `SELECT
             isnull( tsvname, '') tsvname
             , isnull( patientID, '') patientID
             , isnull(specimenNo, '') specimenNo
@@ -203,9 +203,15 @@ const  excelDvSelectHandler = async () => {
             , isnull(cosmicID, '') cosmicID
             , isnull(accept_date,  '') acceptdate
             , isnull(report_date,  '') reportdate
-        FROM NGS_DATA.dbo.excelDV `;
+        FROM NGS_DATA.dbo.excelDV 
+        where left(report_date, 10) >= '` + start + "'" 
+             + " and left(report_date, 10) <= '" + end + "'";
 
-        logger.info('[105]excelDvSelect sql=' + qry);
+        if (type.length > 0) {
+            qry = qry +  " and test_code = '" +  type + "'";
+        }
+
+        logger.info('[214]excelDvSelect sql=' + qry);
     
     try {
 
@@ -214,22 +220,26 @@ const  excelDvSelectHandler = async () => {
         const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
-        logger.error('[117]excelDvSelectHandler err=' + error.message);
+        logger.error('[223]excelDvSelectHandler err=' + error.message);
     }
 }
 
 // get excelDv List
 exports.excelDvList = (req, res, next) => {
-    logger.info('[123]excelDvList req=' + JSON.stringify(req.body));
+    logger.info('[229]excelDvList req=' + JSON.stringify(req.body));
 
     const pathologyNum = req.body.pathologyNum;
-    const result = excelDvSelectHandler(pathologyNum);
+    const start = req.body.start;
+    const end   = req.body.end;
+    const type  = req.body.type;
+    const result = excelDvSelectHandler(start, end, type);
+    // const result = excelDvSelectHandler(pathologyNum);
     result.then(data => {  
         //  console.log('[108][excelDvList]', data);
           res.json(data);
     })
     .catch( error => {
-        logger.error('[132]excelDvList err=' + error.message);
+        logger.error('[242]excelDvList err=' + error.message);
         res.sendStatus(500)
     }); 
  };

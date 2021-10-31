@@ -3,6 +3,8 @@ const router = express.Router();
 
  const patientDiagController = require('../controller/patientslist_diag');
 
+// 전체 리스트
+router.get('/allLists', patientDiagController.allLists);
 // 검진자 리스트
 router.get('/list', patientDiagController.getDiagLists);
 // 검사자 변경시 저장
