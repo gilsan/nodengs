@@ -1115,13 +1115,13 @@ const allListsHandler = async () =>{
     await poolConnect;
     
     const sql =`select isnull(screenstatus, '') screenstatus ,  isnull(test_code, '') test_code
-            from patientInfo_diag  `;
+            from patientInfo_diag `;
 
     try {
         const request = pool.request();
 
         const result = await request.query(sql);
-        return result.recordset[0];
+        return result.recordset;
 
     } catch(error) {
         logger.error('[1127][patientinfo_diag allListsHandler]err=' + error.message);
