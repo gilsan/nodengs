@@ -1793,6 +1793,8 @@ const patientHandler = async(patients, res) => {
         let pathology_num = patients[i].bcno.substr(0, 3) + "-" + patients[i].bcno.substring(3);
 
         patients[i].bcno = pathology_num;
+
+        let rs_data = await messageHandler(pathology_num);
         
         logger.info("[2499][report_xml]rs_data=" + JSON.stringify (rs_data));
         
