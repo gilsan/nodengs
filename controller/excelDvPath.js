@@ -16,14 +16,14 @@ const  excelDvPathSelectHandler = async (start, end ) => {
         , isnull(patientID, '') patientID
         , isnull(organ, '') organ
         , isnull(pathological_dx, '') pathological_dx
-        , isnull(prescription_date, '') prescription_date
+        ,  isnull( CONVERT(VARCHAR(10), convert(datetime, prescription_date, 112), 126) , '') prescription_date
         ,  case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
             then '' 
             else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date
-        , isnull(b.report_gb, '') report_gb,
-        , isnull(b.gene, '') gene,
-        , isnull(b.amino_acid_change, '') amino_acid_change,
-        , isnull(b.nucleotide_change, '') nucleotide_change,
+        , isnull(b.report_gb, '') report_gb
+        , isnull(b.gene, '') gene
+        , isnull(b.amino_acid_change, '') amino_acid_change
+        , isnull(b.nucleotide_change, '') nucleotide_change
         , isnull(b.variant_allele_frequency, '') variant_allele_frequency
         FROM [dbo].[patientinfo_path] a
         left outer join
