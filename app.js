@@ -36,6 +36,9 @@ const reportPatientListRouter     = require('./routes/report_patient');
 // 2021.10.13 진검 report_xml
 const reportXmlRouter     = require('./routes/report_xml');
 
+// 2021.10.13 진검 report_xml
+const reportXmlPathRouter     = require('./routes/report_xml_path');
+
 
 const patientListDiagRouter     = require('./routes/patientlist_diag');
 const filteredTSVListRouter = require('./routes/filteredTSVlist');
@@ -137,6 +140,9 @@ const polymorphismRouter = require('./routes/polymorphismRouter');
 //2021-06-02
 const excelDvRouter = require('./routes/excelDvRouter');
 
+//2021-11-01
+const excelDvPathRouter = require('./routes/excelDvPathRouter');
+
 // MLPA Router
 const mlpaRouter = require('./routes/mlpaRouter');
 // 병리 동연변이 sequencing 입력
@@ -230,6 +236,8 @@ app.use('/patients_diag', patientListDiagRouter);
 app.use('/report_patient', reportPatientListRouter);
 // 2021.02.02 진검 report_patient
 app.use('/report_xml', reportXmlRouter);
+// 2021.11.01 병리 report_patient
+app.use('/report_xml_path', reportXmlPathRouter);
 
 //검사자 필터링된 리스트 가겨오기
 app.use('/filteredTSV', filteredTSVListRouter);
@@ -347,6 +355,9 @@ app.use('/tests', function(req, res, next) {
 
  // 2021-06-02
  app.use('/excelDv', excelDvRouter);
+ // 2021-06-02
+ app.use('/excelDv_Path', excelDvPathRouter);
+
 // MLPA
  app.use('/mlpa', mlpaRouter);
 
