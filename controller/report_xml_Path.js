@@ -1771,7 +1771,10 @@ const patientHandler = async(patients, res) => {
 
     console.log (patients.length);
 
-    let hospnm = patients[i].hospnm;
+    for (var i = 0;  i < patients.length; i ++)
+    {
+
+        let hospnm = patients[i].hospnm;
 
         if (hospnm === '가톨릭대학교 서울성모병원') {
             hospnm = '01';
@@ -1781,14 +1784,7 @@ const patientHandler = async(patients, res) => {
 
         patients[i].hospnm = hospnm;
 
-        let testcd = patients[i].testcd;
-
-        if (arr_testcd.indexOf(testcd) > 0) {
-            testcd = '01';
-        }
-        else {
-            testcd = '03';
-        }
+        let testcd = '03';
 
         patients[i].testcd = testcd;
 
@@ -1823,7 +1819,7 @@ const patientHandler = async(patients, res) => {
                 }
             }
         }
-
+    }
 
     res.json(patients);
 }
