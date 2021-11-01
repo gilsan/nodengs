@@ -4,6 +4,7 @@ const mssql = require('mssql');
 const logger = require('../common/winston');
 const parser = require('fast-xml-parser');
 const dbConfigMssql = require('../common/dbconfig.js');
+const e = require('express');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -1743,24 +1744,56 @@ var jsondata = `
 `;
 
 
-const  messageHandler = async (specimenNo) => {
+const  messageHandler_path = async (pathology_num) => {
     await poolConnect; // ensures that the pool has been created
   
-    const sql =`select gene, functional_impact  from [dbo].[report_detected_variants] 
-                    where specimenNo=@specimenNo 
-                    order by functional_impact desc `;
+    logger.info("[patientinfo_path]select pathology_num=" + pathology_num);
+    const sql =`select isnull(rel_pathology_num, '') rel_pathology_num
+                    , isnull(organ, '') organ
+                    , isnull(pathological_dx, '') pathological_dx
+                    from [dbo].[patientinfo_path]
+                    where pathology_num=@pathology_num `;
   
-    logger.info("[report_detected_variants]select sql=" + sql);
+    logger.info("[patientinfo_path]select sql=" + sql);
   
     try {
         const request = pool.request()
-          .input('specimenNo', mssql.VarChar, specimenNo); // or: new sql.Request(pool1)
+          .input('pathology_num', mssql.VarChar, pathology_num); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+      //  console.dir( result);
+        
+        return result.recordset[0];
+    } catch (err) {
+        logger.error('[patientinfo_path]SQL error=' + err.message);
+    }
+}
+
+
+const  messageHandler = async (pathology_num) => {
+    await poolConnect; // ensures that the pool has been created
+  
+    logger.info("[report_mutation]select pathology_num=" + pathology_num);
+    
+    const sql =`select pathology_num,
+                report_gb,
+                gene,
+                isnull(amino_acid_change, '') amino_acid_change,
+                isnull(nucleotide_change, '') nucleotide_change,
+                isnull(variant_allele_frequency, '') variant_allele_frequency
+            from  [dbo].[report_mutation]
+            where pathology_num=@pathology_num  `;
+  
+    logger.info("[report_mutation]select sql=" + sql);
+  
+    try {
+        const request = pool.request()
+          .input('pathology_num', mssql.VarChar, pathology_num); // or: new sql.Request(pool1)
         const result = await request.query(sql)
       //  console.dir( result);
         
         return result.recordset;
     } catch (err) {
-        logger.error('[report_detected_variants]SQL error=' + err.message);
+        logger.error('[report_mutation]SQL error=' + err.message);
     }
 }
 
@@ -1778,41 +1811,73 @@ const patientHandler = async(patients, res) => {
     
         patients[i].prcpdd = prcpdd;
 
-        let testcd = patients[i].testcd;
+        let pathology_num = patients[i].bcno.substr(0, 3) + "-" + patients[i].bcno.substring(3);
 
-        patients[i].testcd = testcd;
+        patients[i].pathology_num = pathology_num;
 
-        patients[i].pv = 'Y';
+        let rs_data = await messageHandler_path(pathology_num);
 
-        let specimenNo = patients[i].bcno;
-
-        let rs_data = await messageHandler(specimenNo);
+        if (rs_data !== undefined) {
         
-        logger.info("[2499][report_xml]rs_data=" + JSON.stringify (rs_data));
-        
-        var patientJson = JSON.stringify(rs_data); 
+            logger.info("[1818][report_xml]rs_data=" + JSON.stringify (rs_data));
+            
+            var patientJson = JSON.stringify(rs_data); 
 
-        let patient_gene = JSON.parse(patientJson);
+            let patient_gene = JSON.parse(patientJson);
 
-        patients[i].pv = 'N';
-        patients[i].pv_gene = '';
-        patients[i].vus = 'N';
-        patients[i].vus_gene = '';
-        
-        if (patient_gene.lenght !== 0 )
-        {
-            for (var j = 0;  j < patient_gene.length; j ++)
+            if (patient_gene.length !== 0 )
             {
-                if (patient_gene[j].functional_impact === 'VUS') {            
-                    patients[i].vus = 'Y';
-                    patients[i].vus_gene = patients[i].vus_gene + " " +  patient_gene[j].gene ;
-                }
-                else if ((patient_gene[j].functional_impact === 'Pathogenic') ||
-                         (patient_gene[j].functional_impact === 'Like Pathogenic')) {            
-                    patients[i].pv = 'Y';
-                    patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
+                for (var j = 0;  j < patient_gene.length; j ++)
+                {
+                    patients[i].rel_pathology_num = patient_gene[j].rel_pathology_num ;
+                    patients[i].organ = patient_gene[j].organ ;
+                    patients[i].diagnosis = patient_gene[j].pathological_dx ;
                 }
             }
+        }
+        else {
+            patients[i].rel_pathology_num = "";
+            patients[i].organ = "";
+            patients[i].diagnosis = "";
+        }
+
+        let rs_data2 = await messageHandler(pathology_num);
+            
+        if (rs_data2 !== undefined) {
+            
+            logger.info("[1844][report_xml]rs_data=" + JSON.stringify (rs_data2));
+            
+            var patientJson = JSON.stringify(rs_data2); 
+
+            var patient_gene = JSON.parse(patientJson);
+
+            if (patient_gene.length !== 0 )
+            {
+                for (var j = 0;  j < patient_gene.length; j ++)
+                {                             
+                    patients[i].report_gb = patient_gene[j].report_gb;
+                    patients[i].gene = patient_gene[j].gene;
+                    patients[i].amino_acid_change = patient_gene[j].amino_acid_change;
+                    patients[i].amino_acid_change = patient_gene[j].amino_acid_change;
+                    patients[i].allele_frequency = patient_gene[j].variant_allele_frequency;
+                }
+            }
+            else {
+            
+                patients[i].report_gb = "";
+                patients[i].gene = "";
+                patients[i].amino_acid_change = "";
+                patients[i].nucleotide_change = "";
+                patients[i].allele_frequency = "";
+            }
+        }
+        else {
+            
+            patients[i].report_gb = "";
+            patients[i].gene = "";
+            patients[i].amino_acid_change = "";
+            patients[i].nucleotide_change = "";
+            patients[i].allele_frequency = "";
         }
 
     }
