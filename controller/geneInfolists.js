@@ -29,7 +29,7 @@ const poolConnect = pool.connect();
 
 
 // select mutation
-const  messageHandler = async (req) => {
+const  messageHandler_mut = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const gene =  req.body.gene;	 
@@ -59,6 +59,43 @@ const  messageHandler = async (req) => {
       return result.recordset;
   } catch (error) {
     logger.error('[61][geneinfo]list err=' + error.message);
+  }
+}
+
+
+// select mutation
+const  messageHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+
+  const gene =  req.body.gene;	 
+  const nucleotide_change = req.body.coding;
+  const type = nvl(req.body.type, '');
+
+  logger.info('[74][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + type); 
+ 
+  let sql =`select top 1 functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id, type
+                from report_detected_variants 
+                where gene=@gene 
+                and nucleotide_change =@nucleotide_change `
+  if (type !== '') {
+    sql = sql +  ` and type='` + type + `'`;
+  }
+  sql = sql +  ` and reference != ''
+                  and cosmic_id != ''
+                  order by id desc`;
+  logger.info('[84][geneinfo]list sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('gene', mssql.VarChar, gene) 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('type', mssql.VarChar, type); 
+      const result = await request.query(sql);
+    //  console.dir( result);
+      
+      return result.recordset;
+  } catch (error) {
+    logger.error('[98][geneinfo]list err=' + error.message);
   }
 }
 
