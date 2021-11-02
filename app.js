@@ -146,7 +146,7 @@ const excelDvPathRouter = require('./routes/excelDvPathRouter');
 
 // MLPA Router
 const mlpaRouter = require('./routes/mlpaRouter');
-// 병리 동연변이 sequencing 입력
+// 병리 돌연변이 sequencing 입력
 const sequencingdiagRouter = require('./routes/sequencingdiagRouter')
 
 //나중에 확인후 삭제할것.
