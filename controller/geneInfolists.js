@@ -73,13 +73,15 @@ const  messageHandler = async (req) => {
 
   logger.info('[74][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + type); 
  
-  let sql =`select top 1 functional_impact,transcript,exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id, type
+  let sql =`select top 1 functional_impact,transcript, isnull(exon, '')  exon_intro, amino_acid_change, zygosity,vaf,reference, cosmic_id, type
                 from report_detected_variants 
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change `
+  /*
   if (type !== '') {
     sql = sql +  ` and type='` + type + `'`;
   }
+  */
   sql = sql +  ` and reference != ''
                   and cosmic_id != ''
                   order by id desc`;
@@ -91,7 +93,7 @@ const  messageHandler = async (req) => {
         .input('nucleotide_change', mssql.VarChar, nucleotide_change)
         .input('type', mssql.VarChar, type); 
       const result = await request.query(sql);
-    //  console.dir( result);
+      console.dir( result);
       
       return result.recordset;
   } catch (error) {
