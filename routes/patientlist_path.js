@@ -12,4 +12,5 @@ router.post('/resetPath', patientDiagController.resetScreenStatusPath);
 //
 router.post('/screenstatusPath', patientDiagController.getScreenStatusPath);
 router.post('/patient',   patientDiagController.getPatientByPathNo);
+router.post('/testcode',   patientDiagController.getReportByTestcode);
 module.exports = router;

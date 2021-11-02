@@ -475,3 +475,35 @@ exports.getPatientByPathNo = (req, res, next) => {
     }); 
 
 }
+
+// Testcode로 결과지 타이틀 알아오기
+const getReportTestcode = async (test_code) => {
+    await poolConnect; // ensures that the pool has been created
+
+    let sql = `select 
+            isnull(report_title, '') report_title  
+                from [dbo].[path_testcode] 
+                where  test_code=@test_code `;
+
+    try {
+        const request = pool.request()
+         .input('test_code', mssql.VarChar, test_code); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+       // console.dir( result);
+        
+        return result.recordset[0];
+    } catch (error) {
+        logger.error("[459][patientinfo_path select]err=" + error.message);
+    }
+}
+
+// 2021.11.02
+// getReportByTestcode
+exports.getReportByTestcode = (req, res, next) => {
+    let test_code = req.body.testcode.trim();
+    const result = getReportTestcode(test_code);
+    result.then(data => {
+         res.json(data);
+    }); 
+
+}
