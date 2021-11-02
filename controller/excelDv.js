@@ -208,7 +208,15 @@ const  excelDvSelectHandler = async (start, end ,type) => {
              + " and left(report_date, 10) <= '" + end + "'";
 
         if (type.length > 0) {
-            qry = qry +  " and test_code = '" +  type + "'";
+
+            if (type === 'AML')
+            {
+                qry = qry +  " and test_code in ('AML', 'ALL') ";
+            }
+            else
+            {
+                qry = qry +  " and test_code = '" +  type + "'";
+            }
         }
 
         logger.info('[214]excelDvSelect sql=' + qry);
