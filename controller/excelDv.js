@@ -209,7 +209,7 @@ const  excelDvSelectHandler = async (start, end ,type) => {
 
         if (type.length > 0) {
 
-            if (type === 'AML')
+            if (type === 'AMLALL')
             {
                 qry = qry +  " and test_code in ('AML', 'ALL') ";
             }

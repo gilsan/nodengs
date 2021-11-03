@@ -396,7 +396,7 @@ exports.codeitemDelete = (req, res, next) => {
 const commentHandler = async (type, code) => {
     await poolConnect;
     
-    sql=`select  id, type, code, comment from readingcomment where type=@type and code=@code order by id asc`;
+    sql=`select  id, type, code, isnull(comment, '') comment, isnull(seq, '0') seq from readingcomment where type=@type and code=@code order by id asc`;
     logger.info('[400][codedefaultvalue][commentHandler] =' + sql);
     try {
         const request = pool.request()
@@ -433,8 +433,8 @@ const commentInsertHandler = async (req) => {
         const code = reading[i].code
         const comment= reading[i].comment;
      
-        sql=`insert into readingcomment (type, code, comment )
-          values(@type, @code, @comment)`    
+        sql=`insert into readingcomment (type, code, comment, seq )
+          values(@type, @code, @comment, '0')`    
           logger.info('[436][codedefaultvalue][commentInsertHandler] =' + sql);
     
           try {
@@ -508,6 +508,7 @@ exports.updateComment=  (req, res, next) => {
 
 }
 
+
 // 삭제
 const commentDeleteHandler = async (req) => {
     await poolConnect;
@@ -546,6 +547,54 @@ exports.deleteComment=  (req, res, next) => {
     });
 }
 
+
+/////// 순서 갱신
+const commentUpdateSeqHandler = async (req) => {
+    await poolConnect;
+    const reading = req.body.reading;
+
+    for (let i =0; i < reading.length; i++ ){
+        const id     = reading[i].id;
+        const type   = reading[i].type;
+        const code   = reading[i].code
+        const comment= reading[i].comment;
+        const seq    = reading[i].seq;
+        sql=`update  readingcomment set  type=@type,  code=@code,   comment=@comment, seq=@seq where id=@id`;
+        console.log('[563]', id, type, code, comment,seq)
+        logger.info('[564][codedefaultvalue][commentUpdateSeqHandler] =' + sql);
+    
+        try {
+            const request = pool.request()
+                .input('id', mssql.Int, id)
+                .input('type', mssql.VarChar, type)
+                .input('code', mssql.VarChar, code)
+                .input('seq', mssql.Int, seq)
+                .input('comment', mssql.NVarChar, comment);
+    
+            result = await request.query(sql);
+           
+        }catch (error) {
+            logger.error('[577][codedefaultvalue][commentUpdateSeqHandler] err=' + error.message);
+        } 
+    }
+
+    return result;  
+}
+
+exports.updateCommentSeq=  (req, res, next) => {
+    logger.info('[585][codedefaultvalue][updateCommentSeq] req=' + JSON.stringify(req.body));
+
+    const result = commentUpdateSeqHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[592][codedefaultvalue][updateCommentSeq] err=' + error.message);
+        res.sendStatus(500);
+    });
+
+}
+
 ////////////////////////////////////////////////////////////////////
 /////   Gene, nucleotide 정보로 mutation에서 다른 정보첯기
 const infofindHandler = async (req) => {
@@ -554,7 +603,7 @@ const infofindHandler = async (req) => {
     const nucleotide = req.body.nucleotide;
 
     sql=`select functional_impact, reference, cosmic_id from mutation  where gene=@gene and nucleotide_change=@nucleotide order by id desc limit 1`;
-    logger.info('[556][codedefaultvalue][nucleotide] =' + sql);
+    logger.info('[606][codedefaultvalue][nucleotide] =' + sql);
 
     try {
         const request = pool.request()
@@ -564,19 +613,19 @@ const infofindHandler = async (req) => {
         const result = await request.query(sql);
         return result.recordset; 
     }catch (error) {
-        logger.error('[566][codedefaultvalue][nucleotide] err=' + error.message);
+        logger.error('[616][codedefaultvalue][nucleotide] err=' + error.message);
     } 
 }
 
 exports.findmutation=  (req, res, next) => {
-    logger.info('[572][codedefaultvalue][findmutation] req=' + JSON.stringify(req.body));
+    logger.info('[621][codedefaultvalue][findmutation] req=' + JSON.stringify(req.body));
 
     const result = infofindHandler(req);
     result.then(data => {  
         res.json(data);
     })
     .catch( error => {
-        logger.error('[579][codedefaultvalue][getCommentLists] err=' + error.message);
+        logger.error('[628][codedefaultvalue][getCommentLists] err=' + error.message);
         res.sendStatus(500);
     });
 

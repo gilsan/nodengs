@@ -20,6 +20,7 @@ router.post('/seqinsert', mutationController.saveseqMutation);
 // router.post('/sequpdate', mutationController.updateseqMutation);
 // router.post('/seqdelete', mutationController.deleteseqMutation);
 
+
 // 유전성 유전질환
 router.get('/geneticlists', mutationController.geneticlistMutation);
 router.post('/geneticcall2', mutationController.geneticcallMutation2);
