@@ -186,6 +186,8 @@ const  messageHandler3 = async (originalname, dirPath, testedID) => {
         screenstatus = '0',
         detected = '0',
         path=@dirPath,
+        examin='', 
+        recheck='',
         tsvFilteredDate=getdate()  
         where specimenNo = @testedID`;
   logger.info('[144][fileupload][update patientinfo_diag]sql=' +  qry) ;
