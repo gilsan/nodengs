@@ -477,17 +477,17 @@ exports.getPatientByPathNo = (req, res, next) => {
 }
 
 // Testcode로 결과지 타이틀 알아오기
-const getReportTestcode = async (test_code) => {
+const getReportTestcode = async (prescription_code) => {
     await poolConnect; // ensures that the pool has been created
 
     let sql = `select 
             isnull(report_title, '') report_title  
                 from [dbo].[path_testcode] 
-                where  test_code=@test_code `;
+                where  test_code=@prescription_code `;
 
     try {
         const request = pool.request()
-         .input('test_code', mssql.VarChar, test_code); // or: new sql.Request(pool1)
+         .input('prescription_code', mssql.VarChar, prescription_code); // or: new sql.Request(pool1)
         const result = await request.query(sql)
        // console.dir( result);
         
@@ -500,8 +500,8 @@ const getReportTestcode = async (test_code) => {
 // 2021.11.02
 // getReportByTestcode
 exports.getReportByTestcode = (req, res, next) => {
-    let test_code = req.body.testcode.trim();
-    const result = getReportTestcode(test_code);
+    let prescription_code = req.body.prescription_code.trim();
+    const result = getReportTestcode(prescription_code);
     result.then(data => {
          res.json(data);
     }); 
