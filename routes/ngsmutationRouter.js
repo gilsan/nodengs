@@ -30,4 +30,10 @@ router.post('/geneticinsert', mutationController.savegeneticMutation);
 // router.post('/geneticdelete', mutationController.deletegeneticMutation);
 
 
+//  essentialDNAMent
+router.get('/esslists', mutationController.listEssential);
+router.post('/essinsert', mutationController.insertEssential);
+router.post('/essupdate', mutationController.updateEssential);
+router.post('/essdelete', mutationController.deleteEssential);
+
 module.exports = router;

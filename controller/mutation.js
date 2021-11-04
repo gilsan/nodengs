@@ -671,6 +671,140 @@ exports.savegeneticMutation =  (req, res, next) => {
 
 // genetic delete
 
+
+////////////// Essential DNA ment
+
+//////////////////// essential amplification 입력
+const  insertEssentialHandler = async (req) => {
+  await poolConnect;
+
+  const title = req.body.title;
+  const type  = req.body.type;
+  const gene = req.body.gene;
+
+  const sql = `insert into essentialDNAMent (title,  type, gene) values(@title, @type, @gene)`;
+  logger.info('[686][mutation][insertEssentialHandler] =' + sql);
+ 
+    try {
+      const request = pool.request()
+           .input('title', mssql.VarChar, title)
+           .input('type', mssql.VarChar, type)
+           .input('gene', mssql.VarChar, gene);
+      const result = await request.query(sql);
+      return result; 
+    } catch (error) {
+        logger.error('[696][mutation]insertEssentialHandler] err=' + error.message);
+    } 
+}
+
+
+exports.insertEssential = (req,res, next) => {
+  logger.info('[702][mutation insert]data=' + JSON.stringify(req.body));
+  const result = insertEssentialHandler(req);
+  result.then(data => {  
+      res.json({message: 'SUCCESS'});
+  })
+  .catch( error => {
+      logger.error('[708][mutation][insertEssential] err=' + error.message);
+      res.sendStatus(500);
+  });
+}
+
+///////////////////// essential amplification  갱신
+const  updateEssentialHandler = async (req) => {
+  await poolConnect;
+ 
+    const id    = req.body.id;
+    const title = req.body.title
+    const type  = req.body.type;
+    const gene  = req.body.gene;
+    
+    sql=`update  essentialDNAMent set  type=@type,  title=@title,   gene=@gene  where id=@id`;
+    logger.info('[723][mutation][updateEssentialHandler] =' + sql);
+    try {
+        const request = pool.request()
+            .input('id', mssql.Int, id)
+            .input('type', mssql.VarChar, type)
+            .input('title', mssql.VarChar, title)
+            .input('gene', mssql.VarChar, gene);
+
+        const result = await request.query(sql);
+        return result;
+    }catch (error) {
+        logger.error('[734][mutation][updateEssentialHandler] err=' + error.message);
+    } 
+ 
+}
+
+exports.updateEssential = (req,res, next) => {
+  logger.info('[740][mutation]data=' + JSON.stringify(req.body));
+  const result = updateEssentialHandler(req);
+  result.then(data => {  
+      res.json({message: 'SUCCESS'});
+  })
+  .catch( error => {
+      logger.error('[746][mutation][updateEssential] err=' + error.message);
+      res.sendStatus(500);
+  });
+}
+
+//////////////////// essential amplification  삭제
+const  deleteEssentialHandler = async (req) => {
+  await poolConnect;
+  const id = req.body.id;
+  const sql ='delete from essentialDNAMent where id=@id';
+  logger.info('[756][mutation][deleteEssentialHandler] =' + sql);
+  try {
+    const request = pool.request()
+        .input('id', mssql.Int, id);
+
+    const result = await request.query(sql);
+    return result;
+  }catch (error) {
+    logger.error('[764][mutation][deleteEssentialHandler] err=' + error.message);
+  }  
+}
+
+
+exports.deleteEssential = (req,res, next) => {
+  logger.info('[770][mutatio]data=' + JSON.stringify(req.body));
+  const result = deleteEssentialHandler(req);
+  result.then(data => {  
+      res.json({message: 'SUCCESS'});
+  })
+  .catch( error => {
+      logger.error('[712][mutation][deleteEssential] err=' + error.message);
+      res.sendStatus(500);
+  });
+}
+
+/////// essentila lists 
+const  listsEssentialHandler = async (req) => {
+  await poolConnect;
+ 
+  const sql =`select id, isnull(title,'') title , isnull(type, '') type, isnull(gene, '') gene  from essentialDNAMent`;
+  logger.info('[786][mutation][listsEssentialHandler] =' + sql);
+  try {
+    const request = pool.request();
+    const result = await request.query(sql);
+    return result.recordset;
+  }catch (error) {
+    logger.error('[792][mutation][listsEssentialHandler] err=' + error.message);
+  }  
+}
+
+exports.listEssential = (req,res, next) => {
+  const result = listsEssentialHandler(req);
+  result.then(data => {  
+    res.json(data);
+  })
+  .catch( error => {
+    logger.error('[802][mutation][listEssential] err=' + error.message);
+    res.sendStatus(500);
+  });
+}
+////////////////////////////////////
+
  
 
  

@@ -485,7 +485,7 @@ const commentUpdateHandler = async (req) => {
                 .input('comment', mssql.NVarChar, comment);
     
         result = await request.query(sql);
-            return result; 
+           
         }catch (error) {
             logger.error('[490][codedefaultvalue][codeupdateHandler] err=' + error.message);
         } 
@@ -523,7 +523,7 @@ const commentDeleteHandler = async (req) => {
                 .input('id', mssql.Int, id);
     
         result = await request.query(sql);
-            return result; 
+        
         }catch (error) {
             logger.error('[520][codedefaultvalue][commentDeleteHandler] err=' + error.message);
         } 
