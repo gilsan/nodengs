@@ -13,7 +13,7 @@ const  listsHandler = async () => {
     await poolConnect;  
 
     const sql=`select  id, isnull(type, '') type, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
-       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 
+       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 , isnull(comment, '') comment
        from codedefaultvalue`;
 
     logger.info('[19][codedefaultvalue][listsHandler] =' + sql);
@@ -49,11 +49,12 @@ const insertHandler = async (req) => {
     const specimen= req.body.specimen;
     const analyzedgene= req.body.analyzedgene;
     const method= req.body.method;
+    const comment = req.body.comment;
     const comment1= req.body.comment1;
     const comment2= req.body.comment2;
 
-    sql=`insert into codedefaultvalue (type, code, report, target,specimen, analyzedgene, method, comment1, comment2)
-      values(@type, @code, @report, @target, @specimen, @analyzedgene, @method, @comment1, @comment2)`
+    sql=`insert into codedefaultvalue (type, code, report, target,specimen, analyzedgene, method, comment1, comment2, comment)
+      values(@type, @code, @report, @target, @specimen, @analyzedgene, @method, @comment1, @comment2, comment)`
 
       logger.info('[61][codedefaultvalue][insertHandler] =' + sql);
 
@@ -66,6 +67,7 @@ const insertHandler = async (req) => {
             .input('specimen', mssql.VarChar, specimen)
             .input('analyzedgene', mssql.VarChar,  analyzedgene)
             .input('method', mssql.VarChar, method)
+            .input('comment', mssql.NVarChar, comment)
             .input('comment1', mssql.NVarChar, comment1)
             .input('comment2', mssql.NVarChar, comment2);
 
@@ -101,11 +103,12 @@ const updateHandler = async (req) => {
     const specimen= req.body.specimen;
     const analyzedgene= req.body.analyzedgene;
     const method= req.body.method;
+    const comment = req.body.comment;
     const comment1= req.body.comment1;
     const comment2= req.body.comment2;
 
     sql=`update  codedefaultvalue set  type=@type,  code=@code, report=@report, target=@target,
-    specimen=@specimen, analyzedgene=@analyzedgene, method=@method, comment1=@comment1, comment2=@comment2
+    specimen=@specimen, analyzedgene=@analyzedgene, method=@method, comment1=@comment1, comment2=@comment2, comment=@comment
       where id=@id`;
 
     logger.info('[114][codedefaultvalue][updateHandler] =' + sql);
@@ -120,6 +123,7 @@ const updateHandler = async (req) => {
             .input('specimen', mssql.VarChar, specimen)
             .input('analyzedgene', mssql.VarChar,  analyzedgene)
             .input('method', mssql.VarChar, method)
+            .input('comment', mssql.NVarChar, comment)
             .input('comment1', mssql.NVarChar, comment1)
             .input('comment2', mssql.NVarChar, comment2);
 
@@ -187,7 +191,7 @@ const  listHandler = async (code) => {
     await poolConnect;  
 
     const sql=`select  id, isnull(type,'') type, isnull(code, '') code, isnull(report, '') report, isnull(target, '') target, isnull(specimen, '') specimen,
-       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 
+       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(comment1, '') comment1, isnull(comment2, '') comment2 , isnull(comment,'') comment
        from codedefaultvalue where code=@code`;
 
     logger.info('[196][codedefaultvalue][listHandler] =' + sql);

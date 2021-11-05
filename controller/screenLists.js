@@ -38,7 +38,7 @@ const  messageHandler = async (req) => {
   isnull(zygosity, '') zygosity, isnull(vaf, '') vaf, isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, 
   isnull(type, '') type, isnull(checked, '') checked, isnull(functional_code, '') functional_code, 
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
-  isnull(work_now, '') work_now, isnull(work_diag, '') work_diag, isnull(cnt, '') cnt
+  isnull(work_now, '') work_now, isnull(work_diag, '') work_diag, isnull(cnt, '') cnt, isnull(gubun, '') gubun
    from [dbo].[report_detected_variants] 
    where specimenNo=@specimenNo 
    order by functional_code, gene, nucleotide_change `;
@@ -382,7 +382,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const gnomADEAS         = nvl(detected_variants[i].gnomADEAS, '');
     const OMIM              = nvl(detected_variants[i].OMIM,'');
     const cnt               = nvl(detected_variants[i].cnt, '');
-
+    const gubun             = detected_variants[i].gubun;
     let functional_code = i;
 
     if (i < 10) {
@@ -404,11 +404,11 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
               dbSNPHGMD, gnomADEAS, OMIM,
-              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt) 
+              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt, gubun) 
               values(@specimenNo, getdate(),  @gene,
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
                 @dbSNPHGMD, @gnomADEAS, @OMIM,
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt)`;
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt, @gubun)`;
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -433,7 +433,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('gnomADEAS', mssql.NVarChar, gnomADEAS)
             .input('OMIM', mssql.VarChar, OMIM)
             .input('checked', mssql.VarChar, checked)
-            .input('cnt', mssql.VarChar, cnt);
+            .input('cnt', mssql.VarChar, cnt)
+            .input('gubun', mssql.VarChar, gubun);
             
             result = await request.query(qry);         
     
@@ -702,7 +703,7 @@ logger.info('[343][screenList][insertScreen]req=' + JSON.stringify(req.body));
 const chron = req.body.chron ;
 const flt3ITD = req.body.flt3itd ; 
 const leukemia = req.body.leukemia;
-
+const gubun    = req.body.gubun;
 const specimenNo        = req.body.specimenNo;
 const detected_variants = req.body.detected_variants;
 const comments          = req.body.comments;
@@ -1319,7 +1320,7 @@ exports.finishScreen = (req, res, next) => {
     });
 };
 
-// 임시저장
+// AMLALL 임시저장
 exports.saveScreen = (req, res, next) => {
 
 logger.info('[669][screenList][saveScreen]req=' + JSON.stringify(req.body));

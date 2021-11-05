@@ -104,6 +104,7 @@ const  messageHandler = async (req) => {
   }
 }
 
+
 // In-House get Mutation
 exports.getMutationInfoLists = (req,res, next) => {
 
@@ -728,3 +729,47 @@ exports.getCommentInsert = (req,res, next) => {
     res.sendStatus(500);
   });
 }
+
+
+// AMLALL, LYM,MDS는  report_detected_variants 테이블에서 찿음
+const  variantsHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+
+  const gene =  req.body.gene;	 
+  const nucleotide_change = req.body.coding;
+  const gubun = req.body.gubun;
+  
+  logger.info('[742][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
+ 
+  let sql =`select top 1 functional_impact , reference, cosmic_id, type
+                from report_detected_variants 
+                where gene=@gene 
+                and nucleotide_change =@nucleotide_change and gubun=@gubun order by id desc`
+               
+  logger.info('[749][geneinfo]list sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('gene', mssql.VarChar, gene) 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('gubun', mssql.VarChar, gubun); 
+      const result = await request.query(sql);
+      return result.recordset;
+  } catch (error) {
+    logger.error('[759][geneinfo]list err=' + error.message);
+  }
+}
+
+exports.getVariantsLists = (req,res, next) => {
+  logger.info('[764][geneinfo]getCommentInsert req=' + JSON.stringify(req.body));
+   
+  const result = variantsHandler(req);
+  result.then(data => {
+    res.json(data);
+  })
+  .catch( error => {
+    logger.error('[771][geneinfo][getVariantsLists] err=' +error.message);
+    res.sendStatus(500);
+  });
+}
+
