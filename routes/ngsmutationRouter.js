@@ -11,6 +11,9 @@ router.post('/update', mutationController.updateMutation);
 router.post('/delete', mutationController.deleteMutation);
 // 
 router.post('/searchbygene', mutationController.searchMutaionbygene);
+//
+router.post('/callbygene', mutationController.getVariantsLists);
+
 router.post('/list',   mutationController.listMutation);
 
 // sequencing

@@ -301,6 +301,51 @@ result.then(data => {
 
 }
 
+
+
+
+// AMLALL, LYM,MDS는  report_detected_variants 테이블에서 찿음
+const  variantsHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+
+  const gene =  req.body.gene;	 
+  const nucleotide_change = req.body.coding;
+  const gubun = req.body.gubun;
+  
+  logger.info('[742][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
+ 
+  let sql =`select top 1 functional_impact , reference, cosmic_id, type
+                from report_detected_variants 
+                where gene=@gene 
+                and nucleotide_change =@nucleotide_change and gubun=@gubun order by id desc`
+               
+  logger.info('[749][geneinfo]list sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('gene', mssql.VarChar, gene) 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('gubun', mssql.VarChar, gubun); 
+      const result = await request.query(sql);
+      return result.recordset;
+  } catch (error) {
+    logger.error('[759][geneinfo]list err=' + error.message);
+  }
+}
+
+exports.getVariantsLists = (req,res, next) => {
+  logger.info('[764][geneinfo]getCommentInsert req=' + JSON.stringify(req.body));
+   
+  const result = variantsHandler(req);
+  result.then(data => {
+    res.json(data);
+  })
+  .catch( error => {
+    logger.error('[771][geneinfo][getVariantsLists] err=' +error.message);
+    res.sendStatus(500);
+  });
+}
+
 // list
 const listHandler = async (req) => {
     await poolConnect;  
@@ -415,7 +460,11 @@ const seqcallHandler = async (req) => {
   sql=`select top 1 isnull(functional_impact, '') type, isnull(exon_intro, '') exonintron,
      isnull(amino_acid_change, '') aminoAcidChange,
      isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbankaccesion
-   from mutation  where type='SEQ' and  nucleotide_change=@nucleotideChange    order by id desc`;
+   from mutation  
+   where type='SEQ' 
+   and gene = @gene
+   and  nucleotide_change=@nucleotideChange    
+   order by id desc`;
   logger.info('[415][mutation][seqcallHandler] =' + sql);
 
   try {
