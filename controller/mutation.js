@@ -310,7 +310,7 @@ const  variantsHandler = async (req) => {
 
   const gene =  req.body.gene;	 
   const nucleotide_change = req.body.coding;
-  const gubun = req.body.gubun;
+  const gubun = nvl(req.body.gubun, 'AMLALL');
   
   logger.info('[742][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
