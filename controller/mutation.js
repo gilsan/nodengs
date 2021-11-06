@@ -804,6 +804,33 @@ exports.listEssential = (req,res, next) => {
     res.sendStatus(500);
   });
 }
+
+//// TITLE 만 가져왹
+const  listsEssentialTitleHandler = async (req) => {
+  await poolConnect;
+ 
+  const sql =`select  DISTINCT title  from essentialDNAMent`;
+  logger.info('[813][mutation][listsEssentialTitleHandler] =' + sql);
+  try {
+    const request = pool.request();
+    const result = await request.query(sql);
+    return result.recordset;
+  }catch (error) {
+    logger.error('[819][mutation][listsEssentialTitleHandler] err=' + error.message);
+  }  
+}
+
+exports.listEssentialTitle = (req,res, next) => {
+  const result = listsEssentialTitleHandler(req);
+  result.then(data => {  
+    res.json(data);
+  })
+  .catch( error => {
+    logger.error('[829][mutation][listEssentialTitle] err=' + error.message);
+    res.sendStatus(500);
+  });
+}
+
 ////////////////////////////////////
 
  

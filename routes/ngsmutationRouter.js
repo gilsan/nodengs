@@ -36,5 +36,5 @@ router.get('/esslists', mutationController.listEssential);
 router.post('/essinsert', mutationController.insertEssential);
 router.post('/essupdate', mutationController.updateEssential);
 router.post('/essdelete', mutationController.deleteEssential);
-
+router.get('/esstitleonly', mutationController.listEssentialTitle)
 module.exports = router;
