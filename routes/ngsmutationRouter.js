@@ -13,22 +13,20 @@ router.post('/delete', mutationController.deleteMutation);
 router.post('/searchbygene', mutationController.searchMutaionbygene);
 router.post('/list',   mutationController.listMutation);
 
-
 // sequencing
 router.get('/seqlists', mutationController.seqlistMutation);
 router.post('/seqcall', mutationController.seqcallMutation);
 router.post('/seqinsert', mutationController.saveseqMutation);
-// router.post('/sequpdate', mutationController.updateseqMutation);
-// router.post('/seqdelete', mutationController.deleteseqMutation);
-
+router.post('/sequpdate', mutationController.updateseqMutation);
+router.post('/seqdelete', mutationController.deleteseqMutation);
 
 // 유전성 유전질환
 router.get('/geneticlists', mutationController.geneticlistMutation);
 router.post('/geneticcall2', mutationController.geneticcallMutation2);
 router.post('/geneticcall1', mutationController.geneticcallMutation1);
 router.post('/geneticinsert', mutationController.savegeneticMutation);
-// router.post('/geneticupdate', mutationController.updategeneticMutation);
-// router.post('/geneticdelete', mutationController.deletegeneticMutation);
+router.post('/geneticupdate', mutationController.updategeneticMutation);
+router.post('/geneticdelete', mutationController.deletegeneticMutation);
 
 
 //  essentialDNAMent
@@ -36,5 +34,6 @@ router.get('/esslists', mutationController.listEssential);
 router.post('/essinsert', mutationController.insertEssential);
 router.post('/essupdate', mutationController.updateEssential);
 router.post('/essdelete', mutationController.deleteEssential);
-router.get('/esstitleonly', mutationController.listEssentialTitle)
+router.get('/esstitleonly', mutationController.listEssentialTitle);
+
 module.exports = router;
