@@ -442,7 +442,7 @@ exports.seqcallMutation =  (req, res, next) => {
   });
 }
 
-// // sequencing insert
+// sequencing insert
 const seqsaveHandler = async (req) => {
   await poolConnect;
   const gene              = req.body.gene;
@@ -496,7 +496,7 @@ exports.saveseqMutation =  (req, res, next) => {
   });
 }
 
-// sequencing upldate
+// sequencing update
 const seqUpdateHandler = async (req) => {
   await poolConnect;
   const gene              = req.body.gene;
