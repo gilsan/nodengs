@@ -1429,6 +1429,74 @@ result2.then(data => {
   });
 };
 
+const deleteHandlerForm6 = async (specimenNo) => {
+   
+  logger.info('[1703][screenList]delete Genetic]specimenNo=' + specimenNo);
+    //delete Query 생성;    
+    const qry ="delete report_patientsInfo where specimenNo=@specimenNo";
+            
+    logger.info("[1707][screenList][del Genetic]del sql=" + qry);
+  
+    try {
+        const request = pool.request()
+          .input('specimenNo', mssql.VarChar, specimenNo);
+          
+          result = await request.query(qry);         
+  
+    } catch (error) {
+      logger.error('[1716][screenList][del Genetic]err=' +  error.message);
+    }
+      
+    return result;
+}
+
+const insertHandlerForm6 = async (specimenNo, result6, detectedtype,
+  additional_Note, methods, technique, comments ) => {
+  
+    logger.info('[1292][screenList][saveScreen 6]comment2= ' + specimenNo);    
+
+    logger.info('[1292][screenList][saveScreen 6]result6= ' + result6);    
+    logger.info('[1292][screenList][saveScreen 6]detectedtype= ' + detectedtype);  
+
+    logger.info('[1292][screenList][saveScreen 6]comments= ' + comments);
+    logger.info('[1292][screenList][saveScreen 6]additional_Note= ' + additional_Note);
+    logger.info('[1292][screenList][saveScreen 6]technique= ' + technique);
+    logger.info('[1292][screenList][saveScreen 6]methods= ' + methods);
+  
+    let detectedType = '';
+    if ( detectedtype === 'detected') {
+      detectedType = '0';
+    } else {
+      detectedType = '1';
+    }
+
+  //insert Query 생성;
+  const qry = `insert into report_patientsInfo (
+    specimenNo, report_date, result, detected,
+      additional_Note, techniques, comments, methods, screenstatus) 
+      values(@specimenNo, getdate(),  @result6, @detectedtype,
+      @additional_Note, @technique, @comments, @methods, '2')`;
+    
+  logger.info('[1824][screenList][insert report_patientsInfo]sql=' + qry);
+
+  try {
+    const request = pool.request()
+      .input('specimenNo', mssql.VarChar, specimenNo)
+      .input('result6', mssql.VarChar, result6)
+      .input('detectedtype', mssql.NVarChar, detectedtype)
+      .input('technique', mssql.NVarChar, technique)
+      .input('additional_Note', mssql.NVarChar, additional_Note)
+      .input('methods', mssql.NVarChar, methods)
+      .input('seqcomment', mssql.NVarChar, seqcomment);
+      
+    let result = await request.query(qry);         
+
+  } catch (error) {
+    logger.error('[1810][screenList][insert report_patientsInfo]err=' + error.message);
+  }
+    
+}
+
 // 선천성 면역결핍증 임시저장
 exports.saveScreen6 = (req, res, next) => {
 
@@ -1437,32 +1505,52 @@ exports.saveScreen6 = (req, res, next) => {
   const chron = '' ;
   const flt3ITD = '' ; 
   const leukemia = '';
-  
-
-  const specimenNo        = req.body.specimenNo;
-  const detected_variants = req.body.detected_variants;
-  const comment2          = req.body.comment2;
-  const detectedtype      = req.body.resultStatus;
-  const examin            = req.body.patientInfo.examin;
-  const recheck           = req.body.patientInfo.recheck;
   const vusmsg            = '';
 
+  const specimenNo        = req.body.specimenNo;
   
-  //logger.info('[684][screenList][saveScreen]screenstatus = ' + screenstatus + ', specimenNo=, ' + specimenNo
-  logger.info('[1292][screenList][saveScreen 6]specimenNo=, ' + specimenNo
+  const detectedtype      = req.body.resultStatus;
+  let   result6           = nvl(req.body.result, '');
+  
+  const detected_variants = req.body.detected_variants;
+
+  const comments          = req.body.comments;
+  const additional_Note   = req.body.additionalNote;
+  const technique         = req.body.technique;
+  const methods           = req.body.methods;
+
+  const examin            = req.body.patientInfo.examin;
+  const recheck           = req.body.patientInfo.recheck;
+
+  logger.info('[1292][screenList][saveScreen 6]specimenNo= ' + specimenNo
                                 + ", immundefi=  " + detected_variants ); 
+  
+  logger.info('[1292][screenList][saveScreen 6]comments= ' + comments);
+  logger.info('[1292][screenList][saveScreen 6]additional_Note= ' + additional_Note);
+  logger.info('[1292][screenList][saveScreen 6]technique= ' + technique);
+  logger.info('[1292][screenList][saveScreen 6]methods= ' + methods);
+
   const result2 = deleteHandler(specimenNo);
   result2.then(data => {
   
     const result = insertHandler_form6(specimenNo, detected_variants);
     result.then(data => {
+    
+      const result4 = deleteHandlerForm6(specimenNo);
+      result4.then(data => {
   
-      const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, '' );
-      statusResult.then(data => {
-            res.json({message: 'OK'});
+        const result5 = insertHandlerForm6 (specimenNo, result6, detectedtype,
+                                    additional_Note, methods, technique, comments );
+          result5.then(data => {
+  
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia,
+                                                   examin, recheck, vusmsg, '' );
+            statusResult.then(data => {
+                  res.json({message: 'OK'});
+            });
+          });
         });
-    });
-          
+      });
     })
     .catch( error  => {
       logger.error('[1311][screenList][saveScreen 6]err=' + error.message);
