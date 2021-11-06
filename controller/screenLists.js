@@ -234,7 +234,8 @@ exports.patientLists = (req,res,next) => {
 }
 
 // 검사자 screenstatus 상태 스크린 완료 로 변경
-const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, examin, recheck, vusmsg) => {
+const  messageHandler2 = async (specimenNo, status, chron,flt3ITD, 
+                                  leukemia, examin, recheck, vusmsg) => {
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[243][screenList][update screen]data=' + status + ", " + specimenNo + ", " + chron + ", "  + flt3ITD + ", " + leukemia
@@ -262,14 +263,31 @@ const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,leukemia, exam
 
 // 2021.04.29 스크린 상태 변경 안 함
 // 임시 저장
-const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, recheck, vusmsg, comment2) => {
+const  messageHandler4 = async (specimenNo, chron, flt3ITD, detectedtype,
+                                leukemia, examin, recheck, vusmsg) => {
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[271][screenList][update screen]data=' + specimenNo + ", " + chron + ", "  + flt3ITD + ", " + leukemia
-                                       + ", vusmsg=" + vusmsg +  ", examin=" + examin  + ", recheck=" + recheck + ", comment2=" + comment2); 
+    logger.info('[271][screenList][update screen]data=' + specimenNo);
+    logger.info('[271][screenList][update screen]chron=' + chron);
+    logger.info('[271][screenList][update screen]flt3ITD='  + flt3ITD);
+    logger.info('[271][screenList][update screen] ' + leukemia);
+    logger.info('[271][screenList][update screen]detectedtype=' + detectedtype);
+    logger.info('[271][screenList][update screen]vusmsg=' + vusmsg);
+    logger.info('[271][screenList][update screen]examin=' + examin);
+    logger.info('[271][screenList][update screen]recheck=' + recheck);
+
+    let detected =''
+    if ( detectedtype === 'detected') {
+      detected = '0';
+    } else {
+      detected = '1';
+    }
 
     let sql =`update [dbo].[patientinfo_diag] 
-             set examin=@examin, recheck=@recheck, vusmsg = @vusmsg 
+             set examin=@examin
+             , recheck=@recheck
+             , vusmsg = @vusmsg
+             , detected = @detected
              where specimenNo=@specimenNo `;   
     logger.info('[277][screenList][set screen]sql=' + sql);
     try {
@@ -277,6 +295,7 @@ const  messageHandler4 = async (specimenNo, chron,flt3ITD,leukemia, examin, rech
             .input('examin', mssql.NVarChar, examin)
             .input('recheck', mssql.NVarChar, recheck)
             .input('vusmsg', mssql.NVarChar, vusmsg)
+            .input('detected', mssql.VarChar, detected)
             .input('specimenNo', mssql.VarChar, specimenNo); 
         const result = await request.query(sql)
        // console.dir( result);
@@ -533,7 +552,7 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
                            + ', functional_impact=' + functional_impact 
                            + ', transcript= ' + transcript + ', exon=' + exon 
                            + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
-                           + ', zygosity=' + zygosity + ', comment2 =' + comment2
+                           + ', zygosity=' + zygosity
                            + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM + ', cnt=' + cnt );
   
      //insert Query 생성;
@@ -560,7 +579,6 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
              .input('dbSNPHGMD', mssql.NVarChar, dbSNPHGMD)
              .input('gnomADEAS', mssql.NVarChar, gnomADEAS)
              .input('OMIM', mssql.VarChar, OMIM)
-             .input('comment2', mssql.VarChar, comment2)
              .input('cnt', mssql.VarChar, cnt);
              
              result = await request.query(qry);         
@@ -1350,16 +1368,13 @@ result2.then(data => {
       // console.log('[157][insertScreen]', data);
       const commentResult = insertCommentHandler(specimenNo, comments);
       commentResult.then(data => {
-          const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
-          detectedResult.then(data => {
             // 검사지 변경
             //const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
-            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, comment2);
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, detectedtype, 
+                                                    leukemia, examin, recheck, vusmsg, comment2);
             statusResult.then(data => {
                   res.json({message: 'OK'});
               });
-          });
-
         });
     });
   });
@@ -1405,14 +1420,12 @@ result2.then(data => {
       // console.log('[157][insertScreen]', data);
       const commentResult = insertCommentHandler(specimenNo, comments);
       commentResult.then(data => {
-          const detectedResult = updateDetectedHandler(specimenNo, detectedtype);
-          detectedResult.then(data => {
             // 검사지 변경
-            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, '');
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, detectedtype,
+                                                     leukemia, examin, recheck, vusmsg);
             statusResult.then(data => {
                   res.json({message: 'OK'});
               });
-          });
 
         });
     });
@@ -1446,31 +1459,24 @@ const deleteHandlerForm6 = async (specimenNo) => {
     return result;
 }
 
-const insertHandlerForm6 = async (specimenNo, result6, detectedtype,
-  additional_Note, methods, technique, comments ) => {
+const insertHandlerForm6 = async (specimenNo, result6,
+                      additional_Note, methods, technique, comments ) => {
   
     logger.info('[1292][screenList][saveScreen 6]comment2= ' + specimenNo);    
 
     logger.info('[1292][screenList][saveScreen 6]result6= ' + result6);    
-    logger.info('[1292][screenList][saveScreen 6]detectedtype= ' + detectedtype);  
 
     logger.info('[1292][screenList][saveScreen 6]comments= ' + comments);
     logger.info('[1292][screenList][saveScreen 6]additional_Note= ' + additional_Note);
     logger.info('[1292][screenList][saveScreen 6]technique= ' + technique);
     logger.info('[1292][screenList][saveScreen 6]methods= ' + methods);
   
-    let detectedType = '';
-    if ( detectedtype === 'detected') {
-      detectedType = '0';
-    } else {
-      detectedType = '1';
-    }
 
   //insert Query 생성;
   const qry = `insert into report_patientsInfo (
-    specimenNo, report_date, result, detected,
+    specimenNo, report_date, result,
       additional_Note, techniques, comments, methods, screenstatus) 
-      values(@specimenNo, getdate(),  @result6, @detectedtype,
+      values(@specimenNo, getdate(),  @result6,
       @additional_Note, @technique, @comments, @methods, '2')`;
     
   logger.info('[1824][screenList][insert report_patientsInfo]sql=' + qry);
@@ -1479,11 +1485,10 @@ const insertHandlerForm6 = async (specimenNo, result6, detectedtype,
     const request = pool.request()
       .input('specimenNo', mssql.VarChar, specimenNo)
       .input('result6', mssql.VarChar, result6)
-      .input('detectedtype', mssql.NVarChar, detectedtype)
       .input('technique', mssql.NVarChar, technique)
       .input('additional_Note', mssql.NVarChar, additional_Note)
       .input('methods', mssql.NVarChar, methods)
-      .input('seqcomment', mssql.NVarChar, seqcomment);
+      .input('comments', mssql.NVarChar, comments);
       
     let result = await request.query(qry);         
 
@@ -1535,12 +1540,12 @@ exports.saveScreen6 = (req, res, next) => {
       const result4 = deleteHandlerForm6(specimenNo);
       result4.then(data => {
   
-        const result5 = insertHandlerForm6 (specimenNo, result6, detectedtype,
+        const result5 = insertHandlerForm6 (specimenNo, result6, 
                                     additional_Note, methods, technique, comments );
           result5.then(data => {
   
-            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia,
-                                                   examin, recheck, vusmsg, '' );
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, detectedtype,
+                                                    leukemia, examin, recheck, vusmsg );
             statusResult.then(data => {
                   res.json({message: 'OK'});
             });
@@ -1559,7 +1564,7 @@ const immundefiHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select 
-              isnull(result, '') result, isnull(detected, '') detected,
+              isnull(result, '') result,
               isnull(additional_Note,'') additional_Note, isnull(techniques, '') techniques, 
               isnull(comments, '') comments, isnull(methods, '') methods
           from [dbo].[report_patientsInfo] where specimenNo = @specimenNo
@@ -1837,35 +1842,10 @@ const SequencingCountHandler = async (type) => {
 
 //////////////////////////////////////////////////////////////////////////////////
 // sequential 스크린 완료 Detected Variants 
-const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype) => {
+const insertHandler_form7 = async (specimenNo, detected_variants) => {
   // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
   logger.info('[583][screenList][insert detected_variants 7]specimenNo=' + specimenNo);
   logger.info('[584][screenList][insert detected_variants 7]detected_variants=' + JSON.stringify(detected_variants));
-  logger.info('[585][screenList][insert detected_variants 7]detectedtype=' + detectedtype);
-  let detectedType;
-  if ( detectedtype === 'detected') {
-    detectedType = '0';
-  } else {
-    detectedType = '1';
-  }
-  
-  logger.info('[600][screenList][update patientinfo_diag]specimenNo=' + specimenNo
-                      + ', detectedtype=' + detectedtype + ', type=' + detectedType);
-
-  let query ="update [dbo].[patientinfo_diag] \
-  set detected=@detectedType  where specimenNo=@specimenNo ";  
-  logger.info('[598][screenList][update patientinfo_diag]sql=' + query);
-
-  try {
-    const request = pool.request()
-      .input('specimenNo', mssql.VarChar, specimenNo)
-      .input('detectedType', mssql.VarChar, detectedType);
-      
-    const  execute = await request.query(query);         
-
-  } catch (error) {
-    logger.error('[615][screenList][update patientinfo_diag]err=' + error.message);
-  }
 
    let result;
     
@@ -1927,7 +1907,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype) 
 
 //////////////////////////////////////////////////////////////////////////////////
 // Sequencing 스크린 완료 
-const insertHandlerSequencing = async (specimenNo, type, title, result2, detectedtype,  
+const insertHandlerSequencing = async (specimenNo, type, title, result2,  
                             target, testmethod, analyzedgene, specimen, comment, comment1,comment2, seqcomment,  identified_variations) => {
   
   logger.info('[1747][screenList][insert report_patientsInfo]specimenNo=' + specimenNo);
@@ -1939,34 +1919,8 @@ const insertHandlerSequencing = async (specimenNo, type, title, result2, detecte
   logger.info('[585][screenList][insert report_patientsInfo]comment1=' + comment1);
   logger.info('[585][screenList][insert report_patientsInfo]comment2=' + comment2);
   logger.info('[585][screenList][insert report_patientsInfo]seqcomment=' + seqcomment);
-  logger.info('[1747][screenList][insert report_patientsInfo]detectedtype=' + detectedtype );
   logger.info('[1747][screenList][insert report_patientsInfo]identified_variations=' + identified_variations );
   logger.info('[1747][screenList][insert report_patientsInfo]specimen=' + specimen);
-  
-  let detectedType
-  if ( detectedtype === 'detected') {
-    detectedType = '0';
-  } else {
-    detectedType = '1';
-  }
-
-  logger.info('[1795][screenList][insert report_patientsInfo]specimenNo=' + specimenNo
-  + ', detectedtype=' + detectedtype + ', type=' + detectedType);
-
-  let query =`update [dbo].[patientinfo_diag] 
-              set detected=@detectedType  where specimenNo=@specimenNo `;  
-  logger.info('[1769][screenList][update patientinfo_diag]sql=' + query);
-
-  try {
-    const request = pool.request()
-    .input('specimenNo', mssql.VarChar, specimenNo)
-    .input('detectedType', mssql.VarChar, detectedType);
-
-    result = await request.query(query);         
-
-  } catch (error) {
-    logger.error('[1779][screenList][update patientinfo_diag]err=' + error.message);
-  }
 
   //insert Query 생성;
   const qry = `insert into report_patientsInfo (specimenNo, report_date, title, report_type,
@@ -2109,10 +2063,12 @@ exports.saveScreen7 = (req, res, next) => {
     const examin            = req.body.patientInfo.examin;
     const recheck           = req.body.patientInfo.recheck;
     const identified_variations  = nvl(req.body.identified_variations, '');
+
     const comment           = req.body.comment;
     const comment1          = req.body.comment1;
     const comment2          = req.body.comment2;
     const seqcomment        = req.body.seqcomment;
+
     let target = nvl(req.body.target, '');
     let testmethod  = nvl(req.body.testmethod, '');
     let analyzedgene =  nvl(req.body.analyzedgene, '');
@@ -2122,18 +2078,19 @@ exports.saveScreen7 = (req, res, next) => {
     const result = deleteHandler(specimenNo);
     result.then(data => {
     
-      const result3 = insertHandler_form7(specimenNo, detected_variants, resultStatus);
+      const result3 = insertHandler_form7(specimenNo, detected_variants);
       result3.then(data => {
     
         const result4 = deleteHandlerSequntial(specimenNo);
         result4.then(data => {
     
-          const result5 = insertHandlerSequencing (specimenNo, type, title, result2, resultStatus,
+          const result5 = insertHandlerSequencing (specimenNo, type, title, result2,
                                                   target, testmethod, analyzedgene, specimen, comment, comment1,comment2, seqcomment, identified_variations );
           result5.then(data => {
 
               // 검사지 변경
-              const statusResult = messageHandler4(specimenNo, chron, flt3ITD, leukemia, examin, recheck, vusmsg, '');
+              const statusResult = messageHandler4(specimenNo, chron, flt3ITD, resultStatus,
+                                                   leukemia, examin, recheck, vusmsg);
               statusResult.then(data => {
 
                 const result6 = SequencingCountHandler (type);
