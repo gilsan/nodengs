@@ -564,7 +564,7 @@ const seqDeleteHandler = async (req) => {
   const gene              = req.body.gene;
   const nucleotide_change = req.body.nucleotideChange;  
 
-  sql=`delet from mutation
+  sql=`delete from mutation
         where gene = @gene
         and   nucleotide_change = @nucleotide_change
         and   type = 'SEQ'`;
@@ -837,7 +837,7 @@ const deleteGeneticHandler = async (req) => {
   const gene              = req.body.gene;
   const nucleotide_change = req.body.nucleotideChange;  
 
-  sql=`delet from mutation
+  sql=`delete from mutation
         where gene = @gene
         and   nucleotide_change = @nucleotide_change
         and   type = 'SEQ'`;
@@ -915,7 +915,7 @@ const  updateEssentialHandler = async (req) => {
     const type  = req.body.type;
     const gene  = req.body.gene;
     
-    sql=`update  essentialDNAMent set  type=@type,  title=@title,   gene=@gene  where id=@id`;
+    sql=`update essentialDNAMent set type=@type, title=@title, gene=@gene where id=@id`;
     logger.info('[723][mutation][updateEssentialHandler] =' + sql);
     try {
         const request = pool.request()
