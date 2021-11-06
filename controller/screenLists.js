@@ -519,12 +519,8 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      const dbSNPHGMD         = detected_variants[i].dbSNPHGMD;
      const gnomADEAS         = detected_variants[i].gnomADEAS;
      const OMIM              = detected_variants[i].OMIM;
-     const comment2          = detected_variants[i].comment2;
       
      const cnt               = nvl(detected_variants[i].cnt, '');
-
-
-
 
      let functional_code = i;
  
@@ -543,10 +539,10 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-               dbSNPHGMD, gnomADEAS, OMIM, cnt, comment2) 
+               dbSNPHGMD, gnomADEAS, OMIM, cnt, gubun) 
                values(@specimenNo, getdate(),  @gene,
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
-                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt, @comment2)`;
+                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt, 'genetic')`;
              
        logger.info('[470][screenList][insert detected_variants 6]sql=' + qry);
        
@@ -1558,16 +1554,15 @@ exports.saveScreen6 = (req, res, next) => {
     });
 };
 
-
 // 선천성 면역결핍증 내역
 const immundefiHandler = async (specimenNo) => {
   await poolConnect; 
 
-  const sql=`select  isnull(gene, '') gene, isnull(functional_impact, '') functionalImpact,
-  isnull(transcript,'') transcript, isnull(exon, '') exonIntro, isnull(nucleotide_change, '') nucleotideChange,
-  isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity, isnull(dbSNPHGMD, '') dbSNPHGMD,
-  isnull(gnomADEAS, '') gnomADEAS, isnull(OMIM, '') OMIM, isnull(comment2, '') comment2
-   from [dbo].[report_detected_variants] where specimenNo =@specimenNo
+  const sql=`select 
+              isnull(result, '') result, isnull(detected, '') detected,
+              isnull(additional_Note,'') additional_Note, isnull(techniques, '') techniques, 
+              isnull(comments, '') comments, isnull(methods, '') methods
+          from [dbo].[report_patientsInfo] where specimenNo = @specimenNo
   `;
 
   try {
@@ -1580,7 +1575,6 @@ const immundefiHandler = async (specimenNo) => {
     }
   
 };
-
 
 exports.listImmundefi = (req, res, next) => {
   const specimenNo        = req.body.specimenNo;
@@ -1862,17 +1856,16 @@ const insertHandler_form7 = async (specimenNo, detected_variants, detectedtype) 
   set detected=@detectedType  where specimenNo=@specimenNo ";  
   logger.info('[598][screenList][update patientinfo_diag]sql=' + query);
 
-try {
-  const request = pool.request()
-    .input('specimenNo', mssql.VarChar, specimenNo)
-    .input('detectedType', mssql.VarChar, detectedType);
-    
-  const  execute = await request.query(query);         
+  try {
+    const request = pool.request()
+      .input('specimenNo', mssql.VarChar, specimenNo)
+      .input('detectedType', mssql.VarChar, detectedType);
+      
+    const  execute = await request.query(query);         
 
-} catch (error) {
-  logger.error('[615][screenList][update patientinfo_diag]err=' + error.message);
-}
-
+  } catch (error) {
+    logger.error('[615][screenList][update patientinfo_diag]err=' + error.message);
+  }
 
    let result;
     
@@ -1894,7 +1887,6 @@ try {
        functional_code = '0' + i;
      }
  
- 
      logger.info('[1806][screenList][insert detected_variants]type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon );
      logger.info('[1806][screenList][insert detected_variants]nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change );
      logger.info('[1806][screenList][insert detected_variants]zygosity=' + zygosity + ', cosmic_id=' + cosmic_id + ', cnt=' + cnt 
@@ -1903,10 +1895,10 @@ try {
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               cosmic_id, functional_code, cnt, zygosity, GenbankAccesionNo) 
+               cosmic_id, functional_code, cnt, zygosity, GenbankAccesionNo, gubun) 
                values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @cosmic_id, @functional_code, @cnt, @zygosity, @GenbankAccesionNo)`;
+                  @cosmic_id, @functional_code, @cnt, @zygosity, @GenbankAccesionNo, 'SEQ')`;
              
        logger.info('[1819][screenList][insert detected_variants 7]sql=' + qry);
  
