@@ -28,7 +28,7 @@ const  listsHandler = async () => {
 
     const sql=`select  id, isnull(type, '') type, isnull(code, '') code, isnull(report, '') report, 
     isnull(target, '') target, isnull(specimen, '') specimen,
-       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(Mutation_Comment, '') mutationComment
+       isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(Mutation_Comment, '') mutationComment,
        isnull(comment1, '') comment1, isnull(comment2, '') comment2 , isnull(comment, '') comment
        from codedefaultvalue`;
 
@@ -426,7 +426,7 @@ exports.codeitemDelete = (req, res, next) => {
 const commentHandler = async (type, code) => {
     await poolConnect;
     
-    sql=`select  id, type, code, isnull(comment, '') comment, isnull(seq, '0') seq from readingcomment where type=@type and code=@code order by id asc`;
+    sql=`select  id, type, code, isnull(comment, '') comment, isnull(seq, '0') seq  from readingcomment where type=@type and code=@code `;
     logger.info('[400][codedefaultvalue][commentHandler] =' + sql);
     try {
         const request = pool.request()
@@ -481,14 +481,52 @@ const commentInsertHandler = async (req) => {
 }
 
 exports.insertComment=  (req, res, next) => {
-    logger.info('[452][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body));
+    logger.info('[452][codedefaultvalue][insertComment] req=' + JSON.stringify(req.body));
 
     const result = commentInsertHandler(req);
     result.then(data => {  
         res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[459][codedefaultvalue][getCommentLists] err=' + error.message);
+        logger.error('[459][codedefaultvalue][insertComment] err=' + error.message);
+        res.sendStatus(500);
+    });    
+}
+
+///////////////// 1개 입력
+const commentOneInsertHandler = async (req) => {
+    await poolConnect;
+
+    const type = req.body.type;
+    const code = req.body.code
+    const comment= req.body.comment;
+     
+        sql=`insert into readingcomment (type, code, comment, seq )
+          values(@type, @code, @comment, '0')`    
+          logger.info('[506][codedefaultvalue][commentOneInsertHandler] =' + sql);
+    
+          try {
+            const request = pool.request()
+                .input('type', mssql.VarChar, type)
+                .input('code', mssql.VarChar, code)
+                .input('comment', mssql.NVarChar, comment);    
+            result = await request.query(sql);           
+        }catch (error) {
+            logger.error('[515][codedefaultvalue][commentOneInsertHandler] err=' + error.message);
+        }    
+    
+    return result;
+}
+
+exports.insertOneComment=  (req, res, next) => {
+    logger.info('[522][codedefaultvalue][insertOneComment] req=' + JSON.stringify(req.body));
+
+    const result = commentOneInsertHandler(req);
+    result.then(data => {  
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[529][codedefaultvalue][insertOneComment] err=' + error.message);
         res.sendStatus(500);
     });    
 }
@@ -535,7 +573,6 @@ exports.updateComment=  (req, res, next) => {
         logger.error('[499][codedefaultvalue][updateComment] err=' + error.message);
         res.sendStatus(500);
     });
-
 }
 
 
@@ -565,14 +602,14 @@ const commentDeleteHandler = async (req) => {
 }
 
 exports.deleteComment=  (req, res, next) => {
-    logger.info('[537][codedefaultvalue][getCommentLists] req=' + JSON.stringify(req.body));
+    logger.info('[537][codedefaultvalue][deleteComment] req=' + JSON.stringify(req.body));
 
     const result = commentDeleteHandler(req);
     result.then(data => {  
         res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[544][codedefaultvalue][getCommentLists] err=' + error.message);
+        logger.error('[544][codedefaultvalue][deleteComment] err=' + error.message);
         res.sendStatus(500);
     });
 }
@@ -655,7 +692,7 @@ exports.findmutation=  (req, res, next) => {
         res.json(data);
     })
     .catch( error => {
-        logger.error('[628][codedefaultvalue][getCommentLists] err=' + error.message);
+        logger.error('[628][codedefaultvalue][findmutation] err=' + error.message);
         res.sendStatus(500);
     });
 

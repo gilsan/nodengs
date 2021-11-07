@@ -433,7 +433,7 @@ const seqlistindHandler = async (req) => {
   sql=`select isnull(functional_impact, '') type, isnull(exon_intro, '') exonintron,
    isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
    isnull(zygosity, '') zygosity, isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbankaccesion,
-   from mutation  where type='SEQ'`;
+   from mutation  where type='SEQ' order by id desc`;
   logger.info('[383][mutation][seqlistindHandler] =' + sql);
 
   try {
@@ -499,7 +499,7 @@ exports.seqcallMutation =  (req, res, next) => {
 const seqsaveHandler = async (req) => {
   await poolConnect;
   const gene              = req.body.gene;
-  const functional_impact = req.body.functionalimpact;
+  const functional_impact = req.body.type;
   const patient_name      = req.body.name;
   const register_number   = nvl(req.body.patientID,'');
   const exon_intro        = nvl(req.body.exonintron,'');
@@ -660,7 +660,7 @@ const geneticlistindHandler = async (req) => {
    isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange,
    isnull(zygosity, '') zygosity, isnull(dbsnp_hgmd, '') dbSNPHGMD, isnull(gnomad_eas, '') gnomADEAS,
    isnull(omim, '') OMIM
-   from mutation  where type='Genetic'`;
+   from mutation  where type='Genetic' order by id desc`;
   logger.info('[508][mutation][geneticlistindHandler] =' + sql);
 
   try {
@@ -927,18 +927,20 @@ exports.deletegeneticMutation =  (req, res, next) => {
 const  insertEssentialHandler = async (req) => {
   await poolConnect;
 
-  const title = req.body.title;
-  const type  = req.body.type;
-  const gene = req.body.gene;
+  const title          = req.body.title;
+  const mutation       = req.body.mutation;
+  const amplification  = req.body.amplification;
+  const fusion         = req.body.fusion;
 
-  const sql = `insert into essentialDNAMent (title,  type, gene) values(@title, @type, @gene)`;
+  const sql = `insert into essentialDNAMent (title,  mutation, amplification, fusion) values(@title, @mutation, @amplification, @fusion)`;
   logger.info('[686][mutation][insertEssentialHandler] =' + sql);
  
     try {
       const request = pool.request()
-           .input('title', mssql.VarChar, title)
-           .input('type', mssql.VarChar, type)
-           .input('gene', mssql.VarChar, gene);
+      .input('mutation', mssql.VarChar, mutation)
+      .input('title', mssql.VarChar, title)
+      .input('fusion',mssql.VarChar, fusion)
+      .input('amplification', mssql.VarChar, amplification);
       const result = await request.query(sql);
       return result; 
     } catch (error) {
@@ -963,36 +965,39 @@ exports.insertEssential = (req,res, next) => {
 const  updateEssentialHandler = async (req) => {
   await poolConnect;
  
-    const id    = req.body.id;
-    const title = req.body.title
-    const type  = req.body.type;
-    const gene  = req.body.gene;
+    const id             = req.body.id;
+    const title          = req.body.title
+    const mutation       = req.body.mutation;
+    const amplification  = req.body.amplification;
+    const fusion         = req.body.fusion;
     
-    sql=`update essentialDNAMent set type=@type, title=@title, gene=@gene where id=@id`;
-    logger.info('[723][mutation][updateEssentialHandler] =' + sql);
+    sql=`update essentialDNAMent set mutation=@mutation, title=@title,  
+      fusion=@fusion, amplification=@amplification where id=@id`;
+    logger.info('[976][mutation][updateEssentialHandler] =' + sql);
     try {
         const request = pool.request()
             .input('id', mssql.Int, id)
-            .input('type', mssql.VarChar, type)
+            .input('mutation', mssql.VarChar, mutation)
             .input('title', mssql.VarChar, title)
-            .input('gene', mssql.VarChar, gene);
+            .input('fusion',mssql.VarChar, fusion)
+            .input('amplification', mssql.VarChar, amplification);
 
         const result = await request.query(sql);
         return result;
     }catch (error) {
-        logger.error('[734][mutation][updateEssentialHandler] err=' + error.message);
+        logger.error('[088][mutation][updateEssentialHandler] err=' + error.message);
     } 
  
 }
 
 exports.updateEssential = (req,res, next) => {
-  logger.info('[740][mutation]data=' + JSON.stringify(req.body));
+  logger.info('[994][mutation]data=' + JSON.stringify(req.body));
   const result = updateEssentialHandler(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[746][mutation][updateEssential] err=' + error.message);
+      logger.error('[1000][mutation][updateEssential] err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -1002,7 +1007,7 @@ const  deleteEssentialHandler = async (req) => {
   await poolConnect;
   const id = req.body.id;
   const sql ='delete from essentialDNAMent where id=@id';
-  logger.info('[756][mutation][deleteEssentialHandler] =' + sql);
+  logger.info('[1010][mutation][deleteEssentialHandler] =' + sql);
   try {
     const request = pool.request()
         .input('id', mssql.Int, id);
@@ -1010,19 +1015,19 @@ const  deleteEssentialHandler = async (req) => {
     const result = await request.query(sql);
     return result;
   }catch (error) {
-    logger.error('[764][mutation][deleteEssentialHandler] err=' + error.message);
+    logger.error('[1018][mutation][deleteEssentialHandler] err=' + error.message);
   }  
 }
 
 
 exports.deleteEssential = (req,res, next) => {
-  logger.info('[770][mutatio]data=' + JSON.stringify(req.body));
+  logger.info('[1024][mutatio]data=' + JSON.stringify(req.body));
   const result = deleteEssentialHandler(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[712][mutation][deleteEssential] err=' + error.message);
+      logger.error('[1030][mutation][deleteEssential] err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -1031,14 +1036,15 @@ exports.deleteEssential = (req,res, next) => {
 const  listsEssentialHandler = async (req) => {
   await poolConnect;
  
-  const sql =`select id, isnull(title,'') title , isnull(type, '') type, isnull(gene, '') gene  from essentialDNAMent`;
-  logger.info('[786][mutation][listsEssentialHandler] =' + sql);
+  const sql =`select id, isnull(title,'') title , isnull(mutation, '') mutation, isnull(amplification, '') amplification, 
+    isnull(fusion, '') fusion  from essentialDNAMent`;
+  logger.info('[1041][mutation][listsEssentialHandler] =' + sql);
   try {
     const request = pool.request();
     const result = await request.query(sql);
     return result.recordset;
   }catch (error) {
-    logger.error('[792][mutation][listsEssentialHandler] err=' + error.message);
+    logger.error('[1047][mutation][listsEssentialHandler] err=' + error.message);
   }  
 }
 
@@ -1048,7 +1054,7 @@ exports.listEssential = (req,res, next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[802][mutation][listEssential] err=' + error.message);
+    logger.error('[1057][mutation][listEssential] err=' + error.message);
     res.sendStatus(500);
   });
 }
@@ -1058,13 +1064,13 @@ const  listsEssentialTitleHandler = async (req) => {
   await poolConnect;
  
   const sql =`select  DISTINCT title  from essentialDNAMent`;
-  logger.info('[813][mutation][listsEssentialTitleHandler] =' + sql);
+  logger.info('[1067][mutation][listsEssentialTitleHandler] =' + sql);
   try {
     const request = pool.request();
     const result = await request.query(sql);
     return result.recordset;
   }catch (error) {
-    logger.error('[819][mutation][listsEssentialTitleHandler] err=' + error.message);
+    logger.error('[1073][mutation][listsEssentialTitleHandler] err=' + error.message);
   }  
 }
 
@@ -1074,7 +1080,7 @@ exports.listEssentialTitle = (req,res, next) => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[829][mutation][listEssentialTitle] err=' + error.message);
+    logger.error('[1083][mutation][listEssentialTitle] err=' + error.message);
     res.sendStatus(500);
   });
 }

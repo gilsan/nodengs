@@ -75,7 +75,10 @@ exports.screenLists = (req,res, next) => {
 ////////////////////////////////////////////////////////////
 const commentHander = async (specimenNo) => {
     logger.info('[80][screenList][find comments]specimenNo=' + specimenNo); 
-    const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
+    // const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
+    const sql =`selec id, isnull(comment, '') comment, isnull(gene, '') gene, isnull(methods, '') methods,
+      isnull(reference, '') reference, isnull(specimenNo, '') specimenNo, isnull(technique, '') technique, isnull(variants, '') variants
+      from from [dbo].[report_comments] where specimenNo=@specimenNo `;
     logger.info('[82][screenList][find comments]sql=' +sql);
 
     try {
@@ -339,18 +342,20 @@ const insertCommentHandler = async(specimenNo, comments) => {
   for (i = 0; i < comments.length; i++)
   {
 	  const gene       = comments[i].gene;
-    const variants    = comments[i].variant_id;
+    const variants   = comments[i].variant_id;
     const comment    = comments[i].comment;
     const reference  = comments[i].reference;
+    const methods    = comments[i].methods;
+    const technique  = comments[i].technique;
 
     logger.info('[214][screenList][insert comments]gene=' + gene + ', variants=' + variants
                                    + ', comment=' + comment + ', reference=' + reference );
 
 	  //insert Query 생성
 	  const qry = "insert into report_comments (specimenNo, report_date, \
-		             gene, variants, comment, reference)   \
+		             gene, variants, comment, reference, methods, technique)   \
 					  values(@specimenNo, getdate(), \
-					   @gene, @variants, @comment, @reference)";
+					   @gene, @variants, @comment, @reference, @methods, @technique)";
 
     logger.info('[223][screenList][insert comments]sql=' + qry);
 		   
@@ -360,7 +365,9 @@ const insertCommentHandler = async(specimenNo, comments) => {
             .input('comment', mssql.NVarChar, comment)
 			      .input('gene', mssql.VarChar, gene)
             .input('variants', mssql.VarChar, variants)
-            .input('reference', mssql.NVarChar, reference); 
+            .input('reference', mssql.NVarChar, reference)
+            .input('methods', mssql.NVarChar, methods)
+            .input('technique', mssql.NVarChar,technique); 
 			
 		    commentResult = await request.query(qry);
 		  		  
