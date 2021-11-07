@@ -284,7 +284,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     {
         if (sheet_1 == 'AMLALL') {
             sql = sql +  " and test_code in ('LPE471','LPE472', 'LPE545')";
-        } else if (sheet_1 == 'MDSMPN') {  // MDS/MPN 
+        } else if (sheet_1 == 'MDS') {  // MDS/MPN 
             sql = sql +  " and test_code in ('LPE473')";
         } else if (sheet_1 == 'lymphoma') {  // 악성림프종
             sql = sql +  " and test_code in ('LPE474', 'LPE475')";
@@ -471,7 +471,7 @@ exports.getPatientDiagListsMdsMpn = (req, res,next) => {
    let patientID   =  req.body.patientID; // 환자 id
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  nvl(req.body.sheet, 'MDSMPN'); // 결과지
+   let sheet   =  nvl(req.body.sheet, 'MDS'); // 결과지
 
    console.log('[361][patientslist_diag][getPatientDiagListsMdsMpn] 검색', start,end, patientID, specimenNo, sheet, status);
    

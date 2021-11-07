@@ -358,38 +358,38 @@ const listHandler = async (req) => {
     const type    = nvl(req.body.type, "");
     logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding + ", type=" + type );
 	
-	let sql ="select id	"
-				+"	,buccal "
-				+"	,patient_name "
-				+"	,register_number "
-				+"	,fusion "
-				+"	,gene "
-				+"	,functional_impact "
-				+"	,transcript "
-				+"	,exon_intro "
-				+"	,nucleotide_change "
-				+"	,amino_acid_change "
-				+"	,zygosity "
-				+"	,vaf "
-				+"	,reference "
-				+"	,cosmic_id "
-				+"	,sift_polyphen_mutation_taster "
-				+"	,buccal2 "
-        +" ,igv, sanger"
-        +" ,isnull(exac, '') exac"
-        +" ,isnull(exac_east_asia, '') exac_east_asia"
-        +" ,isnull(krgdb, '') krgdb"
-        +" ,isnull(etc1, '') etc1"
-        +" ,isnull(etc2, '') etc2"
-        +" ,isnull(etc3, '') etc3"
-        +" ,isnull(type, 'AMLALL') type"
-        +" ,isnull(rsid, '') rsid"
-        +" ,isnull(genbank_accesion, '') genbank_accesion"
-        +" ,isnull(dbsnp_hgmd, '') dbsnp_hgmd"
-        +" ,isnull(gnomad_eas, '') gnomad_eas"
-        +" ,isnull(omim, '') omim";
-    sql = sql + " from mutation ";
-		sql = sql + " where 1=1";
+	let sql =`select id	
+					,buccal 
+					,patient_name 
+					,register_number 
+					,fusion 
+					,gene 
+					,functional_impact 
+					,transcript 
+					,exon_intro 
+					,nucleotide_change 
+					,amino_acid_change 
+					,zygosity 
+					,vaf 
+					,reference 
+					,cosmic_id 
+					,sift_polyphen_mutation_taster 
+					,buccal2 
+         ,igv, sanger
+         ,isnull(exac, '') exac
+         ,isnull(exac_east_asia, '') exac_east_asia
+         ,isnull(krgdb, '') krgdb
+         ,isnull(etc1, '') etc1
+         ,isnull(etc2, '') etc2
+         ,isnull(etc3, '') etc3
+         ,isnull(type, 'AMLALL') type
+         ,isnull(rsid, '') rsid
+         ,isnull(genbank_accesion, '') genbank_accesion
+         ,isnull(dbsnp_hgmd, '') dbsnp_hgmd
+         ,isnull(gnomad_eas, '') gnomad_eas
+         ,isnull(omim, '') omim
+         from mutation 
+		     where 1=1`;
 
 	if(genes != "") 
 		sql = sql + " and gene like '%"+genes+"%'";
