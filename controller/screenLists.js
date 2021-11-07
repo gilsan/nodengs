@@ -76,9 +76,9 @@ exports.screenLists = (req,res, next) => {
 const commentHander = async (specimenNo) => {
     logger.info('[80][screenList][find comments]specimenNo=' + specimenNo); 
     //const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
-    const sql =`selec id, isnull(comment, '') comment, isnull(gene, '') gene, isnull(methods, '') methods,
+    const sql =`select id, isnull(comment, '') comment, isnull(gene, '') gene, isnull(methods, '') methods,
       isnull(reference, '') reference, isnull(specimenNo, '') specimenNo, isnull(technique, '') technique, isnull(variants, '') variants
-      from from [dbo].[report_comments] where specimenNo=@specimenNo `
+      from  [dbo].[report_comments] where specimenNo=@specimenNo `
     logger.info('[82][screenList][find comments]sql=' +sql);
 
     try {
