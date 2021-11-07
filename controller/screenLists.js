@@ -78,7 +78,7 @@ const commentHander = async (specimenNo) => {
     // const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
     const sql =`selec id, isnull(comment, '') comment, isnull(gene, '') gene, isnull(methods, '') methods,
       isnull(reference, '') reference, isnull(specimenNo, '') specimenNo, isnull(technique, '') technique, isnull(variants, '') variants
-      from [dbo].[report_comments] where specimenNo=@specimenNo `;
+      from from [dbo].[report_comments] where specimenNo=@specimenNo `;
     logger.info('[82][screenList][find comments]sql=' +sql);
 
     try {
@@ -1466,24 +1466,36 @@ const deleteHandlerForm6 = async (specimenNo) => {
     return result;
 }
 
-const insertHandlerForm6 = async (specimenNo, result6 ) => {
+const insertHandlerForm6 = async (specimenNo, result6,
+                      additional_Note, methods, technique, comments ) => {
   
     logger.info('[1292][screenList][saveScreen 6]comment2= ' + specimenNo);    
 
-    logger.info('[1292][screenList][saveScreen 6]result6= ' + result6);   
+    logger.info('[1292][screenList][saveScreen 6]result6= ' + result6);    
+
+    logger.info('[1292][screenList][saveScreen 6]comments= ' + comments);
+    logger.info('[1292][screenList][saveScreen 6]additional_Note= ' + additional_Note);
+    logger.info('[1292][screenList][saveScreen 6]technique= ' + technique);
+    logger.info('[1292][screenList][saveScreen 6]methods= ' + methods);
   
 
   //insert Query 생성;
   const qry = `insert into report_patientsInfo (
-    specimenNo, report_date, result, screenstatus) 
-      values(@specimenNo, getdate(),  @result6, '2')`;
+    specimenNo, report_date, result,
+      additional_Note, techniques, comments, methods, screenstatus) 
+      values(@specimenNo, getdate(),  @result6,
+      @additional_Note, @technique, @comments, @methods, '2')`;
     
   logger.info('[1824][screenList][insert report_patientsInfo]sql=' + qry);
 
   try {
     const request = pool.request()
       .input('specimenNo', mssql.VarChar, specimenNo)
-      .input('result6', mssql.VarChar, result6);
+      .input('result6', mssql.VarChar, result6)
+      .input('technique', mssql.NVarChar, technique)
+      .input('additional_Note', mssql.NVarChar, additional_Note)
+      .input('methods', mssql.NVarChar, methods)
+      .input('comments', mssql.NVarChar, comments);
       
     let result = await request.query(qry);         
 
@@ -1511,6 +1523,9 @@ exports.saveScreen6 = (req, res, next) => {
   const detected_variants = req.body.detected_variants;
 
   const comments          = req.body.comments;
+  const additional_Note   = req.body.additionalNote;
+  const technique         = req.body.technique;
+  const methods           = req.body.methods;
 
   const examin            = req.body.patientInfo.examin;
   const recheck           = req.body.patientInfo.recheck;
@@ -1532,7 +1547,8 @@ exports.saveScreen6 = (req, res, next) => {
       const result4 = deleteHandlerForm6(specimenNo);
       result4.then(data => {
   
-        const result5 = insertHandlerForm6 (specimenNo, result6 );
+        const result5 = insertHandlerForm6 (specimenNo, result6, 
+                                    additional_Note, methods, technique, comments );
           result5.then(data => {
   
             const commentResult = insertCommentHandler(specimenNo, comments);
