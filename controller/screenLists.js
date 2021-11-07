@@ -75,10 +75,10 @@ exports.screenLists = (req,res, next) => {
 ////////////////////////////////////////////////////////////
 const commentHander = async (specimenNo) => {
     logger.info('[80][screenList][find comments]specimenNo=' + specimenNo); 
-    // const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
+    //const sql ="select * from [dbo].[report_comments] where specimenNo=@specimenNo ";
     const sql =`selec id, isnull(comment, '') comment, isnull(gene, '') gene, isnull(methods, '') methods,
       isnull(reference, '') reference, isnull(specimenNo, '') specimenNo, isnull(technique, '') technique, isnull(variants, '') variants
-      from from [dbo].[report_comments] where specimenNo=@specimenNo `;
+      from from [dbo].[report_comments] where specimenNo=@specimenNo `
     logger.info('[82][screenList][find comments]sql=' +sql);
 
     try {
@@ -1551,13 +1551,10 @@ exports.saveScreen6 = (req, res, next) => {
                                     additional_Note, methods, technique, comments );
           result5.then(data => {
   
-            const commentResult = insertCommentHandler(specimenNo, comments);
-            commentResult.then(data => {
-              const statusResult = messageHandler4(specimenNo, chron, flt3ITD, detectedtype,
-                                                      leukemia, examin, recheck, vusmsg );
-              statusResult.then(data => {
-                    res.json({message: 'OK'});
-              });
+            const statusResult = messageHandler4(specimenNo, chron, flt3ITD, detectedtype,
+                                                    leukemia, examin, recheck, vusmsg );
+            statusResult.then(data => {
+                  res.json({message: 'OK'});
             });
           });
         });
