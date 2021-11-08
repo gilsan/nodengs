@@ -575,7 +575,7 @@ const seqUpdateHandler = async (req) => {
           , zygosity = @zygosity
         where  id=@id`;
  
-  logger.info('[581][mutation][seqUpdateHandler] =' + sql);
+  logger.info('[581][mutation][seqUpdateHandler] =' + sql + ',' + id);
 
   try {
       const request = pool.request()
@@ -698,19 +698,19 @@ const geneticcallHandler2 = async (req) => {
       const result = await request.query(sql);
       return result.recordset; 
   }catch (error) {
-      logger.error('[554][mutation][geneticcallHandler2] err=' + error.message);
+      logger.error('[701][mutation][geneticcallHandler2] err=' + error.message);
   } 
 }
 
 exports.geneticcallMutation2 =  (req, res, next) => {
-  logger.info('[563][mutation][geneticcallMutation2] req=' + JSON.stringify(req.body)); 
+  logger.info('[706][mutation][geneticcallMutation2] req=' + JSON.stringify(req.body)); 
   const result = geneticcallHandler2(req);
   result.then(data => {  
-      console.log('[566]', data);
+      console.log('[708]', data);
       res.json(data);
   })
   .catch( error => {
-      logger.error('[569][mutation][geneticcallMutation2] err=' + error.message);
+      logger.error('[713][mutation][geneticcallMutation2] err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -720,7 +720,7 @@ const geneticcallHandler1 = async (req) => {
   const gene             = req.body.gene;
 
   sql=`select top 1 isnull(omim, '') OMIM  from mutation  where type='Genetic' and gene=@gene order by id desc`;
-  logger.info('[575][mutation][geneticcallHandler1] =' + sql);
+  logger.info('[723][mutation][geneticcallHandler1] =' + sql);
 
   try {
       const request = pool.request()
@@ -728,18 +728,18 @@ const geneticcallHandler1 = async (req) => {
       const result = await request.query(sql);
       return result.recordset; 
   }catch (error) {
-      logger.error('[583][mutation][geneticcallHandler1] err=' + error.message);
+      logger.error('[731][mutation][geneticcallHandler1] err=' + error.message);
   } 
 }
 
 exports.geneticcallMutation1 =  (req, res, next) => {
-  logger.info('[588][mutation][geneticcallMutation1] req=' + JSON.stringify(req.body)); 
+  logger.info('[736][mutation][geneticcallMutation1] req=' + JSON.stringify(req.body)); 
   const result = geneticcallHandler1(req);
   result.then(data => {  
       res.json(data);
   })
   .catch( error => {
-      logger.error('[594][mutation][geneticcallMutation1] err=' + error.message);
+      logger.error('[742][mutation][geneticcallMutation1] err=' + error.message);
       res.sendStatus(500);
   });
 }
