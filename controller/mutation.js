@@ -465,11 +465,8 @@ const seqcallHandler = async (req) => {
      isnull(amino_acid_change, '') aminoAcidChange,
      isnull(rsid, '') rsid, isnull(genbank_accesion, '') genbankaccesion
    from mutation  
-   where type='SEQ' 
-   and gene = @gene
-   and  nucleotide_change=@nucleotideChange    
-   order by id desc`;
-  logger.info('[415][mutation][seqcallHandler] =' + sql);
+   where type='SEQ'   order by id desc`;
+  logger.info('[460][mutation][seqcallHandler] =' + sql);
 
   try {
       const request = pool.request()
@@ -478,19 +475,19 @@ const seqcallHandler = async (req) => {
       const result = await request.query(sql);
       return result.recordset; 
   }catch (error) {
-      logger.error('[424][mutation][seqcallHandler] err=' + error.message);
+      logger.error('[478][mutation][seqcallHandler] err=' + error.message);
   } 
 }
 
 // sequencing call
 exports.seqcallMutation =  (req, res, next) => {
-  logger.info('[430][mutation][seqcallMutation] req=' + JSON.stringify(req.body)); 
+  logger.info('[484][mutation][seqcallMutation] req=' + JSON.stringify(req.body)); 
   const result = seqcallHandler(req);
   result.then(data => {  
       res.json(data);
   })
   .catch( error => {
-      logger.error('[436][mutation][seqcallMutation] err=' + error.message);
+      logger.error('[490][mutation][seqcallMutation] err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -498,24 +495,25 @@ exports.seqcallMutation =  (req, res, next) => {
 // sequencing insert
 const seqsaveHandler = async (req) => {
   await poolConnect;
-  const gene              = req.body.gene;
-  const functional_impact = req.body.type;
-  const patient_name      = req.body.name;
-  const register_number   = nvl(req.body.patientID,'');
-  const exon_intro        = nvl(req.body.exonintron,'');
-  const nucleotide_change = req.body.nucleotideChange;
-  const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = nvl(req.body.zygosity,'');
-  const rsid              = nvl(req.body.rsid,'');
-  const genbank_accesion  = nvl(req.body.genbankaccesion,'');
-  logger.info('[455][mutation][seqsaveHandler]register_number =' + register_number );  
+  const seq               = req.body.seq;
+  const gene              = seq.gene;
+  const functional_impact = seq.functional_impact;
+  const patient_name      = seq.name;
+  const register_number   = nvl(seq.patientID,'');
+  const exon_intro        = nvl(seq.exonintron,'');
+  const nucleotide_change = seq.nucleotideChange;
+  const amino_acid_change = seq.aminoAcidChange;
+  const zygosity          = nvl(seq.zygosity,'');
+  const rsid              = nvl(seq.rsid,'');
+  const genbank_accesion  = nvl(seq.genbankaccesion,'');
+  logger.info('[509][mutation][seqsaveHandler]register_number =' + register_number );  
 
   sql=`insert into mutation (gene, functional_impact,patient_name,register_number,exon_intro,
     nucleotide_change,amino_acid_change,zygosity,rsid,genbank_accesion, type)
     values(@gene, @functional_impact,@patient_name,@register_number,@exon_intro,
       @nucleotide_change,@amino_acid_change,@zygosity,@rsid,@genbank_accesion, 'SEQ')`;
  
-  logger.info('[459][mutation][seqsaveHandler ] =' + sql);
+  logger.info('[516][mutation][seqsaveHandler ] =' + sql);
 
   try {
       const request = pool.request()
@@ -533,18 +531,18 @@ const seqsaveHandler = async (req) => {
       const result = await request.query(sql);
       return result; 
   }catch (error) {
-      logger.error('[476][mutation][seqsaveHandler ] err=' + error.message);
+      logger.error('[634][mutation][seqsaveHandler ] err=' + error.message);
   } 
 }
 
 exports.saveseqMutation =  (req, res, next) => {
-  logger.info('[482][mutation][seqcallMutation] req=' + JSON.stringify(req.body)); 
+  logger.info('[539][mutation][saveseqMutation] req=' + JSON.stringify(req.body)); 
   const result = seqsaveHandler(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[488][mutation][saveseqMutation err=' + error.message);
+      logger.error('[545][mutation][saveseqMutation err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -552,17 +550,19 @@ exports.saveseqMutation =  (req, res, next) => {
 // sequencing update
 const seqUpdateHandler = async (req) => {
   await poolConnect;
-  const gene              = req.body.gene;
-  const functional_impact = req.body.functionalimpact;
-  const patient_name      = req.body.name;
-  const register_number   = nvl(req.body.patientID,'');
-  const exon_intro        = nvl(req.body.exonintron,'');
-  const nucleotide_change = req.body.nucleotideChange;
-  const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = nvl(req.body.zygosity,'');
-  const rsid              = nvl(req.body.rsid,'');
-  const genbank_accesion  = nvl(req.body.genbankaccesion,'');
-  logger.info('[455][mutation][seqsaveHandler]register_number =' + register_number );  
+  const seq               = req.body.seq;
+  const id                = seq.id;
+  const gene              = seq.gene;
+  const functional_impact = seq.functional_impact;
+  const patient_name      = seq.name;
+  const register_number   = nvl(seq.patientID,'');
+  const exon_intro        = nvl(seq.exonintron,'');
+  const nucleotide_change = seq.nucleotideChange;
+  const amino_acid_change = seq.aminoAcidChange;
+  const zygosity          = nvl(seq.zygosity,'');
+  const rsid              = nvl(seq.rsid,'');
+  const genbank_accesion  = nvl(seq.genbankaccesion,'');
+  logger.info('[568][mutation][seqUpdateHandler]register_number =' + register_number );  
 
   sql=`update mutation
         set functional_impact = @functional_impact
@@ -573,14 +573,13 @@ const seqUpdateHandler = async (req) => {
           , rsid = @rsid
           , genbank_accesion = @genbank_accesion
           , zygosity = @zygosity
-        where gene = @gene
-        and   nucleotide_change = @nucleotide_change
-        and   type = 'SEQ'`;
+        where  id=@id`;
  
-  logger.info('[459][mutation][seqsaveHandler ] =' + sql);
+  logger.info('[581][mutation][seqUpdateHandler] =' + sql);
 
   try {
       const request = pool.request()
+           .input('id', mssql.Int, id)
            .input('gene',mssql.VarChar, gene)
            .input('functional_impact', mssql.VarChar,functional_impact)
            .input('patient_name', mssql.NVarChar,patient_name)
@@ -595,18 +594,18 @@ const seqUpdateHandler = async (req) => {
       const result = await request.query(sql);
       return result; 
   }catch (error) {
-      logger.error('[476][mutation][seqsaveHandler ] err=' + error.message);
+      logger.error('[600][mutation][seqUpdateHandler] err=' + error.message);
   } 
 }
 
 exports.updateseqMutation =  (req, res, next) => {
-  logger.info('[482][mutation][updateseqMutation] req=' + JSON.stringify(req.body)); 
+  logger.info('[605][mutation][updateseqMutation] req=' + JSON.stringify(req.body)); 
   const result = seqUpdateHandler(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[488][mutation][updateseqMutation err=' + error.message);
+      logger.error('[611][mutation][updateseqMutation err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -614,25 +613,22 @@ exports.updateseqMutation =  (req, res, next) => {
 // sequencing delete
 const seqDeleteHandler = async (req) => {
   await poolConnect;
-  const gene              = req.body.gene;
-  const nucleotide_change = req.body.nucleotideChange;  
+  const id              = req.body.id;
+  
 
   sql=`delete from mutation
-        where gene = @gene
-        and   nucleotide_change = @nucleotide_change
-        and   type = 'SEQ'`;
+        where id = @id`;
  
-  logger.info('[459][mutation][seqsaveHandler ] =' + sql);
+  logger.info('[625][mutation][seqDeleteHandler] =' + sql);
 
   try {
       const request = pool.request()
-           .input('gene',mssql.VarChar, gene)
-           .input('nucleotide_change', mssql.VarChar,nucleotide_change);
-
+           .input('id',mssql.VarChar, id);
+           
       const result = await request.query(sql);
       return result; 
   }catch (error) {
-      logger.error('[476][mutation][seqsaveHandler ] err=' + error.message);
+      logger.error('[634][mutation][seqDeleteHandler ] err=' + error.message);
   } 
 }
 
@@ -766,7 +762,7 @@ const geneticsaveHandler = async (req) => {
   const omim              = genetic.OMIM;
   const igv               = genetic.igv;
   const sanger            = genetic.sanger;
-
+  
   sql=`insert into mutation (gene, functional_impact,patient_name,register_number,transcript,exon_intro,
     nucleotide_change,amino_acid_change,zygosity,dbsnp_hgmd,gnomad_eas, 
     omim, igv, sanger,type)
@@ -794,18 +790,18 @@ const geneticsaveHandler = async (req) => {
       const result = await request.query(sql);
       return result; 
   }catch (error) {
-      logger.error('[644][mutation][geneticsaveHandler] err=' + error.message);
+      logger.error('[797][mutation][geneticsaveHandler] err=' + error.message);
   } 
 }
 
 exports.savegeneticMutation =  (req, res, next) => {
-  logger.info('[650][mutation][savegeneticMutationn] req=' + JSON.stringify(req.body)); 
+  logger.info('[802][mutation][savegeneticMutationn] req=' + JSON.stringify(req.body)); 
   const result = geneticsaveHandler(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[656][mutation][savegeneticMutation] err=' + error.message);
+      logger.error('[808][mutation][savegeneticMutation] err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -813,22 +809,23 @@ exports.savegeneticMutation =  (req, res, next) => {
 // genetic update
 const updateGeneticHandler = async (req) => {
   await poolConnect;
-
-  const gene              = req.body.gene;
-  const functional_impact = req.body.functionalImpact;
-  const patient_name      = req.body.name;
-  const register_number   = req.body.patientID;
-  const transcript        = req.body.transcript;
-  const exon_intro        = req.body.exonIntro;
-  const nucleotide_change = req.body.nucleotideChange;
-  const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = req.body.zygosity;
-  const dbsnp_hgmd        = req.body.dbSNPHGMD;
-  const gnomad_eas        = req.body.gnomADEAS;
-  const omim              = req.body.OMIM;
-  const igv               = req.body.igv;
-  const sanger            = req.body.sanger;
-
+  const genetic           = req.body.genetic;
+  const id                = genetic.id;
+  const gene              = genetic.gene;
+  const functional_impact = genetic.functional_impact;
+  const patient_name      = genetic.name;
+  const register_number   = genetic.patientID;
+  const transcript        = genetic.transcript;
+  const exon_intro        = genetic.exon;
+  const nucleotide_change = genetic.nucleotideChange;
+  const amino_acid_change = genetic.aminoAcidChange;
+  const zygosity          = genetic.zygosity;
+  const dbsnp_hgmd        = genetic.dbSNPHGMD;
+  const gnomad_eas        = genetic.gnomADEAS;
+  const omim              = genetic.OMIM;
+  const igv               = genetic.igv;
+  const sanger            = genetic.sanger;
+  logger.info('[832][mutation][updateGeneticHandler] =' + id + ',' + gene );
   sql=`update mutation
       set functional_impact = @functional_impact
       , patient_name = @patient_name
@@ -842,14 +839,13 @@ const updateGeneticHandler = async (req) => {
       , omim = @omim
       , igv = @igv
       , sanger = @sanger
-      where gene = @gene
-      and   nucleotide_change = @nucleotide_change
-      and   type = 'Genetic'`;
+      where id = @id`;
 
-  logger.info('[622][mutation][updateGeneticHandler] =' + sql);
+  logger.info('[848][mutation][updateGeneticHandler] =' + sql);
 
   try {
       const request = pool.request()
+           .input('id',mssql.Int, id)
            .input('gene',mssql.VarChar, gene)
            .input('functional_impact', mssql.VarChar,functional_impact)
            .input('patient_name', mssql.NVarChar,patient_name)
@@ -868,18 +864,18 @@ const updateGeneticHandler = async (req) => {
       const result = await request.query(sql);
       return result; 
   }catch (error) {
-      logger.error('[644][mutation][updateGeneticHandler] err=' + error.message);
+      logger.error('[871][mutation][updateGeneticHandler] err=' + error.message);
   } 
 }
 
 exports.updategeneticMutation =  (req, res, next) => {
-  logger.info('[650][mutation][updategeneticMutation] req=' + JSON.stringify(req.body)); 
+  logger.info('[876][mutation][updategeneticMutation] req=' + JSON.stringify(req.body)); 
   const result = updateGeneticHandler(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[656][mutation][updategeneticMutation] err=' + error.message);
+      logger.error('[882][mutation][updategeneticMutation] err=' + error.message);
       res.sendStatus(500);
   });
 }
@@ -916,7 +912,7 @@ const deleteGeneticHandler2 = async (req) => {
 
   sql=`delete from mutation where  id = @id`;
  
-  logger.info('[919][mutation][deleteGeneticHandler2] =' + sql);
+  logger.info('[919][mutation][deleteGeneticHandler2] =' + sql + '  ' + id);
 
   try {
       const request = pool.request()
@@ -930,13 +926,13 @@ const deleteGeneticHandler2 = async (req) => {
 }
 
 exports.deletegeneticMutation =  (req, res, next) => {
-  logger.info('[482][mutation][deletegeneticMutation] req=' + JSON.stringify(req.body)); 
+  logger.info('[933][mutation][deletegeneticMutation] req=' + JSON.stringify(req.body)); 
   const result = deleteGeneticHandler2(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
   .catch( error => {
-      logger.error('[488][mutation][deletegeneticMutation err=' + error.message);
+      logger.error('[939][mutation][deletegeneticMutation err=' + error.message);
       res.sendStatus(500);
   });
 }
