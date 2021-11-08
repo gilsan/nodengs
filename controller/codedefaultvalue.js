@@ -31,7 +31,7 @@ const  listsHandler = async () => {
        isnull(analyzedgene, '') analyzedgene, isnull(method, '') method, isnull(Mutation_Comment, '') mutationComment,
        isnull(comment1, '') comment1, isnull(comment2, '') comment2 , isnull(comment, '') comment
        from codedefaultvalue`;
-
+ 
     logger.info('[19][codedefaultvalue][listsHandler] =' + sql);
     try {
         const request = pool.request();
