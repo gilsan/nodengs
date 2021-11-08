@@ -400,8 +400,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const amino_acid_change = detected_variants[i].aminoAcidChange;
     const zygosity          = nvl(detected_variants[i].zygosity, '');
     const vaf               = nvl(detected_variants[i].vafPercent, '');
-    const reference         = nvl(detected_variants[i].references, '');
-    const cosmic_id         = detected_variants[i].cosmicID;
+    const reference         = nvl(detected_variants[i].reference, '');
+    const cosmic_id         = detected_variants[i].cosmic_id;
     const type              = detected_variants[i].type;
     const checked           = detected_variants[i].checked;
     const dbSNPHGMD         = nvl(detected_variants[i].dbSNPHGMD, '');
