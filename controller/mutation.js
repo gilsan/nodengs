@@ -751,21 +751,21 @@ exports.geneticcallMutation1 =  (req, res, next) => {
 ///////////// genetic insert //////////
 const geneticsaveHandler = async (req) => {
   await poolConnect;
-
-  const gene              = req.body.gene;
-  const functional_impact = req.body.functionalImpact;
-  const patient_name      = req.body.name;
-  const register_number   = req.body.patientID;
-  const transcript        = req.body.transcript;
-  const exon_intro        = req.body.exonIntro;
-  const nucleotide_change = req.body.nucleotideChange;
-  const amino_acid_change = req.body.aminoAcidChange;
-  const zygosity          = req.body.zygosity;
-  const dbsnp_hgmd        = req.body.dbSNPHGMD;
-  const gnomad_eas        = req.body.gnomADEAS;
-  const omim              = req.body.OMIM;
-  const igv               = req.body.igv;
-  const sanger            = req.body.sanger;
+  const genetic           = req.body.genetic;
+  const gene              = genetic.gene;
+  const functional_impact = genetic.functional_impact;
+  const patient_name      = genetic.name;
+  const register_number   = genetic.patientID;
+  const transcript        = genetic.transcript;
+  const exon_intro        = genetic.exon;
+  const nucleotide_change = genetic.nucleotideChange;
+  const amino_acid_change = genetic.aminoAcidChange;
+  const zygosity          = genetic.zygosity;
+  const dbsnp_hgmd        = genetic.dbSNPHGMD;
+  const gnomad_eas        = genetic.gnomADEAS;
+  const omim              = genetic.OMIM;
+  const igv               = genetic.igv;
+  const sanger            = genetic.sanger;
 
   sql=`insert into mutation (gene, functional_impact,patient_name,register_number,transcript,exon_intro,
     nucleotide_change,amino_acid_change,zygosity,dbsnp_hgmd,gnomad_eas, 
@@ -909,9 +909,29 @@ const deleteGeneticHandler = async (req) => {
   } 
 }
 
+
+const deleteGeneticHandler2 = async (req) => {
+  await poolConnect;
+  const id              = req.body.id;
+
+  sql=`delete from mutation where  id = @id`;
+ 
+  logger.info('[919][mutation][deleteGeneticHandler2] =' + sql);
+
+  try {
+      const request = pool.request()
+           .input('id',mssql.Int,id);
+
+      const result = await request.query(sql);
+      return result; 
+  }catch (error) {
+      logger.error('[928][mutation][deleteGeneticHandler2] err=' + error.message);
+  } 
+}
+
 exports.deletegeneticMutation =  (req, res, next) => {
   logger.info('[482][mutation][deletegeneticMutation] req=' + JSON.stringify(req.body)); 
-  const result = deleteGeneticHandler(req);
+  const result = deleteGeneticHandler2(req);
   result.then(data => {  
       res.json({message: 'SUCCESS'});
   })
