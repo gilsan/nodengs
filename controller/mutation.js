@@ -495,7 +495,7 @@ exports.seqcallMutation =  (req, res, next) => {
 // sequencing insert
 const seqsaveHandler = async (req) => {
   await poolConnect;
-  const seq               = req.body.seq;
+  const seq               = req.body;
   const gene              = seq.gene;
   const functional_impact = seq.functional_impact;
   const patient_name      = seq.name;
