@@ -747,7 +747,7 @@ exports.geneticcallMutation1 =  (req, res, next) => {
 ///////////// genetic insert //////////
 const geneticsaveHandler = async (req) => {
   await poolConnect;
-  const genetic           = req.body.genetic;
+  const genetic           = req.body;
   const gene              = genetic.gene;
   const functional_impact = genetic.functional_impact;
   const patient_name      = genetic.name;
