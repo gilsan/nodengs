@@ -39,4 +39,15 @@ router.post('/essupdate', mutationController.updateEssential);
 router.post('/essdelete', mutationController.deleteEssential);
 router.get('/esstitleonly', mutationController.listEssentialTitle);
 
+
+///// AMLALL LYM MDS
+router.post('/amllists', mutationController.amlLists);
+router.post('/amlinsert', mutationController.amlInsert);
+router.post('/amlupdate', mutationController.amlUpdate);
+router.post('/amldelete', mutationController.amlDelete);
+
+
+
+
+
 module.exports = router;

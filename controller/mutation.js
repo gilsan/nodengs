@@ -1101,7 +1101,200 @@ exports.listEssentialTitle = (req,res, next) => {
   });
 }
 
-////////////////////////////////////
+//////////////   AMLALL LYM MDS  //////////////////////
+///  입력
+const amlInsertlHandler = async (req) => {
+  await poolConnect;
+  const aml           = req.body.aml;
+  const type          = req.body.type;
+
+  const patient_name      =   aml.name;
+  const gene              =   aml.gene;
+  const functional_impact =   aml.functional_impact;
+  const transcript        =   aml.transcript;
+  const exon_intro        =   aml.exon; 
+  const nucleotide_change =   aml.nucleotideChange; 
+  const amino_acid_change =   aml.aminoAcidChange;
+  const zygosity          =   aml.zygosity;
+  const vaf               =   aml.vaf;
+  const reference         =   aml.reference;
+  const cosmic_id         =   aml.cosmic_id; 
+  const igv               =   aml.igv;
+  const sanger            =   aml.sanger;
+
+  const sql= `insert into mutation (patient_name, gene, functional_impact, transcript, exon_intro, nucleotide_change, amino_acid_change,
+    vaf, reference, cosmic_id, igv, sanger, type, zygosity)  values(@patient_name, @gene, @functional_impact, @transcript, @exon_intro,
+      @nucleotide_change, @amino_acid_change, @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @zygosity)`;
+
+  logger.info('[1128][mutation][amlInsertlHandler] =' + sql);
+ 
+  try {
+        const request = pool.request()
+        .input('patient_name', mssql.NVarChar, patient_name)
+        .input('gene', mssql.VarChar, gene)
+        .input('functional_impact',mssql.VarChar, functional_impact)
+        .input('transcript', mssql.VarChar, transcript)
+        .input('exon_intro', mssql.VarChar, exon_intro)
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('amino_acid_change', mssql.VarChar, amino_acid_change)
+        .input('zygosity', mssql.VarChar, zygosity)
+        .input('vaf', mssql.VarChar, vaf)
+        .input('reference', mssql.VarChar, reference)
+        .input('cosmic_id', mssql.VarChar, cosmic_id)
+        .input('igv', mssql.VarChar, igv)
+        .input('sanger', mssql.VarChar, sanger)
+        .input('type', mssql.VarChar, type);
+        const result = await request.query(sql);
+        return result; 
+      } catch (error) {
+        logger.error('[1148][mutation][amlInsertlHandler] err=' + error.message);
+  }  
+
+}
+
+exports.amlInsert = (req,res, next) => {
+  logger.info('[1154][mutation insert]data=' + JSON.stringify(req.body));
+
+  const result = amlInsertlHandler(req);
+  result.then(data => {  
+      res.json({message: 'SUCCESS'});
+  })
+  .catch( error => {
+      logger.error('[1161][mutation][amlInsert] err=' + error.message);
+      res.sendStatus(500);
+  });
+
+}
+
+////////////////// 수정  ////////////////////////////
+const amlUpdatelHandler = async (req) => {
+  await poolConnect;
+  const aml           = req.body.aml;
+  
+  const id                =   aml.id;
+  const patient_name      =   aml.name;
+  const gene              =   aml.gene;
+  const functional_impact =   aml.functional_impact;
+  const transcript        =   aml.transcript;
+  const exon_intro        =   aml.exon; 
+  const nucleotide_change =   aml.nucleotideChange; 
+  const amino_acid_change =   aml.aminoAcidChange;
+  const zygosity          =   aml.zygosity;
+  const vaf               =   aml.vaf;
+  const reference         =   aml.reference;
+  const cosmic_id         =   aml.cosmic_id; 
+  const igv               =   aml.igv;
+  const sanger            =   aml.sanger;
+  const type              =   aml.type;
+
+  const sql = `update mutation set patient_name=@patient_name, gene=@gene, functional_impact=@functional_impact,
+  transcript=@transcript, exon_intro=@exon_intro, nucleotide_change=@nucleotide_change, amino_acid_change=@amino_acid_change,
+  vaf=@vaf,  reference=@reference, cosmic_id=@cosmic_id, igv=@igv, sanger=@sanger, zygosity=@zygosity where id=@id`;
+
+  try {
+    const request = pool.request()
+    .input ('id', mssql.Int, id)
+    .input('patient_name', mssql.NVarChar, patient_name)
+    .input('gene', mssql.VarChar, gene)
+    .input('functional_impact',mssql.VarChar, functional_impact)
+    .input('transcript', mssql.VarChar, transcript)
+    .input('exon_intro', mssql.VarChar, exon_intro)
+    .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+    .input('amino_acid_change', mssql.VarChar, amino_acid_change)
+    .input('zygosity', mssql.VarChar, zygosity)
+    .input('vaf', mssql.VarChar, vaf)
+    .input('reference', mssql.VarChar, reference)
+    .input('cosmic_id', mssql.VarChar, cosmic_id)
+    .input('igv', mssql.VarChar, igv)
+    .input('sanger', mssql.VarChar, sanger)
+    .input('type', mssql.VarChar, type);
+    const result = await request.query(sql);
+    return result; 
+  } catch (error) {
+    logger.error('[1209][mutation][amlUpdatelHandler] err=' + error.message);
+  }  
+
+}
+
+exports.amlUpdate = (req,res, next) => {
+  logger.info('[1215][mutation insert]data=' + JSON.stringify(req.body));
+
+  const result = amlUpdatelHandler(req);
+  result.then(data => {  
+      res.json({message: 'SUCCESS'});
+  })
+  .catch( error => {
+      logger.error('[1222][mutation][amlUpdate] err=' + error.message);
+      res.sendStatus(500);
+  });
+}
+
+///////////// 삭제  ////////////////////
+const amlDeleteHandler = async (req) => {
+  await poolConnect;
+  const id = req.body.id;
+  const sql ='delete from mutation where id=@id';
+  logger.info('[232][mutation][amlDeleteHandler] =' + sql + ', ' + id);
+  try {
+    const request = pool.request()
+        .input('id', mssql.Int, id);
+
+    const result = await request.query(sql);
+    return result;
+  }catch (error) {
+    logger.error('[1240][mutation][amlDeleteHandler] err=' + error.message);
+  }  
+}
+
+exports.amlDelete = (req,res, next) => {  
+  const result = amlDeleteHandler(req);
+  result.then(data => {  
+      res.json({message: 'SUCCESS'});
+  })
+  .catch( error => {
+      logger.error('[1251][mutation][amlDelete] err=' + error.message);
+      res.sendStatus(500);
+  });
+}
+
+
+////////// 목록
+const amlListsHandler = async (req) => {
+  await poolConnect;
+  const type  = req.body.type;
+
+  const sql=`select id, isnull(patient_name, '') patient_name,  isnull(gene, '') gene, isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript,
+   isnull(exon_intro, '') exonIntro,
+   isnull(nucleotide_change, '') nucleotideChange, isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity,
+   isnull(vaf, '') vaf, isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id,
+   isnull(igv, '') igv, isnull(sanger, '') sanger
+   from mutation  where type=@type order by id desc`;
+  logger.info('[508][mutation][geneticlistindHandler] =' + sql);
+
+  try {
+      const request = pool.request()
+      .input('type', mssql.VarChar, type);
+
+      const result = await request.query(sql);
+      return result.recordset; 
+  }catch (error) {
+      logger.error('[1276][mutation][amlListsHandler] err=' + error.message);
+  } 
+}
+
+exports.amlLists = (req,res, next) => {
+   
+  const result = amlListsHandler(req);
+  result.then(data => {  
+      res.json(data);
+  })
+  .catch( error => {
+      logger.error('[1287][mutation][amlLists] err=' + error.message);
+      res.sendStatus(500);
+  });
+}
+
+///////////////////////////////////////////////
 
  
 
