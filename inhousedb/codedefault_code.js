@@ -103,10 +103,10 @@ rowData.forEach ( async (row, index) =>  {
       var method =nvl(row[7].replace( /"/gi, ''), "");
       logger.info('[87][codedefault][method]=' + method);
 
-      var comment1 = nvl(row[8].replace( /"/gi, ''), "");   
+      var comment1 = nvl(row[9].replace( /"/gi, ''), "");   
       logger.info('[87][codedefault][comment1]=' + comment1);
 
-      var comment2 = nvl(row[9].replace( /"/gi, ''), "");
+      var comment2 = nvl(row[10].replace( /"/gi, ''), "");
       logger.info('[87][codedefault][comment2]=' + comment2);
 
       const sql =`update_codedefault` ;
