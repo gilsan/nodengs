@@ -10,6 +10,9 @@ const  clinicallyController = require('../controller/clinically');
 router.post('/insert', clinicallyController.clinicallydata );
 router.post('/insert2', clinicallyController.clinicallydata2 );
 router.post('/list', clinicallyController.clinicallyList);
- 
+
+// 병리 Genomic 
+router.post('/genomicInsert', clinicallyController.genomicInsert );
+router.post('/genomicLists', clinicallyController.genomicList);
 
 module.exports = router;
