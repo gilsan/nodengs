@@ -2143,6 +2143,7 @@ const PatientMlpaHandler = async (specimenNo) => {
         left outer join [dbo].[mlpaData] b
         on a.test_code = b.type
         where a.specimenNo =@specimenNo  
+        order by seq
   `;
 
   logger.info('[1385][listReportMlpa select]sql=' + sql);
@@ -2167,6 +2168,7 @@ const ReportMlpalHandler = async (specimenNo) => {
       isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
       from [dbo].[report_mlpa] 
       where specimenNo =@specimenNo
+      order by seq
   `;
 
   logger.info('[1672][PatientMlpaHandler select]sql=' + sql + '  ' + specimenNo);
