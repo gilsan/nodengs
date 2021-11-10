@@ -68,7 +68,7 @@ function loadData(filePath) {
    }
 }
 
-var tsvData = '../inhouseupload/codedefault.txt';
+var tsvData = '../inhouseupload/codedefault_data.txt';
 var rowCount = 0;
 
 var rowData = loadData(tsvData);
@@ -91,6 +91,24 @@ rowData.forEach ( async (row, index) =>  {
       var report =nvl(row[3].replace( /"/gi, ''), "");
       logger.info('[87][codedefault][site]=' + report);
 
+      var target = nvl(row[4].replace( /"/gi, ''), "");
+      logger.info('[87][codedefault][target]=' + target);
+
+      specimen = nvl(row[5].replace( /"/gi, ''), "");
+      logger.info('[84][codedefault]specimen=' + specimen);
+
+      var analyzedgene = nvl(row[6].replace( /"/gi, ''), "");
+      logger.info('[87][codedefault][analyzedgene]=' + analyzedgene);
+
+      var method =nvl(row[7].replace( /"/gi, ''), "");
+      logger.info('[87][codedefault][method]=' + method);
+
+      var comment1 = nvl(row[8].replace( /"/gi, ''), "");   
+      logger.info('[87][codedefault][comment1]=' + comment1);
+
+      var comment2 = nvl(row[9].replace( /"/gi, ''), "");
+      logger.info('[87][codedefault][comment2]=' + comment2);
+
       const sql =`update_codedefault` ;
 
       try {
@@ -98,7 +116,13 @@ rowData.forEach ( async (row, index) =>  {
           const request = pool.request()
             .input('report_type', mssql.VarChar, report_type)
             .input('code', mssql.VarChar, code)  
-            .input('report', mssql.NVarChar, report) 
+            .input('report', mssql.NVarChar, report)  
+            .input('target', mssql.VarChar, target)  
+            .input('specimen', mssql.VarChar, specimen)  
+            .input('analyzedgene', mssql.VarChar, analyzedgene) 
+            .input('method', mssql.VarChar, method)   
+            .input('comment1', mssql.NVarChar, comment1)   
+            .input('comment2', mssql.NVarChar, comment2)  
             .output('TOTALCNT', mssql.int, 0);
           
         let result2 =  '';

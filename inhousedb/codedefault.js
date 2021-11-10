@@ -135,7 +135,7 @@ rowData.forEach ( async (row, index) =>  {
       var comment2 = nvl(row[9].replace( /"/gi, ''), "");
       logger.info('[87][codedefault][comment2]=' + comment2);
             
-      const sql =`insert_codedefault` ;
+      const sql =`insert_codedefault` ; 
 
       try {
           

@@ -92,7 +92,7 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/mlpa.txt';
+var tsvData = '../inhouseupload/mlpa_data.txt';
 var rowCount = 0;
 
 delData();
