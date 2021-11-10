@@ -2168,7 +2168,7 @@ const ReportMlpalHandler = async (specimenNo) => {
       isnull(deletion, '') deletion, isnull(methylation, '') methylation, isnull(seq, '') seq
       from [dbo].[report_mlpa] 
       where specimenNo =@specimenNo
-      order by seq
+      order by convert (int, seq) 
   `;
 
   logger.info('[1672][PatientMlpaHandler select]sql=' + sql + '  ' + specimenNo);
