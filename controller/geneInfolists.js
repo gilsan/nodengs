@@ -744,7 +744,7 @@ const  variantsHandler = async (req) => {
   let sql =`select top 1 functional_impact , reference, cosmic_id, type
                 from report_detected_variants 
                 where gene=@gene 
-                and nucleotide_change =@nucleotide_change and gubun=@gubun
+                and nucleotide_change =@nucleotide_change and (gubun='AMLALL' or gubun = 'LYM' or gubun='MDS')
                 and reference != ''
                 and cosmic_id != ''
                 order by id desc`;
