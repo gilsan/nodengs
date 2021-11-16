@@ -127,7 +127,7 @@ exports.getList= (req, res, next) => {
     // , ,  
     let infmdd = req.body.start; // 시작일자
     let intodd = req.body.end; // 종료일자
-    let intype = req.body.type; // 구분 (P - 병리, L - 진검, A - 전체)
+    let intype = 'L'; // 구분 (P - 병리, L - 진검, A - 전체)
 
     let sendUrl = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live?submit_id=TRLII00147&business_id=li&instcd=012';
     sendUrl = sendUrl + '&infmdd=' + infmdd
