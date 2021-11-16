@@ -2612,3 +2612,92 @@ exports.findRefId = (req, res, next) => {
   }); 
 };
 
+
+
+// 병리 접수취소 쿼리
+const  selectReceiptCancel_Diag = async (specimenno, patientid) => {
+  await poolConnect; // ensures that the pool has been created
+
+  logger.info('[2621][ReceiptCancel Diag]specimenno=' + specimenno + ", patientid=" + patientid);
+
+  const sql= `select specimenno from [dbo].[patientinfo_path] 
+         where specimenno = @specimenno 
+         and patientid = @patientid`;
+  
+  logger.info('[1193][ReceiptCancel Diag]sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('specimenno', mssql.VarChar, specimenno) // specimenno
+        .input('patientid', mssql.VarChar, patientid); // patientID 
+      const result = await request.query(sql)
+      console.dir(result);
+      const data = result.recordset[0];
+      return data;
+  } catch (error) {
+    logger.error('[1204][ReceiptCancel Diag]err=' + error.message);
+  }
+}
+
+const  findReceiptCancelDiagHandler = async (patientid, specimenno) => {
+  await poolConnect; // ensures that the pool has been created
+
+  logger.info('[2617][screenList][findReceiptCancelDiagHandler]patientid = ' + patientid  );
+  logger.info('[2617][screenList][findReceiptCancelDiagHandler]specimenno = ' + specimenno  );
+  
+  //select Query 생성
+      const qry = `update [dbo].[patientinfo_diag] 
+          set screenstatus = '5'
+        where specimenNo = @specimenno
+        and patientid = @patientid`;
+
+      logger.info('[2533]findReceiptCancelDiagHandler sql=' + qry);
+  
+  try {
+
+    const request = pool.request()
+      .input('patientid', mssql.VarChar, patientid)
+      .input('specimenno', mssql.VarChar, specimenno);
+
+    const result = await request.query(qry);
+    return result.recordset; 
+  }catch (error) {
+    logger.error('[2544]findReceiptCancelDiagHandler err=' + error.message);
+  }
+}
+
+// get receiptcancel_diag 
+exports.receiptcancel_diag = (req, res, next) => {
+  logger.info('[2550]findRreceiptcancel_diagefId req=' + JSON.stringify(req.query));
+
+  const patientid = req.query.patientid ;
+  const specimenno = req.query.specimenno ;
+
+  const result2 = selectReceiptCancel_Diag(specimenno, patientid);
+  result2.then(data => {
+
+  let data2 =  nvl(data, "");
+
+    if (data2 === "") {
+      res.json({message: '0'});
+    }
+    else
+    {
+      const result =findReceiptCancelDiagHandler(patientid, specimenno);
+      result.then(data => {
+        console.log('[screenList][1237][ReceiptCancel]',data); 
+
+        if (data.rowsAffected[0] == 1 ) {
+          res.json({message: '1'});
+        } else {
+          res.json({message: '0'});
+        } 
+      })
+    }
+  })
+  .catch( error => {
+
+      logger.error('[2561]receiptcancel_diag err=' + error.message);
+      res.sendStatus(500)
+  }); 
+};

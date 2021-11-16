@@ -13,4 +13,8 @@ router.post('/pathologyReportUpdate', emrSendUpdateController.pathologyReportUpd
 router.get('/finishPathologyEMR', emrSendUpdateController.finishPathologyEMR); // 마지막
 router.get('/receiptcancel', emrSendUpdateController.receiptcancel ); // 접수 취소
 
+
+// 진검 접수 취소
+router.get('/receiptcancel_diag', emrSendUpdateController.receiptcancel_diag);
+
 module.exports = router;

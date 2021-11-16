@@ -25,4 +25,5 @@ router.post('/listMlpa', screenController.listMlpa); // MLPA 내역
 router.post('/listReportMLPA', screenController.listReportMlpa); // MLPA report 내역
 
 router.post('/finish', screenController.finishScreen);
+
 module.exports = router;
