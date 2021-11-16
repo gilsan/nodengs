@@ -2620,7 +2620,7 @@ const  selectReceiptCancel_Diag = async (specimenno, patientid) => {
 
   logger.info('[2621][ReceiptCancel Diag]specimenno=' + specimenno + ", patientid=" + patientid);
 
-  const sql= `select specimenno from [dbo].[patientinfo_path] 
+  const sql= `select specimenno from [dbo].[patientinfo_diag] 
          where specimenno = @specimenno 
          and patientid = @patientid`;
   
@@ -2660,7 +2660,7 @@ const  findReceiptCancelDiagHandler = async (patientid, specimenno) => {
       .input('specimenno', mssql.VarChar, specimenno);
 
     const result = await request.query(qry);
-    return result.recordset; 
+    return result; 
   }catch (error) {
     logger.error('[2544]findReceiptCancelDiagHandler err=' + error.message);
   }
