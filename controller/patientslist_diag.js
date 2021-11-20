@@ -767,14 +767,14 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
     const result_path = getPatientDiagHandler(specimenNo);
     result_path.then(data => {
         //res.json(data);
-        logger.info('[patientinfo_diag][304][resetscreenstatus]data=' + JSON.stringify(data));
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]data=' + JSON.stringify(data));
 
-        logger.info('[patientinfo_diag][304][resetscreenstatus]prescription_no=' + data.prescription_no);
-        logger.info('[patientinfo_diag][304][resetscreenstatus]prescription_date=' + data.prescription_date);
-        logger.info('[patientinfo_diag][304][resetscreenstatus]test_code=' + data.test_code);
-        logger.info('[patientinfo_diag][304][resetscreenstatus]specimen=' + data.specimen);
-        logger.info('[patientinfo_diag][304][resetscreenstatus]path=' + data.path);
-        logger.info('[patientinfo_diag][304][resetscreenstatus]file=' + data.tsvFilteredFilename);
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]prescription_no=' + data.prescription_no);
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]prescription_date=' + data.prescription_date);
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]test_code=' + data.test_code);
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]specimen=' + data.specimen);
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]path=' + data.path);
+        logger.info('[patientinfo_diag][304][getPatientDiagHandler]file=' + data.tsvFilteredFilename);
 
         prescription_no  = data.prescription_no;
         prescription_date  = data.prescription_date;
@@ -803,14 +803,14 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         
             ngs_path = './' + ngs_path_a[0] + '_success/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
             ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
-            logger.info('[patientinfo_diag][786][resetscreenstatus]ngs_file=' + ngs_file);
+            logger.info('[patientinfo_diag][786][getPatientDiagHandler]ngs_file=' + ngs_file);
     
             cdw_file = cdw_path + '012_' + prescription_no + '_' 
                    + prescription_date + '_' 
                    + test_code + '_' 
                    + specimen + '_' 
                    + specimenNo + '.tsv'
-            logger.info('[patientinfo_diag][793][resetscreenstatus]file=' + cdw_file);
+            logger.info('[patientinfo_diag][793][getPatientDiagHandler]file=' + cdw_file);
         
             // destination will be created or overwritten by default.
             fs.copyFile(ngs_file, cdw_file, (err) => {
@@ -876,6 +876,8 @@ exports.resetScreenStatus = (req, res, next) => {
 
     const result = resetscreenstatus(specimenNo, num, userid, type);
     result.then(data => {
+
+        
          res.json({message: "SUCCESS"});
     })
     .catch( error => {
@@ -1064,10 +1066,10 @@ exports.getPatientinfo  = (req, res, next) => {
 const changescreenstatus = async (specimenNo, seq, userid, type) =>{
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[997][patientinfo_diag resetscreenstatus]specimenNo=' + specimenNo);
-    logger.info('[1000][patientinfo_diag resetscreenstatus]seq=' + seq);
+    logger.info('[997][patientinfo_diag changescreenstatus]specimenNo=' + specimenNo);
+    logger.info('[1000][patientinfo_diag changescreenstatus]seq=' + seq);
     let sql =`update patientInfo_diag set screenstatus=@seq where specimenNo=@specimenNo`;
-    logger.info('[1000][patientinfo_diag resetscreenstatus]sql=' + sql);
+    logger.info('[1000][patientinfo_diag changescreenstatus]sql=' + sql);
     
     try {
 
@@ -1077,7 +1079,7 @@ const changescreenstatus = async (specimenNo, seq, userid, type) =>{
         const result = await request.query(sql); 
       
     } catch(error) {
-        logger.error('[1010][patientinfo_diag resetscreenstatus]err=' + error.message);
+        logger.error('[1010][patientinfo_diag changescreenstatus]err=' + error.message);
     }
 
 }
