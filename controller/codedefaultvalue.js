@@ -423,10 +423,15 @@ exports.codeitemDelete = (req, res, next) => {
 }
 
 ///////////////////// readingcomment 읽어오기
+// 유전성유질환 testcode 예문이 한개 라고함.
 const commentHandler = async (type, code) => {
     await poolConnect;
-    
-    sql=`select  id, type, code, isnull(comment, '') comment, isnull(seq, '0') seq  from readingcomment where type=@type and code=@code `;
+    if (type === 'Genetic') {
+        sql=`select  id, type, code, isnull(comment, '') comment, isnull(seq, '0') seq  from readingcomment where type=@type`;
+    } else {
+        sql=`select  id, type, code, isnull(comment, '') comment, isnull(seq, '0') seq  from readingcomment where type=@type and code=@code `;
+    }
+      
     logger.info('[400][codedefaultvalue][commentHandler] =' + sql);
     try {
         const request = pool.request()
@@ -457,17 +462,19 @@ exports.getCommentLists = (req, res, next) => {
 const commentInsertHandler = async (req) => {
     await poolConnect;
     const reading = req.body.reading;
+ 
     
     for ( i=0; i < reading.length; i++) {
         const type = reading[i].type;
         const code = reading[i].code
         const comment= reading[i].comment;
      
-        sql=`insert into readingcomment (type, code, comment, seq )
-          values(@type, @code, @comment, '0')`    
-          logger.info('[436][codedefaultvalue][commentInsertHandler] =' + sql);
+        sql=`insert into readingcomment (type,code, comment, seq )
+            values(@type, @code, @comment, '0')`; 
+        
+        logger.info('[436][codedefaultvalue][commentInsertHandler] =' + sql);
     
-          try {
+        try {
             const request = pool.request()
                 .input('type', mssql.VarChar, type)
                 .input('code', mssql.VarChar, code)
@@ -541,7 +548,7 @@ const commentUpdateHandler = async (req) => {
         const type = reading[i].type;
         const code = reading[i].code
         const comment= reading[i].comment;
-        sql=`update  readingcomment set  type=@type,  code=@code,   comment=@comment  where id=@id`;
+        sql=`update  readingcomment set  type=@type, code=@code,  comment=@comment  where id=@id`;
 
         logger.info('[478][codedefaultvalue][commentInsertHandler] =' + sql);
     
@@ -549,7 +556,7 @@ const commentUpdateHandler = async (req) => {
             const request = pool.request()
                 .input('id', mssql.Int, id)
                 .input('type', mssql.VarChar, type)
-                .input('code', mssql.VarChar, code)
+                .input('code', mssql.VarChar, code)  //
                 .input('comment', mssql.NVarChar, comment);
     
         result = await request.query(sql);

@@ -768,6 +768,7 @@ exports.getVariantsLists = (req,res, next) => {
    
   const result = variantsHandler(req);
   result.then(data => {
+    console.log('[771][받은데이터]', data);
     res.json(data);
   })
   .catch( error => {
