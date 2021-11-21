@@ -745,6 +745,7 @@ const  variantsHandler = async (req) => {
                 from report_detected_variants 
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change and (gubun='AMLALL' or gubun = 'LYM' or gubun='MDS')
+                and sendyn = '3'
                 and reference != ''
                 and cosmic_id != ''
                 order by id desc`;
