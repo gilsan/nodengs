@@ -1139,9 +1139,224 @@ exports.allLists = (req, res, next) => {
         logger.error('[1137][patientinfo_diag allLists]err=' + error.message);
     })
 
+}
+
+
+////////////////////////////////////////////////////////
+// 연구용 진검 환자등록
+const insertHandler = async (req) =>{
+    await poolConnect;
+    logger.info('[1149][insertHandler] data=' + JSON.stringify(req.body));
+    const name       = req.body.name;
+    const patientID  = req.body.patientID;
+    const age        = req.body.age;
+    const gender     = req.body.gender;
+    const specimenNo = req.body.specimenNo;
+    const reportTitle= req.body.reportTitle;
+    const test_code  = req.body.test_code;
+    const report_date= req.body.report_date;
+  
+
+    const sql=`insert into patientinfo_diag (name, patientID, age ,gender,specimenNo,       
+         test_code, report_date, report_title, gbn)
+         values( @name, @patientID,@age,@gender,@specimenNo,         
+            @test_code,@report_date,@reportTitle,'RESEARCH')`;
+ 
+
+        logger.info('[1170][insertHandler] sql =' + sql);
+        try {
+            const request = pool.request()
+                     .input('name', mssql.NVarChar, name)
+                     .input('patientID', mssql.VarChar,patientID  )
+                     .input('age', mssql.VarChar, age )
+                     .input('gender', mssql.VarChar, gender )
+                     .input('specimenNo', mssql.VarChar, specimenNo )
+                     .input('reportTitle', mssql.VarChar, reportTitle )
+                     .input('test_code', mssql.VarChar,  test_code)
+                     .input('report_date',mssql.VarChar, report_date);
+            const result = await request.query(sql); 
+            return result;
+        } catch(error) {  
+          logger.error('[1184][insertHandler]err=' + error.message);
+        }
+}
+
+exports.insertPatientinfo = (req, res, next) => {
+
+    const result = insertHandler(req);
+    result.then(data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[1195][insertPatientinfo] err=' + error.message);
+    })
 
 }
+
+// 연구용 환자 불러오기
+const  listsHandler = async (today) => {
+    await poolConnect; // ensures that the pool has been created
+   
+    logger.info('[1200][listsHandler]today=' + today);
+
+    const sql =`select isnull(name, '') name  ,isnull(patientID, '') patientID 
+    ,isnull(age,  '') age ,isnull(gender, '') gender 
+    ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion 
+    ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease 
+    ,isnull(method, '') method ,isnull(specimen, '') specimen 
+    ,case when IsNULL( gbn, '' ) = ''  
+        then isnull(request, '')
+        when IsNULL( gbn, '' ) = 'cmc'
+        then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+        when IsNULL( gbn, '' ) = '인터넷'
+        then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
+        else isnull(request, '') end request, isnull(appoint_doc, '')  appoint_doc 
+    ,isnull(worker, '') worker 
+    ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
+    ,isnull(FLT3ITD, '') FLT3ITD ,isnull(prescription_code, '')  prescription_code 
+    ,isnull(testednum, '') testednum , isnull(leukemiaassociatedfusion, '') leukemiaassociatedfusion 
+    ,isnull(tsvFilteredFilename, '') tsvFilteredFilename 
+    ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate 
+    ,isnull(tsvFilteredStatus, '') tsvFilteredStatus 
+    ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate 
+    ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR 
+    ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
+    ,case when IsNULL( left(report_date, 4 ), '' )  = '1900'  
+    then '' 
+    else IsNULL( CONVERT(VARCHAR(4), cast(CAST(accept_date as CHAR(8)) as datetime), 102  ), '' ) end accept_date 
+    ,isnull(test_code, '') test_code  
+    ,isnull(screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected 
+    ,case when IsNULL( CONVERT(VARCHAR(4), report_date, 102 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), report_date, 102 ), '' ) end  report_date 
+    ,isnull(examin, '') examin, isnull(recheck, '') recheck 
+    ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  
+    , isnull(vusmsg, '')  vusmsg, isnull(ver_file, '5.10') verfile 
+    , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+    , isnull(report_title, '') reportTitle
+    , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
+    , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
+    from [dbo].[patientinfo_diag] where gbn = 'RESEARCH'`;
+    logger.info('[1246][istsHandler]sql=' + sql);
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+        
+        return result.recordset;
+    } catch (error) {
+        logger.error('[1253][istsHandler]err=' + error.message);
+    }
+}
+
+exports.getResearchLists= (req, res) => {
+    const result = listsHandler(req);
+    result.then(data => {
+         res.json(data);
+    })
+    .catch( error => {
+        logger.error('[1263][getResearchLists] err=' + error.message);
+    })   
+}
  
+///////// specimenNo 로 생성
+const insertSepecimennoHandler = async (req) =>{
+    await poolConnect;
+    logger.info('[1270][insertSepecimennoHandler] data=' + JSON.stringify(req.body));
+ 
+    const specimenNo = req.body.specimenNo;
+    const patientID  = req.body.patientID;
+
+    const qry=`select count(*) as cnt from patientinfo_diag where specimenNo=@specimenNo`;
+    const request = pool.request()
+                 .input('specimenNo', mssql.VarChar, specimenNo )
+    const result = await request.query(qry); 
+    const count = result.recordset[0].cnt;
+    if (parseInt(count, 10) === 0) {
+            const sql=`insert into patientinfo_diag ( specimenNo, patientID,screenstatus)  values(@specimenNo, @patientID, '0')`;
+            logger.info('[1274][insertSepecimennoHandler] sql =' + sql);
+            try {
+                    const request = pool.request()
+                            .input('specimenNo', mssql.VarChar, specimenNo)
+                            .input('patientID',mssql.VarChar, patientID);
+                    const result = await request.query(sql); 
+                    return result;
+            } catch(error) {  
+                logger.error('[1281][insertSepecimennoHandler]err=' + error.message);
+            }
+    } else {
+        return 'Duplicate';
+    }
+      
+}
+
+exports.insertPatientinfoBySepecimenno = (req, res, next) => {
+    const result = insertSepecimennoHandler(req);
+    result.then(data => {
+         if (data === 'Duplicate') {
+            res.json({message: 'Duplicate'});
+         } else {
+            res.json({message: 'SUCCESS'});
+         }
+         
+    })
+    .catch( error => {
+        logger.error('[1291][insertPatientinfoBySepecimenno] err=' + error.message);
+    })
+}
+
+//////   specimenNo 로 갱신
+const updateSepecimennoHandler = async (req) =>{
+    await poolConnect;
+    logger.info('[1298][updateSepecimennoHandler] data=' + JSON.stringify(req.body));
+    const name       = req.body.name;
+    const patientID  = req.body.patientID;
+    const age        = req.body.age;
+    const gender     = req.body.gender;
+    const specimenNo = req.body.specimenNo;
+    const reportTitle= req.body.reportTitle;
+    const test_code  = req.body.test_code;
+    const report_date= req.body.report_date;
+  
+
+    const sql=`update patientinfo_diag set name=@name, patientID=@patientID, age=@age ,gender=@gender, report_title=@reportTitle,
+     test_code=@test_code, report_date=@report_date, gbn='RESEARCH' where specimenNo=@specimenNo `;
+ 
+
+    logger.info('[1313][updateSepecimennoHandler] sql =' + sql);
+    try {
+        const request = pool.request()
+                     .input('name', mssql.NVarChar, name)
+                     .input('patientID', mssql.VarChar,patientID  )
+                     .input('age', mssql.VarChar, age )
+                     .input('gender', mssql.VarChar, gender )
+                     .input('specimenNo', mssql.VarChar, specimenNo )
+                     .input('reportTitle', mssql.VarChar, reportTitle )
+                     .input('test_code', mssql.VarChar,  test_code)
+                     .input('report_date',mssql.VarChar, report_date);
+            const result = await request.query(sql); 
+            return result;
+        } catch(error) {  
+          logger.error('[1327][updateSepecimennoHandler]err=' + error.message);
+        }
+}
+
+exports.updatePatientinfoBySepecimenno = (req, res, next) => {
+    const result = updateSepecimennoHandler(req);
+    result.then(data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[1295][insertPatientinfoBySepecimenno] err=' + error.message);
+    })
+}
+
+///////////////////////////////////////////////////////////////////
 
  
 

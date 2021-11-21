@@ -20,4 +20,21 @@ router.post('/getEMRSendCount', patientDiagController.getEMRSendCount);
 router.post('/patientinfo', patientDiagController.getPatientinfo);
 // 진검 screenstatus 변경
 router.post('/changestatus', patientDiagController.changestatus)
+
+
+
+
+// 연구용 진검 환자 등록
+router.post('/insertPatientinfo', patientDiagController.insertPatientinfo);
+// 연구용 검진 환자 specimenNo 로 등록
+router.post('/insertPatientinfoBySepecimenno', patientDiagController.insertPatientinfoBySepecimenno);
+// 연구용 검진 환자 specimenNo 로 갱신
+router.post('/updatePatientinfoBySepecimenno', patientDiagController.updatePatientinfoBySepecimenno);
+
+// 연구용 진검 환자 불러오기 gnb 필드로 구분
+router.get('/getResearchLists', patientDiagController.getResearchLists);
+
+
+
+
 module.exports = router;
