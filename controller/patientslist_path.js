@@ -218,7 +218,7 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
                and left(prescription_date, 8) >= '` + start + `' 
                and left(prescription_date, 8) <= '` + end + "' ";
     
-    sql = sql + `prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
+    sql = sql + ` and prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
                         'PMO11020',	'PMO11042',	'PMO12054',	
                         'PMO12057',	'PMO12059',	'PMO12060', 
                         'PMO12071',	'PMO12098') `;
@@ -348,7 +348,7 @@ const messageSeqHandler2 = async (start, end, patientID, pathology_num) => {
                and left(prescription_date, 8) >= '` + start + `' 
                and left(prescription_date, 8) <= '` + end + "' ";
 
-    sql = sql + `prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
+    sql = sql + `and prescription_code  in ('PMO11007',	'PMO11017',	'PMO11019',
                         'PMO11020',	'PMO11042',	'PMO12054',	
                         'PMO12057',	'PMO12059',	'PMO12060', 
                         'PMO12071',	'PMO12098') `;
