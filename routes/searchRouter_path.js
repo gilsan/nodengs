@@ -6,4 +6,7 @@ const router = express.Router();
 // 
 router.post('/list', searchPatientDiagController.getPatientPathLists);
 
+// seqencing 검진자 리스트
+router.get('/listSeq', searchPatientDiagController.getPatientPathSeqLists);
+
 module.exports = router;

@@ -217,6 +217,11 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
                where isnull(Research_yn, 'N') = 'N' 
                and left(prescription_date, 8) >= '` + start + `' 
                and left(prescription_date, 8) <= '` + end + "' ";
+    
+    sql = sql + `prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
+                        'PMO11020',	'PMO11042',	'PMO12054',	
+                        'PMO12057',	'PMO12059',	'PMO12060', 
+                        'PMO12071',	'PMO12098') `;
 
     let patient =  nvl(patientID, "");
     let pathology =  nvl(pathology_num, "");
@@ -248,11 +253,141 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     } catch (error) {
         logger.error("[112][patientinfo_path select]err=" + error.message);
     }
-  }
+}
 
 exports.getPatientPathLists = (req, res,next) => {
 
-console.log(req.body);
+    console.log(req.body);
+   let start           =  req.body.start; //.replace("-", "");
+   let end             =  req.body.end; //.replace("-", "");
+   let patientID       =  req.body.patientID.trim(); // 환자 id
+   let pathology_num   =  req.body.pathologyNo.trim(); // 겸재 번호
+
+   logger.info("[159][patientinfo_path list]start=" + start);
+   logger.info("[159][patientinfo_path select]end=" + end);
+   logger.info("[159][patientinfo_path select]patientID=" + patientID);
+   logger.info("[159][patientinfo_path select]pathology_num=" + pathology_num);
+
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler2(start, end, patientID, pathology_num);
+   result.then(data => {
+ 
+      res.json(data);
+      res.end();
+   })
+   .catch( error  => {
+      logger.error("[112][patientinfo_path select]err=" + error.message);
+      res.sendStatus(500)
+    }); 
+}
+
+// 병리 Sequencing 환자 검색
+const messageSeqHandler2 = async (start, end, patientID, pathology_num) => {
+    await poolConnect; // ensures that the pool has been created
+   
+    logger.info("[293][messageSeqHandler2 select]start=" + start);
+    logger.info("[293][messageSeqHandler2 select]end=" + end);
+    
+    let sql = `select isnull(FLT3ITD, '') FLT3ITD, 
+    isnull(accept_date, '') accept_date, 
+    isnull(age, '') age, 
+    isnull(appoint_doc, '') appoint_doc, 
+    isnull(bamFilename, '') bamFilename, 
+    case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, 
+    isnull(dna_rna_ext, '') dna_rna_ext,     isnull(examin, '') examin, 
+    isnull(gender, '') gender,     isnull(id, '') id, 
+    isnull(irpath, '') irpath,  isnull(key_block, '') key_block, 
+    isnull(management, '') management,     isnull(msiscore, '') msiscore, 
+    isnull(name, '') name, 
+    isnull(organ, '') organ, 
+    isnull(orpath, '')  orpath, 
+    isnull(pathological_dx, '') pathological_dx, 
+    isnull(pathology_num, '') pathology_num, 
+    isnull(patientID, '') patientID, 
+    isnull(prescription_code, '') prescription_code, 
+    isnull(prescription_date, '') prescription_date, 
+    isnull(prescription_no, '') prescription_no, 
+    isnull(recheck, '') recheck, 
+    isnull(rel_pathology_num, '') rel_pathology_num, 
+    isnull(img1, '') img1,
+    isnull(img2, '') img2,
+    isnull(img3, '') img3,
+    case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, 
+    isnull(screenstatus, '') screenstatus, 
+    isnull(sendEMR, '') sendEMR, 
+    case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, 
+    isnull(test_code, '') test_code, \
+    case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+        then '' 
+        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, 
+    isnull(tsvFilteredFilename, '') tsvFilteredFilename, 
+    isnull(tsvFilteredStatus, '') tsvFilteredStatus, 
+    isnull(tsvirfilename, '') tsvirfilename, 
+    isnull(tsvorfilename, '') tsvorfilename, 
+    isnull(tumor_cell_per, '') tumor_cell_per, 
+    isnull(tumor_type, '') tumor_type, 
+    isnull(tumorburden, '') tumorburden, 
+    isnull(worker, '') worker  from [dbo].[patientinfo_path] 
+               where isnull(Research_yn, 'N') = 'N' 
+               and left(prescription_date, 8) >= '` + start + `' 
+               and left(prescription_date, 8) <= '` + end + "' ";
+
+    sql = sql + `prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
+                        'PMO11020',	'PMO11042',	'PMO12054',	
+                        'PMO12057',	'PMO12059',	'PMO12060', 
+                        'PMO12071',	'PMO12098') `;
+
+    let patient =  nvl(patientID, "");
+    let pathology =  nvl(pathology_num, "");
+
+    logger.info("[349][messageSeqHandler2 select]patient=" + patient);
+    logger.info("[349][messageSeqHandler2 select]pathology=" + pathology);
+    
+    if(patient.length > 0 )
+    {
+        sql = sql +  " and patientID = '" +  patient + "'";
+    }
+
+    if(pathology.length > 0 )
+    {
+        //20-12-26 = -> like 변경
+        //sql = sql +  " and pathology_num = '" +  pathology + "'";
+        sql = sql +  " and pathology_num like '%" +  pathology + "%'";
+    }
+
+    sql = sql + " order by prescription_date desc, pathology_num desc ";
+    logger.info("[365][messageSeqHandler2 select]sql=" + sql);
+        
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+       // console.dir( result);
+        
+        return result.recordset;
+    } catch (error) {
+        logger.error("[374][messageSeqHandler2 select]err=" + error.message);
+    }
+}
+
+exports.getPatientPathSeqLists = (req, res,next) => {
+
+    console.log(req.body);
    let start           =  req.body.start; //.replace("-", "");
    let end             =  req.body.end; //.replace("-", "");
    let patientID       =  req.body.patientID.trim(); // 환자 id
