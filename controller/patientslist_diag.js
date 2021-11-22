@@ -1322,9 +1322,10 @@ const updateSepecimennoHandler = async (req) =>{
     const reportTitle= req.body.reportTitle;
     const test_code  = req.body.test_code;
     const report_date= req.body.report_date;
+    const testednum  = req.body.testname;
   
 
-    const sql=`update patientinfo_diag set name=@name, patientID=@patientID, age=@age ,gender=@gender, report_title=@reportTitle,
+    const sql=`update patientinfo_diag set name=@name, patientID=@patientID, age=@age ,gender=@gender, report_title=@reportTitle,testednum=@testednum,
      test_code=@test_code, report_date=@report_date, gbn='RESEARCH' where specimenNo=@specimenNo `;
  
 
@@ -1338,6 +1339,7 @@ const updateSepecimennoHandler = async (req) =>{
                      .input('specimenNo', mssql.VarChar, specimenNo )
                      .input('reportTitle', mssql.VarChar, reportTitle )
                      .input('test_code', mssql.VarChar,  test_code)
+                     .input('testednum',mssql.VarChar, testednum)
                      .input('report_date',mssql.VarChar, report_date);
             const result = await request.query(sql); 
             return result;
