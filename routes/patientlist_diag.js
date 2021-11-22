@@ -26,6 +26,9 @@ router.post('/changestatus', patientDiagController.changestatus)
 
 // 연구용 진검 환자 등록
 router.post('/insertPatientinfo', patientDiagController.insertPatientinfo);
+
+// 연구용 검진 삭제
+router.post('/deletePatientinfoBySepecimenno', patientDiagController.deletePatientinfoBySepecimenno);
 // 연구용 검진 환자 specimenNo 로 등록
 router.post('/insertPatientinfoBySepecimenno', patientDiagController.insertPatientinfoBySepecimenno);
 // 연구용 검진 환자 specimenNo 로 갱신

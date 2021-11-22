@@ -1035,7 +1035,7 @@ const getpatientinfo = async (specimenNo) => {
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  
             , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.1.0') verfile  
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
-            from patientInfo_diag  where specimenNo=@specimenNo`;
+            from patientInfo_diag  where specimenNo=@specimenNo order by id desc`;
 
     try {
         const request = pool.request()
@@ -1154,13 +1154,14 @@ const insertHandler = async (req) =>{
     const specimenNo = req.body.specimenNo;
     const reportTitle= req.body.reportTitle;
     const test_code  = req.body.test_code;
-    const report_date= req.body.report_date;
+    const now = new Date();
+    const accept_date = getFormatDate2(now);
   
 
     const sql=`insert into patientinfo_diag (name, patientID, age ,gender,specimenNo,       
-         test_code, report_date, report_title, gbn)
+         test_code, accept_date, report_title, gbn)
          values( @name, @patientID,@age,@gender,@specimenNo,         
-            @test_code,@report_date,@reportTitle,'RESEARCH')`;
+            @test_code,@accept_date,@reportTitle,'RESEARCH')`;
  
 
         logger.info('[1170][insertHandler] sql =' + sql);
@@ -1171,9 +1172,9 @@ const insertHandler = async (req) =>{
                      .input('age', mssql.VarChar, age )
                      .input('gender', mssql.VarChar, gender )
                      .input('specimenNo', mssql.VarChar, specimenNo )
-                     .input('reportTitle', mssql.VarChar, reportTitle )
+                     .input('reportTitle', mssql.NVarChar, reportTitle )
                      .input('test_code', mssql.VarChar,  test_code)
-                     .input('report_date',mssql.VarChar, report_date);
+                     .input('accept_date',mssql.VarChar, accept_date);
             const result = await request.query(sql); 
             return result;
         } catch(error) {  
@@ -1199,7 +1200,7 @@ const  listsHandler = async (today) => {
    
     logger.info('[1200][listsHandler]today=' + today);
 
-    const sql =`select isnull(name, '') name  ,isnull(patientID, '') patientID 
+    const sql =`select id, isnull(name, '') name  ,isnull(patientID, '') patientID 
     ,isnull(age,  '') age ,isnull(gender, '') gender 
     ,specimenNo, isnull(IKZK1Deletion, '') IKZK1Deletion 
     ,isnull(chromosomalanalysis, '') chromosomalanalysis ,isnull(targetDisease, '') targetDisease 
@@ -1242,7 +1243,7 @@ const  listsHandler = async (today) => {
     , isnull(report_title, '') reportTitle
     , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
     , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
-    from [dbo].[patientinfo_diag] where gbn = 'RESEARCH'`;
+    from [dbo].[patientinfo_diag] where gbn = 'RESEARCH' order by id desc`;
     logger.info('[1246][istsHandler]sql=' + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
@@ -1321,14 +1322,11 @@ const updateSepecimennoHandler = async (req) =>{
     const specimenNo = req.body.specimenNo;
     const reportTitle= req.body.reportTitle;
     const test_code  = req.body.test_code;
-    const report_date= req.body.report_date;
     const testednum  = req.body.testname;
   
-
     const sql=`update patientinfo_diag set name=@name, patientID=@patientID, age=@age ,gender=@gender, report_title=@reportTitle,testednum=@testednum,
-     test_code=@test_code, report_date=@report_date, gbn='RESEARCH' where specimenNo=@specimenNo `;
+     test_code=@test_code  where specimenNo=@specimenNo `;
  
-
     logger.info('[1313][updateSepecimennoHandler] sql =' + sql);
     try {
         const request = pool.request()
@@ -1337,14 +1335,13 @@ const updateSepecimennoHandler = async (req) =>{
                      .input('age', mssql.VarChar, age )
                      .input('gender', mssql.VarChar, gender )
                      .input('specimenNo', mssql.VarChar, specimenNo )
-                     .input('reportTitle', mssql.VarChar, reportTitle )
+                     .input('reportTitle', mssql.NVarChar, reportTitle )
                      .input('test_code', mssql.VarChar,  test_code)
-                     .input('testednum',mssql.VarChar, testednum)
-                     .input('report_date',mssql.VarChar, report_date);
+                     .input('testednum',mssql.VarChar, testednum);
             const result = await request.query(sql); 
             return result;
         } catch(error) {  
-          logger.error('[1327][updateSepecimennoHandler]err=' + error.message);
+          logger.error('[1347][updateSepecimennoHandler]err=' + error.message);
         }
 }
 
@@ -1354,7 +1351,38 @@ exports.updatePatientinfoBySepecimenno = (req, res, next) => {
          res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[1295][insertPatientinfoBySepecimenno] err=' + error.message);
+        logger.error('[1358][updatePatientinfoBySepecimenno] err=' + error.message);
+    })
+}
+// 삭제
+const deleteSepecimennoHandler = async (req) =>{
+    await poolConnect;
+    logger.info('[1364][deleteSepecimennoHandler] data=' + JSON.stringify(req.body));
+   
+    const specimenNo = req.body.specimenNo;
+    const patientID  = req.body.patientID;
+    const sql=`delete from patientinfo_diag where specimenNo=@specimenNo and patientID=@patientID and gbn='RESEARCH'`;
+ 
+    logger.info('[1369][deleteSepecimennoHandler] sql =' + sql);
+    try {
+            const request = pool.request()
+                     .input('specimenNo', mssql.VarChar, specimenNo)
+                     .input('patientID', mssql.VarChar, patientID);
+ 
+            const result = await request.query(sql); 
+            return result;
+    } catch(error) {  
+          logger.error('[1377][deleteSepecimennoHandler]err=' + error.message);
+    }
+}
+
+exports.deletePatientinfoBySepecimenno = (req, res, next) => {
+    const result = deleteSepecimennoHandler(req);
+    result.then(data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[1387][deletePatientinfoBySepecimenno] err=' + error.message);
     })
 }
 
