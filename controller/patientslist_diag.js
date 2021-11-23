@@ -1154,14 +1154,22 @@ const insertHandler = async (req) =>{
     const specimenNo = req.body.specimenNo;
     const reportTitle= req.body.reportTitle;
     const test_code  = req.body.test_code;
+    const type       = req.body.type;
     const now = new Date();
     const accept_date = getFormatDate2(now);
-  
+    let sql;
+    if ( type === 'SEQ' || type === 'MLPA') {
+        sql=`insert into patientinfo_diag (name, patientID, age ,gender,specimenNo,       
+            test_code, accept_date, report_title, gbn, screenstatus)
+            values( @name, @patientID,@age,@gender,@specimenNo,         
+               @test_code,@accept_date,@reportTitle,'RESEARCH', '0')`;
+    } else {
+        sql=`insert into patientinfo_diag (name, patientID, age ,gender,specimenNo,       
+            test_code, accept_date, report_title, gbn)
+            values( @name, @patientID,@age,@gender,@specimenNo,         
+               @test_code,@accept_date,@reportTitle,'RESEARCH')`;
+    }
 
-    const sql=`insert into patientinfo_diag (name, patientID, age ,gender,specimenNo,       
-         test_code, accept_date, report_title, gbn)
-         values( @name, @patientID,@age,@gender,@specimenNo,         
-            @test_code,@accept_date,@reportTitle,'RESEARCH')`;
  
 
         logger.info('[1170][insertHandler] sql =' + sql);
@@ -1387,7 +1395,31 @@ exports.deletePatientinfoBySepecimenno = (req, res, next) => {
 }
 
 ///////////////////////////////////////////////////////////////////
+// testcodelists 에서 검사목록 가져오기
+const testcodeTypeHandler = async (req) =>{
+    await poolConnect;  
+    const type = req.body.type;   
+    const sql=`select  isnull(code, '') code, isnull(report, '') report from testcodelists where type=@type`;
+    logger.info('[1395][testcodeTypeHandler] sql =' + sql);
+    try {
+            const request = pool.request()
+                     .input('type', mssql.VarChar, type);                 
+            const result = await request.query(sql); 
+            return result.recordset;
+    } catch(error) {  
+          logger.error('[1402][testcodeTypeHandler]err=' + error.message);
+    }
+}
 
- 
+exports.getTestcodeByType = (req, res, next) => {
+    const result = testcodeTypeHandler(req);
+    result.then(data => {
+         res.json(data);
+    })
+    .catch( error => {
+        logger.error('[1412][getTestcodeByType] err=' + error.message);
+    })
+}
+//////////////////////////////////////////////////////////
 
 

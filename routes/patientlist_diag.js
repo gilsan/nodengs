@@ -29,6 +29,8 @@ router.post('/insertPatientinfo', patientDiagController.insertPatientinfo);
 
 // 연구용 검진 삭제
 router.post('/deletePatientinfoBySepecimenno', patientDiagController.deletePatientinfoBySepecimenno);
+// type 별 testcode 가져오기
+router.post('/typelists', patientDiagController.getTestcodeByType);
 // 연구용 검진 환자 specimenNo 로 등록
 router.post('/insertPatientinfoBySepecimenno', patientDiagController.insertPatientinfoBySepecimenno);
 // 연구용 검진 환자 specimenNo 로 갱신
