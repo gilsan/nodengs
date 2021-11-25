@@ -169,3 +169,150 @@ const listHandler= async (patientid) => {
  };
 
 
+ /// 유저자 이동 내역
+/// 목록
+const listMoveHandler= async (req) => {
+    await poolConnect; 
+    const pathologyNum = req.body.pathologyNum;
+    logger.info('[177][listMoveHandler]data=' + pathologyNum );
+	
+	let sql =`select  id,  isnull( CONVERT(VARCHAR(19), convert(datetime, date, 112), 126) , '') date , 
+                isnull(gene, '') gene, isnull(amino, '') amino,
+                isnull(direction, '') direction, isnull(comment, '') comment , isnull(pathologyNum, '') pthologyNum
+                from movehistory where pathologyNum=@pathologyNum`;
+ 
+    logger.info('[183][listMoveHandler]sql=' + sql);
+    try {
+       const request = pool.request()
+		 .input('pathologyNum', mssql.VarChar, pathologyNum); 
+       const result = await request.query(sql)  
+       console.dir(result);
+       return result.recordset;
+    } catch (error) {
+       logger.error('[191][listMoveHandler ]err=' + error.message);
+   }
+};
+
+ exports.listMoveHistory = (req,res,next) => {
+    logger.info('[196][listMoveHandler]data=' +  JSON.stringify(req.body));
+    const result = listMoveHandler(req);
+    result.then((data) => { 
+        res.json(data);         
+    })
+    .catch( error => {
+        logger.error('[201] listMoveHistory err=' + error.body);
+        res.sendStatus(500);
+    });
+ };
+
+/// 입력
+const insertMoveHandler= async (req) => {
+    await poolConnect; 
+    const date = req.body.date;
+    const gene = req.body.gene;
+    const amino = req.body.amino;
+    const direction = req.body.direction;
+    const comment = req.body.comment;
+    const pathologyNum = req.body.pathologyNum;
+
+    logger.info('[214][insertMoveHandler]data=' +  JSON.stringify(req.body) );
+	
+	let sql =`insert into moveHistory ( date, gene, amino, direction, comment, pathologyNum)
+        values( getdate(), @gene, @amino, @direction, @comment, @pathologyNum)`;
+ 
+    logger.info('[220][insertMoveHandler]sql=' + sql);
+    try {
+       const request = pool.request()
+         .input('date', mssql.DateTime,date)
+         .input('gene', mssql.VarChar,gene)
+         .input('amino', mssql.VarChar,amino)
+         .input('direction', mssql.VarChar,direction)
+         .input('comment', mssql.NVarChar,comment)
+		 .input('pathologyNum', mssql.VarChar, pathologyNum); 
+       const result = await request.query(sql)  
+       console.dir(result);
+       return result.recordset;
+    } catch (error) {
+       logger.error('[233][insertMoveHandler ]err=' + error.message);
+   }
+};
+
+ exports.insertMoveHistory = (req,res,next) => {
+    const result = insertMoveHandler(req);
+    result.then((data) => { 
+        res.json({message: 'OK'});         
+    })
+    .catch( error => {
+        logger.error('[243] insertMoveHistory err=' + error.body);
+        res.sendStatus(500);
+    });
+ };
+
+// 수정 
+const updateMoveHandler= async (req) => {
+    await poolConnect; 
+    const id   = req.body.id;
+    const comment = req.body.comment;
+ 
+
+    logger.info('[258][updateMoveHandler]data=' +  JSON.stringify(req.body) );
+	
+	let sql =`update  moveHistory set  comment=@comment  where id=@id`;
+ 
+    logger.info('[263][updateMoveHandler]sql=' + sql);
+    try {
+       const request = pool.request()
+         .input('id', mssql.Int, id)
+         .input('comment', mssql.NVarChar,comment);
+
+       const result = await request.query(sql)  
+       return result ;
+    } catch (error) {
+       logger.error('[276][updateMoveHandler ]err=' + error.message);
+   }
+};
+
+ exports.updateMoveHistory = (req,res,next) => {
+    const result = updateMoveHandler(req);
+    result.then((data) => { 
+        res.json({message: 'OK'});         
+    })
+    .catch( error => {
+        logger.error('[286] updateMoveHistory err=' + error.body);
+        res.sendStatus(500);
+    });
+ };
+
+/// 삭제
+const deleteMoveHandler= async (req) => {
+    await poolConnect; 
+    const id   = req.body.id;
+
+    logger.info('[296][deleteMoveHandler]data=' + id );
+	
+	let sql =`delete from moveHistory   where id=@id`;
+ 
+    logger.info('[300][deleteMoveHandler]sql=' + sql);
+    try {
+       const request = pool.request()     
+         .input('id', mssql.Int, id);
+ 
+       const result = await request.query(sql)  
+       return result ;
+    } catch (error) {
+       logger.error('[308][deleteMoveHandler ]err=' + error.message);
+   }
+};
+
+ exports.deleteMoveHistory = (req,res,next) => {
+    const result = deleteMoveHandler(req);
+    result.then((data) => { 
+        res.json({message: 'OK'});         
+    })
+    .catch( error => {
+        logger.error('[318] deleteMoveHistory err=' + error.body);
+        res.sendStatus(500);
+    });
+ };
+////////////////////////////////////////////////////////////////////
+
