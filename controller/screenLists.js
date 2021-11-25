@@ -1700,11 +1700,11 @@ const PatientSequntialHandler = async (specimenNo) => {
   const sql=`select  
       isnull(a.test_code, '') report_type, '' result, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
-      isnull(b.identified_variations, '') identified_variations, isnull(b.specimen, '') specimen,
+      '' identified_variations, isnull(b.specimen, '') specimen,
       isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2
       from [dbo].[patientinfo_diag]  a
-      left outer join [dbo].[sequncing_list] b
-      on a.test_code = b.report_type
+      left outer join [dbo].[codedefaultvalue] b
+      on a.test_code = b.code
       where a.specimenNo =@specimenNo
   `;
 
@@ -2172,7 +2172,7 @@ const ReportMlpalHandler = async (specimenNo) => {
       order by convert (int, seq) 
   `;
 
-  logger.info('[1672][PatientMlpaHandler select]sql=' + sql + '  ' + specimenNo);
+  logger.info('[1672][ReportMlpalHandler select]sql=' + sql + '  ' + specimenNo);
 
   try {
       const request = pool.request()
@@ -2182,7 +2182,7 @@ const ReportMlpalHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1680][PatientMlpaHandler]err=' + error.message);
+         logger.error('[1680][ReportMlpalHandler]err=' + error.message);
     }
   
 };
@@ -2249,10 +2249,11 @@ const MlpalHandler = async (specimenNo) => {
   const sql=`select  
       isnull(a.test_code, '') report_type,  '' result,
       '' conclusion,  '' technique, '' comment,
-      isnull(b.target, '') target,  isnull(b.testmethod, '') testmethod, isnull(b.analyzedgene, '') analyzedgene
+      isnull(b.target, '') target,  isnull(b.method, '') testmethod, isnull(b.analyzedgene, '') analyzedgene ,
+      isnull(b.specimen, '') specimen
       from [dbo].[patientInfo_diag]  a
-      left outer join [dbo].[mlpa_list] b
-      on a.test_code = b.report_type
+      left outer join [dbo].[codedefaultvalue] b
+      on a.test_code = b.code
       where a.specimenNo =@specimenNo
   `;
 
