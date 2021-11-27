@@ -322,7 +322,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
 
     if(status_1.length == 1 )
     {
-        sql = sql +  " and screenstatus = '" +  status_1 + "'";
+        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
     }
 
      
