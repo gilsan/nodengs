@@ -73,7 +73,7 @@ const insertHandler = async (req) => {
     sql=`insert into codedefaultvalue (type, code, report, target,specimen, analyzedgene,
          method, comment1, comment2, comment, Mutation_Comment)
       values(@type, @code, @report, @target, @specimen, @analyzedgene,
-         @method, @comment1, @comment2, comment, @mutationComment)`
+         @method, @comment1, @comment2, @comment, @mutationComment)`
 
       logger.info('[61][codedefaultvalue][insertHandler] =' + sql);
 
