@@ -8,7 +8,7 @@ router.post('/list', searchPatientDiagController.getPatientDiagLists);
 // AML/ALL 검진자 리스트
 router.post('/listAml', searchPatientDiagController.getPatientDiagListsAml);
 // MDS/MPN  검진자 리스트
-router.post('/listMdsMpn', searchPatientDiagController.getPatientDiagListsMdsMpn);
+router.post('/listMdsMpn', searchPatientDiagController.getPatientDiagListsMdsMlpn);
 // 악성림프종/형질세포종 검진자 리스트
 router.post('/listLymphoma', searchPatientDiagController.getPatientDiagListsLymphoma);
 // 유전성유전질환 검진자 리스트
