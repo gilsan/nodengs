@@ -1732,6 +1732,7 @@ const reportSequntialHandler = async (specimenNo) => {
       isnull(analyzedgene, '') analyzedgene,
       isnull(identified_variations, '') identified_variations, 
       isnull(specimen, 'Genomic DNA isolated from peripheral blood leukocytes-adequate specimen') specimen
+      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2
       from [dbo].[report_patientsInfo]  
       where specimenNo =@specimenNo
   `;
