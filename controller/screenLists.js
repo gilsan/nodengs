@@ -1732,7 +1732,7 @@ const reportSequntialHandler = async (specimenNo) => {
       isnull(analyzedgene, '') analyzedgene,
       isnull(identified_variations, '') identified_variations, 
       isnull(specimen, 'Genomic DNA isolated from peripheral blood leukocytes-adequate specimen') specimen
-      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2
+      isnull(comment1, '') comment1, isnull(comment2, '') comment2
       from [dbo].[report_patientsInfo]  
       where specimenNo =@specimenNo
   `;
@@ -2108,18 +2108,18 @@ exports.saveScreen7 = (req, res, next) => {
                   let cnt = data[0].count;
 
                   logger.info('[2063][screenList][saveScreen 7]cnt='+ cnt);
-                  if (cnt === 0)
-                  {
+                  //if (cnt === 0)
+                  //{
                     const result7 = insertHandlerSequence (type, title,
                       target, testmethod, analyzedgene, specimen, identified_variations, comment1, comment2);
                       result7.then(data => {
                         res.json({message: 'OK'});
                       })
-                  }
-                  else
-                  {
-                    res.json({message: 'OK'});
-                  }
+                  //}
+                  //else
+                  //{
+                  //  res.json({message: 'OK'});
+                  //}
                 });
               });
           });
