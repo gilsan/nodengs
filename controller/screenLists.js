@@ -1697,7 +1697,7 @@ const PatientSequntialHandler = async (specimenNo) => {
       isnull(a.test_code, '') report_type, '' result, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
       '' identified_variations, isnull(b.specimen, '') specimen,
-      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2, isnull(b.Mutation_Comment, '') seqcomment
+      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2, isnull(b.Comment, '') seqcomment
       from [dbo].[patientinfo_diag]  a
       left outer join [dbo].[codedefaultvalue] b
       on a.test_code = b.code
@@ -2272,7 +2272,7 @@ const reportMlpalHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
       isnull(a.report_type, '') report_type, isnull(a.result, '') result, isnull(a.specimen, '') specimen,
-      isnull(a.conclusion, '') conclusion, isnull(a.technique, '') technique, isnull(a.comment, '') comment,
+      isnull(a.comment1, '') conclusion, isnull(a.comment2, '') technique, isnull(a.comment, '') comment,
       isnull(a.target, '') target,  isnull(a.testmethod, '') testmethod, isnull(a.analyzedgene, '') analyzedgene
       from [dbo].[report_patientsInfo]  a
       where a.specimenNo =@specimenNo
