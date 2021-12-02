@@ -2250,7 +2250,7 @@ const MlpalHandler = async (specimenNo) => {
       isnull(a.test_code, '') report_type,  '' result,
       '' conclusion,  '' technique, '' comment,
       isnull(b.target, '') target,  isnull(b.method, '') testmethod, isnull(b.analyzedgene, '') analyzedgene ,
-      isnull(b.specimen, '') specimen
+      isnull(b.specimen, '') specimen, isnull(b.comment1, '') conclusion, isnull(b.comment2, '') technique 
       from [dbo].[patientInfo_diag]  a
       left outer join [dbo].[codedefaultvalue] b
       on a.test_code = b.code
