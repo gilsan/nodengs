@@ -2249,7 +2249,7 @@ const MlpalHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
       isnull(a.test_code, '') report_type,  '' result,
-      '' conclusion,  '' technique, '' comment,
+       '' comment,
       isnull(b.target, '') target,  isnull(b.method, '') testmethod, isnull(b.analyzedgene, '') analyzedgene ,
       isnull(b.specimen, '') specimen, isnull(b.comment1, '') conclusion, isnull(b.comment2, '') technique 
       from [dbo].[patientInfo_diag]  a
@@ -2288,6 +2288,7 @@ const reportMlpalHandler = async (specimenNo) => {
       const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
       const result = await request.query(sql)
 
+        console.log(result.recordsets[0]);
        return result.recordsets[0];
     } catch (error) {
          logger.error('[1370][reportMlpalHandler]err=' + error.message);
@@ -2325,7 +2326,7 @@ exports.listMlpa = (req, res, next) => {
         {
           const result7 = reportMlpalHandler (specimenNo);
             result7.then(data => {
-              console.log('[1691][listMlpa] ==> ', data)
+              console.log('[2328][listMlpa] ==> ', data)
                res.json(data);
             })
             .catch( error  => {
@@ -2337,7 +2338,7 @@ exports.listMlpa = (req, res, next) => {
         {
           const result9 = MlpalHandler (specimenNo);
             result9.then(data => {
-              console.log('[1691][listMlpa] ==> ', data)
+              console.log('[2340][listMlpa] ==> ', data)
                res.json(data);
             })
             .catch( error  => {
