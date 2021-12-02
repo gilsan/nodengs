@@ -1611,13 +1611,9 @@ const SequntialHandler = async (specimenNo) => {
   const sql=`select   isnull(a.type, '') type,
       isnull(a.exon, '') exonintron, isnull(a.nucleotide_change, '') nucleotideChange,
       isnull(a.amino_acid_change, '') aminoAcidChange, isnull(a.zygosity, '') zygosity, isnull(a.cosmic_id, '') rsid,
-      isnull(a.reference, '') reference,
-      isnull(b.comment, '') comment, isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2,
-      isnull(b.seqcomment, '') seqcomment
-      from  report_patientsInfo b
-      left outer join [dbo].[report_detected_variants]  a
-      on b.specimenNo = a.specimenNo
-      where b.specimenNo =@specimenNo
+      isnull(a.reference, '') reference
+      from  [dbo].[report_detected_variants]  a
+      where a.specimenNo =@specimenNo
   `;
 
   logger.info('[1385][listSequntial select]sql=' + sql);
@@ -1701,7 +1697,7 @@ const PatientSequntialHandler = async (specimenNo) => {
       isnull(a.test_code, '') report_type, '' result, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
       '' identified_variations, isnull(b.specimen, '') specimen,
-      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2
+      isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2, isnull(b.Mutation_Comment, '') seqcomment
       from [dbo].[patientinfo_diag]  a
       left outer join [dbo].[codedefaultvalue] b
       on a.test_code = b.code
@@ -1718,7 +1714,7 @@ const PatientSequntialHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1680][listPatientSequntial]err=' + error.message);
+         logger.error('[1680][listPatientSequntial 1]err=' + error.message);
     }
   
 };
@@ -1731,8 +1727,8 @@ const reportSequntialHandler = async (specimenNo) => {
       isnull(target, '') target,  isnull(testmethod, '*Direct sequencing for whole exons including intron-exon boundaries') method,
       isnull(analyzedgene, '') analyzedgene,
       isnull(identified_variations, '') identified_variations, 
-      isnull(specimen, 'Genomic DNA isolated from peripheral blood leukocytes-adequate specimen') specimen
-      isnull(comment1, '') comment1, isnull(comment2, '') comment2
+      isnull(specimen, 'Genomic DNA isolated from peripheral blood leukocytes-adequate specimen') specimen,
+      isnull(comment, '') comment, isnull(comment1, '') comment1, isnull(comment2, '') comment2, isnull(seqcomment, '') seqcomment
       from [dbo].[report_patientsInfo]  
       where specimenNo =@specimenNo
   `;
@@ -1747,7 +1743,7 @@ const reportSequntialHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1680][listPatientSequntial]err=' + error.message);
+         logger.error('[1680][listPatientSequntial 2]err=' + error.message);
     }
   
 };
@@ -2183,7 +2179,7 @@ const ReportMlpalHandler = async (specimenNo) => {
 
        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1680][ReportMlpalHandler]err=' + error.message);
+         logger.error('[1680][ReportMlpalHandler 3]err=' + error.message);
     }
   
 };
