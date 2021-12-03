@@ -343,7 +343,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
-       // console.dir( result);
+        console.log( result);
         
         return result.recordset;
     } catch (err) {
