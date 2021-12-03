@@ -741,7 +741,7 @@ const  variantsHandler = async (req) => {
   
   logger.info('[742][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
-  let sql =`select top 1 functional_impact , reference, cosmic_id, type
+  let sql =`select top 1 functional_impact , reference, cosmic_id, type, transcript, exon, amino_acid_change
                 from report_detected_variants 
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change and (gubun='AMLALL' or gubun = 'LYM' or gubun='MDS')
