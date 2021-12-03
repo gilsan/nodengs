@@ -231,6 +231,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
         ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
         ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
         ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
             ,isnull(targetDisease, '') targetDisease 
             ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
             ,case when IsNULL( gbn, '' ) = ''  
@@ -267,7 +268,6 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 then '' 
                 else IsNULL( CONVERT(VARCHAR(10), a.report_date, 102 ), '' ) end  report_date 
             ,isnull(examin, '') examin, isnull(recheck, '') recheck 
-            ,isnull(a.bonemarrow, '') bonemarrow   
             , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
             , isnull(report_title, '') reportTitle
