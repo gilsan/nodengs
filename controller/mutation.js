@@ -301,9 +301,6 @@ result.then(data => {
 
 }
 
-
-
-
 // AMLALL, LYM,MDS는  report_detected_variants 테이블에서 찿음
 const  variantsHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
@@ -687,6 +684,7 @@ const geneticcallHandler2 = async (req) => {
   const gene             = req.body.gene;
 
   sql=`select top 1  isnull(functional_impact, '') functionalImpact, 
+            isnull(transcript, '') transcript, isnull(exon, '') exon, isnull(amino_acid_change, '') amino_acid_change,
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS
    from report_detected_variants  where gubun='Genetic' and gene=@gene and nucleotide_change=@coding order by id desc`;
   logger.info('[549][mutation][geneticcallHandler2] =' + sql);
