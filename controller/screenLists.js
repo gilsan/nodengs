@@ -38,7 +38,7 @@ const  messageHandler = async (req) => {
   isnull(zygosity, '') zygosity, isnull(vaf, '') vaf, isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, 
   isnull(type, '') type, isnull(checked, '') checked, isnull(functional_code, '') functional_code, 
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, 
-  isnull(work_now, '') work_now, isnull(work_diag, '') work_diag, isnull(cnt, '') cnt, isnull(gubun, '') gubun
+  isnull(work_now, '') work_now, isnull(work_diag, '') work_diag, isnull(cnt, '') cnt, isnull(gubun, '') gubun, isnull(sendyn, '') sendyn
    from [dbo].[report_detected_variants] 
    where specimenNo=@specimenNo 
    order by functional_code, gene, nucleotide_change `;
@@ -2254,6 +2254,8 @@ const MlpalHandler = async (specimenNo) => {
       where a.specimenNo =@specimenNo
   `;
 
+
+
   logger.info('[1385][MlpalHandler select]sql=' + sql + '  ' + specimenNo);
 
   try {
@@ -2270,13 +2272,23 @@ const MlpalHandler = async (specimenNo) => {
 // Mlpa Report 내역
 const reportMlpalHandler = async (specimenNo) => {
   await poolConnect; 
+  // const sql=`select  
+  //     isnull(a.report_type, '') report_type, isnull(a.result, '') result, isnull(a.specimen, '') specimen,
+  //     isnull(a.comment1, '') conclusion, isnull(a.comment2, '') technique, isnull(a.comment, '') comment,
+  //     isnull(a.target, '') target,  isnull(a.testmethod, '') testmethod, isnull(a.analyzedgene, '') analyzedgene
+  //     from [dbo].[report_patientsInfo]  a
+  //     where a.specimenNo =@specimenNo
+  // `;
+
   const sql=`select  
       isnull(a.report_type, '') report_type, isnull(a.result, '') result, isnull(a.specimen, '') specimen,
-      isnull(a.comment1, '') conclusion, isnull(a.comment2, '') technique, isnull(a.comment, '') comment,
+      isnull(a.conclusion, '') conclusion, isnull(a.technique, '') technique, isnull(a.comment, '') comment,
       isnull(a.target, '') target,  isnull(a.testmethod, '') testmethod, isnull(a.analyzedgene, '') analyzedgene
       from [dbo].[report_patientsInfo]  a
       where a.specimenNo =@specimenNo
   `;
+
+
 
   logger.info('[1385][reportMlpalHandler select]sql=' + sql + '  ' + specimenNo);
 
