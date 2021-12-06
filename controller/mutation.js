@@ -316,6 +316,7 @@ const  variantsHandler = async (req) => {
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change 
                 and gubun=@gubun
+                and sendyn='3
                 and reference != ''
                 and cosmic_id != ''
                  order by id desc`
@@ -458,11 +459,11 @@ const seqcallHandler = async (req) => {
   await poolConnect;
   const nucleotideChange = req.body.coding;
   const gene             = req.body.gene;
-  sql=`select top 1 isnull(functional_impact, '') type, isnull(exon, '') exonintron,
+  sql=`select top 1 isnull(type, '') type, isnull(exon, '') exonintron,
      isnull(amino_acid_change, '') aminoAcidChange,
      isnull(cosmic_id, '') rsid, isnull(reference, '') genbankaccesion
    from report_detected_variants  
-   where type='SEQ'   order by id desc`;
+   where gubun='SEQ' and nucleotide_change=@nucleotideChange and gene=@gene and sendyn='3' order by id desc`;
   logger.info('[460][mutation][seqcallHandler] =' + sql);
 
   try {
@@ -686,7 +687,7 @@ const geneticcallHandler2 = async (req) => {
   sql=`select top 1  isnull(functional_impact, '') functionalImpact, 
             isnull(transcript, '') transcript, isnull(exon, '') exon, isnull(amino_acid_change, '') amino_acid_change,
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS
-   from report_detected_variants  where gubun='Genetic' and gene=@gene and nucleotide_change=@coding order by id desc`;
+   from report_detected_variants  where (gubun='Genetic' or gubun='genetic' ) and gene=@gene and nucleotide_change=@coding and  sendyn='3' order by id desc`;
   logger.info('[549][mutation][geneticcallHandler2] =' + sql);
 
   try {
@@ -717,7 +718,7 @@ const geneticcallHandler1 = async (req) => {
   await poolConnect;
   const gene             = req.body.gene;
 
-  sql=`select top 1 isnull(OMIM, '') OMIM  from report_detected_variants  where type='Genetic' and gene=@gene order by id desc`;
+  sql=`select top 1 isnull(OMIM, '') OMIM  from report_detected_variants  where (gubun='Genetic' or  gubun='genentic') and gene=@gene and sendyn='3' order by id desc`;
   logger.info('[723][mutation][geneticcallHandler1] =' + sql);
 
   try {

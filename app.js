@@ -271,7 +271,7 @@ app.use('/mutationMapper', mutationRouter);
 app.use('/ngscomments', commentsRouters);
 app.use('/ngsartifacts', artifactsRouters);
 app.use('/ngsbenign', benignRouters);
-// Mutation
+// Mutation Search
 app.use('/mutation', mutationRouters);
 
 // 유전체 정보로 comment 레코드에서 정보 가져오기
@@ -289,7 +289,7 @@ app.use('/searchpatient_path', searchpatientPathRouter);
 
 // In-House 등록/수정/삭제
 // Mutation
-app.use('/mutation', mutationRouter);
+// app.use('/mutation', mutationRouter);
 
 
 app.use('/tests', function(req, res, next) {
