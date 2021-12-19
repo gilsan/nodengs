@@ -390,6 +390,10 @@ app.use('/sequencingdiag',sequencingdiagRouter);
 const codeRouter = require('./routes/codedefaultvalueRouter');
 app.use('/codedefault',codeRouter);
 
+// 병리에 LIMS
+const limsRouter = require('./routes/limsRouter');
+app.use('/lims',limsRouter);
+
 
 	//	MDS/MPN 
 	//	Lymphoma
