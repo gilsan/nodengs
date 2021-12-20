@@ -327,7 +327,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     {
         sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
     } else if (status_1.length === 2) {
-        sql = sql +  " and a.screenstatus = ''";
+        sql = sql +  " and isnull(a.screenstatus, '') = ''";
     } 
 
     if (research1.length > 0) {
