@@ -13,6 +13,7 @@ router.post('/delete', mutationController.deleteMutation);
 router.post('/searchbygene', mutationController.searchMutaionbygene);
 //
 router.post('/callbygene', mutationController.getVariantsLists);
+router.post('/callbygeneMds', mutationController.getVariantsListsMds);
 
 router.post('/list',   mutationController.listMutation);
 

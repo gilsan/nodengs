@@ -301,7 +301,7 @@ result.then(data => {
 
 }
 
-// AMLALL, LYM,MDS는  report_detected_variants 테이블에서 찿음
+// AMLALL, LYM는  report_detected_variants 테이블에서 찿음
 const  variantsHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
@@ -316,7 +316,7 @@ const  variantsHandler = async (req) => {
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change 
                 and gubun=@gubun
-                and sendyn='3
+                and sendyn= '3'
                 and reference != ''
                 and cosmic_id != ''
                  order by id desc`
@@ -344,6 +344,52 @@ exports.getVariantsLists = (req,res, next) => {
   })
   .catch( error => {
     logger.error('[771][geneinfo][getVariantsLists] err=' +error.message);
+    res.sendStatus(500);
+  });
+}
+
+// MDS/MPN는  report_detected_variants 테이블에서 찿음
+const  variantsMdsHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+
+  const gene =  req.body.gene;	 
+  const nucleotide_change = req.body.coding;
+  const gubun = nvl(req.body.gubun, 'AMLALL');
+  
+  logger.info('[361][geneinfo][variantsListsMdsHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
+ 
+  let sql =`select top 1 functional_impact , reference, cosmic_id, type
+                from mutation 
+                where gene=@gene 
+                and nucleotide_change =@nucleotide_change 
+                and type=@gubun
+                and reference != ''
+                and cosmic_id != ''
+                 order by id desc`
+               
+  logger.info('[373][geneinfo]list sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('gene', mssql.VarChar, gene) 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
+        .input('gubun', mssql.VarChar, gubun); 
+      const result = await request.query(sql);
+      return result.recordset;
+  } catch (error) {
+    logger.error('[383][variantsListsMdsHandler]list err=' + error.message);
+  }
+}
+
+exports.getVariantsListsMds = (req,res, next) => {
+  logger.info('[388][geneinfo]getVariantsListsMds req=' + JSON.stringify(req.body));
+   
+  const result = variantsMdsHandler(req);
+  result.then(data => {
+    res.json(data);
+  })
+  .catch( error => {
+    logger.error('[395][geneinfo][getVariantsListsMds] err=' +error.message);
     res.sendStatus(500);
   });
 }
