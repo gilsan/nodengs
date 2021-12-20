@@ -301,7 +301,7 @@ result.then(data => {
 
 }
 
-// AMLALL, LYM는  report_detected_variants 테이블에서 찿음
+// AMLALL, LYM, MDS/MPN는  report_detected_variants 테이블에서 찿음
 const  variantsHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
@@ -348,15 +348,15 @@ exports.getVariantsLists = (req,res, next) => {
   });
 }
 
-// MDS/MPN는  report_detected_variants 테이블에서 찿음
-const  variantsMdsHandler = async (req) => {
+// 유전성 유전질환은  mutation 테이블에서 찿음
+const  variantsGeneticHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const gene =  req.body.gene;	 
   const nucleotide_change = req.body.coding;
   const gubun = nvl(req.body.gubun, 'AMLALL');
   
-  logger.info('[361][geneinfo][variantsListsMdsHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
+  logger.info('[361][geneinfo][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
   let sql =`select top 1 functional_impact , reference, cosmic_id, type
                 from mutation 
@@ -377,19 +377,19 @@ const  variantsMdsHandler = async (req) => {
       const result = await request.query(sql);
       return result.recordset;
   } catch (error) {
-    logger.error('[383][variantsListsMdsHandler]list err=' + error.message);
+    logger.error('[383][variantsListsGeneticHandler]list err=' + error.message);
   }
 }
 
-exports.getVariantsListsMds = (req,res, next) => {
-  logger.info('[388][geneinfo]getVariantsListsMds req=' + JSON.stringify(req.body));
+exports.getVariantsListsGenetic = (req,res, next) => {
+  logger.info('[388][geneinfo]getVariantsListsGenetic req=' + JSON.stringify(req.body));
    
-  const result = variantsMdsHandler(req);
+  const result = variantsGeneticHandler(req);
   result.then(data => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[395][geneinfo][getVariantsListsMds] err=' +error.message);
+    logger.error('[395][geneinfo][getVariantsListsGenetic] err=' +error.message);
     res.sendStatus(500);
   });
 }
