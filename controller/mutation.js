@@ -358,7 +358,7 @@ const  variantsGeneticHandler = async (req) => {
   
   logger.info('[361][geneinfo][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
-  let sql =`select top 1 isnull(functional_impact, '') FunctionalImapct, amino_acid_change, transcript, 
+  let sql =`select top 1 isnull(functional_impact, '') Functionalimpact, amino_acid_change, transcript, 
                            isnull(exon_intro, '') exon, 
                            isnull(dbsnp_hgmd, '') dbSNPHGMD , isnull(gnomad_eas, '') gnomADEAS,  
                            isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, type
