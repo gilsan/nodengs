@@ -361,7 +361,7 @@ const  variantsGeneticHandler = async (req) => {
   let sql =`select top 1 isnull(functional_impact, '') FunctionalImapct, amino_acid_change, transcript, 
                            isnull(exon_intro, '') exon, 
                            isnull(dbsnp_hgmd, '') dbSNPHGMD , isnull(gnomad_eas, '') gnomADEAS,  
-                           isnull(reference, '') reference, isnull(cosmic_id, ''), type
+                           isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, type
                 from mutation 
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change 
