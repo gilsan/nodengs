@@ -358,7 +358,10 @@ const  variantsGeneticHandler = async (req) => {
   
   logger.info('[361][geneinfo][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
-  let sql =`select top 1 functional_impact , reference, cosmic_id, type
+  let sql =`select top 1 functional_impact , amino_acid_change, transcript, 
+                           isnull(exon_intro, '') exon, 
+                           isnull(dbsnp_hgmd, '') dbSNPHGMD , isnull(gnomad_eas, '') gnomADEAS,  
+                           isull(reference, '') reference, isnull(cosmic_id., ''), type
                 from mutation 
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change 
