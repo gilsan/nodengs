@@ -331,7 +331,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     } 
 
     if (research1.length > 0) {
-        if (research === 'RESEARCH') {
+        if (research1 === 'RESEARCH') {
             sql = sql +  " and a.gbn = 'RESEARCH'";
         } else {
             sql = sql +  " and a.gbn = ''";
@@ -413,10 +413,10 @@ exports.getPatientDiagLists = (req, res,next) => {
    let specimenNo   =  req.body.specimenNo.trim(); // 검채 번호
    let status   =  req.body.status; // 상태
    let sheet   =  req.body.sheet; // 결과지
-   let research = req.body.research; // 연구용
+   let research = req.body.research1; // 연구용
 
    console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status, research);
-   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research" + research);
+   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research1=" + research);
    
    const  now = new Date();
    const today = getFormatDate2(now);
