@@ -415,8 +415,8 @@ exports.getPatientDiagLists = (req, res,next) => {
    let sheet   =  req.body.sheet; // 결과지
    let research = req.body.research; // 연구용
 
-   console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status);
-   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status);
+   console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status, research);
+   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research" + research);
    
    const  now = new Date();
    const today = getFormatDate2(now);
