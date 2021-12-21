@@ -157,6 +157,7 @@ const  limsSelectHandler = async (start, end) => {
             isnull(a.pathology_num, '') pathology_num 
             , isnull(rel_pathology_num, '') rel_pathology_num 
             , isnull( a.prescription_date, '') prescription_date
+            , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
             , isnull(b.id, '') id  
