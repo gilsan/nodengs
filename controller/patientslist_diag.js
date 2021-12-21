@@ -333,7 +333,9 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     if (research1.length > 0) {
         if (research === 'RESEARCH') {
             sql = sql +  " and a.gbn = 'RESEARCH'";
-        }  
+        } else {
+            sql = sql +  " and a.gbn = ''";
+        }
     }
     //sql = sql + " order by accept_date desc, specimenNo desc   ";
     sql = sql + " order by accept_date2 asc  ";
