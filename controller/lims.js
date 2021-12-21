@@ -156,25 +156,29 @@ const  limsSelectHandler = async (start, end) => {
         let qry = `SELECT
             isnull(a.pathology_num, '') pathology_num 
             , isnull(rel_pathology_num, '') rel_pathology_num 
+            , isnull( a.prescription_date, '') prescription_date
             , isnull(age, '') age 
             , isnull(name, '') name
-            , isnull(a.id, '') id  
-            , isnull( path_type, '') path_type
+            , isnull(b.id, '') id  
             , isnull( b.prescription_code, '') prescription_code
             , isnull( b.test_code, '') test_code
+            , isnull( path_type, '') path_type
             , isnull(b.key_block, '') key_block 
+            , isnull(b.block_cnt, '') block_cnt 
             , isnull(b.tumorburden, '') tumorburden
             , isnull(b.report_date, '') report_date
             , isnull(nano_ng, '') nano_ng
             , isnull(nano_280, '') nano_280 
             , isnull(nano_230, '') nano_230
             , isnull(nano_dil, '') nano_dil
-            , isnull(dan_rna, '') dan_rna
+            , isnull(ng_ui, '') ng_ui
             , isnull(dw, '') dw
             , isnull(tot_ct, '') tot_ct
             , isnull(ct, '') ct
             , isnull(quantity, '') quantity
             , isnull(quantity_2, '') quantity_2
+            , isnull(quan_dna, '') quan_dna
+            , isnull(dan_rna, '') dan_rna
             , isnull(te, '') te
             , isnull(quan_tot_vol, '') quan_tot_vol
             , isnull(lib_hifi, '') lib_hifi
