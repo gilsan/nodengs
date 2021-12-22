@@ -190,6 +190,8 @@ const  limsSelectHandler = async (start, end) => {
             , isnull(lib_dw,  '') lib_dw
             , isnull(lib2,  '') lib2
             , isnull(lib2_dw,  '') lib2_dw
+            , isnull(examin,  '') examin
+            , isnull(recheck,  '') recheck
         FROM  [dbo].[patientinfo_path] a 
         left outer join [dbo].[lims] b 
         on a.pathology_num  = b.pathology_num
