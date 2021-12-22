@@ -62,6 +62,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
        let lib_dw            = lims[i].lib_dw;
        let lib2              = lims[i].lib2;
        let lib2_dw           = lims[i].lib2_dw;
+       
+       let dna_rna_gbn       = lims[i].dna_rna_gbn
    
        logger.info('[60][limsinsertHandler]pathology_num=' + pathology_num );
        logger.info('[60][limsinsertHandler]path_type=' + path_type + ', prescription_code=' + prescription_code + ', test_code= ' + test_code);
@@ -71,7 +73,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
        logger.info('[52][limsinsertHandler]quantity=' + quantity + ', quantity_2=' + quantity_2 + ', tot_ct=' + tot_ct);
        logger.info('[52][limsinsertHandler]quan_tot_vol=' + quan_tot_vol + ', lib_hifi=' + lib_hifi + ', te=' + te);
        logger.info('[52][limsinsertHandler]pm=' + pm + ', x100=' + x100 );
-       logger.info('[52][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw );
+       logger.info('[52][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw + ', dna_rna_gbn=' + dna_rna_gbn );
     
        //insert Query 생성;
        const qry = `insert into lims (pathology_num, report_date, path_type, 
@@ -79,13 +81,13 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                     nano_ng, nano_280, nano_230, nano_dil, 
                     dan_rna, dw, tot_ct, ct, te, quan_dna,
                     quantity, quantity_2, quan_tot_vol, ng_ui, lib_hifi, 
-                    pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck) 
+                    pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn) 
                 values(@pathology_num, getdate(),  @path_type,
                     @prescription_code, @test_code, @key_block, @block_cnt, @tumorburden, 
                     @nano_ng, @nano_280, @nano_230, @nano_dil,
                     @dan_rna, @dw, @tot_ct, @ct, @te, @quan_dna,
                     @quantity, @quantity_2, @quan_tot_vol, @ng_ui, @lib_hifi,
-                    @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck)`;
+                    @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn)`;
                
          logger.info('[84][limsinsertHandler]sql=' + qry);
          
@@ -121,7 +123,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                .input('lib2', mssql.VarChar, lib2)
                .input('lib2_dw', mssql.VarChar, lib2_dw)
                .input('examin', mssql.VarChar, examin)
-               .input('recheck', mssql.VarChar, recheck);
+               .input('recheck', mssql.VarChar, recheck)
+               .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
                
                result = await request.query(qry);         
        
@@ -192,6 +195,7 @@ const  limsSelectHandler = async (start, end) => {
             , isnull(lib2_dw,  '') lib2_dw
             , isnull(examin,  '') examin
             , isnull(recheck,  '') recheck
+            , isnul(dna_rna_gbn, '0') dna_rna_gbn
         FROM  [dbo].[patientinfo_path] a 
         left outer join [dbo].[lims] b 
         on a.pathology_num  = b.pathology_num
