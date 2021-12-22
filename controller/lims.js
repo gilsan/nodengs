@@ -193,8 +193,8 @@ const  limsSelectHandler = async (start, end) => {
             , isnull(lib_dw,  '') lib_dw
             , isnull(lib2,  '') lib2
             , isnull(lib2_dw,  '') lib2_dw
-            , isnull(examin,  '') examin
-            , isnull(recheck,  '') recheck
+            , isnull(b.examin,  '') examin
+            , isnull(b.recheck,  '') recheck
             , isnull(dna_rna_gbn, '0') dna_rna_gbn
         FROM  [dbo].[patientinfo_path] a 
         left outer join [dbo].[lims] b 
