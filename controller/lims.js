@@ -125,7 +125,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                .input('examin', mssql.VarChar, examin)
                .input('recheck', mssql.VarChar, recheck)
                .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
-               
+
                result = await request.query(qry);         
        
         } catch (error) {
@@ -200,7 +200,7 @@ const  limsSelectHandler = async (start, end) => {
         left outer join [dbo].[lims] b 
         on a.pathology_num  = b.pathology_num
         where isnull(Research_yn, 'N') = 'N' 
-        and left(prescription_date, 8) >= '` + start + `'`;
+        and left(prescription_date, 8) = '` + start + `'`;
 
         logger.info('[182]limsSelectHandler sql=' + qry);
     
