@@ -200,7 +200,8 @@ const  limsSelectHandler = async (start, end) => {
         left outer join [dbo].[lims] b 
         on a.pathology_num  = b.pathology_num
         where isnull(Research_yn, 'N') = 'N' 
-        and left(prescription_date, 8) = '` + start + `'`;
+        and left(prescription_date, 8) >= '` + start + `'
+        order by dna_rna_gbn, a.pathology_num`;
 
         logger.info('[182]limsSelectHandler sql=' + qry);
     
