@@ -22,115 +22,248 @@ function nvl(st, defaultStr){
     return st ;
 }
 
+// lims exist
+const  limsCountHandler = async (pathology_num, report_date, dna_rna_gbn) => {
+   await poolConnect; // ensures that the pool has been created
+
+  logger.info('[30][lims]limsCountHandler data=' +  pathology_num + ", " + report_date + ", dna_rna_gbn=" + dna_rna_gbn ) ;
+ 
+  let sql =`select  count(*) as count 
+            from lims
+            where pathology_num=@pathology_num
+            and report_date =@report_date
+            and dna_rna_gbn = @dna_rna_gbn `;
+
+  logger.info('[36][geneinfo]limsCountHandler sql=' + sql);
+ 
+  try {
+       const request = pool.request()
+         .input('pathology_num', mssql.VarChar, pathology_num) 
+         .input('report_date', mssql.VarChar, report_date)
+         .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn); 
+       const result = await request.query(sql)
+     //  console.dir( result);
+       
+       return result.recordset;
+  } catch (error) {
+    logger.error('[47][lims]limsCountHandler err=' + error.message);
+  }
+}
+
+
 const limsinsertHandler = async (lims, examin, recheck) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
-    logger.info('[27][limsinsertHandler]lims=' + JSON.stringify(lims));
-    logger.info('[27][limsinsertHandler]examin=' + examin);
-    logger.info('[27][limsinsertHandler]recheck=' + recheck);
+    logger.info('[54][limsinsertHandler]lims=' + JSON.stringify(lims));
+    logger.info('[54][limsinsertHandler]examin=' + examin);
+    logger.info('[54][limsinsertHandler]recheck=' + recheck);
    
      let result;
       
     for (i = 0; i < lims.length; i++)
     {
    
-       let pathology_num     = lims[i].pathology_num;
-       let path_type         = lims[i].path_type;
-       let prescription_code = lims[i].prescription_code;
-       let test_code         = lims[i].test_code;
-       let block_cnt         = lims[i].block_cnt;
-       let key_block         = lims[i].key_block;
-       
-       let tumorburden       = lims[i].tumorburden;
-       let nano_ng           = lims[i].nano_ng;
-       let nano_280          = lims[i].nano_280;
-       let nano_230          = lims[i].nano_230;
-       let nano_dil          = lims[i].nano_dil;
-       let ng_ui             = lims[i].ng_ui;
-       let dw                = lims[i].dw;
-       let tot_ct            = lims[i].tot_ct;
-       let ct                = lims[i].ct;
-       let quantity          = lims[i].quantity;
-       let quantity_2        = lims[i].quantity_2;
-       let quan_tot_vol      = lims[i].quan_tot_vol;
-       let quan_dna          = lims[i].quan_dna;
-       let dan_rna           = lims[i].dan_rna;
-       let te                = lims[i].te;
-       let lib_hifi          = lims[i].lib_hifi;
-       let pm                = lims[i].pm;
-       let x100              = lims[i].x100;
-       let lib               = lims[i].lib;
-       let lib_dw            = lims[i].lib_dw;
-       let lib2              = lims[i].lib2;
-       let lib2_dw           = lims[i].lib2_dw;
-       
-       let dna_rna_gbn       = lims[i].dna_rna_gbn
-   
-       logger.info('[60][limsinsertHandler]pathology_num=' + pathology_num );
-       logger.info('[60][limsinsertHandler]path_type=' + path_type + ', prescription_code=' + prescription_code + ', test_code= ' + test_code);
-       logger.info('[60][limsinsertHandler]key_block=' + key_block + ',block_cnt=' + block_cnt +  ', tumorburden=' + tumorburden + ', quan_dna=' + quan_dna ); 
-       logger.info('[52][limsinsertHandler]nano_ng=' + nano_ng + ', nano_280=' + nano_280 + ', nano_230=' + nano_230 + ', nano_dil=' + nano_dil);
-       logger.info('[52][limsinsertHandler]dan_rna=' + dan_rna + ', dw=' + dw + ', tot_ct=' + tot_ct + ', ct=' + ct + ', ng_ui=' + ng_ui );
-       logger.info('[52][limsinsertHandler]quantity=' + quantity + ', quantity_2=' + quantity_2 + ', tot_ct=' + tot_ct);
-       logger.info('[52][limsinsertHandler]quan_tot_vol=' + quan_tot_vol + ', lib_hifi=' + lib_hifi + ', te=' + te);
-       logger.info('[52][limsinsertHandler]pm=' + pm + ', x100=' + x100 );
-       logger.info('[52][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw + ', dna_rna_gbn=' + dna_rna_gbn );
-    
-       //insert Query 생성;
-       const qry = `insert into lims (pathology_num, report_date, path_type, 
-                    prescription_code, test_code, key_block, block_cnt, tumorburden,
-                    nano_ng, nano_280, nano_230, nano_dil, 
-                    dan_rna, dw, tot_ct, ct, te, quan_dna,
-                    quantity, quantity_2, quan_tot_vol, ng_ui, lib_hifi, 
-                    pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn) 
-                values(@pathology_num, getdate(),  @path_type,
-                    @prescription_code, @test_code, @key_block, @block_cnt, @tumorburden, 
-                    @nano_ng, @nano_280, @nano_230, @nano_dil,
-                    @dan_rna, @dw, @tot_ct, @ct, @te, @quan_dna,
-                    @quantity, @quantity_2, @quan_tot_vol, @ng_ui, @lib_hifi,
-                    @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn)`;
-               
-         logger.info('[84][limsinsertHandler]sql=' + qry);
-         
-   
-         try {
-             const request = pool.request()
-               .input('pathology_num', mssql.VarChar, pathology_num)
-               .input('path_type', mssql.VarChar, path_type)
-               .input('prescription_code', mssql.NVarChar, prescription_code)
-               .input('test_code', mssql.NVarChar, test_code)
-               .input('block_cnt', mssql.NVarChar, block_cnt)
-               .input('key_block', mssql.NVarChar, key_block)
-               .input('tumorburden', mssql.VarChar, tumorburden)
-               .input('nano_ng', mssql.VarChar, nano_ng)
-               .input('nano_280', mssql.VarChar, nano_280)
-               .input('nano_230', mssql.NVarChar, nano_230)
-               .input('nano_dil', mssql.NVarChar, nano_dil)
-               .input('ng_ui', mssql.NVarChar, ng_ui)
-               .input('dan_rna', mssql.VarChar, dan_rna)
-               .input('dw', mssql.VarChar, dw)
-               .input('tot_ct', mssql.VarChar, tot_ct)
-               .input('ct', mssql.VarChar, ct)
-               .input('quantity', mssql.VarChar, quantity)
-               .input('quantity_2', mssql.VarChar, quantity_2)
-               .input('te', mssql.VarChar, te)
-               .input('quan_dna', mssql.VarChar, quan_dna)
-               .input('quan_tot_vol', mssql.VarChar, quan_tot_vol)
-               .input('lib_hifi', mssql.VarChar, lib_hifi)
-               .input('pm', mssql.VarChar, pm)
-               .input('x100', mssql.VarChar, x100)
-               .input('lib', mssql.VarChar, lib)
-               .input('lib_dw', mssql.VarChar, lib_dw)
-               .input('lib2', mssql.VarChar, lib2)
-               .input('lib2_dw', mssql.VarChar, lib2_dw)
-               .input('examin', mssql.VarChar, examin)
-               .input('recheck', mssql.VarChar, recheck)
-               .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
+        let pathology_num     = lims[i].pathology_num;
+        let path_type         = lims[i].path_type;
+        let prescription_code = lims[i].prescription_code;
+        let test_code         = lims[i].test_code;
+        let block_cnt         = lims[i].block_cnt;
+        let key_block         = lims[i].key_block;
+        
+        let tumorburden       = lims[i].tumorburden;
+        let nano_ng           = lims[i].nano_ng;
+        let nano_280          = lims[i].nano_280;
+        let nano_230          = lims[i].nano_230;
+        let nano_dil          = lims[i].nano_dil;
+        let ng_ui             = lims[i].ng_ui;
+        let dw                = lims[i].dw;
+        let tot_ct            = lims[i].tot_ct;
+        let ct                = lims[i].ct;
+        let quantity          = lims[i].quantity;
+        let quantity_2        = lims[i].quantity_2;
+        let quan_tot_vol      = lims[i].quan_tot_vol;
+        let quan_dna          = lims[i].quan_dna;
+        let dan_rna           = lims[i].dan_rna;
+        let te                = lims[i].te;
+        let lib_hifi          = lims[i].lib_hifi;
+        let pm                = lims[i].pm;
+        let x100              = lims[i].x100;
+        let lib               = lims[i].lib;
+        let lib_dw            = lims[i].lib_dw;
+        let lib2              = lims[i].lib2;
+        let lib2_dw           = lims[i].lib2_dw;
+        let report_date       = lims[i].report_date;
+        
+        let dna_rna_gbn       = lims[i].dna_rna_gbn
 
-               result = await request.query(qry);         
-       
-        } catch (error) {
-        logger.error('[119] *** [limsinsertHandler] *** err=  ****  ' + error.message);
-        }
+        const result6 = limsCountHandler (pathology_num, report_date, dna_rna_gbn);
+        result6.then(data => {
+
+            let cnt = data[0].count;
+
+            logger.info('[101][screenList][saveScreen 7]cnt='+ cnt);
+            if (cnt === 0)
+            {
+   
+                logger.info('[104][limsinsertHandler]pathology_num=' + pathology_num );
+                logger.info('[104][limsinsertHandler]path_type=' + path_type + ', prescription_code=' + prescription_code + ', test_code= ' + test_code);
+                logger.info('[104][limsinsertHandler]key_block=' + key_block + ',block_cnt=' + block_cnt +  ', tumorburden=' + tumorburden + ', quan_dna=' + quan_dna ); 
+                logger.info('[104][limsinsertHandler]nano_ng=' + nano_ng + ', nano_280=' + nano_280 + ', nano_230=' + nano_230 + ', nano_dil=' + nano_dil);
+                logger.info('[104][limsinsertHandler]dan_rna=' + dan_rna + ', dw=' + dw + ', tot_ct=' + tot_ct + ', ct=' + ct + ', ng_ui=' + ng_ui );
+                logger.info('[104][limsinsertHandler]quantity=' + quantity + ', quantity_2=' + quantity_2 + ', tot_ct=' + tot_ct);
+                logger.info('[104][limsinsertHandler]quan_tot_vol=' + quan_tot_vol + ', lib_hifi=' + lib_hifi + ', te=' + te);
+                logger.info('[104][limsinsertHandler]pm=' + pm + ', x100=' + x100 + ', report_date=' + report_date );
+                logger.info('[104][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw + ', dna_rna_gbn=' + dna_rna_gbn );
+                
+                //insert Query 생성;
+                const qry = `insert into lims (pathology_num, report_date, path_type, 
+                                prescription_code, test_code, key_block, block_cnt, tumorburden,
+                                nano_ng, nano_280, nano_230, nano_dil, 
+                                dan_rna, dw, tot_ct, ct, te, quan_dna,
+                                quantity, quantity_2, quan_tot_vol, ng_ui, lib_hifi, 
+                                pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn) 
+                            values(@pathology_num, @report_date,  @path_type,
+                                @prescription_code, @test_code, @key_block, @block_cnt, @tumorburden, 
+                                @nano_ng, @nano_280, @nano_230, @nano_dil,
+                                @dan_rna, @dw, @tot_ct, @ct, @te, @quan_dna,
+                                @quantity, @quantity_2, @quan_tot_vol, @ng_ui, @lib_hifi,
+                                @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn)`;
+                        
+                logger.info('[129][limsinsertHandler]sql=' + qry);
+                
+        
+                try {
+                    const request = pool.request()
+                    .input('pathology_num', mssql.VarChar, pathology_num)
+                    .input('report_date', mssql.VarChar, report_date)
+                    .input('path_type', mssql.VarChar, path_type)
+                    .input('prescription_code', mssql.NVarChar, prescription_code)
+                    .input('test_code', mssql.NVarChar, test_code)
+                    .input('block_cnt', mssql.NVarChar, block_cnt)
+                    .input('key_block', mssql.NVarChar, key_block)
+                    .input('tumorburden', mssql.VarChar, tumorburden)
+                    .input('nano_ng', mssql.VarChar, nano_ng)
+                    .input('nano_280', mssql.VarChar, nano_280)
+                    .input('nano_230', mssql.NVarChar, nano_230)
+                    .input('nano_dil', mssql.NVarChar, nano_dil)
+                    .input('ng_ui', mssql.NVarChar, ng_ui)
+                    .input('dan_rna', mssql.VarChar, dan_rna)
+                    .input('dw', mssql.VarChar, dw)
+                    .input('tot_ct', mssql.VarChar, tot_ct)
+                    .input('ct', mssql.VarChar, ct)
+                    .input('quantity', mssql.VarChar, quantity)
+                    .input('quantity_2', mssql.VarChar, quantity_2)
+                    .input('te', mssql.VarChar, te)
+                    .input('quan_dna', mssql.VarChar, quan_dna)
+                    .input('quan_tot_vol', mssql.VarChar, quan_tot_vol)
+                    .input('lib_hifi', mssql.VarChar, lib_hifi)
+                    .input('pm', mssql.VarChar, pm)
+                    .input('x100', mssql.VarChar, x100)
+                    .input('lib', mssql.VarChar, lib)
+                    .input('lib_dw', mssql.VarChar, lib_dw)
+                    .input('lib2', mssql.VarChar, lib2)
+                    .input('lib2_dw', mssql.VarChar, lib2_dw)
+                    .input('examin', mssql.VarChar, examin)
+                    .input('recheck', mssql.VarChar, recheck)
+                    .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
+
+                    result = request.query(qry);         
+            
+                } catch (error) {
+                logger.error('[170] *** [limsinsertHandler] *** err=  ****  ' + error.message);
+                }
+            }
+            else{
+
+                logger.info('[175][limsinsertHandler]pathology_num=' + pathology_num );
+                logger.info('[175][limsinsertHandler]path_type=' + path_type + ', prescription_code=' + prescription_code + ', test_code= ' + test_code);
+                logger.info('[175][limsinsertHandler]key_block=' + key_block + ',block_cnt=' + block_cnt +  ', tumorburden=' + tumorburden + ', quan_dna=' + quan_dna ); 
+                logger.info('[175][limsinsertHandler]nano_ng=' + nano_ng + ', nano_280=' + nano_280 + ', nano_230=' + nano_230 + ', nano_dil=' + nano_dil);
+                logger.info('[175][limsinsertHandler]dan_rna=' + dan_rna + ', dw=' + dw + ', tot_ct=' + tot_ct + ', ct=' + ct + ', ng_ui=' + ng_ui );
+                logger.info('[175][limsinsertHandler]quantity=' + quantity + ', quantity_2=' + quantity_2 + ', tot_ct=' + tot_ct);
+                logger.info('[175][limsinsertHandler]quan_tot_vol=' + quan_tot_vol + ', lib_hifi=' + lib_hifi + ', te=' + te);
+                logger.info('[175][limsinsertHandler]pm=' + pm + ', x100=' + x100 + ', report_date=' + report_date );
+                logger.info('[175][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw + ', dna_rna_gbn=' + dna_rna_gbn );
+                
+                //insert Query 생성;
+                const qry = `update lims 
+                                set  path_type = @path_type,
+                                prescription_code = @prescription_code,
+                                test_code = @test_code,  
+                                key_block = @key_block,
+                                block_cnt = @block_cnt, 
+                                tumorburden = @tumorburden, 
+                                nano_ng = @nano_ng,  
+                                nano_280 = @nano_280,  
+                                nano_230 = @nano_230, 
+                                nano_dil = @nano_dil,
+                                dan_rna = @dan_rna,  
+                                dw = @dw, 
+                                tot_ct = @tot_ct,
+                                ct = @ct, 
+                                te = @te, 
+                                quan_dna = @quan_dna,
+                                quantity = @quantity, 
+                                quantity_2 = @quantity_2,  
+                                quan_tot_vol =  @quan_tot_vol, 
+                                ng_ui = @ng_ui,
+                                lib_hifi = @lib_hifi, 
+                                pm = @pm,
+                                x100 = @x100,
+                                lib = @lib,
+                                lib_dw = @lib_dw, 
+                                lib2 = @lib2,
+                                lib2_dw = @lib2_dw, 
+                                examin =@examin, 
+                                recheck = @recheck
+                            where pathology_num = @pathology_num
+                            and  report_date = @report_date 
+                            and dna_rna_gbn = @dna_rna_gbn  `;
+                        
+                logger.info('[84][limsinsertHandler]sql=' + qry);
+                
+        
+                try {
+                    const request = pool.request()
+                    .input('pathology_num', mssql.VarChar, pathology_num)
+                    .input('report_date', mssql.VarChar, report_date)
+                    .input('path_type', mssql.VarChar, path_type)
+                    .input('prescription_code', mssql.NVarChar, prescription_code)
+                    .input('test_code', mssql.NVarChar, test_code)
+                    .input('block_cnt', mssql.NVarChar, block_cnt)
+                    .input('key_block', mssql.NVarChar, key_block)
+                    .input('tumorburden', mssql.VarChar, tumorburden)
+                    .input('nano_ng', mssql.VarChar, nano_ng)
+                    .input('nano_280', mssql.VarChar, nano_280)
+                    .input('nano_230', mssql.NVarChar, nano_230)
+                    .input('nano_dil', mssql.NVarChar, nano_dil)
+                    .input('ng_ui', mssql.NVarChar, ng_ui)
+                    .input('dan_rna', mssql.VarChar, dan_rna)
+                    .input('dw', mssql.VarChar, dw)
+                    .input('tot_ct', mssql.VarChar, tot_ct)
+                    .input('ct', mssql.VarChar, ct)
+                    .input('quantity', mssql.VarChar, quantity)
+                    .input('quantity_2', mssql.VarChar, quantity_2)
+                    .input('te', mssql.VarChar, te)
+                    .input('quan_dna', mssql.VarChar, quan_dna)
+                    .input('quan_tot_vol', mssql.VarChar, quan_tot_vol)
+                    .input('lib_hifi', mssql.VarChar, lib_hifi)
+                    .input('pm', mssql.VarChar, pm)
+                    .input('x100', mssql.VarChar, x100)
+                    .input('lib', mssql.VarChar, lib)
+                    .input('lib_dw', mssql.VarChar, lib_dw)
+                    .input('lib2', mssql.VarChar, lib2)
+                    .input('lib2_dw', mssql.VarChar, lib2_dw)
+                    .input('examin', mssql.VarChar, examin)
+                    .input('recheck', mssql.VarChar, recheck)
+                    .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
+
+                    result = request.query(qry);         
+            
+                } catch (error) {
+                logger.error('[119] *** [limsinsertHandler] *** err=  ****  ' + error.message);
+                }
+            }
+        });
          
     } // End of For Loop
        return result;
@@ -152,9 +285,9 @@ exports.limsSave = (req, res, next) => {
     });
 }
 
-const  limsSelectHandler = async (start, end) => {
+const  limsSelectHandler = async (start) => {
     await poolConnect; // ensures that the pool has been created
-    logger.info('[142] limsSelectHandler =' + start + ', ' + end);
+    logger.info('[142] limsSelectHandler =' + start );
     //select Query 생성
         let qry = `SELECT
             isnull(a.pathology_num, '') pathology_num 
@@ -200,7 +333,7 @@ const  limsSelectHandler = async (start, end) => {
         left outer join [dbo].[lims] b 
         on a.pathology_num  = b.pathology_num
         where isnull(Research_yn, 'N') = 'N' 
-        and left(prescription_date, 8) >= '` + start + `'
+        and left(prescription_date, 8) = '` + start + `'
         order by dna_rna_gbn, a.pathology_num`;
 
         logger.info('[182]limsSelectHandler sql=' + qry);

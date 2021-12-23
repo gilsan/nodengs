@@ -145,7 +145,7 @@ const  messageHandler2 = async (req) => {
   try {
        const request = pool.request()
          .input('gene', mssql.VarChar, gene) 
-         .input('nucleotide_change', nssql.VarChar, nucleotide_change); 
+         .input('nucleotide_change', mssql.VarChar, nucleotide_change); 
        const result = await request.query(sql)
      //  console.dir( result);
        
