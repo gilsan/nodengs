@@ -366,7 +366,7 @@ const  counterHandler = async (gene, coding) => {
     let coding2 =  nvl(coding, "");
  
     let sql = `SELECT count (1) cnt
-        FROM [ngs_data].[dbo].[report_detected_variants]
+        FROM [dbo].[report_detected_variants]
         where [type] = 'M'
         and  [gene] = @gene
         and [nucleotide_change] = @coding`

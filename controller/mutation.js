@@ -366,8 +366,8 @@ const  variantsGeneticHandler = async (req) => {
                 where gene=@gene 
                 and nucleotide_change =@nucleotide_change 
                 and type=@gubun
-                and reference != ''
-                and cosmic_id != ''
+                and dbsnp_hgmd != ''
+                and gnomad_eas != ''
                  order by id desc`
                
   logger.info('[373][geneinfo]list sql=' + sql);
