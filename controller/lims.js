@@ -354,8 +354,9 @@ const  limsSelectHandler = async (start) => {
 exports.limsList = (req, res, next) => {
     logger.info('[198]limsList req=' + JSON.stringify(req.body));
 
-    const start = req.body.start;
-    const result = limsSelectHandler(start);
+    let start = req.body.start;
+    let start1 = start.replace(/-/g, '');
+    const result = limsSelectHandler(start1);
     result.then(data => {  
         //  console.log('[108][excelDvList]', data);
           res.json(data);
