@@ -49,7 +49,8 @@ const  messageHandler_ver = async (ver_file, testedID) => {
 	 
 	logger.info('[45][main update][messageHandler3]ver_file=' + ver_file + ", testedID" + testedID);
 	const qry=`update patientinfo_diag 
-		  set ver_file = @ver_file  
+		  set ver_file = @ver_file,
+		  saveyn = 'T'   
 		  where specimenNo = @testedID`;
 	logger.info('[48][main][update patientinfo_diag]sql=' +  qry) ;
   

@@ -245,7 +245,7 @@ const  messageHandler2 = async (specimenNo, status, chron,flt3ITD,
                                        + ", vusmsg=" + vusmsg + + ", examin=" + examin  + ", recheck=" + recheck); 
 
     let sql =`update [dbo].[patientinfo_diag] 
-             set screenstatus=@status, examin=@examin, recheck=@recheck, vusmsg = @vusmsg 
+             set screenstatus=@status, examin=@examin, recheck=@recheck, vusmsg = @vusmsg, saveyn = 'S'
              where specimenNo=@specimenNo `;   
     logger.info('[249][screenList][set screen]sql=' + sql);
     try {
@@ -291,6 +291,7 @@ const  messageHandler4 = async (specimenNo, chron, flt3ITD, detectedtype,
              , recheck=@recheck
              , vusmsg = @vusmsg
              , detected = @detected
+             , saveyn = 'S'
              where specimenNo=@specimenNo `;   
     logger.info('[277][screenList][set screen]sql=' + sql);
     try {
@@ -1694,7 +1695,7 @@ const patientsInfoStautsHandler = async (specimenNo) => {
 const PatientSequntialHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
-      isnull(a.test_code, '') report_type, '' result, 
+      isnull(a.test_code, '') report_type, '' result, isnull(saveyn, 'S') saveyn, 
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
       '' identified_variations, isnull(b.specimen, '') specimen,
       isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2, isnull(b.Comment, '') seqcomment
@@ -2136,7 +2137,7 @@ const PatientMlpaHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select  
-            isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq
+            isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq, isnull(saveyn, 'S') saveyn
         from [dbo].[patientinfo_diag]  a
         left outer join [dbo].[mlpaData] b
         on a.test_code = b.type
@@ -2245,7 +2246,7 @@ const MlpalHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
       isnull(a.test_code, '') report_type,  '' result,
-       '' comment,
+       '' comment, isnull(saveyn, 'S' ) saveyn
       isnull(b.target, '') target,  isnull(b.method, '') testmethod, isnull(b.analyzedgene, '') analyzedgene ,
       isnull(b.specimen, '') specimen, isnull(b.comment1, '') conclusion, isnull(b.comment2, '') technique 
       from [dbo].[patientInfo_diag]  a
@@ -2428,7 +2429,7 @@ const insertHandlerMlpa = async (specimenNo, type, title, result2, conclusion, t
   + ', detectedtype=' + detectedtype + ', type=' + detectedType);
 
   let query ="update [dbo].[patientinfo_diag] \
-  set detected=@detectedType  where specimenNo=@specimenNo ";  
+  set detected=@detectedType, saveyn='S'  where specimenNo=@specimenNo ";  
   logger.info('[2129][screenList][update patientinfo_diag]sql=' + query);
 
   try {
