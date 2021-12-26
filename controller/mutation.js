@@ -406,7 +406,7 @@ const  variantsGeneticOMIMHandler = async (req) => {
   
   logger.info('[361][geneinfo][variantsListsGeneticOMIMHandler]select data=' + gene + ", " + type); 
  
-  let sql =`select top 1 isnull(OMIM, '') 
+  let sql =`select top 1 isnull(OMIM, '') OMIM
                 from mutation 
                 where gene=@gene 
                 and type=@type

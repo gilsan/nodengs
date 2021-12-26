@@ -55,7 +55,7 @@ const  messageHandler = async (
     logger.info ('[244][inputdb_form6]genes=' + genes + ', exon=' + exon );
     logger.info ('[244][inputdb_form6]transcript=' + transcript + ', coding=' + coding + ', amino_acid_change=' + amino_acid_change );
     logger.info ('[244][inputdb_form6]cosmic=' + cosmic  );
-    logger.info ('[244][inputdb_form6]zygosity=' + zygosity +  ', testedID=' + testedID );
+    logger.info ('[244][inputdb_form6]zygosity=' + zygosity +  ', testedID=' + testedID  );
 
     let functional_code = i;
 
@@ -66,10 +66,10 @@ const  messageHandler = async (
      //insert Query 생성;
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
         transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-        cosmic_id, functional_code) 
+        cosmic_id, functional_code, saveyn) 
         values(@testedID, getdate(),  @genes,
         @transcript, @exon, @coding, @amino_acid_change, @zygosity, 
-        @cosmic, @functional_code)`;
+        @cosmic, @functional_code, 'T')`;
     
     logger.info('[282][inputdb_form6][insert detected_variants]sql=' + qry);
 

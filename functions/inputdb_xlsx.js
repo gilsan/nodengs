@@ -64,10 +64,10 @@ const  messageHandler = async (
      //insert Query 생성;
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
         transcript, functional_impact, exon, nucleotide_change, amino_acid_change, zygosity, 
-        vaf, reference, cosmic_id, functional_code) 
+        vaf, reference, cosmic_id, functional_code, saveyn) 
         values(@testedID, getdate(),  @genes,
         @transcript, @functional_impact, @exon, @coding, @amino_acid_change, @zygosity, 
-        @vaf, @references, @cosmic, @functional_code)`;
+        @vaf, @references, @cosmic, @functional_code, 'T')`;
     
     logger.info('[282][inputdb_form6][insert detected_variants]sql=' + qry);
 

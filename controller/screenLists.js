@@ -430,11 +430,11 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
               dbSNPHGMD, gnomADEAS, OMIM,
-              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt, gubun) 
+              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt, gubun, saveyn) 
               values(@specimenNo, getdate(),  @gene,
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
                 @dbSNPHGMD, @gnomADEAS, @OMIM,
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt, @gubun)`;
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt, @gubun, 'S')`;
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -482,7 +482,7 @@ const  messageHandler6 = async (req) => {
   isnull(functional_impact, '') functional_impact, isnull(transcript, '') transcript, 
   exon, nucleotide_change, amino_acid_change, 
   isnull(zygosity, '') zygosity, cosmic_id, 
-  isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM
+  isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS,  isnull(OMIM, '') OMIM, isnull(saveyn, 'S') saveyn
    from [dbo].[report_detected_variants] 
    where specimenNo=@specimenNo 
    order by functional_code, gene, nucleotide_change `;
@@ -565,10 +565,10 @@ const insertHandler_form6 = async (specimenNo, detected_variants) => {
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
-               dbSNPHGMD, gnomADEAS, OMIM, cnt, gubun) 
+               dbSNPHGMD, gnomADEAS, OMIM, cnt, gubun, saveyn) 
                values(@specimenNo, getdate(),  @gene,
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
-                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt, 'genetic')`;
+                @dbSNPHGMD, @gnomADEAS, @OMIM, @cnt, 'genetic', 'S')`;
              
        logger.info('[470][screenList][insert detected_variants 6]sql=' + qry);
        
@@ -649,10 +649,10 @@ const insertHandler2 = async (specimenNo, detected_variants) => {
      //insert Query 생성;
      const qry = "insert into report_detected_variants (specimenNo, report_date, gene, \
                functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
-               vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt) \
+               vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt, saveyn) \
                values(@specimenNo, getdate(),  @gene,\
                  @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
-               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt)";
+               @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt, 'S')";
              
        logger.info('[620][screenList][insert detected_variants]sql=' + qry);
  
@@ -1611,7 +1611,7 @@ const SequntialHandler = async (specimenNo) => {
   const sql=`select   isnull(a.type, '') type,
       isnull(a.exon, '') exonintron, isnull(a.nucleotide_change, '') nucleotideChange,
       isnull(a.amino_acid_change, '') aminoAcidChange, isnull(a.zygosity, '') zygosity, isnull(a.cosmic_id, '') rsid,
-      isnull(a.reference, '') reference
+      isnull(a.reference, '') reference, isnull(saveyn, 'S') saveyn
       from  [dbo].[report_detected_variants]  a
       where a.specimenNo =@specimenNo
   `;
@@ -1879,10 +1879,10 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               cosmic_id, functional_code, cnt, zygosity, reference, gene, gubun) 
+               cosmic_id, functional_code, cnt, zygosity, reference, gene, gubun, saveyn) 
                values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @cosmic_id, @functional_code, @cnt, @zygosity, @reference,@gene, 'SEQ')`;
+                  @cosmic_id, @functional_code, @cnt, @zygosity, @reference,@gene, 'SEQ', 'S')`;
              
        logger.info('[1819][screenList][insert detected_variants 7]sql=' + qry);
  
