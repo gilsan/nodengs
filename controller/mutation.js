@@ -398,7 +398,7 @@ exports.getVariantsListsGenetic = (req,res, next) => {
 }
 
 // 유전성 유전질환은  mutation 테이블에서 찿음
-const  variantsGeneticHandler = async (req) => {
+const  variantsGeneticOMIMHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const gene =  req.body.gene;	 
