@@ -14,6 +14,7 @@ router.post('/searchbygene', mutationController.searchMutaionbygene);
 //
 router.post('/callbygene', mutationController.getVariantsLists);
 router.post('/callbygeneGenetic', mutationController.getVariantsListsGenetic);
+router.post('/callbygeneticOMIM', mutationController.getVariantsListsOMIM);
 
 router.post('/list',   mutationController.listMutation);
 

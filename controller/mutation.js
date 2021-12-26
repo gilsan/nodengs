@@ -397,6 +397,49 @@ exports.getVariantsListsGenetic = (req,res, next) => {
   });
 }
 
+// 유전성 유전질환은  mutation 테이블에서 찿음
+const  variantsGeneticHandler = async (req) => {
+  await poolConnect; // ensures that the pool has been created
+
+  const gene =  req.body.gene;	 
+  const type = nvl(req.body.type, 'AMLALL');
+  
+  logger.info('[361][geneinfo][variantsListsGeneticOMIMHandler]select data=' + gene + ", " + type); 
+ 
+  let sql =`select top 1 isnull(OMIM, '') 
+                from mutation 
+                where gene=@gene 
+                and type=@type
+                and dbsnp_hgmd != ''
+                and gnomad_eas != ''
+                 order by id desc`
+               
+  logger.info('[373][geneinfo]list sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('gene', mssql.VarChar, gene) 
+        .input('type', mssql.VarChar, type); 
+      const result = await request.query(sql);
+      return result.recordset;
+  } catch (error) {
+    logger.error('[383][variantsListsGeneticOMIMHandler]list err=' + error.message);
+  }
+}
+
+exports.getVariantsListsOMIM = (req,res, next) => {
+  logger.info('[388][geneinfo]getVariantsListsOMIM req=' + JSON.stringify(req.body));
+   
+  const result = variantsGeneticOMIMHandler(req);
+  result.then(data => {
+    res.json(data);
+  })
+  .catch( error => {
+    logger.error('[395][geneinfo][getVariantsListsOMIM] err=' +error.message);
+    res.sendStatus(500);
+  });
+}
+
 // list
 const listHandler = async (req) => {
     await poolConnect;  
