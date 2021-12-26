@@ -208,6 +208,8 @@ const patientHandler = async (specimenNo) => {
               ,isnull(examin, '') examin, isnull(recheck, '') recheck \
               ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  \
               , isnull(vusmsg, '') vusmsg  \
+              , case when isnull(screenstatus, '') = '' then  'T' \
+              else isnull(saveyn, 'S') end saveyn \
               from [dbo].[patientinfo_diag] where specimenNo=@specimenNo ";
   logger.info('[212][screenList][find patient]sql=' + sql);
 
@@ -1698,6 +1700,8 @@ const PatientSequntialHandler = async (specimenNo) => {
       isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
       '' identified_variations, isnull(b.specimen, '') specimen,
       isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2, isnull(b.Comment, '') seqcomment
+      , case when isnull(screenstatus, '') = '' then  'T' 
+        else isnull(saveyn, 'S') end saveyn
       from [dbo].[patientinfo_diag]  a
       left outer join [dbo].[codedefaultvalue] b
       on a.test_code = b.code
@@ -2136,7 +2140,9 @@ const PatientMlpaHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select  
-            isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq, isnull(saveyn, 'S') saveyn
+            isnull(site, '') site, isnull(result, '') result, isnull(seq, '') seq
+            , case when isnull(screenstatus, '') = '' then  'T' 
+              else isnull(saveyn, 'S') end saveyn
         from [dbo].[patientinfo_diag]  a
         left outer join [dbo].[mlpaData] b
         on a.test_code = b.type
@@ -2248,6 +2254,8 @@ const MlpalHandler = async (specimenNo) => {
        '' comment, isnull(saveyn, 'S' ) saveyn
       isnull(b.target, '') target,  isnull(b.method, '') testmethod, isnull(b.analyzedgene, '') analyzedgene ,
       isnull(b.specimen, '') specimen, isnull(b.comment1, '') conclusion, isnull(b.comment2, '') technique 
+      , case when isnull(screenstatus, '') = '' then  'T' 
+      else isnull(saveyn, 'S') end saveyn
       from [dbo].[patientInfo_diag]  a
       left outer join [dbo].[codedefaultvalue] b
       on a.test_code = b.code

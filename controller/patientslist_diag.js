@@ -108,7 +108,9 @@ const getPatientDiagHandler = async (specimenNo) => {
                 , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
                 , isnull(report_title, '') reportTitle
                 , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
-                , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn, isnull(saveyn, 'S') saveyn
+                , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
+                , case when isnull(screenstatus, '') = '' then  'T' 
+                else isnull(saveyn, 'S') end saveyn
                 from [dbo].[patientinfo_diag] where specimenNo=@specimenNo `;
     logger.info('[118][screenList][find patient]sql=' + sql);
   
@@ -174,7 +176,9 @@ const  messageHandler = async (today) => {
     , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
     , isnull(report_title, '') reportTitle
     , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
-    , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn, isnull(saveyn ,'S') saveyn
+    , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
+    , case when isnull(screenstatus, '') = '' then  'T' 
+      else isnull(saveyn, 'S')  end saveyn
     from [dbo].[patientinfo_diag] where left(accept_date, 8) = '` + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
@@ -272,7 +276,9 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
             , isnull(report_title, '') reportTitle
             , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
-            , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn, isnull(saveyn, 'S') saveyn
+            , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn\
+            , case when isnull(screenstatus, '') = '' then  'T' 
+            else isnull(saveyn, 'S') end saveyn
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
             on a.specimenNo = b.specimenNo
