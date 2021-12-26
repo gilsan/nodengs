@@ -276,7 +276,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
             , isnull(report_title, '') reportTitle
             , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
-            , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn\
+            , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
             , case when isnull(a.screenstatus, '') = '' then  'T' 
             else isnull(saveyn, 'S') end saveyn
             from [dbo].[patientinfo_diag] a
