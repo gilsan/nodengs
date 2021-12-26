@@ -286,7 +286,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
 
     if(specimen_no.length > 0 )
     {
-        sql = sql +  " and specimenNo = '" +  specimen_no + "'";
+        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
     }
 
     if(sheet_1.length > 0 )
