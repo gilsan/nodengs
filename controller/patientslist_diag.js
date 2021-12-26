@@ -1093,13 +1093,20 @@ const changescreenstatus = async (specimenNo, seq, userid, type) =>{
 
     logger.info('[997][patientinfo_diag changescreenstatus]specimenNo=' + specimenNo);
     logger.info('[1000][patientinfo_diag changescreenstatus]seq=' + seq);
-    let sql =`update patientInfo_diag set screenstatus=@seq, saveyn='S' where specimenNo=@specimenNo`;
+
+    let saveyn = 'S';
+    if (seq === '0') {
+        saveyn = 'T';
+    }
+    
+    let sql =`update patientInfo_diag set screenstatus=@seq, saveyn=@saveyn where specimenNo=@specimenNo`;
     logger.info('[1000][patientinfo_diag changescreenstatus]sql=' + sql);
     
     try {
 
         const request = pool.request()
                  .input('seq', mssql.VarChar, seq)
+                 .input('saveyn', mssql.VarChar, saveyn)
                  .input('specimenNo', mssql.VarChar, specimenNo);
         const result = await request.query(sql); 
       

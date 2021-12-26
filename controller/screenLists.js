@@ -291,7 +291,6 @@ const  messageHandler4 = async (specimenNo, chron, flt3ITD, detectedtype,
              , recheck=@recheck
              , vusmsg = @vusmsg
              , detected = @detected
-             , saveyn = 'S'
              where specimenNo=@specimenNo `;   
     logger.info('[277][screenList][set screen]sql=' + sql);
     try {
