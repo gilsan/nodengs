@@ -277,7 +277,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             , isnull(report_title, '') reportTitle
             , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
             , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn\
-            , case when isnull(screenstatus, '') = '' then  'T' 
+            , case when isnull(a.screenstatus, '') = '' then  'T' 
             else isnull(saveyn, 'S') end saveyn
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
@@ -1066,6 +1066,8 @@ const getpatientinfo = async (specimenNo) => {
             ,isnull(bonemarrow, '') bonemarrow,  isnull(diagnosis, '') diagnosis,  isnull(genetictest, '') genetictest  
             , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.1.0') verfile  
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+            , case when isnull(screenstatus, '') = '' then  'T' 
+                else isnull(saveyn, 'S') end saveyn
             from patientInfo_diag  where specimenNo=@specimenNo order by id desc`;
 
     try {
@@ -1289,6 +1291,8 @@ const  listsHandler = async (today) => {
     , isnull(report_title, '') reportTitle
     , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
     , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
+    , case when isnull(screenstatus, '') = '' then  'T' 
+        else isnull(saveyn, 'S') end saveyn
     from [dbo].[patientinfo_diag] where gbn = 'RESEARCH' order by id desc`;
     logger.info('[1246][istsHandler]sql=' + sql);
     try {

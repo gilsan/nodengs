@@ -174,16 +174,18 @@ const listHandler= async (patientid) => {
 const listMoveHandler= async (req) => {
     await poolConnect; 
     const pathologyNum = req.body.pathologyNum;
+    const type = req.body.type;
     logger.info('[177][listMoveHandler]data=' + pathologyNum );
 	
 	let sql =`select  id,  isnull( CONVERT(VARCHAR(19), convert(datetime, date, 112), 126) , '') date , 
                 isnull(gene, '') gene, isnull(amino, '') amino,
                 isnull(direction, '') direction, isnull(comment, '') comment , isnull(pathologyNum, '') pthologyNum
-                from movehistory where pathologyNum=@pathologyNum`;
+                from movehistory where pathologyNum=@pathologyNum and type=@type`;
  
     logger.info('[183][listMoveHandler]sql=' + sql);
     try {
        const request = pool.request()
+         .input('type', mssql.VarChar, type)
 		 .input('pathologyNum', mssql.VarChar, pathologyNum); 
        const result = await request.query(sql)  
        console.dir(result);
@@ -214,11 +216,12 @@ const insertMoveHandler= async (req) => {
     const direction = req.body.direction;
     const comment = req.body.comment;
     const pathologyNum = req.body.pathologyNum;
+    const type = req.body.type;
 
     logger.info('[214][insertMoveHandler]data=' +  JSON.stringify(req.body) );
 	
-	let sql =`insert into moveHistory ( date, gene, amino, direction, comment, pathologyNum)
-        values( getdate(), @gene, @amino, @direction, @comment, @pathologyNum)`;
+	let sql =`insert into moveHistory ( date, gene, amino, direction, comment, pathologyNum, type)
+        values( getdate(), @gene, @amino, @direction, @comment, @pathologyNum, @type)`;
  
     logger.info('[220][insertMoveHandler]sql=' + sql);
     try {
@@ -228,7 +231,8 @@ const insertMoveHandler= async (req) => {
          .input('amino', mssql.VarChar,amino)
          .input('direction', mssql.VarChar,direction)
          .input('comment', mssql.NVarChar,comment)
-		 .input('pathologyNum', mssql.VarChar, pathologyNum); 
+		 .input('pathologyNum', mssql.VarChar, pathologyNum)
+         .input('type', mssql.VarChar, type);
        const result = await request.query(sql)  
        console.dir(result);
        return result.recordset;

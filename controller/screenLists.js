@@ -293,6 +293,7 @@ const  messageHandler4 = async (specimenNo, chron, flt3ITD, detectedtype,
              , recheck=@recheck
              , vusmsg = @vusmsg
              , detected = @detected
+             , saveyn = 'S'
              where specimenNo=@specimenNo `;   
     logger.info('[277][screenList][set screen]sql=' + sql);
     try {
@@ -2251,7 +2252,7 @@ const MlpalHandler = async (specimenNo) => {
   await poolConnect; 
   const sql=`select  
       isnull(a.test_code, '') report_type,  '' result,
-       '' comment, isnull(saveyn, 'S' ) saveyn
+       '' comment, 
       isnull(b.target, '') target,  isnull(b.method, '') testmethod, isnull(b.analyzedgene, '') analyzedgene ,
       isnull(b.specimen, '') specimen, isnull(b.comment1, '') conclusion, isnull(b.comment2, '') technique 
       , case when isnull(screenstatus, '') = '' then  'T' 
