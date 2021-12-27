@@ -551,9 +551,9 @@ const seqcallHandler = async (req) => {
   await poolConnect;
   const nucleotideChange = req.body.coding;
   const gene             = req.body.gene;
-  sql=`select top 1 isnull(type, '') type, isnull(exon, '') exonintron,
+  sql=`select top 1 isnull(type, '') type, isnull(exon_intro, '') exonintron,
      isnull(amino_acid_change, '') aminoAcidChange,
-     isnull(cosmic_id, '') rsid, isnull(reference, '') genbankaccesion
+     isnull(cosmic_id, '') rsid, isnull(genbank_accesion, '') genbankaccesion
    from mutation  
    where gubun='SEQ' and nucleotide_change=@nucleotideChange and gene=@gene order by id desc`;
   logger.info('[460][mutation][seqcallHandler] =' + sql);
