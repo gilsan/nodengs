@@ -297,7 +297,7 @@ const  limsSelectHandler = async (start) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , isnull(b.id, '') id  
+            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY a.pathology_num DESC) id  
             , isnull( b.prescription_code, '') prescription_code
             , isnull( b.test_code, '') test_code
             , isnull( path_type, '') path_type
