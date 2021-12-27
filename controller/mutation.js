@@ -555,7 +555,7 @@ const seqcallHandler = async (req) => {
      isnull(amino_acid_change, '') aminoAcidChange,
      isnull(cosmic_id, '') rsid, isnull(genbank_accesion, '') genbankaccesion
    from mutation  
-   where gubun='SEQ' and nucleotide_change=@nucleotideChange and gene=@gene order by id desc`;
+   where type='SEQ' and nucleotide_change=@nucleotideChange and gene=@gene order by id desc`;
   logger.info('[460][mutation][seqcallHandler] =' + sql);
 
   try {
