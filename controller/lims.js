@@ -91,7 +91,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         let lib_dw            = lims[i].lib_dw;
         let lib2              = lims[i].lib2;
         let lib2_dw           = lims[i].lib2_dw;
-        let report_date       = lims[i].report_date;
+        let report_date       = lims[i].prescription_date;
         
         let dna_rna_gbn       = lims[i].dna_rna_gbn
 
