@@ -409,7 +409,7 @@ exports.getPatientPathSeqLists = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, pathology_num);
+   const result = messageSeqHandler2(start, end, patientID, pathology_num);
    result.then(data => {
  
       res.json(data);
