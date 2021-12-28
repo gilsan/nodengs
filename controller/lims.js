@@ -290,21 +290,21 @@ const  limsSelectHandler = async (start) => {
     logger.info('[142] limsSelectHandler =' + start );
     //select Query 생성
         let qry = `SELECT
-            isnull(a.pathology_num, '') pathology_num 
+            isnull(pathology_num, '') pathology_num 
             , isnull(rel_pathology_num, '') rel_pathology_num 
-            , isnull( a.prescription_date, '') prescription_date
-            , isnull( a.patientID, '') patientID
+            , isnull( prescription_date, '') prescription_date
+            , isnull( patientID, '') patientID
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
             , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY a.pathology_num DESC) id  
-            , isnull( b.prescription_code, '') prescription_code
-            , isnull( b.test_code, '') test_code
+            , isnull( prescription_code, '') prescription_code
+            , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
-            , isnull(b.key_block, '') key_block 
-            , isnull(b.block_cnt, '') block_cnt 
-            , isnull(b.tumorburden, '') tumorburden
-            , isnull(b.report_date, '') report_date
+            , isnull(key_block, '') key_block 
+            , isnull(block_cnt, '') block_cnt 
+            , isnull(tumorburden, '') tumorburden
+            , isnull(report_date, '') report_date
             , isnull(nano_ng, '') nano_ng
             , isnull(nano_280, '') nano_280 
             , isnull(nano_230, '') nano_230
@@ -326,15 +326,107 @@ const  limsSelectHandler = async (start) => {
             , isnull(lib_dw,  '') lib_dw
             , isnull(lib2,  '') lib2
             , isnull(lib2_dw,  '') lib2_dw
-            , isnull(b.examin,  '') examin
-            , isnull(b.recheck,  '') recheck
+            , isnull(examin,  '') examin
+            , isnull(recheck,  '') recheck
             , isnull(dna_rna_gbn, '0') dna_rna_gbn
-        FROM  [dbo].[patientinfo_path] a 
-        left outer join [dbo].[lims] b 
-        on a.pathology_num  = b.pathology_num
-        where isnull(Research_yn, 'N') = 'N' 
-        and left(prescription_date, 8) = '` + start + `'
-        order by dna_rna_gbn, a.pathology_num`;
+
+            from
+            (
+            SELECT
+                isnull(a.pathology_num, '') pathology_num 
+                , isnull(rel_pathology_num, '') rel_pathology_num 
+                , isnull( a.prescription_date, '') prescription_date
+                , isnull( a.patientID, '') patientID
+                , isnull(gender, '') gender 
+                , isnull(age, '') age 
+                , isnull(name, '') name
+                , isnull(b.id, '') id  
+                , isnull( b.prescription_code, '') prescription_code
+                , isnull( b.test_code, '') test_code
+                , isnull( path_type, '') path_type
+                , isnull(b.key_block, '') key_block 
+                , isnull(b.block_cnt, '') block_cnt 
+                , isnull(b.tumorburden, '') tumorburden
+                , isnull(b.report_date, '') report_date
+                , isnull(nano_ng, '') nano_ng
+                , isnull(nano_280, '') nano_280 
+                , isnull(nano_230, '') nano_230
+                , isnull(nano_dil, '') nano_dil
+                , isnull(ng_ui, '') ng_ui
+                , isnull(dw, '') dw
+                , isnull(tot_ct, '') tot_ct
+                , isnull(ct, '') ct
+                , isnull(quantity, '') quantity
+                , isnull(quantity_2, '') quantity_2
+                , isnull(quan_dna, '') quan_dna
+                , isnull(dan_rna, '') dan_rna
+                , isnull(te, '') te
+                , isnull(quan_tot_vol, '') quan_tot_vol
+                , isnull(lib_hifi, '') lib_hifi
+                , isnull(pm, '') pm
+                , isnull(x100,  '') x100
+                , isnull(lib,  '') lib
+                , isnull(lib_dw,  '') lib_dw
+                , isnull(lib2,  '') lib2
+                , isnull(lib2_dw,  '') lib2_dw
+                , isnull(b.examin,  '') examin
+                , isnull(b.recheck,  '') recheck
+                , isnull(dna_rna_gbn, '0') dna_rna_gbn
+            FROM  [dbo].[patientinfo_path] a 
+            left outer join [dbo].[lims] b 
+            on a.pathology_num  = b.pathology_num
+            and ISNULL(b.dna_rna_gbn, '0') = '0'
+            where isnull(Research_yn, 'N') = 'N' 
+            and left(prescription_date, 8) = '` + start + `'
+            union all
+            SELECT
+                isnull(a.pathology_num, '') pathology_num 
+                , isnull(rel_pathology_num, '') rel_pathology_num 
+                , isnull( a.prescription_date, '') prescription_date
+                , isnull( a.patientID, '') patientID
+                , isnull(gender, '') gender 
+                , isnull(age, '') age 
+                , isnull(name, '') name
+                , isnull(b.id, '') id  
+                , isnull( b.prescription_code, '') prescription_code
+                , isnull( b.test_code, '') test_code
+                , isnull( path_type, '') path_type
+                , isnull(b.key_block, '') key_block 
+                , isnull(b.block_cnt, '') block_cnt 
+                , isnull(b.tumorburden, '') tumorburden
+                , isnull(b.report_date, '') report_date
+                , isnull(nano_ng, '') nano_ng
+                , isnull(nano_280, '') nano_280 
+                , isnull(nano_230, '') nano_230
+                , isnull(nano_dil, '') nano_dil
+                , isnull(ng_ui, '') ng_ui
+                , isnull(dw, '') dw
+                , isnull(tot_ct, '') tot_ct
+                , isnull(ct, '') ct
+                , isnull(quantity, '') quantity
+                , isnull(quantity_2, '') quantity_2
+                , isnull(quan_dna, '') quan_dna
+                , isnull(dan_rna, '') dan_rna
+                , isnull(te, '') te
+                , isnull(quan_tot_vol, '') quan_tot_vol
+                , isnull(lib_hifi, '') lib_hifi
+                , isnull(pm, '') pm
+                , isnull(x100,  '') x100
+                , isnull(lib,  '') lib
+                , isnull(lib_dw,  '') lib_dw
+                , isnull(lib2,  '') lib2
+                , isnull(lib2_dw,  '') lib2_dw
+                , isnull(b.examin,  '') examin
+                , isnull(b.recheck,  '') recheck
+                , isnull(dna_rna_gbn, '1') dna_rna_gbn
+            FROM  [dbo].[patientinfo_path] a 
+            left outer join [dbo].[lims] b 
+            on a.pathology_num  = b.pathology_num
+            and ISNULL(b.dna_rna_gbn, '1') = '1'
+            where isnull(Research_yn, 'N') = 'N' 
+            and left(prescription_date, 8) = '` + start + `'
+            ) a1
+            order by dna_rna_gbn, pathology_num`;
 
         logger.info('[182]limsSelectHandler sql=' + qry);
     
