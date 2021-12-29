@@ -5,6 +5,7 @@ const querystring = require('querystring');
 const router = app.Router();
 const axios = require('axios');
 const logger = require('../common/winston');
+const configEnv = require('../common/config.js');
 
 // 교육
 let url = configEnv.emr_path; //'http://emr012edu.cmcnu.or.kr/cmcnu/.live
