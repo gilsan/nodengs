@@ -7,7 +7,7 @@ const axios = require('axios');
 const logger = require('../common/winston');
 
 // 교육
-let url = 'http://emr012edu.cmcnu.or.kr/cmcnu/.live';
+let url = configEnv.emr_path; //'http://emr012edu.cmcnu.or.kr/cmcnu/.live
 //운영
 //let url = 'http://emr012.cmcnu.or.kr/cmcnu/.live';
  

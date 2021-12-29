@@ -66,8 +66,8 @@ exports.path_patient_nu = (pathologyNum) => {
 
 		let	prescription_date = data.prescription_date;
 		let	patientID = data.patientID;
-
-		let sendUrl = 'http://emr012.cmcnu.or.kr/cmcnu/.live?submit_id=TRLPI01001&business_id=li&instcd=012'
+		let sendUrl = configEnv.emr_path; //'http://emr012.cmcnu.or.kr/cmcnu/.live
+		sendUrl = sendUrl + '?submit_id=TRLPI01001&business_id=li&instcd=012'
 							 + '&startdd=' + prescription_date 
 							 + '&enddd='+ prescription_date + '&workflagcd=1007';
 
