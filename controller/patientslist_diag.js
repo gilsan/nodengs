@@ -6,6 +6,8 @@ const logger = require('../common/winston');
 const fs = require('fs');
 
 const dbConfigMssql = require('../common/dbconfig.js');
+
+const configEnv = require('../common/config.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -820,7 +822,7 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
         let ngs_path_a = '';
         let ngs_path = '';
         let ngs_file = '';
-        let cdw_path = 'C:\\NGS_LAB\\' ;
+        let cdw_path = configEnv.cdw_path_diag; //'C:\\NGS_LAB\\' ;
         let cdw_file = '';
 
         logger.info('[770][patientinfo_diag]tsvFilteredFilename=' + data.tsvFilteredFilename);

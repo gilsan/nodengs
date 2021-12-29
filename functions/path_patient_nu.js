@@ -1,14 +1,13 @@
 const app = require('express');
-const querystring = require('querystring');
 const router = app.Router();
 const axios = require('axios');
 const xml2js = require('xml2js');
 const logger = require('../common/winston');
-//const he = require('he');
 
 const mssql = require('mssql');
 
 const dbConfigMssql = require('../common/dbconfig.js');
+const configEnv = require('../common/config.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 

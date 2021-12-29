@@ -7,6 +7,8 @@ const logger = require('../common/winston');
 const fs = require('fs');
 
 const dbConfigMssql = require('../common/dbconfig.js');
+
+const configEnv = require('../common/config.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -972,7 +974,7 @@ exports.finishPathologyEMRScreen = (req, res, next) => {
     let ngs_file = ngs_path + '/' + data.tsvirfilename;
     logger.info('[screenList][552][getPatientPathInfo]ngs_file=' + ngs_file);
 
-    let cdw_path = 'C:\\NGS_Path\\' ;
+    let cdw_path = configEnv.cdw_path_path; //'C:\\NGS_Path\\' ;
     let cdw_file = cdw_path + '012_' + prescription_no + '_' 
                + prescription_date + '_' 
                + prescription_code + '_TMO870_' 
