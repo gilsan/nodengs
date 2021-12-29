@@ -341,7 +341,7 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull(age, '') age 
                 , isnull(name, '') name
                 , isnull(b.id, '') id  
-                , isnull( b.prescription_code, '') prescription_code
+                , isnull( organ, '') prescription_code
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
@@ -389,7 +389,7 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull(age, '') age 
                 , isnull(name, '') name
                 , isnull(b.id, '') id  
-                , isnull( b.prescription_code, '') prescription_code
+                , isnull(organ, '') prescription_code
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
@@ -425,8 +425,8 @@ const  limsSelectHandler = async (start, end) => {
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where isnull(Research_yn, 'N') = 'N' 
-            and left(prescription_date, 8) = '` + start + `'
-            and left(prescription_date, 8) = '` + end + `'
+            and left(prescription_date, 8) >= '` + start + `'
+            and left(prescription_date, 8) <= '` + end + `'
             ) a1
             order by dna_rna_gbn, pathology_num`;
 
@@ -520,7 +520,7 @@ const  limsSelectHandler2 = async (start) => {
                 , isnull(age, '') age 
                 , isnull(name, '') name
                 , isnull(b.id, '') id  
-                , isnull( b.prescription_code, '') prescription_code
+                , isnull( organ, '') prescription_code
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
@@ -552,7 +552,7 @@ const  limsSelectHandler2 = async (start) => {
                 , isnull(b.recheck,  '') recheck
                 , isnull(dna_rna_gbn, '0') dna_rna_gbn
             FROM  [dbo].[lims] b 
-            left outer join  [dbo].[patientinfo_path] a
+            inner join  [dbo].[patientinfo_path] a
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             where left(b.report_date, 8) = '` + start + `'
@@ -566,7 +566,7 @@ const  limsSelectHandler2 = async (start) => {
                 , isnull(age, '') age 
                 , isnull(name, '') name
                 , isnull(b.id, '') id  
-                , isnull( b.prescription_code, '') prescription_code
+                , isnull( organ, '') prescription_code
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
@@ -598,9 +598,9 @@ const  limsSelectHandler2 = async (start) => {
                 , isnull(b.recheck,  '') recheck
                 , isnull(dna_rna_gbn, '1') dna_rna_gbn
             FROM  [dbo].[lims] b 
-            left outer join  [dbo].[patientinfo_path] a
+            inner join  [dbo].[patientinfo_path] a
             on b.pathology_num  = a.pathology_num
-            and ISNULL(b.dna_rna_gbn, '0') = '0'
+            and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 8) = '` + start + `'
             ) a1
             order by dna_rna_gbn, pathology_num`;
