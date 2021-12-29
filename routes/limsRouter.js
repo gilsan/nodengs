@@ -5,6 +5,7 @@ const router = express.Router();
 
 // 검진자 리스트
 router.post('/lists', limsController.limsList);
+router.post('/limslists', limsController.limsList2);
 router.post('/save', limsController.limsSave);
 
 module.exports = router;

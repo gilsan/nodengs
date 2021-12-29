@@ -91,7 +91,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         let lib_dw            = lims[i].lib_dw;
         let lib2              = lims[i].lib2;
         let lib2_dw           = lims[i].lib2_dw;
-        let report_date       = lims[i].prescription_date;
+        let report_date       = lims[i].report_date;
         
         let dna_rna_gbn       = lims[i].dna_rna_gbn
 
@@ -285,9 +285,9 @@ exports.limsSave = (req, res, next) => {
     });
 }
 
-const  limsSelectHandler = async (start) => {
+const  limsSelectHandler = async (start, end) => {
     await poolConnect; // ensures that the pool has been created
-    logger.info('[142] limsSelectHandler =' + start );
+    logger.info('[142] limsSelectHandler =' + start + ', ' + end);
     //select Query 생성
         let qry = `SELECT
             isnull(pathology_num, '') pathology_num 
@@ -377,7 +377,8 @@ const  limsSelectHandler = async (start) => {
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             where isnull(Research_yn, 'N') = 'N' 
-            and left(prescription_date, 8) = '` + start + `'
+            and left(prescription_date, 8) >= '` + start + `'
+            and left(prescription_date, 8) <= '` + end + `'
             union all
             SELECT
                 isnull(a.pathology_num, '') pathology_num 
@@ -425,6 +426,7 @@ const  limsSelectHandler = async (start) => {
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where isnull(Research_yn, 'N') = 'N' 
             and left(prescription_date, 8) = '` + start + `'
+            and left(prescription_date, 8) = '` + end + `'
             ) a1
             order by dna_rna_gbn, pathology_num`;
 
@@ -448,7 +450,182 @@ exports.limsList = (req, res, next) => {
 
     let start = req.body.start;
     let start1 = start.replace(/-/g, '');
-    const result = limsSelectHandler(start1);
+    let end = req.body.end;
+    let end1 = end.replace(/-/g, '');
+    const result = limsSelectHandler(start1, end1);
+    result.then(data => {  
+        //  console.log('[108][excelDvList]', data);
+          res.json(data);
+    })
+    .catch( error => {
+        logger.error('[208]excelDvList err=' + error.message);
+        res.sendStatus(500)
+    }); 
+ };
+ 
+
+const  limsSelectHandler2 = async (start) => {
+    await poolConnect; // ensures that the pool has been created
+    logger.info('[142] limsSelectHandler =' + start );
+    //select Query 생성
+        let qry = `SELECT
+            isnull(pathology_num, '') pathology_num 
+            , isnull(rel_pathology_num, '') rel_pathology_num 
+            , isnull( prescription_date, '') prescription_date
+            , isnull( patientID, '') patientID
+            , isnull(gender, '') gender 
+            , isnull(age, '') age 
+            , isnull(name, '') name
+            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY pathology_num DESC) id  
+            , isnull( prescription_code, '') prescription_code
+            , isnull( test_code, '') test_code
+            , isnull( path_type, '') path_type
+            , isnull(key_block, '') key_block 
+            , isnull(block_cnt, '') block_cnt 
+            , isnull(tumorburden, '') tumorburden
+            , isnull(report_date, '') report_date
+            , isnull(nano_ng, '') nano_ng
+            , isnull(nano_280, '') nano_280 
+            , isnull(nano_230, '') nano_230
+            , isnull(nano_dil, '') nano_dil
+            , isnull(ng_ui, '') ng_ui
+            , isnull(dw, '') dw
+            , isnull(tot_ct, '') tot_ct
+            , isnull(ct, '') ct
+            , isnull(quantity, '') quantity
+            , isnull(quantity_2, '') quantity_2
+            , isnull(quan_dna, '') quan_dna
+            , isnull(dan_rna, '') dan_rna
+            , isnull(te, '') te
+            , isnull(quan_tot_vol, '') quan_tot_vol
+            , isnull(lib_hifi, '') lib_hifi
+            , isnull(pm, '') pm
+            , isnull(x100,  '') x100
+            , isnull(lib,  '') lib
+            , isnull(lib_dw,  '') lib_dw
+            , isnull(lib2,  '') lib2
+            , isnull(lib2_dw,  '') lib2_dw
+            , isnull(examin,  '') examin
+            , isnull(recheck,  '') recheck
+            , isnull(dna_rna_gbn, '0') dna_rna_gbn
+
+            from
+            (
+            SELECT
+                isnull(a.pathology_num, '') pathology_num 
+                , isnull(rel_pathology_num, '') rel_pathology_num 
+                , isnull( a.prescription_date, '') prescription_date
+                , isnull( a.patientID, '') patientID
+                , isnull(gender, '') gender 
+                , isnull(age, '') age 
+                , isnull(name, '') name
+                , isnull(b.id, '') id  
+                , isnull( b.prescription_code, '') prescription_code
+                , isnull( b.test_code, '') test_code
+                , isnull( path_type, '') path_type
+                , isnull(b.key_block, '') key_block 
+                , isnull(b.block_cnt, '') block_cnt 
+                , isnull(b.tumorburden, '') tumorburden
+                , isnull(b.report_date, '') report_date
+                , isnull(nano_ng, '') nano_ng
+                , isnull(nano_280, '') nano_280 
+                , isnull(nano_230, '') nano_230
+                , isnull(nano_dil, '') nano_dil
+                , isnull(ng_ui, '') ng_ui
+                , isnull(dw, '') dw
+                , isnull(tot_ct, '') tot_ct
+                , isnull(ct, '') ct
+                , isnull(quantity, '') quantity
+                , isnull(quantity_2, '') quantity_2
+                , isnull(quan_dna, '') quan_dna
+                , isnull(dan_rna, '') dan_rna
+                , isnull(te, '') te
+                , isnull(quan_tot_vol, '') quan_tot_vol
+                , isnull(lib_hifi, '') lib_hifi
+                , isnull(pm, '') pm
+                , isnull(x100,  '') x100
+                , isnull(lib,  '') lib
+                , isnull(lib_dw,  '') lib_dw
+                , isnull(lib2,  '') lib2
+                , isnull(lib2_dw,  '') lib2_dw
+                , isnull(b.examin,  '') examin
+                , isnull(b.recheck,  '') recheck
+                , isnull(dna_rna_gbn, '0') dna_rna_gbn
+            FROM  [dbo].[lims] b 
+            left outer join  [dbo].[patientinfo_path] a
+            on b.pathology_num  = a.pathology_num
+            and ISNULL(b.dna_rna_gbn, '0') = '0'
+            where left(b.report_date, 8) = '` + start + `'
+            union all
+            SELECT
+                isnull(a.pathology_num, '') pathology_num 
+                , isnull(rel_pathology_num, '') rel_pathology_num 
+                , isnull( a.prescription_date, '') prescription_date
+                , isnull( a.patientID, '') patientID
+                , isnull(gender, '') gender 
+                , isnull(age, '') age 
+                , isnull(name, '') name
+                , isnull(b.id, '') id  
+                , isnull( b.prescription_code, '') prescription_code
+                , isnull( b.test_code, '') test_code
+                , isnull( path_type, '') path_type
+                , isnull(b.key_block, '') key_block 
+                , isnull(b.block_cnt, '') block_cnt 
+                , isnull(b.tumorburden, '') tumorburden
+                , isnull(b.report_date, '') report_date
+                , isnull(nano_ng, '') nano_ng
+                , isnull(nano_280, '') nano_280 
+                , isnull(nano_230, '') nano_230
+                , isnull(nano_dil, '') nano_dil
+                , isnull(ng_ui, '') ng_ui
+                , isnull(dw, '') dw
+                , isnull(tot_ct, '') tot_ct
+                , isnull(ct, '') ct
+                , isnull(quantity, '') quantity
+                , isnull(quantity_2, '') quantity_2
+                , isnull(quan_dna, '') quan_dna
+                , isnull(dan_rna, '') dan_rna
+                , isnull(te, '') te
+                , isnull(quan_tot_vol, '') quan_tot_vol
+                , isnull(lib_hifi, '') lib_hifi
+                , isnull(pm, '') pm
+                , isnull(x100,  '') x100
+                , isnull(lib,  '') lib
+                , isnull(lib_dw,  '') lib_dw
+                , isnull(lib2,  '') lib2
+                , isnull(lib2_dw,  '') lib2_dw
+                , isnull(b.examin,  '') examin
+                , isnull(b.recheck,  '') recheck
+                , isnull(dna_rna_gbn, '1') dna_rna_gbn
+            FROM  [dbo].[lims] b 
+            left outer join  [dbo].[patientinfo_path] a
+            on b.pathology_num  = a.pathology_num
+            and ISNULL(b.dna_rna_gbn, '0') = '0'
+            where left(b.report_date, 8) = '` + start + `'
+            ) a1
+            order by dna_rna_gbn, pathology_num`;
+
+        logger.info('[182]limsSelectHandler sql=' + qry);
+    
+    try {
+
+        const request = pool.request();
+
+        const result = await request.query(qry);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[191]limsSelectHandler err=' + error.message);
+    }
+}
+
+
+// get lims List
+exports.limsList2 = (req, res, next) => {
+    logger.info('[198]limsList req=' + JSON.stringify(req.body));
+
+    let start = req.body.start;
+    let start1 = start.replace(/-/g, '');
+    const result = limsSelectHandler2(start1);
     result.then(data => {  
         //  console.log('[108][excelDvList]', data);
           res.json(data);
