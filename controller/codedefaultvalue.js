@@ -288,7 +288,7 @@ exports.codeitemInsert = (req, res, next) => {
 const  codelistsHandler = async () => {
     await poolConnect;  
 
-    const sql=`select id,    isnull(code, '') code, isnull(report, '') report, isnull(type, '') type from testcodelists `;
+    const sql=`select id,    isnull(code, '') code, isnull(report, '') report, isnull(type, '') type from codedefaultvalue `;
 
     logger.info('[262][codedefaultvalue][codelistsHandler] =' + sql);
     try {
