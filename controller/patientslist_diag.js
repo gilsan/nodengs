@@ -1103,7 +1103,7 @@ exports.getPatientinfo  = (req, res, next) => {
 }
 
 // screenstatus 상태를 변경
-const changescreenstatus = async (specimenNo, seq, userid, type) =>{
+const changescreenstatus = async (specimenNo, seq) =>{
     await poolConnect; // ensures that the pool has been created
 
     logger.info('[997][patientinfo_diag changescreenstatus]specimenNo=' + specimenNo);
