@@ -183,6 +183,7 @@ const  messageHandler3 = async (originalname, dirPath, testedID) => {
   const qry=`update patientinfo_diag 
         set tsvFilteredFilename = @originalname, 
         tsvFilteredStatus= '처리완료',
+        saveyn= 'T',
         screenstatus = '0',
         detected = '0',
         path=@dirPath,
