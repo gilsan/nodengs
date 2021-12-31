@@ -296,7 +296,7 @@ const limsPatientSaveHandler = async (test_code, tumor_type, tumor_cell_per) => 
     //insert Query 생성;
     const qry = `update patientinfo_path 
                     set  tumor_type = @tumor_type,
-                    tumorburden = @tumor_cell_per
+                    tumor_cell_per = @tumor_cell_per
                 where pathology_num = @test_code  `;
             
     logger.info('[302][limsPatientSave]sql=' + qry);
