@@ -381,7 +381,7 @@ const  limsSelectHandler = async (start, end) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date DESC) id  
+            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date DESC, pathology_num) id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -511,8 +511,7 @@ const  limsSelectHandler = async (start, end) => {
             where isnull(Research_yn, 'N') = 'N' 
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
-            ) a1
-            order by dna_rna_gbn, prescription_date desc`;
+            ) a1`;
 
         logger.info('[517]limsSelectHandler sql=' + qry);
     
@@ -560,7 +559,7 @@ const  limsSelectHandler2 = async (start) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date DESC) id  
+            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date DESC, pathology_num) id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -686,8 +685,7 @@ const  limsSelectHandler2 = async (start) => {
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 8) = '` + start + `'
-            ) a1
-            order by dna_rna_gbn, pathology_num`;
+            ) a1`;
 
         logger.info('[692]limsSelectHandler sql=' + qry);
     
