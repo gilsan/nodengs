@@ -844,7 +844,7 @@ const geneticsaveHandler = async (req) => {
   const patient_name      = genetic.name;
   const register_number   = genetic.patientID;
   const transcript        = genetic.transcript;
-  const exon_intro        = genetic.exon;
+  const exon_intro        = genetic.exonIntro;
   const nucleotide_change = genetic.nucleotideChange;
   const amino_acid_change = genetic.aminoAcidChange;
   const zygosity          = genetic.zygosity;
