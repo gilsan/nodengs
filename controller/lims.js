@@ -512,7 +512,7 @@ const  limsSelectHandler = async (start, end) => {
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
             ) a1 
-            ORDER BY prescription_date DESC`;
+            ORDER BY id DESC`;
 
         logger.info('[517]limsSelectHandler sql=' + qry);
     
