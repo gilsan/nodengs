@@ -388,8 +388,8 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull(name, '') name
                 , isnull(b.id, '') id  
                 , isnull( organ, '') prescription_code
-                , isnull( b.test_code, '') test_code
-                , isnull( a.tumor_type, '') path_type
+                , isnull( a.tumor_type, '') test_code
+                , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
                 , isnull(b.block_cnt, '') block_cnt 
                 , isnull(a.tumor_cell_per, '') tumorburden
@@ -436,8 +436,8 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull(name, '') name
                 , isnull(b.id, '') id  
                 , isnull(organ, '') prescription_code
-                , isnull( b.test_code, '') test_code
-                , isnull( a.tumor_type, '') path_type
+                , isnull( b.tumor_type, '') test_code
+                , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
                 , isnull(b.block_cnt, '') block_cnt 
                 , isnull(a.tumor_cell_per, '') tumorburden
