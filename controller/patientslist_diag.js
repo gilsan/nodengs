@@ -793,94 +793,97 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
     let test_code = '';
     let specimen = '';
 
-    // 2021.04.15 진검 cdw file copy
-    const result_path = getPatientDiagHandler(specimenNo);
-    result_path.then(data => {
-        //res.json(data);
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]data=' + JSON.stringify(data));
+    if (seq == '3')
+    {
+        // 2021.04.15 진검 cdw file copy
+        const result_path = getPatientDiagHandler(specimenNo);
+        result_path.then(data => {
+            //res.json(data);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]data=' + JSON.stringify(data));
 
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]prescription_no=' + data.prescription_no);
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]prescription_date=' + data.prescription_date);
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]test_code=' + data.test_code);
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]specimen=' + data.specimen);
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]path=' + data.path);
-        logger.info('[patientinfo_diag][304][getPatientDiagHandler]file=' + data.tsvFilteredFilename);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]prescription_no=' + data.prescription_no);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]prescription_date=' + data.prescription_date);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]test_code=' + data.test_code);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]specimen=' + data.specimen);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]path=' + data.path);
+            logger.info('[patientinfo_diag][304][getPatientDiagHandler]file=' + data.tsvFilteredFilename);
 
-        prescription_no  = data.prescription_no;
-        prescription_date  = data.prescription_date;
-        test_code  = data.test_code;
-        specimen  = data.specimen;
+            prescription_no  = data.prescription_no;
+            prescription_date  = data.prescription_date;
+            test_code  = data.test_code;
+            specimen  = data.specimen;
 
-        let file_names = '';
-        file_names = data.tsvFilteredFilename.toLowerCase(); 
-        let xlsx = file_names.indexOf('xlsx');
-        let tsv = file_names.indexOf('tsv');
-        let txt = file_names.indexOf('txt');
-        let ngs_path_a = '';
-        let ngs_path = '';
-        let ngs_file = '';
-        let cdw_path = configEnv.cdw_path_diag; //'C:\\NGS_LAB\\' ;
-        let cdw_file = '';
+            let file_names = '';
+            file_names = data.tsvFilteredFilename.toLowerCase(); 
+            let xlsx = file_names.indexOf('xlsx');
+            let tsv = file_names.indexOf('tsv');
+            let txt = file_names.indexOf('txt');
+            let ngs_path_a = '';
+            let ngs_path = '';
+            let ngs_file = '';
+            let cdw_path = configEnv.cdw_path_diag; //'C:\\NGS_LAB\\' ;
+            let cdw_file = '';
 
-        logger.info('[770][patientinfo_diag]tsvFilteredFilename=' + data.tsvFilteredFilename);
-        logger.info('[770][patientinfo_diag]xlsx=' + xlsx);
-        logger.info('[770][patientinfo_diag]tsv=' + tsv);
-        logger.info('[770][patientinfo_diag]txt=' + txt);
+            logger.info('[770][patientinfo_diag]tsvFilteredFilename=' + data.tsvFilteredFilename);
+            logger.info('[770][patientinfo_diag]xlsx=' + xlsx);
+            logger.info('[770][patientinfo_diag]tsv=' + tsv);
+            logger.info('[770][patientinfo_diag]txt=' + txt);
 
-        if ( tsv > 0) {
+            if ( tsv > 0) {
 
-            ngs_path_a = data.path.split('/') ;
-        
-            ngs_path = './' + ngs_path_a[0] + '_success/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
-            ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
-            logger.info('[patientinfo_diag][786][getPatientDiagHandler]ngs_file=' + ngs_file);
-    
-            cdw_file = cdw_path + '012_' + prescription_no + '_' 
-                   + prescription_date + '_' 
-                   + test_code + '_' 
-                   + specimen + '_' 
-                   + specimenNo + '.tsv'
-            logger.info('[patientinfo_diag][793][getPatientDiagHandler]file=' + cdw_file);
-        
-            // destination will be created or overwritten by default.
-            fs.copyFile(ngs_file, cdw_file, (err) => {
-            if (err) logger.error('[797][patientinfo_diag getPatientDiagHandler]err=' + err.message);
-                logger.info('[patientinfo_diag][798]File was copied to destination');
-            });  
-        }
-        else if ( xlsx > 0) {
-
+                ngs_path_a = data.path.split('/') ;
             
-          
-        }
-        else if ( txt > 0) {
+                ngs_path = './' + ngs_path_a[0] + '_success/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
+                ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
+                logger.info('[patientinfo_diag][786][getPatientDiagHandler]ngs_file=' + ngs_file);
+        
+                cdw_file = cdw_path + '012_' + prescription_no + '_' 
+                    + prescription_date + '_' 
+                    + test_code + '_' 
+                    + specimen + '_' 
+                    + specimenNo + '.tsv'
+                logger.info('[patientinfo_diag][793][getPatientDiagHandler]file=' + cdw_file);
+            
+                // destination will be created or overwritten by default.
+                fs.copyFile(ngs_file, cdw_file, (err) => {
+                if (err) logger.error('[797][patientinfo_diag getPatientDiagHandler]err=' + err.message);
+                    logger.info('[patientinfo_diag][798]File was copied to destination');
+                });  
+            }
+            else if ( xlsx > 0) {
+
                 
-            ngs_path_a = data.path.split('/') ;
             
-            ngs_path = './' + ngs_path_a[0] + '/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
-            ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
-            logger.info('[patientinfo_diag][812][resetscreenstatus]ngs_file=' + ngs_file);
+            }
+            else if ( txt > 0) {
+                    
+                ngs_path_a = data.path.split('/') ;
+                
+                ngs_path = './' + ngs_path_a[0] + '/' + ngs_path_a[1] + '/' + ngs_path_a[2] + '/' + ngs_path_a[3] ;
+                ngs_file = ngs_path + '/' + data.tsvFilteredFilename;
+                logger.info('[patientinfo_diag][812][resetscreenstatus]ngs_file=' + ngs_file);
 
-            cdw_file = cdw_path + '012_' + prescription_no + '_' 
-                + prescription_date + '_' 
-                + test_code + '_' 
-                + specimen + '_' 
-                + specimenNo + '.txt'
-            logger.info('[patientinfo_diag][819][resetscreenstatus]file=' + cdw_file);
-        
-            // destination will be created or overwritten by default.
-            fs.copyFile(ngs_file, cdw_file, (err) => {
-            if (err) logger.error('[823][patientinfo_diag getPatientDiagHandler]err=' + err.message);
-            logger.info('[patientinfo_diag][824]File was copied to destination');
-            });  
-        
-        }
-    });
-   
-    const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
-    logger.info('[patientinfo_diag][350][patientinfo_diag resetScreen]result=' + resultLog); 
-        //  res.json({message: 'SUCCESS'});
-          
+                cdw_file = cdw_path + '012_' + prescription_no + '_' 
+                    + prescription_date + '_' 
+                    + test_code + '_' 
+                    + specimen + '_' 
+                    + specimenNo + '.txt'
+                logger.info('[patientinfo_diag][819][resetscreenstatus]file=' + cdw_file);
+            
+                // destination will be created or overwritten by default.
+                fs.copyFile(ngs_file, cdw_file, (err) => {
+                if (err) logger.error('[823][patientinfo_diag getPatientDiagHandler]err=' + err.message);
+                logger.info('[patientinfo_diag][824]File was copied to destination');
+                });  
+            
+            }
+        });
+    
+        const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
+        logger.info('[patientinfo_diag][350][patientinfo_diag resetScreen]result=' + resultLog); 
+            //  res.json({message: 'SUCCESS'});
+    }
+    
     return resultLog;        
 }
 
