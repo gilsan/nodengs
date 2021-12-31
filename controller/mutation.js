@@ -587,7 +587,7 @@ const seqsaveHandler = async (req) => {
   await poolConnect;
   const seq               = req.body;
   const gene              = seq.gene;
-  const functional_impact = seq.functional_impact;
+  const functional_impact = seq.type;
   const patient_name      = seq.name;
   const register_number   = nvl(seq.patientID,'');
   const exon_intro        = nvl(seq.exonintron,'');
@@ -840,7 +840,7 @@ const geneticsaveHandler = async (req) => {
   await poolConnect;
   const genetic           = req.body;
   const gene              = genetic.gene;
-  const functional_impact = genetic.functional_impact;
+  const functional_impact = genetic.functionalImpact;
   const patient_name      = genetic.name;
   const register_number   = genetic.patientID;
   const transcript        = genetic.transcript;
