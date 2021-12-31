@@ -285,7 +285,7 @@ exports.limsSave = (req, res, next) => {
     });
 }
 
-const limsCellPerSaveHandler = async (test_code, tumor_type, tumor_cell_per) => {
+const limsCellPerSaveHandler = async (test_code, tumor_cell_per) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
     logger.info('[291][limsCellPerSaveHandler]test_code=' + test_code);
     logger.info('[291][limsCellPerSaveHandler]tumor_cell_per=' + tumor_cell_per);
@@ -318,7 +318,7 @@ exports.limsCellPerSave = (req, res, next) => {
     let test_code   =  req.body.test_code; 
     let tumor_cell_per = req.body.tumor_cell_per;
     logger.info('[320][limsCellPerSave] ===> ' + test_code  +  ", tumor_cell_per=" + tumor_cell_per);
-    const result = limsCellPerSaveHandler(test_code, tumor_type, tumor_cell_per);
+    const result = limsCellPerSaveHandler(test_code, tumor_cell_per);
     result.then( data => {
          res.json({message: 'SUCCESS'});
     })
@@ -327,7 +327,7 @@ exports.limsCellPerSave = (req, res, next) => {
     });
 }
 
-const limsTumorSaveHandler = async (test_code, tumor_type, tumor_cell_per) => {
+const limsTumorSaveHandler = async (test_code, tumor_type) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
     logger.info('[332][limsTumorSaveHandler]test_code=' + test_code);
     logger.info('[332][limsTumorSaveHandler]tumor_type=' + tumor_type);
