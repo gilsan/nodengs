@@ -285,55 +285,93 @@ exports.limsSave = (req, res, next) => {
     });
 }
 
-const limsPatientSaveHandler = async (test_code, tumor_type, tumor_cell_per) => {
+const limsCellPerSaveHandler = async (test_code, tumor_type, tumor_cell_per) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
-    logger.info('[291][limsPatientSaveHandler]test_code=' + test_code);
-    logger.info('[291][limsPatientSaveHandler]tumor_type=' + tumor_type);
-    logger.info('[291][limsPatientSaveHandler]tumor_cell_per=' + tumor_cell_per);
+    logger.info('[291][limsCellPerSaveHandler]test_code=' + test_code);
+    logger.info('[291][limsCellPerSaveHandler]tumor_cell_per=' + tumor_cell_per);
 
     let result;
     
     //insert Query 생성;
     const qry = `update patientinfo_path 
-                    set  tumor_type = @tumor_type,
-                    tumor_cell_per = @tumor_cell_per
+                    set  tumor_cell_per = @tumor_cell_per
                 where pathology_num = @test_code  `;
             
-    logger.info('[302][limsPatientSave]sql=' + qry);
+    logger.info('[302][limsCellPerSaveHandler]sql=' + qry);
     
     try {
         const request = pool.request()
         .input('test_code', mssql.VarChar, test_code)
-        .input('tumor_type', mssql.VarChar, tumor_type)
         .input('tumor_cell_per', mssql.VarChar, tumor_cell_per);
 
         result = request.query(qry);         
 
     } catch (error) {
-        logger.error('[313] *** [limsPatientSave] *** err=  ****  ' + error.message);
+        logger.error('[313] *** [limsCellPerSaveHandler] *** err=  ****  ' + error.message);
     }
 }
 
 // set lims 
-//  test_code, tumor_type, tumor_cell_per
-exports.limsPatientSave = (req, res, next) => {
+//  test_code, tumor_cell_per
+exports.limsCellPerSave = (req, res, next) => {
     
     let test_code   =  req.body.test_code; 
-    let tumor_type = req.body.tumor_type;
     let tumor_cell_per = req.body.tumor_cell_per;
-    logger.info('[357][limsPatientSave] ===> ' + test_code + ", tumor_type=" + tumor_type +  ", tumor_cell_per=" + tumor_cell_per);
-    const result = limsPatientSaveHandler(test_code, tumor_type, tumor_cell_per);
+    logger.info('[320][limsCellPerSave] ===> ' + test_code  +  ", tumor_cell_per=" + tumor_cell_per);
+    const result = limsCellPerSaveHandler(test_code, tumor_type, tumor_cell_per);
     result.then( data => {
          res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[363][limsPatientSave]err=' + error.message);
+        logger.error('[326][limsCellPerSave]err=' + error.message);
+    });
+}
+
+const limsTumorSaveHandler = async (test_code, tumor_type, tumor_cell_per) => {
+    // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
+    logger.info('[332][limsTumorSaveHandler]test_code=' + test_code);
+    logger.info('[332][limsTumorSaveHandler]tumor_type=' + tumor_type);
+
+    let result;
+    
+    //insert Query 생성;
+    const qry = `update patientinfo_path 
+                    set  tumor_type = @tumor_type
+                where pathology_num = @test_code  `;
+            
+    logger.info('[342][limsTumorSaveHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('tumor_type', mssql.VarChar, tumor_type);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[352] *** [limsTumorSaveHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+// set lims 
+//  test_code, tumor_type
+exports.limsTumorSave = (req, res, next) => {
+    
+    let test_code   =  req.body.test_code; 
+    let tumor_type = req.body.tumor_type;
+    logger.info('[362][limsTumorSave] ===> ' + test_code + ", tumor_type=" + tumor_type );
+    const result = limsTumorSaveHandler(test_code, tumor_type);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[368][limsTumorSave]err=' + error.message);
     });
 }
 
 const  limsSelectHandler = async (start, end) => {
     await poolConnect; // ensures that the pool has been created
-    logger.info('[369] limsSelectHandler =' + start + ', ' + end);
+    logger.info('[374] limsSelectHandler =' + start + ', ' + end);
     //select Query 생성
         let qry = `SELECT
             isnull(pathology_num, '') pathology_num 
@@ -476,7 +514,7 @@ const  limsSelectHandler = async (start, end) => {
             ) a1
             order by dna_rna_gbn, prescription_date desc`;
 
-        logger.info('[182]limsSelectHandler sql=' + qry);
+        logger.info('[517]limsSelectHandler sql=' + qry);
     
     try {
 
@@ -485,14 +523,14 @@ const  limsSelectHandler = async (start, end) => {
         const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
-        logger.error('[191]limsSelectHandler err=' + error.message);
+        logger.error('[526]limsSelectHandler err=' + error.message);
     }
 }
 
 
 // get lims List
 exports.limsList = (req, res, next) => {
-    logger.info('[198]limsList req=' + JSON.stringify(req.body));
+    logger.info('[533]limsList req=' + JSON.stringify(req.body));
 
     let start = req.body.start;
     let start1 = start.replace(/-/g, '');
@@ -500,11 +538,11 @@ exports.limsList = (req, res, next) => {
     let end1 = end.replace(/-/g, '');
     const result = limsSelectHandler(start1, end1);
     result.then(data => {  
-        //  console.log('[108][excelDvList]', data);
+        //  console.log('[108][limsList]', data);
           res.json(data);
     })
     .catch( error => {
-        logger.error('[208]excelDvList err=' + error.message);
+        logger.error('[545]limsList err=' + error.message);
         res.sendStatus(500)
     }); 
  };
@@ -512,7 +550,7 @@ exports.limsList = (req, res, next) => {
 
 const  limsSelectHandler2 = async (start) => {
     await poolConnect; // ensures that the pool has been created
-    logger.info('[142] limsSelectHandler =' + start );
+    logger.info('[553] limsSelectHandler =' + start );
     //select Query 생성
         let qry = `SELECT
             isnull(pathology_num, '') pathology_num 
@@ -651,7 +689,7 @@ const  limsSelectHandler2 = async (start) => {
             ) a1
             order by dna_rna_gbn, pathology_num`;
 
-        logger.info('[182]limsSelectHandler sql=' + qry);
+        logger.info('[692]limsSelectHandler sql=' + qry);
     
     try {
 
@@ -660,24 +698,24 @@ const  limsSelectHandler2 = async (start) => {
         const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
-        logger.error('[191]limsSelectHandler err=' + error.message);
+        logger.error('[701]limsSelectHandler err=' + error.message);
     }
 }
 
 
 // get lims List
 exports.limsList2 = (req, res, next) => {
-    logger.info('[198]limsList req=' + JSON.stringify(req.body));
+    logger.info('[708]limsList2 req=' + JSON.stringify(req.body));
 
     let start = req.body.start;
     let start1 = start.replace(/-/g, '');
     const result = limsSelectHandler2(start1);
     result.then(data => {  
-        //  console.log('[108][excelDvList]', data);
+        //  console.log('[108][limsList2]', data);
           res.json(data);
     })
     .catch( error => {
-        logger.error('[208]excelDvList err=' + error.message);
+        logger.error('[718]limsList2 err=' + error.message);
         res.sendStatus(500)
     }); 
  };

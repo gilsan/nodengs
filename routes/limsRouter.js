@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/lists', limsController.limsList);
 router.post('/limslists', limsController.limsList2);
 router.post('/save', limsController.limsSave);
-router.post('/patientSave', limsController.limsPatientSave);
+router.post('/tumorTypeSave', limsController.limsTumorSave);
+router.post('/tmorCellSave', limsController.limsCellPerSave);
 
 module.exports = router;
