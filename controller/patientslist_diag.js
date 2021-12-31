@@ -890,7 +890,7 @@ exports.resetScreenStatus = (req, res, next) => {
     logger.info('[366][patientinfo_diag resetScreen]data=' + JSON.stringify(req.body));
     
     let specimenNo = req.body.specimenNo.trim();
-    let num        = req.body.num;
+    let num        = nvl(req.body.num, '3');
     //let userid     = req.body.userid;
 
     //const userid = req.body.userid;
@@ -901,7 +901,7 @@ exports.resetScreenStatus = (req, res, next) => {
     {
         let userinfo = JSON.parse(req.body.userid); 
     
-        let userid = nvl(userinfo.userid, ''); 
+        userid = nvl(userinfo.userid, ''); 
         //  const pw= userinfo.pwd; 
     }
 
