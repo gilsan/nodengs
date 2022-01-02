@@ -639,7 +639,7 @@ const  limsSelectHandler2 = async (start) => {
             inner join  [dbo].[patientinfo_path] a
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
-            where left(b.report_date, 8) = '` + start + `'
+            where left(b.report_date, 10) = '` + start + `'
             union all
             SELECT
                 isnull(a.pathology_num, '') pathology_num 
@@ -685,7 +685,7 @@ const  limsSelectHandler2 = async (start) => {
             inner join  [dbo].[patientinfo_path] a
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
-            where left(b.report_date, 8) = '` + start + `'
+            where left(b.report_date, 10) = '` + start + `'
             ) a1 
             ORDER BY dna_rna_gbn, id  `;
 
@@ -708,8 +708,8 @@ exports.limsList2 = (req, res, next) => {
     logger.info('[708]limsList2 req=' + JSON.stringify(req.body));
 
     let start = req.body.start;
-    let start1 = start.replace(/-/g, '');
-    const result = limsSelectHandler2(start1);
+    // let start1 = start.replace(/-/g, '');
+    const result = limsSelectHandler2(start);
     result.then(data => {  
         //  console.log('[108][limsList2]', data);
           res.json(data);
