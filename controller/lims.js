@@ -687,7 +687,7 @@ const  limsSelectHandler2 = async (start) => {
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 8) = '` + start + `'
             ) a1 
-            ORDER BY report_date DESC`;
+            ORDER BY id DESC`;
 
         logger.info('[692]limsSelectHandler sql=' + qry);
     
