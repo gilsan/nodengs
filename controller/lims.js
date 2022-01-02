@@ -560,7 +560,7 @@ const  limsSelectHandler2 = async (start) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date DESC, pathology_num) id  
+            , RANK() OVER (PARTITION BY dna_rna_gbn ORDER BY pathology_num) id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -687,7 +687,7 @@ const  limsSelectHandler2 = async (start) => {
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 8) = '` + start + `'
             ) a1 
-            ORDER BY prescription_date DESC`;
+            ORDER BY report_date DESC`;
 
         logger.info('[692]limsSelectHandler sql=' + qry);
     
