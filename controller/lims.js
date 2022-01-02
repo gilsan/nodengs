@@ -512,7 +512,7 @@ const  limsSelectHandler = async (start, end) => {
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
             ) a1 
-            ORDER BY id `;
+            ORDER BY dna_rna_gbn, id `;
 
         logger.info('[517]limsSelectHandler sql=' + qry);
     
@@ -687,7 +687,7 @@ const  limsSelectHandler2 = async (start) => {
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 8) = '` + start + `'
             ) a1 
-            ORDER BY id  `;
+            ORDER BY dna_rna_gbn, id  `;
 
         logger.info('[692]limsSelectHandler sql=' + qry);
     
