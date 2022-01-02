@@ -511,7 +511,8 @@ const  limsSelectHandler = async (start, end) => {
             where isnull(Research_yn, 'N') = 'N' 
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
-            ) a1 `;
+            ) a1 
+            ORDER BY id `;
 
         logger.info('[517]limsSelectHandler sql=' + qry);
     
@@ -685,7 +686,8 @@ const  limsSelectHandler2 = async (start) => {
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 8) = '` + start + `'
-            ) a1 `;
+            ) a1 
+            ORDER BY id  `;
 
         logger.info('[692]limsSelectHandler sql=' + qry);
     
