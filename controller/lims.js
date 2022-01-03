@@ -708,8 +708,8 @@ exports.limsList2 = (req, res, next) => {
     logger.info('[708]limsList2 req=' + JSON.stringify(req.body));
 
     let start = req.body.start;
-    // let start1 = start.replace(/-/g, '');
-    const result = limsSelectHandler2(start);
+    let start1 = start.replace(/-/g, '');
+    const result = limsSelectHandler2(start1);
     result.then(data => {  
         //  console.log('[108][limsList2]', data);
           res.json(data);
