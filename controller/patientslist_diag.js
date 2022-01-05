@@ -301,27 +301,43 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     {
         if (sheet_1 != '') {
             let sheet_2 = '';
+            let sheet_3 = '';
 
             if (sheet_1 == 'AMLALL') {
                 sheet_2 = 'AMLALL';
+                sheet_3 = 'type';
                 
             } else if (sheet_1 == 'MDS') {  // MDS/MPN 
                 sheet_2 = 'MDS';
+                sheet_3 = 'type';
                 
             } else if (sheet_1 == 'lymphoma') {  // 악성림프종
                 sheet_2 = 'LYM';
+                sheet_3 = 'type';
                 
             } else if (sheet_1 == 'genetic') {  // 유전성유전질환
                 sheet_2 = 'Genetic';
+                sheet_3 = 'type';
                 
             } else if (sheet_1 == 'Sequencing') {  // Sequencing
                 sheet_2 = 'SEQ';
+                sheet_3 = 'type';
                 
             } else if (sheet_1 == 'MLPA') {  // MLPA
                 sheet_2 = 'MLPA';
+                sheet_3 = 'type';
             }
-                
-            sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+            else
+            {
+                sheet_2 = sheet_1;
+            }
+
+            if (sheet_3 == 'type') {
+                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+            } else {
+                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+            }
+            
         } else {
             sql = sql +  ` and test_code = '` + sheet_1 + `'`;
         }
