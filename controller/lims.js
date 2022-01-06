@@ -548,9 +548,9 @@ exports.limsList = (req, res, next) => {
  };
  
 
-const  limsSelectHandler2 = async (start) => {
+const  limsSelectHandler2 = async (start, examin, recheck) => {
     await poolConnect; // ensures that the pool has been created
-    logger.info('[553] limsSelectHandler =' + start );
+    logger.info('[553] limsSelectHandler =' + start + ", " + examin + ", " + recheck );
     //select Query 생성
         let qry = `SELECT
             isnull(pathology_num, '') pathology_num 
@@ -640,6 +640,8 @@ const  limsSelectHandler2 = async (start) => {
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             where left(b.report_date, 10) = '` + start + `'
+            and b.examin = '` + examin + `'
+            and b.recheck = '` + recheck + `'
             union all
             SELECT
                 isnull(a.pathology_num, '') pathology_num 
@@ -686,6 +688,8 @@ const  limsSelectHandler2 = async (start) => {
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where left(b.report_date, 10) = '` + start + `'
+            and b.examin = '` + examin + `'
+            and b.recheck = '` + recheck + `'
             ) a1 
             ORDER BY dna_rna_gbn, id  `;
 
@@ -709,9 +713,11 @@ exports.limsList2 = (req, res, next) => {
 
     let start = req.body.start;
     let start1 = start.replace(/-/g, '');
-    const result = limsSelectHandler2(start1);
+    let examin = req.body.examin;
+    let recheck = req.body.recheck;
+    const result = limsSelectHandler2(start1, examin, recheck);
     result.then(data => {  
-        //  console.log('[108][limsList2]', data);
+        //  console.log('[708][limsList2]', data);
           res.json(data);
     })
     .catch( error => {
