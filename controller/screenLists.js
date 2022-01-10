@@ -9,6 +9,7 @@ const fs = require('fs');
 const dbConfigMssql = require('../common/dbconfig.js');
 
 const configEnv = require('../common/config.js');
+const { send } = require('process');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -413,6 +414,7 @@ const insertHandler = async (specimenNo, detected_variants) => {
     const gnomADEAS         = nvl(detected_variants[i].gnomADEAS, '');
     const OMIM              = nvl(detected_variants[i].OMIM,'');
     const cnt               = nvl(detected_variants[i].cnt, '');
+    const sendyn            = nvl(detected_variants[i].sendyn, '');
     const gubun             = detected_variants[i].gubun;
     let functional_code = i;
 
@@ -428,18 +430,18 @@ const insertHandler = async (specimenNo, detected_variants) => {
                           + ', nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change
                           + ', zygosity=' + zygosity 
                           + ', dbSNPHGMD=' + dbSNPHGMD + ', gnomADEAS=' + gnomADEAS + ', OMIM=' + OMIM 
-                          + ', vaf=' + vaf + ', reference=' + reference 
+                          + ', vaf=' + vaf + ', reference=' + reference + ', sendyn=' + sendyn 
                           + ', cosmic_id=' + cosmic_id + ', type=' + type + ', checked=' + checked + ', cnt=' + cnt);
  
     //insert Query 생성;
     const qry = `insert into report_detected_variants (specimenNo, report_date, gene, 
               functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, 
               dbSNPHGMD, gnomADEAS, OMIM,
-              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt, gubun, saveyn) 
+              vaf, reference, cosmic_id, igv, sanger, type, checked, functional_code, cnt, gubun, sendyn,  saveyn) 
               values(@specimenNo, getdate(),  @gene,
                 @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, 
                 @dbSNPHGMD, @gnomADEAS, @OMIM,
-              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt, @gubun, 'S')`;
+              @vaf, @reference, @cosmic_id, @igv, @sanger, @type, @checked, @functional_code, @cnt, @gubun, @sendyn, 'S')`;
             
       logger.info('[282][screenList][insert detected_variants]sql=' + qry);
 
@@ -465,7 +467,8 @@ const insertHandler = async (specimenNo, detected_variants) => {
             .input('OMIM', mssql.VarChar, OMIM)
             .input('checked', mssql.VarChar, checked)
             .input('cnt', mssql.VarChar, cnt)
-            .input('gubun', mssql.VarChar, gubun);
+            .input('gubun', mssql.VarChar, gubun)
+            .input('sendyn', mssql.VarChar, sendyn);
             
             result = await request.query(qry);         
     
@@ -1622,7 +1625,7 @@ const immundefiHandler = async (specimenNo) => {
 }
 
 // 선천성 면역결핍증 내역
-const immundefiHandler = async (specimenNo) => {
+const immundefiHandler2 = async (specimenNo) => {
   await poolConnect; 
 
 
