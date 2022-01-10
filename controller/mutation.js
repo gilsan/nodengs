@@ -775,7 +775,7 @@ const geneticcallHandler2 = async (req) => {
   sql=`select top 1  isnull(functional_impact, '') functionalImpact, 
             isnull(transcript, '') transcript, isnull(exon, '') exon, isnull(amino_acid_change, '') amino_acid_change,
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS
-   from report_detected_variants  where (gubun='Genetic' or gubun='genetic' ) and gene=@gene and nucleotide_change=@coding and  sendyn='3' order by id desc`;
+   from report_detected_variants  where  gene=@gene and nucleotide_change=@coding and  sendyn='3' order by id desc`;
   logger.info('[549][mutation][geneticcallHandler2] =' + sql);
 
   try {
@@ -806,7 +806,7 @@ const geneticcallHandler1 = async (req) => {
   await poolConnect;
   const gene             = req.body.gene;
 
-  sql=`select top 1 isnull(OMIM, '') OMIM  from report_detected_variants  where (gubun='Genetic' or  gubun='genentic') and gene=@gene and sendyn='3' order by id desc`;
+  sql=`select top 1 isnull(OMIM, '') OMIM  from report_detected_variants  where  gene=@gene and sendyn='3' order by id desc`;
   logger.info('[723][mutation][geneticcallHandler1] =' + sql);
 
   try {
