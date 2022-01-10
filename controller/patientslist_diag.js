@@ -807,7 +807,8 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
     let prescription_no = '';
     let prescription_date = '';
     let test_code = '';
-    let specimen = '';
+    let specimen = ''; 
+    let resultLog = '';
 
     if (seq == '3')
     {
@@ -895,7 +896,7 @@ const resetscreenstatus = async (specimenNo, seq, userid, type) =>{
             }
         });
     
-        const resultLog = messageHandlerStat_diag(specimenNo, userid, type);
+        resultLog = messageHandlerStat_diag(specimenNo, userid, type);
         logger.info('[patientinfo_diag][350][patientinfo_diag resetScreen]result=' + resultLog); 
             //  res.json({message: 'SUCCESS'});
     }
