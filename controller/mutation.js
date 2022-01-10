@@ -358,17 +358,17 @@ const  variantsGeneticHandler = async (req) => {
   
   logger.info('[361][geneinfo][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
-  let sql =`select top 1 isnull(functional_impact, '') functionalImpact, amino_acid_change, transcript, 
-                           isnull(exon_intro, '') exon, 
-                           isnull(dbsnp_hgmd, '') dbSNPHGMD , isnull(gnomad_eas, '') gnomADEAS,  
-                           isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, type
-                from mutation 
-                where gene=@gene 
-                and nucleotide_change =@nucleotide_change 
-                and type=@gubun
-                and dbsnp_hgmd != ''
-                and gnomad_eas != ''
-                 order by id desc`
+  let sql =`   select top 1 isnull(functional_impact, '') functionalImpact, amino_acid_change, transcript, 
+              isnull(exon_intro, '') exon, 
+              isnull(dbsnp_hgmd, '') dbSNPHGMD , isnull(gnomad_eas, '') gnomADEAS,  
+              isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, type
+            from mutation 
+            where gene=@gene 
+            and nucleotide_change =@nucleotide_change 
+            and type=@gubun
+            and dbsnp_hgmd != ''
+            and gnomad_eas != ''
+            order by id desc`
                
   logger.info('[373][geneinfo]list sql=' + sql);
 
@@ -406,13 +406,12 @@ const  variantsGeneticOMIMHandler = async (req) => {
   
   logger.info('[361][geneinfo][variantsListsGeneticOMIMHandler]select data=' + gene + ", " + type); 
  
-  let sql =`select top 1 isnull(OMIM, '') OMIM
-                from mutation 
-                where gene=@gene 
-                and type=@type
-                and dbsnp_hgmd != ''
-                and gnomad_eas != ''
-                 order by id desc`
+  let sql=`select top 1 isnull(OMIM, '') OMIM  
+          from report_detected_variants 
+          where (gubun='Genetic' or  gubun='genentic') 
+          and gene=@gene 
+          and sendyn='3' 
+          order by id desc `
                
   logger.info('[373][geneinfo]list sql=' + sql);
 
