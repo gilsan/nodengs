@@ -354,7 +354,7 @@ const  variantsGeneticHandler = async (req) => {
 
   const gene =  req.body.gene;	 
   const nucleotide_change = req.body.coding;
-  const gubun = nvl(req.body.gubun, 'AMLALL');
+  //const gubun = nvl(req.body.gubun, 'AMLALL');
   
   logger.info('[361][geneinfo][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
@@ -365,7 +365,6 @@ const  variantsGeneticHandler = async (req) => {
             from mutation 
             where gene=@gene 
             and nucleotide_change =@nucleotide_change 
-            and type=@gubun
             and dbsnp_hgmd != ''
             and gnomad_eas != ''
             order by id desc`
@@ -375,8 +374,7 @@ const  variantsGeneticHandler = async (req) => {
   try {
       const request = pool.request()
         .input('gene', mssql.VarChar, gene) 
-        .input('nucleotide_change', mssql.VarChar, nucleotide_change)
-        .input('gubun', mssql.VarChar, gubun); 
+        .input('nucleotide_change', mssql.VarChar, nucleotide_change); 
       const result = await request.query(sql);
       return result.recordset;
   } catch (error) {
@@ -402,14 +400,13 @@ const  variantsGeneticOMIMHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const gene =  req.body.gene;	 
-  const type = nvl(req.body.type, 'AMLALL');
+  //const type = nvl(req.body.type, 'AMLALL');
   
   logger.info('[361][geneinfo][variantsListsGeneticOMIMHandler]select data=' + gene + ", " + type); 
  
   let sql=`select top 1 isnull(OMIM, '') OMIM  
           from report_detected_variants 
-          where (gubun='Genetic' or  gubun='genentic') 
-          and gene=@gene 
+          where  gene=@gene 
           and sendyn='3' 
           order by id desc `
                
@@ -417,8 +414,7 @@ const  variantsGeneticOMIMHandler = async (req) => {
 
   try {
       const request = pool.request()
-        .input('gene', mssql.VarChar, gene) 
-        .input('type', mssql.VarChar, type); 
+        .input('gene', mssql.VarChar, gene); 
       const result = await request.query(sql);
       return result.recordset;
   } catch (error) {

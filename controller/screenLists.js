@@ -1566,10 +1566,38 @@ exports.saveScreen6 = (req, res, next) => {
       });
     })
     .catch( error  => {
-      logger.error('[1311][screenList][saveScreen 6]err=' + error.message);
+      logger.error('[1569][screenList][saveScreen 6]err=' + error.message);
       res.sendStatus(500)
     });
 };
+
+// 선천성 면역결핍증 내역
+const PatientimmundefiHandler = async (specimenNo) => {
+  await poolConnect; 
+
+  const sql=`select  
+        isnull(a.test_code, '') report_type, '' result, isnull(saveyn, 'S') saveyn, 
+        isnull(b.target, '') target,  isnull(b.method, '') method, isnull(b.analyzedgene, '') analyzedgene,
+        '' identified_variations, isnull(b.specimen, '') specimen,
+        isnull(b.comment1, '') comment1, isnull(b.comment2, '') comment2, isnull(b.Comment, '') seqcomment
+        , case when isnull(screenstatus, '') = '' then  'T' 
+          else isnull(saveyn, 'S') end saveyn
+        from [dbo].[patientinfo_diag]  a
+        left outer join [dbo].[codedefaultvalue] b
+        on a.test_code = b.code
+        where specimenNo = @specimenNo
+  `;
+
+  try {
+      const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
+      const result = await request.query(sql)
+
+        return result.recordsets[0];
+    } catch (error) {
+          logger.error('[1591][PatientimmundefiHandler]err=' + error.message);
+    }
+  
+}
 
 // 선천성 면역결핍증 내역
 const immundefiHandler = async (specimenNo) => {
@@ -1586,12 +1614,68 @@ const immundefiHandler = async (specimenNo) => {
       const request = pool.request().input('specimenNo', mssql.VarChar, specimenNo); 
       const result = await request.query(sql)
 
-       return result.recordsets[0];
+        return result.recordsets[0];
     } catch (error) {
-         logger.error('[1332][immundefiHandler]err=' + error.message);
+          logger.error('[1591][immundefiHandler]err=' + error.message);
     }
   
-};
+}
+
+// 선천성 면역결핍증 내역
+const immundefiHandler = async (specimenNo) => {
+  await poolConnect; 
+
+
+  const result6 = patientsInfoCountHandler (specimenNo);
+  result6.then(data => {
+
+    let cnt = data[0].count;
+    if (cnt === 0)
+    {
+      const result7 = PatientimmundefiHandler (specimenNo);
+        result7.then(data => {
+          console.log('[1691][listPatientimmundefi] ==> ', data)
+           res.json(data);
+        })
+        .catch( error  => {
+         logger.error('[1695][listPatientimmundefi select]err=' + error.message);
+         res.status(500).send('That is Not good ')
+        }); 
+    }
+    else
+    {
+      const result8 = patientsInfoStautsHandler (specimenNo);
+      result8.then(data => {
+    
+        let cnt = data[0].screenstaus;
+        if (cnt !== '0')
+        {
+          const result7 = reportimmundefiHandler (specimenNo);
+            result7.then(data => {
+              console.log('[1691][listPatientSequntial] ==> ', data)
+               res.json(data);
+            })
+            .catch( error  => {
+             logger.error('[1695][listPatientSequntial select]err=' + error.message);
+             res.status(500).send('That is Not good ')
+            }); 
+        }
+        else
+        {
+          const result9 = PatientimmundefiHandler (specimenNo);
+            result9.then(data => {
+              console.log('[1691][listPatientSequntial] ==> ', data)
+               res.json(data);
+            })
+            .catch( error  => {
+             logger.error('[1695][listPatientSequntial select]err=' + error.message);
+             res.status(500).send('That is Not good ')
+            }); 
+        }
+      })
+    }
+  });
+}
 
 exports.listImmundefi = (req, res, next) => {
   const specimenNo        = req.body.specimenNo;
