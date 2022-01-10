@@ -362,9 +362,10 @@ const  variantsGeneticHandler = async (req) => {
               isnull(exon_intro, '') exon, 
               isnull(dbsnp_hgmd, '') dbSNPHGMD , isnull(gnomad_eas, '') gnomADEAS,  
               isnull(reference, '') reference, isnull(cosmic_id, '') cosmic_id, type
-            from mutation 
+            from report_detected_variants 
             where gene=@gene 
             and nucleotide_change =@nucleotide_change 
+            and sendyn='3' 
             and dbsnp_hgmd != ''
             and gnomad_eas != ''
             order by id desc`
