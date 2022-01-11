@@ -225,7 +225,6 @@ const  messageHandler = async (
         .input('loc5', mssql.VarChar, loc5) 
         .input('loc6', mssql.VarChar, loc6) 
         .input('loc7', mssql.VarChar, loc7) 
-        .input('zygosity', mssql.VarChar, zygosity) 
         .input('testedID', mssql.VarChar, testedID); 
       const result = await request.query(sql2)
       console.dir( result);
@@ -249,7 +248,7 @@ exports.inputdb = (
 		   cosmic,omim,gene_ontology,drugbank,clinvar,
 		   allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
 		   ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
-		   loc1, loc2,loc3,loc4,loc5,loc6,loc7, zygosity, testedID ) => {
+		   loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID ) => {
           console.log('inputdb: ', locus);
 
           logger.info('[255][inputdb ]testedID=' + testedID);
@@ -266,7 +265,7 @@ exports.inputdb = (
         cosmic,omim,gene_ontology,drugbank,clinvar,
         allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
         ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
-        loc1, loc2,loc3,loc4,loc5,loc6,loc7, zygosity, testedID);
+        loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID);
     result.then(data => {
 
        console.log(data);
