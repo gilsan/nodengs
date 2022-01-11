@@ -56,7 +56,7 @@ const  messageHandler = async (
     cosmic, omim, gene_ontology, drugbank, clinvar,
     allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
     ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
-    loc1, loc2,loc3,loc4,loc5,loc6,loc7, zygosity, testedID) => {
+    loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID) => {
 
   await poolConnect; // ensures that the pool has been created
      /*
@@ -129,7 +129,7 @@ const  messageHandler = async (
     logger.info ('[244][inputdb]ref_ref_var_var=' + ref_ref_var_var + ', homopolymer_length=' + homopolymer_length + ', subset_of=' + subset_of );
     logger.info ('[244][inputdb]krgdb_622_lukemia=' + krgdb_622_lukemia + ', krgdb_1100_leukemia=' + krgdb_1100_leukemia + ', filename=' + filename );
     logger.info ('[244][inputdb]loc1=' + loc1 + ', loc2=' + loc2 + ', loc3=' + loc3 + ', loc4=' + loc4);
-    logger.info ('[244][inputdb]loc5=' + loc5 + ', loc6=' + loc6 + ', loc7=' + loc7 + ', zygosity=' + zygosity +  ', testedID=' + testedID );
+    logger.info ('[244][inputdb]loc5=' + loc5 + ', loc6=' + loc6 + ', loc7=' + loc7 +  ', testedID=' + testedID );
     
 
   const sql2 =`insert into filtered_raw_tsv (		   
@@ -144,7 +144,7 @@ const  messageHandler = async (
      cosmic, omim, gene_ontology, drugbank, clinvar,
      allele_coverage, allele_ratio, p_value, phred_qual_score, coverage,
      ref_ref_var_var, homopolymer_length, subset_of, krgdb_622_lukemia, krgdb_1100_leukemia, filename,
-     loc1, loc2, loc3, loc4, loc5, loc6, loc7, zygosity, testedID ) 
+     loc1, loc2, loc3, loc4, loc5, loc6, loc7, testedID ) 
     values ( 
     @locus, @genotype, @filter, @ref, @observed_allele,
     @type, @no_call_reason, @genes, @locations, @length,
@@ -157,7 +157,7 @@ const  messageHandler = async (
     @cosmic, @omim, @gene_ontology, @drugbank, @clinvar,
     @allele_coverage, @allele_ratio, @p_value, @phred_qual_score, @coverage,
     @ref_ref_var_var, @homopolymer_length, @subset_of, @krgdb_622_lukemia, @krgdb_1100_leukemia, @filename,
-    @loc1, @loc2, @loc3, @loc4, @loc5, @loc6, @loc7, @zygosity, @testedID)`;
+    @loc1, @loc2, @loc3, @loc4, @loc5, @loc6, @loc7, @testedID)`;
 
   try {
       const request = pool.request()

@@ -131,8 +131,7 @@ exports.main = (data, filename, testedID) => {
 	let subset_of         = '';
 	let krgdb_622_lukemia = '';
 	let krgdb_1100_leukemia = '';
-	let zygosity = '';
-
+	
 	for (let i=0; i < data.length ; i++ ) { 
  
 	  const first_char = data[i][0].substring(0,1);	   
@@ -422,7 +421,7 @@ exports.main = (data, filename, testedID) => {
 				cosmic,omim,gene_ontology,drugbank,clinvar,
 				allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
 				ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
-				loc1, loc2,loc3,loc4,loc5,loc6,loc7, zygosity, testedID			   
+				loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID			   
 		  	);	
 		  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                   
 		  } //
