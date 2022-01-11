@@ -547,7 +547,7 @@ const seqcallHandler = async (req) => {
   await poolConnect;
   const nucleotideChange = req.body.coding;
   const gene             = req.body.gene;
-  sql=`select top 1 isnull(functional_impact, '') type, isnull(exon, '') exonintron,
+  sql=`select top 1 isnull(type, '') type, isnull(exon, '') exonintron,
      isnull(amino_acid_change, '') aminoAcidChange,
      isnull(cosmic_id, '') rsid,  isnull(GenbankAccesionNo, '') genbankaccesion
    from report_detected_variants  
