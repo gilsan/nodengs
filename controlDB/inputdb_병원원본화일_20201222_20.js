@@ -78,7 +78,7 @@ function phredQualScore(score) {
 //  // Location: Exon 포함된것과 5-UTR 필드값 없음을 남김(그 외에 것들은 제거) true, false	
 let loc1, loc2,loc3,loc4,loc5,loc6,loc7 ;
 function locationsProcess(locations_data) {
-	          loc1 = '';
+	      loc1 = '';
 			  loc2 = '';
 			  loc3 = '';
 			  loc4 = '';
