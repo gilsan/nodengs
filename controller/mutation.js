@@ -548,7 +548,7 @@ const seqcallHandler = async (req) => {
   const nucleotideChange = req.body.coding;
   const gene             = req.body.gene;
   sql=`select top 1 isnull(type, '') type, isnull(exon, '') exonintron,
-     isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity
+     isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity,
      isnull(cosmic_id, '') rsid,  isnull(GenbankAccesionNo, '') genbankaccesion
    from report_detected_variants  
    where gubun='SEQ' and sendyn='3' and nucleotide_change=@nucleotideChange and gene=@gene order by id desc`;
