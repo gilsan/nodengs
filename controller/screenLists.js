@@ -1701,7 +1701,7 @@ const SequntialHandler = async (specimenNo) => {
   await poolConnect; 
 
   const sql=`select   isnull(a.type, '') type,
-      isnull(a.exon, '') exonintron, isnull(a.nucleotide_change, '') nucleotideChange, isnull(genbankaccesion, '') genbankaccesion, 
+      isnull(a.exon, '') exonintron, isnull(a.nucleotide_change, '') nucleotideChange, isnull(GenbankAccesionNo, '') genbankaccesion, 
       isnull(a.amino_acid_change, '') aminoAcidChange, isnull(a.zygosity, '') zygosity, isnull(a.cosmic_id, '') rsid,
       isnull(a.reference, '') reference, isnull(saveyn, 'S') saveyn, isnull(sendyn, '') sendyn
       from  [dbo].[report_detected_variants]  a
