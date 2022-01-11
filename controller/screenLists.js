@@ -1703,7 +1703,7 @@ const SequntialHandler = async (specimenNo) => {
   const sql=`select   isnull(a.type, '') type,
       isnull(a.exon, '') exonintron, isnull(a.nucleotide_change, '') nucleotideChange,
       isnull(a.amino_acid_change, '') aminoAcidChange, isnull(a.zygosity, '') zygosity, isnull(a.cosmic_id, '') rsid,
-      isnull(a.reference, '') reference, isnull(saveyn, 'S') saveyn
+      isnull(a.reference, '') reference, isnull(saveyn, 'S') saveyn, isnull(sendyn, '') sendyn
       from  [dbo].[report_detected_variants]  a
       where a.specimenNo =@specimenNo
   `;
@@ -1958,6 +1958,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      const zygosity          = detected_variants[i].zygosity;
      const reference         = nvl(detected_variants[i].genbankaccesion, '');
      const cnt               = nvl(detected_variants[i].cnt, '');
+     const sendyn            = nvl(detected_variants[i].sendyn, '');
 
      let functional_code = i;
  
@@ -1967,16 +1968,16 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
  
      logger.info('[1806][screenList][insert detected_variants]type=' + type + ', functional_code = ' + functional_code + ', exon=' + exon );
      logger.info('[1806][screenList][insert detected_variants]nucleotide_change=' + nucleotide_change + ', amino_acid_change=' + amino_acid_change );
-     logger.info('[1806][screenList][insert detected_variants]zygosity=' + zygosity + ', cosmic_id=' + cosmic_id + ', cnt=' + cnt 
-     + ', GenbankAccesionNo='+ reference + ', gene= ' + gene);
+     logger.info('[1806][screenList][insert detected_variants]zygosity=' + zygosity + ', cosmic_id=' + cosmic_id + ', cnt=' + cnt );
+     logger.info('[1806][screenList][insert detected_variants]GenbankAccesionNo='+ reference + ', gene= ' + gene + ', sendyn' + sendyn );
   
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               cosmic_id, functional_code, cnt, zygosity, reference, gene, gubun, saveyn) 
+               cosmic_id, functional_code, cnt, zygosity, reference, gene, gubun, sendyn saveyn) 
                values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
-                  @cosmic_id, @functional_code, @cnt, @zygosity, @reference,@gene, 'SEQ', 'S')`;
+                  @cosmic_id, @functional_code, @cnt, @zygosity, @reference,@gene, 'SEQ', @sendyn, 'S')`;
              
        logger.info('[1819][screenList][insert detected_variants 7]sql=' + qry);
  
@@ -1992,7 +1993,8 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
              .input('cosmic_id', mssql.VarChar, cosmic_id)
              .input('cnt', mssql.VarChar, cnt)
              .input('reference', mssql.NVarChar, reference)
-             .input('gene', mssql.VarChar, gene) ;
+             .input('gene', mssql.VarChar, gene) 
+             .input('sendyn', mssql.VarChar, sendyn) ;
              
              result = await request.query(qry);         
      
