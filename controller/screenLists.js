@@ -1974,7 +1974,7 @@ const insertHandler_form7 = async (specimenNo, detected_variants) => {
      //insert Query 생성;
      const qry = `insert into report_detected_variants (specimenNo, report_date, type,
                exon, nucleotide_change, amino_acid_change, 
-               cosmic_id, functional_code, cnt, zygosity, reference, gene, gubun, sendyn saveyn) 
+               cosmic_id, functional_code, cnt, zygosity, reference, gene, gubun, sendyn, saveyn) 
                values(@specimenNo, getdate(),  @type,
                   @exon, @nucleotide_change, @amino_acid_change, 
                   @cosmic_id, @functional_code, @cnt, @zygosity, @reference,@gene, 'SEQ', @sendyn, 'S')`;
