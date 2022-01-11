@@ -47,7 +47,7 @@ function removeQuote(value) {
 const  messageHandler_ver = async (ver_file, testedID) => {
 	await poolConnect; // ensures that the pool has been created
 	 
-	logger.info('[45][main update][messageHandler3]ver_file=' + ver_file + ", testedID" + testedID);
+	logger.info('[45][main update][messageHandler3]ver_file=' + ver_file + ", testedID=" + testedID);
 	const qry=`update patientinfo_diag 
 		  set ver_file = @ver_file,
 		  saveyn = 'T'   
@@ -69,7 +69,8 @@ const  messageHandler_ver = async (ver_file, testedID) => {
 
 exports.main = (data, filename, testedID) => {
     console.log('[main]', filename, testedID, data.length);
-
+	logger.info('[72][main ][messageHandler3]testedID=' + testedID);
+	
 	inputdb_mod.inputdb_del(testedID);
 
 	let locus             = '';
@@ -384,7 +385,8 @@ exports.main = (data, filename, testedID) => {
 		  
 		  /////////////////////////////////////////////////////////////////////////////////////////
 		  if(locations_result && varian_effect_result && phredQualScore_result && gmaf_result  && krgdb && info_result) {	
- 			
+			logger.info('[388][main ][messageHandler3]testedID=' + testedID);
+	
 			let ver_path = '5.10';
 
 			if (len == 63 )
@@ -405,6 +407,9 @@ exports.main = (data, filename, testedID) => {
 			
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 			//  console.log('locus: ', locus);
+
+			logger.info('[411][main ][messageHandler3]testedID=' + testedID);
+	
 			inputdb_mod.inputdb(
 				locus,genotype,filter,ref,observed_allele,
 				type,no_call_reason,genes,locations,length2,

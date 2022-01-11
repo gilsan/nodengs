@@ -252,6 +252,9 @@ exports.inputdb = (
 		   loc1, loc2,loc3,loc4,loc5,loc6,loc7, zygosity, testedID ) => {
           console.log('inputdb: ', locus);
 
+          logger.info('[255][inputdb ]testedID=' + testedID);
+	
+
     const result = messageHandler(locus,genotype,filter,ref,observed_allele,
         type,no_call_reason,genes,locations,length,
         info, variant_id,variant_name,frequency,strand,exon,
