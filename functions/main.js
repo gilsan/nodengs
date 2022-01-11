@@ -420,8 +420,8 @@ exports.main = (data, filename, testedID) => {
 				exac_efaf, exac_saaf,exac_enfaf,exac_aaf,exac_gaf,
 				cosmic,omim,gene_ontology,drugbank,clinvar,
 				allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
-				ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename,
-				loc1, loc2,loc3,loc4,loc5,loc6,loc7, testedID			   
+				ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename, testedID,
+				loc1, loc2,loc3,loc4,loc5,loc6,loc7			   
 		  	);	
 		  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                   
 		  } //

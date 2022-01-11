@@ -269,7 +269,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
             , accept_date accept_date2 
             ,isnull(test_code, '') test_code  
-            ,isnull(a.screenstatus, '')  screenstatus, isnull(path, '') path, isnull(detected, '') detected 
+            ,case when isnull(a.screenstatus, '') = '' then '10' else screenstatus end  screenstatus, isnull(path, '') path, isnull(detected, '') detected 
             ,case when IsNULL( CONVERT(VARCHAR(4), a.report_date, 102 ), '' ) = '1900'  
                 then '' 
                 else IsNULL( CONVERT(VARCHAR(10), a.report_date, 102 ), '' ) end  report_date 
@@ -279,7 +279,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             , isnull(report_title, '') reportTitle
             , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
             , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
-            , case when isnull(a.screenstatus, '') = '' then  'T' 
+            , case when isnull(a.screenstatus, '') = '10' then  'T' 
             else isnull(saveyn, 'S') end saveyn
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
