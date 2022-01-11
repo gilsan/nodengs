@@ -549,7 +549,7 @@ const seqcallHandler = async (req) => {
   const gene             = req.body.gene;
   sql=`select top 1 isnull(functional_impact, '') type, isnull(exon, '') exonintron,
      isnull(amino_acid_change, '') aminoAcidChange,
-     isnull(cosmic_id, '') rsid,  isnull(GenbankAccesionNo, '') genbankaccesion
+     isnull(cosmic_id, '') rsid,  isnull(genbank_accesion, '') genbankaccesion
    from mutation  
    where gubun='SEQ' and sendyn='3' and nucleotide_change=@nucleotideChange and gene=@gene order by id desc`;
   logger.info('[460][mutation][seqcallHandler] =' + sql);
