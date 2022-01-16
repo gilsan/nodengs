@@ -810,11 +810,40 @@ exports.limsOrganSave = (req, res, next) => {
 }
  //////// DNA ct 갱신
  const limsDnactSaveHandler = async (test_code, dnact) => {   
+     let request;
+     let qry;
     logger.info('[809][limsDnactSaveHandler]test_code=' + test_code);
     logger.info('[810][limsDnactSaveHandler]dnact=' + dnact);
 
     let result;  
     //insert Query 생성;
+    const query = `select count(*) as cnt from statecontrol where pathology_num = @test_code`;
+    try {
+        request = pool.request()
+        .input('test_code', mssql.VarChar, test_code);
+
+        result = await request.query(query); 
+       
+        console.log(result.recordset[0].cnt);
+        if (result.recordset[0].cnt === 0) {
+            qry = `insert into statecontrol (dnaRnasep, pathology_num ,rna18s, averageBase, mapd, rnaMapped)
+            values(@dnact, @test_code, '','','','')`;
+        } else {
+            qry = `update statecontrol   set  dnaRnasep = @dnact  where pathology_num = @test_code`;
+        }
+        console.log(qry);
+        request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('dnact', mssql.VarChar, dnact);
+
+        result = request.query(qry);     
+        return result;
+
+    } catch (error) {
+        logger.error('[825] *** [limsDnactSaveHandler] *** err=  ****  ' + error.message);
+    }
+
+    /*
     const qry = `update statecontrol   set  dnaRnasep = @dnact  where pathology_num = @test_code`;          
     logger.info('[815][limsDnactSaveHandler]sql=' + qry);
     
@@ -828,6 +857,7 @@ exports.limsOrganSave = (req, res, next) => {
     } catch (error) {
         logger.error('[825] *** [limsDnactSaveHandler] *** err=  ****  ' + error.message);
     }
+    */
 }
 
 exports.limsDnactSave = (req, res, next) => {   
@@ -845,24 +875,51 @@ exports.limsDnactSave = (req, res, next) => {
 
  ///// RNA ct 갱신
  const limsRnactSaveHandler = async (test_code, rnact) => {   
+    let request;
+    let qry;
+    let result;  
     logger.info('[844][limsRnactSaveHandler]test_code=' + test_code);
     logger.info('[845][limsRnactSaveHandler]rnact=' + rnact);
 
-    let result;  
-    //insert Query 생성;
-    const qry = `update statecontrol   set  rna18s = @rnact  where pathology_num = @test_code`;          
-    logger.info('[850][limsRnactSaveHandler]sql=' + qry);
-    
+    const query = `select count(*) as cnt from statecontrol where pathology_num = @test_code`;
     try {
-        const request = pool.request()
+        request = pool.request()
+        .input('test_code', mssql.VarChar, test_code);
+
+        result = await request.query(query); 
+       
+        console.log(result.recordset[0].cnt);
+        if (result.recordset[0].cnt === 0) {
+            qry = `insert into statecontrol (rna18s,  pathology_num dnaRnasep, averageBase, mapd, rnaMapped)
+            values(@rnact, @test_code, '','','','')`;
+        } else {
+            qry = `update statecontrol   set  rna18s = @rnact  where pathology_num = @test_code`;
+        }
+        console.log(qry);
+        request = pool.request()
         .input('test_code', mssql.VarChar, test_code)
         .input('rnact', mssql.VarChar, rnact);
 
-        result = request.query(qry);         
+        result = request.query(qry);     
+        return result;
 
-    } catch (error) {
+    } catch(error) {
         logger.error('[860] *** [limsRnactSaveHandler] *** err=  ****  ' + error.message);
     }
+ 
+    // const qry = `update statecontrol   set  rna18s = @rnact  where pathology_num = @test_code`;          
+    // logger.info('[850][limsRnactSaveHandler]sql=' + qry);
+    
+    // try {
+    //     const request = pool.request()
+    //     .input('test_code', mssql.VarChar, test_code)
+    //     .input('rnact', mssql.VarChar, rnact);
+
+    //     result = request.query(qry);         
+
+    // } catch (error) {
+    //     logger.error('[860] *** [limsRnactSaveHandler] *** err=  ****  ' + error.message);
+    // }
 }
 
 exports.limsRnactSave = (req, res, next) => {   
