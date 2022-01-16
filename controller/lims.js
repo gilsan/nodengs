@@ -381,7 +381,7 @@ const  limsSelectHandler = async (start, end) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date ) id  
+            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY path_date ) id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -420,6 +420,7 @@ const  limsSelectHandler = async (start, end) => {
                 isnull(a.pathology_num, '') pathology_num 
                 , isnull(rel_pathology_num, '') rel_pathology_num 
                 , isnull( a.prescription_date, '') prescription_date
+                , isnull(a.pathology_num, '') + isnull( a.prescription_date, '') path_date
                 , isnull( a.patientID, '') patientID
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
@@ -468,6 +469,7 @@ const  limsSelectHandler = async (start, end) => {
                 isnull(a.pathology_num, '') pathology_num 
                 , isnull(rel_pathology_num, '') rel_pathology_num 
                 , isnull( a.prescription_date, '') prescription_date
+                , isnull(a.pathology_num, '') + isnull( a.prescription_date, '') path_date
                 , isnull( a.patientID, '') patientID
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
@@ -560,7 +562,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY prescription_date ) id  
+            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY path_date ) id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -599,6 +601,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 isnull(a.pathology_num, '') pathology_num 
                 , isnull(rel_pathology_num, '') rel_pathology_num 
                 , isnull( a.prescription_date, '') prescription_date
+                , isnull(a.pathology_num, '') + isnull( a.prescription_date, '') path_date
                 , isnull( a.patientID, '') patientID
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
@@ -647,6 +650,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 isnull(a.pathology_num, '') pathology_num 
                 , isnull(rel_pathology_num, '') rel_pathology_num 
                 , isnull( a.prescription_date, '') prescription_date
+                , isnull(a.pathology_num, '') + isnull( a.prescription_date, '') path_date
                 , isnull( a.patientID, '') patientID
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
@@ -725,3 +729,154 @@ exports.limsList2 = (req, res, next) => {
         res.sendStatus(500)
     }); 
  };
+
+ /////////  key_block 갱신
+ const limsKeyblockSaveHandler = async (test_code, key_block) => {
+    
+    logger.info('[732][limsKeyblockSaveHandler]test_code=' + test_code);
+    logger.info('[733][limsKeyblockSaveHandler]keyblock=' + key_block);
+
+    let result;  
+    //insert Query 생성;
+    const qry = `update patientinfo_path 
+                    set  key_block = @key_block
+                where pathology_num = @test_code`;
+            
+    logger.info('[741][limsKeyblockSaveHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('key_block', mssql.VarChar, key_block);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[751] *** [limsKeyblockSaveHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+exports.limsKeyblockSave = (req, res, next) => {
+    
+    let test_code   =  req.body.test_code; 
+    let keyblock    =  req.body.keyblock;
+    logger.info('[759][limsKeyblockSave] ===> ' + test_code + ", keyblock=" + keyblock );
+    const result = limsKeyblockSaveHandler(test_code, keyblock);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[765][limsKeyblockSave]err=' + error.message);
+    });
+}
+
+//////////// organ 갱신
+const limsOrganSaveHandler = async (test_code, organ) => {
+    
+    logger.info('[772][limsOrganSaveHandler]test_code=' + test_code);
+    logger.info('[773][limsOrganSaveHandler]organ=' + organ);
+
+    let result;  
+    //insert Query 생성;
+    const qry = `update patientinfo_path 
+                    set  organ = @organ
+                where pathology_num = @test_code`;
+            
+    logger.info('[781][limsOrganSaveHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('organ', mssql.NVarChar, organ);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[791] *** [limsOrganSaveHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+exports.limsOrganSave = (req, res, next) => {   
+    let test_code   =  req.body.test_code; 
+    let organ        = req.body.organ;
+    logger.info('[798][limsOrganSave] ===> ' + test_code + ", organ=" + organ );
+    const result = limsOrganSaveHandler(test_code, organ);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[804][limsOrganSave]err=' + error.message);
+    });
+}
+ //////// DNA ct 갱신
+ const limsDnactSaveHandler = async (test_code, dnact) => {   
+    logger.info('[809][limsDnactSaveHandler]test_code=' + test_code);
+    logger.info('[810][limsDnactSaveHandler]dnact=' + dnact);
+
+    let result;  
+    //insert Query 생성;
+    const qry = `update statecontrol   set  dnaRnasep = @dnact  where pathology_num = @test_code`;          
+    logger.info('[815][limsDnactSaveHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('dnact', mssql.VarChar, dnact);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[825] *** [limsDnactSaveHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+exports.limsDnactSave = (req, res, next) => {   
+    let test_code   =  req.body.test_code; 
+    let dnact       =  req.body.dnact;
+    logger.info('[832][limsDnactSave] ===> ' + test_code + ", dnact=" + dnact );
+    const result = limsDnactSaveHandler(test_code, dnact);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[838][limsDnactSave]err=' + error.message);
+    });
+}
+
+ ///// RNA ct 갱신
+ const limsRnactSaveHandler = async (test_code, rnact) => {   
+    logger.info('[844][limsRnactSaveHandler]test_code=' + test_code);
+    logger.info('[845][limsRnactSaveHandler]rnact=' + rnact);
+
+    let result;  
+    //insert Query 생성;
+    const qry = `update statecontrol   set  rna18s = @rnact  where pathology_num = @test_code`;          
+    logger.info('[850][limsRnactSaveHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('rnact', mssql.VarChar, rnact);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[860] *** [limsRnactSaveHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+exports.limsRnactSave = (req, res, next) => {   
+    let test_code   =  req.body.test_code; 
+    let rnact       =  req.body.rnact;
+    logger.info('[867][limsRnactSave] ===> ' + test_code + ", rnact=" + rnact );
+    const result = limsRnactSaveHandler(test_code, rnact);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[873][limsRnactSave]err=' + error.message);
+    });
+}
+
+
+ /////////////////
