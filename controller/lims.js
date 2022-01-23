@@ -737,24 +737,24 @@ const  limsSelectHandler3 = async () => {
     await poolConnect; // ensures that the pool has been created
     //select Query 생성
         let qry = `SELECT 
-                , isnull(report_date, '') report_date
-                , isnull(examin,  '') examin
-                , isnull(recheck,  '') recheck
+                , isnull(a.report_date, '') report_date
+                , isnull(a.examin,  '') examin
+                , isnull(a.recheck,  '') recheck
                 , isnull(b.user_nm, '') exam_nm
                 , isnull(c.user_nm, '') recheck_nm
 
             from
             (
-                SELECT  distinct [report_date]
-                    ,[examin]
-                    ,[recheck]
-                FROM  [dbo].[lims] 
-                where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
-                ) a
-                left outer join dbo.users b
-                on a.examin = b.user_id
-                left outer join dbo.users c
-                on a.recheck = c.user_id `;
+            SELECT  distinct [report_date] report_date
+                ,[examin] examin
+                ,[recheck] recheck
+            FROM  [dbo].[lims] 
+            where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
+            ) a
+            left outer join dbo.users b
+            on a.examin = b.user_id
+            left outer join dbo.users c
+            on a.recheck = c.user_id `;
 
         logger.info('[760]limsSelectHandler sql=' + qry);
     
