@@ -737,7 +737,7 @@ const  limsSelectHandler3 = async () => {
     await poolConnect; // ensures that the pool has been created
     //select Query 생성
         let qry = `SELECT 
-                , isnull(a.report_date, '') report_date
+                 isnull(a.report_date, '') report_date
                 , isnull(a.examin,  '') examin
                 , isnull(a.recheck,  '') recheck
                 , isnull(b.user_nm, '') exam_nm
