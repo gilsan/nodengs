@@ -730,6 +730,62 @@ exports.limsList2 = (req, res, next) => {
     }); 
  };
 
+
+ 
+
+const  limsSelectHandler3 = async () => {
+    await poolConnect; // ensures that the pool has been created
+    //select Query 생성
+        let qry = `SELECT 
+            , isnull(report_date, '') report_date
+            , isnull(examin,  '') examin
+            , isnull(recheck,  '') recheck
+            , isnull(b.user_nm, '') exam_nm
+            , isnull(c.user_nm, '') recheck_nm
+
+            from
+            (
+                SELECT  distinct [report_date]
+                    ,[examin]
+                    ,[recheck]
+                FROM [ngs_data].[dbo].[lims]
+                FROM  [dbo].[lims] b 
+                where left(b.report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
+                ) a1 
+                left outer join dbo.users b
+                on a.examin = b.user_id
+                left outer join dbo.users c
+                on a.recheck = c.user_id `;
+
+        logger.info('[760]limsSelectHandler sql=' + qry);
+    
+    try {
+
+        const request = pool.request();
+
+        const result = await request.query(qry);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[769]limsSelectHandler err=' + error.message);
+    }
+}
+
+
+// get lims List
+exports.limsList3 = (req, res, next) => {
+    logger.info('[776]limsList3 req=' + JSON.stringify(req.body));
+
+    const result = limsSelectHandler3();
+    result.then(data => {  
+        //  console.log('[708][limsList3]', data);
+          res.json(data);
+    })
+    .catch( error => {
+        logger.error('[784]limsList3 err=' + error.message);
+        res.sendStatus(500)
+    }); 
+ };
+
  /////////  key_block 갱신
  const limsKeyblockSaveHandler = async (test_code, key_block) => {
     
