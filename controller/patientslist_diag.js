@@ -602,7 +602,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
    let name   = nvl(req.body.name, ''); // 연구용
    let specimenNo   =  req.body.specimenNo; // 검채 번호
    let status   =  req.body.status; // 상태
-   let sheet   =  nvl(req.body.sheet, 'genetic'); // 결과지
+   let sheet   =  nvl(req.body.sheet, 'genetic'); // 결과지 
    let research = req.body.research; // 연구용
 
    console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status, name);
@@ -658,7 +658,7 @@ exports.getPatientDiagListsSequencing = (req, res,next) => {
         console.log('end=', end);
     }
  
-    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, nmae);
+    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
     result.then(data => {
        
        res.json(data);
