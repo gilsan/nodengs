@@ -439,13 +439,14 @@ exports.getPatientDiagLists = (req, res,next) => {
    let start =  req.body.start; //.replace("-", "");
    let end   =  req.body.end; //.replace("-", "");
    let patientID   =  req.body.patientID.trim(); // 환자 id
+   let name   = nvl(req.body.name, ''); // 연구용
    let specimenNo   =  req.body.specimenNo.trim(); // 검채 번호
    let status   =  req.body.status; // 상태
    let sheet   =  req.body.sheet; // 결과지
    let research = req.body.research1; // 연구용
 
-   console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status, research);
-   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research1=" + research);
+   console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status, research, name);
+   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research1=" + research + ', ' + name );
    
    const  now = new Date();
    const today = getFormatDate2(now);
@@ -458,7 +459,7 @@ exports.getPatientDiagLists = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
  
       res.json(data);
