@@ -302,7 +302,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
 
     if(name1.length > 0 )
     {
-        sql = sql +  " and a.name like '" +  name + "%'";
+        sql = sql +  " and a.name like '" +  name1 + "%'";
     }
 
     if(sheet_1.length > 0 )
