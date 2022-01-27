@@ -213,7 +213,7 @@ exports.getDiagLists = (req,res, next) => {
 
 // 진검 환자 검색
 // 2021.01.29 prescription_date -> accept_date 조회 조건 변경
-const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status, research) => {
+const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
     await poolConnect; // ensures that the pool has been created
    
   logger.info('[196][patientinfo_diag list]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo + ' '  + sheet + ' ' +  status + ' ' + research);
@@ -358,6 +358,10 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             sql = sql +  " and a.gbn = ''";
         }
     }
+
+    if (name.length > 0) {
+        sql = sql + "  and name = '" + name + "'";
+    }
     //sql = sql + " order by accept_date desc, specimenNo desc   ";
     sql = sql + " order by accept_date2 asc  ";
 
@@ -435,6 +439,7 @@ exports.getPatientDiagLists = (req, res,next) => {
    let status   =  req.body.status; // 상태
    let sheet   =  req.body.sheet; // 결과지
    let research = req.body.research1; // 연구용
+   let name = req.body.name; // 환자이름
 
    console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status, research);
    logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research1=" + research);
@@ -450,7 +455,7 @@ exports.getPatientDiagLists = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
  
       res.json(data);
@@ -475,7 +480,7 @@ exports.getPatientDiagListsAml = (req, res,next) => {
    let status   =  req.body.status; // 상태
    let sheet   =  nvl(req.body.sheet, 'AMLALL'); // 결과지
    let research = req.body.research; // 연구용
-
+   let name = req.body.name;
    console.log('[361][patientslist_diag][getPatientDiagListsAml] 검색', start,end, patientID, specimenNo, sheet, status);
    
    const  now = new Date();
@@ -489,7 +494,7 @@ exports.getPatientDiagListsAml = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
 
       res.json(data);
@@ -514,7 +519,7 @@ exports.getPatientDiagListsMdsMlpn = (req, res,next) => {
    let status   =  req.body.status; // 상태
    let sheet   =  nvl(req.body.sheet, 'MDS'); // 결과지
    let research = req.body.research; // 연구용
-
+   let name = req.body.name;
    console.log('[361][patientslist_diag][getPatientDiagListsMdsMlpn] 검색', start,end, patientID, specimenNo, sheet, status, research);
    
    const  now = new Date();
@@ -528,7 +533,7 @@ exports.getPatientDiagListsMdsMlpn = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
 
       res.json(data);
@@ -553,7 +558,7 @@ exports.getPatientDiagListsLymphoma = (req, res,next) => {
    let status   =  req.body.status; // 상태
    let sheet   =  nvl(req.body.sheet, 'lymphoma'); // 결과지
    let research = req.body.research; // 연구용
-
+   let name = req.body.name;
    console.log('[440][patientslist_diag][getPatientDiagListsLymphoma] 검색', start,end, patientID, specimenNo, sheet, status);
    
    const  now = new Date();
@@ -567,7 +572,7 @@ exports.getPatientDiagListsLymphoma = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
 
       res.json(data);
@@ -592,7 +597,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
    let status   =  req.body.status; // 상태
    let sheet   =  nvl(req.body.sheet, 'genetic'); // 결과지
    let research = req.body.research; // 연구용
-
+   let name = req.body.name;
    console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status);
    
    const  now = new Date();
@@ -606,7 +611,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
 
       res.json(data);
@@ -631,7 +636,7 @@ exports.getPatientDiagListsSequencing = (req, res,next) => {
     let status   =  req.body.status; // 상태
     let sheet   =  nvl(req.body.sheet, 'Sequencing'); // 결과지
     let research = req.body.research; // 연구용
- 
+    let name = req.body.name;
     console.log('[518][patientslist_diag][getPatientDiagListsSequencing] 검색', start,end, patientID, specimenNo, sheet, status);
     
     const  now = new Date();
@@ -645,7 +650,7 @@ exports.getPatientDiagListsSequencing = (req, res,next) => {
         console.log('end=', end);
     }
  
-    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
     result.then(data => {
        
        res.json(data);
@@ -670,7 +675,7 @@ exports.getPatientDiagListsMlpa = (req, res,next) => {
     let status   =  req.body.status; // 상태
     let sheet   =  nvl(req.body.sheet, 'MLPA'); // 결과지
     let research = req.body.research; // 연구용
- 
+    let name = req.body.name;
     console.log('[545][patientslist_diag][getPatientDiagListsMlpa] 검색', start,end, patientID, specimenNo, sheet, status);
     
     const  now = new Date();
@@ -684,7 +689,7 @@ exports.getPatientDiagListsMlpa = (req, res,next) => {
         console.log('end=', end);
     }
  
-    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research);
+    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
     result.then(data => {
  
        res.json(data);

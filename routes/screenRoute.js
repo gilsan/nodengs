@@ -26,4 +26,8 @@ router.post('/listReportMLPA', screenController.listReportMlpa); // MLPA report 
 
 router.post('/finish', screenController.finishScreen);
 
+
+// 진검 접수 취소
+router.get('/receiptcancel_diag', screenController.receiptcancel_diag);
+
 module.exports = router;
