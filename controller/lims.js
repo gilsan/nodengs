@@ -93,7 +93,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         let lib2_dw           = lims[i].lib2_dw;
         let report_date       = lims[i].report_date;
         
-        let dna_rna_gbn       = lims[i].dna_rna_gbn
+        let dna_rna_gbn       = lims[i].dna_rna_gbn;
         let seq               = lims[i].id;
     
         /*
@@ -285,14 +285,69 @@ exports.limsSave = (req, res, next) => {
     let lims   =  req.body.lims; 
     let examin = req.body.examin;
     let recheck = req.body.recheck;
-    logger.info('[279][limsinsertHandler] ===> ' + lims + ", examin=" + examin +  ", recheck=" + recheck);
-    const result = limsinsertHandler(lims, examin, recheck);
-    result.then( data => {
-         res.json({message: 'SUCCESS'});
-    })
-    .catch( error => {
-        logger.error('[285][limsinsertHandler]err=' + error.message);
-    });
+    let pathology_num   = '';
+    let pathology_num2  = '';
+
+    let dna_cnt = 0;
+    let rna_cnt = 0;
+    let dna_rna = 0; 
+
+    for (i = 0; i < lims.length; i++)
+    {
+        
+        pathology_num     = '';
+        let dna_rna_gbn   = lims[i].dna_rna_gbn;
+        dna_rna = 0; 
+
+        if (dna_rna_gbn == '0') {
+            dna_cnt += 1;
+            pathology_num  = lims[i].pathology_num;
+        }else if (dna_rna_gbn == '1') {
+            rna_cnt += 1;
+        }
+
+        for (j = i + 1; j < lims.length ; j ++ )
+        {
+            pathology_num2  = '';
+            dna_rna_gbn       = lims[j].dna_rna_gbn;
+
+            if (dna_rna_gbn == '1') {
+                pathology_num2  = lims[j].pathology_num;
+            }
+
+            if  (dna_rna_gbn == '1') {
+                if (pathology_num == pathology_num2) {
+                    dna_rna = 1; 
+                }
+            }
+        }
+
+        if (dna_rna == 0) {
+            break;
+        }
+    }
+
+    if (dna_rna == 0 )
+    {
+        res.json({message: 'FAIL'});
+        return;
+    }
+    else if (dna_cnt != rna_cnt )
+    {
+        res.json({message: 'FAIL'});
+        return;
+    }
+    else {
+
+        logger.info('[279][limsinsertHandler] ===> ' + lims + ", examin=" + examin +  ", recheck=" + recheck);
+        const result = limsinsertHandler(lims, examin, recheck);
+        result.then( data => {
+            res.json({message: 'SUCCESS'});
+        })
+        .catch( error => {
+            logger.error('[285][limsinsertHandler]err=' + error.message);
+        });
+    }
 }
 
 const limsCellPerSaveHandler = async (test_code, tumor_cell_per) => {
