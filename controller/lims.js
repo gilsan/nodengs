@@ -94,6 +94,13 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         let report_date       = lims[i].report_date;
         
         let dna_rna_gbn       = lims[i].dna_rna_gbn
+        let seq               = lims[i].id;
+    
+        /*
+        if (seq < 10) {
+            seq = '0' + i;
+        }
+        */
 
         const result6 = limsCountHandler (pathology_num, report_date, dna_rna_gbn);
         result6.then(data => {
@@ -120,13 +127,13 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                                 nano_ng, nano_280, nano_230, nano_dil, 
                                 dan_rna, dw, tot_ct, ct, te, quan_dna,
                                 quantity, quantity_2, quan_tot_vol, ng_ui, lib_hifi, 
-                                pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn) 
+                                pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn, seq) 
                             values(@pathology_num, @report_date,  @path_type,
                                 @prescription_code, @test_code, @key_block, @block_cnt, @tumorburden, 
                                 @nano_ng, @nano_280, @nano_230, @nano_dil,
                                 @dan_rna, @dw, @tot_ct, @ct, @te, @quan_dna,
                                 @quantity, @quantity_2, @quan_tot_vol, @ng_ui, @lib_hifi,
-                                @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn)`;
+                                @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn, @seq)`;
                         
                 logger.info('[129][limsinsertHandler]sql=' + qry);
                 
@@ -164,7 +171,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                     .input('lib2_dw', mssql.VarChar, lib2_dw)
                     .input('examin', mssql.VarChar, examin)
                     .input('recheck', mssql.VarChar, recheck)
-                    .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
+                    .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn)
+                    .input('seq', mssql.VarChar, seq);
 
                     result = request.query(qry);         
             
@@ -214,7 +222,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                                 lib2 = @lib2,
                                 lib2_dw = @lib2_dw, 
                                 examin =@examin, 
-                                recheck = @recheck
+                                recheck = @recheck,
+                                seq = @seq
                             where pathology_num = @pathology_num
                             and  report_date = @report_date 
                             and dna_rna_gbn = @dna_rna_gbn  `;
@@ -254,7 +263,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                     .input('lib2_dw', mssql.VarChar, lib2_dw)
                     .input('examin', mssql.VarChar, examin)
                     .input('recheck', mssql.VarChar, recheck)
-                    .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn);
+                    .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn)
+                    .input('seq', mssql.VarChar, seq);
 
                     result = request.query(qry);         
             
@@ -562,7 +572,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY path_date ) id  
+            , isnull(id, '99') id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -606,7 +616,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
                 , isnull(name, '') name
-                , isnull(b.id, '') id  
+                , isnull(b.seq, '99') id  
                 , isnull( organ, '') prescription_code
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
@@ -655,7 +665,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
                 , isnull(name, '') name
-                , isnull(b.id, '') id  
+                , isnull(b.seq, '99') id  
                 , isnull( organ, '') prescription_code
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
