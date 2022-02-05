@@ -306,33 +306,9 @@ exports.limsSave = (req, res, next) => {
             rna_cnt += 1;
         }
 
-        for (j = i + 1; j < lims.length ; j ++ )
-        {
-            pathology_num2  = '';
-            dna_rna_gbn       = lims[j].dna_rna_gbn;
-
-            if (dna_rna_gbn == '1') {
-                pathology_num2  = lims[j].pathology_num;
-            }
-
-            if  (dna_rna_gbn == '1') {
-                if (pathology_num == pathology_num2) {
-                    dna_rna = 1; 
-                }
-            }
-        }
-
-        if (dna_rna == 0) {
-            break;
-        }
     }
-
-    if (dna_rna == 0 )
-    {
-        res.json({message: 'FAIL'});
-        return;
-    }
-    else if (dna_cnt != rna_cnt )
+    
+    if (dna_cnt != rna_cnt )
     {
         res.json({message: 'FAIL'});
         return;
