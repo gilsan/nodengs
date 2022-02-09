@@ -285,12 +285,9 @@ exports.limsSave = (req, res, next) => {
     let lims   =  req.body.lims; 
     let examin = req.body.examin;
     let recheck = req.body.recheck;
-    let pathology_num   = '';
-    let pathology_num2  = '';
 
     let dna_cnt = 0;
     let rna_cnt = 0;
-    let dna_rna = 0; 
 
     for (i = 0; i < lims.length; i++)
     {
@@ -593,7 +590,7 @@ exports.limsList = (req, res, next) => {
 
 const  limsSelectHandler2 = async (start, examin, recheck) => {
     await poolConnect; // ensures that the pool has been created
-    logger.info('[553] limsSelectHandler =' + start + ", " + examin + ", " + recheck );
+    logger.info('[553] limsSelectHandler2 =' + start + ", " + examin + ", " + recheck );
     //select Query 생성
         let qry = `SELECT
             isnull(pathology_num, '') pathology_num 
@@ -738,7 +735,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             ) a1 
             ORDER BY dna_rna_gbn, id  `;
 
-        logger.info('[692]limsSelectHandler sql=' + qry);
+        logger.info('[692]limsSelectHandler2 sql=' + qry);
     
     try {
 
@@ -747,7 +744,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
         const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
-        logger.error('[701]limsSelectHandler err=' + error.message);
+        logger.error('[701]limsSelectHandler2 err=' + error.message);
     }
 }
 
@@ -797,7 +794,7 @@ const  limsSelectHandler3 = async () => {
             left outer join dbo.users c
             on a.recheck = c.user_id `;
 
-        logger.info('[760]limsSelectHandler sql=' + qry);
+        logger.info('[760]limsSelectHandler3 sql=' + qry);
     
     try {
 
@@ -806,7 +803,7 @@ const  limsSelectHandler3 = async () => {
         const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
-        logger.error('[769]limsSelectHandler err=' + error.message);
+        logger.error('[769]limsSelectHandler3 err=' + error.message);
     }
 }
 
@@ -1033,3 +1030,46 @@ exports.limsRnactSave = (req, res, next) => {
 
 
  /////////////////
+
+ 
+
+
+ 
+
+const  limsTumorHandler = async () => {
+    await poolConnect; // ensures that the pool has been created
+    //select Query 생성
+        let qry = `SELECT 
+                    [gene]
+                    ,[orderby]
+                FROM [NGS_DATA].[dbo].[limsTumor]
+                order by seq `;
+
+        logger.info('[1051]limsTumorHandler sql=' + qry);
+    
+    try {
+
+        const request = pool.request();
+
+        const result = await request.query(qry);
+        return result.recordset; 
+    }catch (error) {
+        logger.error('[1060]limsTumorHandler err=' + error.message);
+    }
+}
+
+
+// get lims tumor List
+exports.limsTumor = (req, res, next) => {
+    logger.info('[1067]limsTumor req=' + JSON.stringify(req.body));
+
+    const result = limsTumorHandler();
+    result.then(data => {  
+        //  console.log('[1071][limsTumor]', data);
+          res.json(data);
+    })
+    .catch( error => {
+        logger.error('[1075]limsTumor err=' + error.message);
+        res.sendStatus(500)
+    }); 
+ };
