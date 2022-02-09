@@ -107,10 +107,10 @@ rowData.forEach ( async (row, index) =>  {
   if (rowCount >= 0) {
 
     // 	code	report	type
-      var gene = nvl(row[0].replace( /"/gi, ''), "");
+      var gene = nvl(row[1].replace( /"/gi, ''), "");
       logger.info('[87][limstumor][gene]=' + gene);
 
-      var orderby =nvl(row[1].replace( /"/gi, ''), "");
+      var orderby =nvl(row[0].replace( /"/gi, ''), "");
       logger.info('[87][limstumor][orderby]=' + orderby);
 
       var seq =nvl(row[2].replace( /"/gi, ''), "");
@@ -123,9 +123,9 @@ rowData.forEach ( async (row, index) =>  {
           
           const request = pool.request()
             .input('gene', mssql.VarChar, gene)  
-            .input('orderby', mssql.NVarChar, orderby) 
-            .input('seq', mssql.NVarChar, seq) 
-            .output('TOTALCNT', mssql.int, 0);
+            .input('orderby', mssql.VarChar, orderby) 
+            .input('seq', mssql.Int, seq) 
+            .output('TOTALCNT', mssql.Int, 0);
           
         let result2 =  '';
         await request.execute(sql, (err, recordset, returnValue) => {
