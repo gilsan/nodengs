@@ -23,16 +23,21 @@ function nvl(st, defaultStr){
 }
 
 // lims exist
-const  limsCountHandler = async (pathology_num, report_date, dna_rna_gbn) => {
+const  limsCountHandler = async (pathology_num, report_date, dna_rna_gbn, examin, recheck) => {
    await poolConnect; // ensures that the pool has been created
 
   logger.info('[30][lims]limsCountHandler data=' +  pathology_num + ", " + report_date + ", dna_rna_gbn=" + dna_rna_gbn ) ;
+  logger.info('[30][lims][limsCountHandler]examin=' + examin);
+  logger.info('[30][lims][limsCountHandler]recheck=' + recheck);
  
   let sql =`select  count(*) as count 
             from lims
             where pathology_num=@pathology_num
             and report_date =@report_date
-            and dna_rna_gbn = @dna_rna_gbn `;
+            and dna_rna_gbn = @dna_rna_gbn
+            and examin = @examin 
+            and recheck = @recheck
+            and del_flag = 'Y' `;
 
   logger.info('[36][geneinfo]limsCountHandler sql=' + sql);
  
@@ -40,7 +45,9 @@ const  limsCountHandler = async (pathology_num, report_date, dna_rna_gbn) => {
        const request = pool.request()
          .input('pathology_num', mssql.VarChar, pathology_num) 
          .input('report_date', mssql.VarChar, report_date)
-         .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn); 
+         .input('dna_rna_gbn', mssql.VarChar, dna_rna_gbn)
+         .input('examin', mssql.VarChar, examin)
+         .input('recheck', mssql.VarChar, recheck); 
        const result = await request.query(sql)
      //  console.dir( result);
        
@@ -102,7 +109,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         }
         */
 
-        const result6 = limsCountHandler (pathology_num, report_date, dna_rna_gbn);
+        const result6 = limsCountHandler (pathology_num, report_date, dna_rna_gbn, examin, recheck);
         result6.then(data => {
 
             let cnt = data[0].count;
@@ -127,13 +134,13 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                                 nano_ng, nano_280, nano_230, nano_dil, 
                                 dan_rna, dw, tot_ct, ct, te, quan_dna,
                                 quantity, quantity_2, quan_tot_vol, ng_ui, lib_hifi, 
-                                pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn, seq) 
+                                pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn, seq, del_flag) 
                             values(@pathology_num, @report_date,  @path_type,
                                 @prescription_code, @test_code, @key_block, @block_cnt, @tumorburden, 
                                 @nano_ng, @nano_280, @nano_230, @nano_dil,
                                 @dan_rna, @dw, @tot_ct, @ct, @te, @quan_dna,
                                 @quantity, @quantity_2, @quan_tot_vol, @ng_ui, @lib_hifi,
-                                @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn, @seq)`;
+                                @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn, @seq, 'N')`;
                         
                 logger.info('[129][limsinsertHandler]sql=' + qry);
                 
@@ -221,12 +228,13 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                                 lib_dw = @lib_dw, 
                                 lib2 = @lib2,
                                 lib2_dw = @lib2_dw, 
-                                examin =@examin, 
-                                recheck = @recheck,
-                                seq = @seq
+                                seq = @seq,
+                                del_flag = 'N'
                             where pathology_num = @pathology_num
                             and  report_date = @report_date 
-                            and dna_rna_gbn = @dna_rna_gbn  `;
+                            and dna_rna_gbn = @dna_rna_gbn 
+                            and   examin = @examin 
+                            and   recheck = @recheck `;
                         
                 logger.info('[222][limsinsertHandler]sql=' + qry);
                 
@@ -283,7 +291,8 @@ const limsDeleteHandler = async (report_date, examin, recheck) => {
    
     logger.info('[283][Lims][delete lims]report_date=' + report_date + ', examin=' + examin + ', recheck=' + recheck  );
       //delete Query 생성;    
-      const qry =`delete lims 
+      const qry =`update lims 
+                set del_flag = 'Y'
                 where report_date = @report_date 
                 and   examin = @examin 
                 and   recheck = @recheck`;
@@ -533,6 +542,7 @@ const  limsSelectHandler = async (start, end) => {
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             where isnull(Research_yn, 'N') = 'N' 
+            and isnull(b.del_flag, 'N') = 'N'
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
             union all
@@ -582,6 +592,7 @@ const  limsSelectHandler = async (start, end) => {
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where isnull(Research_yn, 'N') = 'N' 
+            and isnull(b.del_flag, 'N') = 'N'
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
             ) a1 
@@ -713,6 +724,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             inner join  [dbo].[patientinfo_path] a
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
+            and isnull(b.del_flag, 'N') ='N'
             where left(b.report_date, 10) = '` + start + `'
             and b.examin = '` + examin + `'
             and b.recheck = '` + recheck + `'
@@ -762,6 +774,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             inner join  [dbo].[patientinfo_path] a
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
+            and isnull(b.del_flag, 'N') ='N'
             where left(b.report_date, 10) = '` + start + `'
             and b.examin = '` + examin + `'
             and b.recheck = '` + recheck + `'
@@ -816,11 +829,11 @@ const  limsSelectHandler3 = async () => {
 
             from
             (
-            SELECT  distinct [report_date] report_date
-                ,[examin] examin
-                ,[recheck] recheck
-            FROM  [dbo].[lims] 
-            where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
+                SELECT  distinct [report_date] report_date
+                    ,[examin] examin
+                    ,[recheck] recheck
+                FROM  [dbo].[lims] 
+                where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
             ) a
             left outer join dbo.users b
             on a.examin = b.user_id
@@ -1064,10 +1077,6 @@ exports.limsRnactSave = (req, res, next) => {
 
  /////////////////
 
- 
-
-
- 
 
 const  limsTumorHandler = async () => {
     await poolConnect; // ensures that the pool has been created
@@ -1078,7 +1087,7 @@ const  limsTumorHandler = async () => {
                 FROM [NGS_DATA].[dbo].[limsTumor]
                 order by seq `;
 
-        logger.info('[1051]limsTumorHandler sql=' + qry);
+        logger.info('[1091]limsTumorHandler sql=' + qry);
     
     try {
 
@@ -1087,7 +1096,7 @@ const  limsTumorHandler = async () => {
         const result = await request.query(qry);
         return result.recordset; 
     }catch (error) {
-        logger.error('[1060]limsTumorHandler err=' + error.message);
+        logger.error('[1099]limsTumorHandler err=' + error.message);
     }
 }
 
