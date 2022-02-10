@@ -279,12 +279,40 @@ const limsinsertHandler = async (lims, examin, recheck) => {
        return result;
 }
 
+const limsDeleteHandler = async (report_date, examin, recheck) => {
+   
+    logger.info('[283][Lims][delete lims]report_date=' + report_date + ', examin=' + examin + ', recheck=' + recheck  );
+      //delete Query 생성;    
+      const qry =`delete lims 
+                where report_date = @report_date 
+                and   examin = @examin 
+                and   recheck = @recheck`;
+              
+      logger.info("[291][lims]del sql=" + qry);
+    
+      try {
+          const request = pool.request()
+          .input('report_date', mssql.VarChar, report_date)
+          .input('examin', mssql.VarChar, examin)
+          .input('recheck', mssql.VarChar, recheck)
+            
+            result = await request.query(qry);         
+    
+      } catch (error) {
+        logger.error('[300][Lims][del detected_variant]err=' +  error.message);
+      }
+        
+      return result;
+  }
+  
+
 // set lims 
 exports.limsSave = (req, res, next) => {
     
     let lims   =  req.body.lims; 
     let examin = req.body.examin;
     let recheck = req.body.recheck;
+    let report_date       = lims[0].report_date;
 
     let dna_cnt = 0;
     let rna_cnt = 0;
@@ -313,9 +341,14 @@ exports.limsSave = (req, res, next) => {
     else {
 
         logger.info('[279][limsinsertHandler] ===> ' + lims + ", examin=" + examin +  ", recheck=" + recheck);
-        const result = limsinsertHandler(lims, examin, recheck);
-        result.then( data => {
-            res.json({message: 'SUCCESS'});
+
+        const result2 = limsDeleteHandler(report_date, examin, recheck);
+        result2.then(data => {
+
+            const result = limsinsertHandler(lims, examin, recheck);
+            result.then( data => {
+                res.json({message: 'SUCCESS'});
+            })
         })
         .catch( error => {
             logger.error('[285][limsinsertHandler]err=' + error.message);
