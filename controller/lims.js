@@ -834,6 +834,7 @@ const  limsSelectHandler3 = async () => {
                     ,[recheck] recheck
                 FROM  [dbo].[lims] 
                 where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
+                and del_flag = 'N'
             ) a
             left outer join dbo.users b
             on a.examin = b.user_id
@@ -869,6 +870,47 @@ exports.limsList3 = (req, res, next) => {
     }); 
  };
 
+
+ 
+ /////////  rel pathology num 갱신
+ const limsRelPathologynumSaveHandler = async (test_code, pathology_num2) => {
+    
+    logger.info('[878][limsRelPathologynumSaveHandler]test_code=' + test_code);
+    logger.info('[878][limsRelPathologynumSaveHandler]pathology_num2=' + pathology_num2);
+
+    let result;  
+    //insert Query 생성;
+    const qry = `update patientinfo_path 
+                    set  rel_pathology_num = @pathology_num2
+                where pathology_num = @test_code`;
+            
+    logger.info('[887][limsRelPathologynumSaveHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('pathology_num2', mssql.VarChar, pathology_num2);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[897] *** [limsRelPathologynumSaveHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+exports.limsRelPathologynumSave = (req, res, next) => {
+    
+    let test_code   =  req.body.test_code; 
+    let pathology_num2    =  req.body.pathology_num2;
+    logger.info('[905][limsRelPathologynumSave] ===> ' + test_code + ", pathology_num2=" + pathology_num2 );
+    const result = limsRelPathologynumSaveHandler(test_code, pathology_num2);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[911][limsRelPathologynumSave]err=' + error.message);
+    });
+}
  /////////  key_block 갱신
  const limsKeyblockSaveHandler = async (test_code, key_block) => {
     
