@@ -314,6 +314,25 @@ const limsDeleteHandler = async (report_date, examin, recheck) => {
       return result;
   }
   
+// lims delete
+exports.limsDelete = (req, res, next) => {
+    
+    let report_date   =  req.body.report_date; 
+    let examin = req.body.examin;
+    let recheck = req.body.recheck;
+
+    logger.info('[279][limsDelete] ===> ' + report_date + ", examin=" + examin +  ", recheck=" + recheck);
+
+    const result2 = limsDeleteHandler(report_date, examin, recheck);
+    result2.then(data => {
+
+        res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[285][limsDelete]err=' + error.message);
+    });
+
+}
 
 // set lims 
 exports.limsSave = (req, res, next) => {

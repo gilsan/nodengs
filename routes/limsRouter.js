@@ -9,6 +9,7 @@ router.post('/limslists', limsController.limsList2);
 router.post('/limscombo', limsController.limsList3);
 router.post('/limsTumor', limsController.limsTumor);
 router.post('/save', limsController.limsSave);
+router.post('/delete', limsController.limsDelete);
 router.post('/RelPathologynumSave', limsController.limsRelPathologynumSave);
 router.post('/tumorTypeSave', limsController.limsTumorSave);
 router.post('/tmorCellSave', limsController.limsCellPerSave);

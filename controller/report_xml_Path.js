@@ -57,6 +57,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210506</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -85,6 +86,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210506</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -113,6 +115,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210507</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -141,6 +144,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210507</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -169,6 +173,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210510</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -197,6 +202,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210511</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -225,6 +231,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210511</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -253,6 +260,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210512</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -309,6 +317,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210513</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -337,6 +346,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210513</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -365,6 +375,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210513</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -393,6 +404,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210427</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -421,6 +433,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210427</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -449,6 +462,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210427</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -477,6 +491,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210427</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -533,6 +548,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210428</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -561,6 +577,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210429</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -589,6 +606,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210429</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -617,6 +635,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210429</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -645,6 +664,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210429</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -673,6 +693,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210430</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -701,6 +722,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210503</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -729,6 +751,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210503</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -757,6 +780,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210503</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -785,6 +809,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210503</spcacptdt>
 <lstreptdt>20210607</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -813,6 +838,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210512</spcacptdt>
 <lstreptdt>20210608</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -841,6 +867,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210513</spcacptdt>
 <lstreptdt>20210608</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -869,6 +896,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210513</spcacptdt>
 <lstreptdt>20210608</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -897,6 +925,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210514</spcacptdt>
 <lstreptdt>20210608</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -925,6 +954,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210514</spcacptdt>
 <lstreptdt>20210616</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -953,6 +983,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210517</spcacptdt>
 <lstreptdt>20210616</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -981,6 +1012,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210517</spcacptdt>
 <lstreptdt>20210616</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1009,6 +1041,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210616</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1037,6 +1070,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210517</spcacptdt>
 <lstreptdt>20210617</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1065,6 +1099,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210517</spcacptdt>
 <lstreptdt>20210617</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1093,6 +1128,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210618</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1121,6 +1157,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210618</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1149,6 +1186,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210618</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1177,6 +1215,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210618</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1205,6 +1244,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210618</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1233,6 +1273,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210520</spcacptdt>
 <lstreptdt>20210619</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1261,6 +1302,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210520</spcacptdt>
 <lstreptdt>20210619</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1289,6 +1331,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210521</spcacptdt>
 <lstreptdt>20210619</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1317,6 +1360,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210521</spcacptdt>
 <lstreptdt>20210619</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1345,6 +1389,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210518</spcacptdt>
 <lstreptdt>20210622</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1373,6 +1418,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210528</spcacptdt>
 <lstreptdt>20210625</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1401,6 +1447,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210524</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1429,6 +1476,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210524</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1457,6 +1505,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210525</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1485,6 +1534,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1513,6 +1563,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1541,6 +1592,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1569,6 +1621,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1597,6 +1650,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1625,6 +1679,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1653,6 +1708,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1681,6 +1737,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1709,6 +1766,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1737,6 +1795,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
+<stage>340</stage>
 </worklist>
 <resultKM error="no" type="status" clear="true" description="info||정상 처리되었습니다." updateinstance="true" source="1635582105857"/>
 </worklist>
