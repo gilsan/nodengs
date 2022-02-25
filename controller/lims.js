@@ -557,11 +557,11 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull(b.recheck,  '') recheck
                 , isnull(dna_rna_gbn, '0') dna_rna_gbn
             FROM  [dbo].[patientinfo_path] a 
-            left outer join [dbo].[lims] b 
+            left outer join ( select * from  [dbo].[lims] b  where  
+                 isnull(b.del_flag, 'N') = 'N' ) b
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             where isnull(Research_yn, 'N') = 'N' 
-            and isnull(b.del_flag, 'N') = 'N'
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
             union all
@@ -607,11 +607,11 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull(b.recheck,  '') recheck
                 , isnull(dna_rna_gbn, '1') dna_rna_gbn
             FROM  [dbo].[patientinfo_path] a 
-            left outer join [dbo].[lims] b 
+            left outer join ( select * from  [dbo].[lims] b  where  
+                isnull(b.del_flag, 'N') = 'N' ) b
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where isnull(Research_yn, 'N') = 'N' 
-            and isnull(b.del_flag, 'N') = 'N'
             and left(prescription_date, 8) >= '` + start + `'
             and left(prescription_date, 8) <= '` + end + `'
             ) a1 
