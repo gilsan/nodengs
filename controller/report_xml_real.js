@@ -112,7 +112,7 @@ const patientHandler = async(patients, res) => {
                     patients[i].vus_gene = patients[i].vus_gene + " " +  patient_gene[j].gene ;
                 }
                 else if ((patient_gene[j].functional_impact === 'Pathogenic') ||
-                         (patient_gene[j].functional_impact === 'Like Pathogenic')) {            
+                         (patient_gene[j].functional_impact === 'Likely Pathogenic')) {            
                     patients[i].pv = 'Y';
                     patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
                 }
