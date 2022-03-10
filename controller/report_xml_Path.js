@@ -1843,7 +1843,7 @@ const patientHandler = async(patients, res) => {
 
         patients[i].hospnm = hospnm;
 
-        let testcd = '03';
+        let testcd = '02';
 
         patients[i].testcd = testcd;
 
