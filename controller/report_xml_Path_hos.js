@@ -65,6 +65,7 @@ const  messageHandler = async (pathology_num) => {
                 gene,
                 isnull(amino_acid_change, '') amino_acid_change,
                 isnull(nucleotide_change, '') nucleotide_change,
+                isnull(transcript, '') transcript,
                 isnull(variant_allele_frequency, '') variant_allele_frequency
             from  [dbo].[report_mutation]
             where pathology_num=@pathology_num  `;

@@ -45,6 +45,7 @@ const  messageHandler_path = async (pathology_num, orddd, prcpdd) => {
                     , isnull(b.gene, '')    gene
                     , isnull(amino_acid_change, '') amino_acid_change
                     , isnull(nucleotide_change, '') nucleotide_change
+                    , isnull(transcript, '') transcript
                     , isnull(variant_allele_frequency, '') variant_allele_frequency
                 from [dbo].[patientinfo_path] a
                 left outer join  [dbo].[report_mutation] b
