@@ -14,21 +14,19 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  tumorcellpercentageInsertHandler = async (pathologyNum, tumorcellpercentage, mpd, totalMappedFusionPanelReads) => {
+const  tumorcellpercentageInsertHandler = async (pathologyNum, tumorcellpercentage ) => {
   await poolConnect; // ensures that the pool has been created
-
+   
   //insert Query 생성;
-  const qry = "insert into tumorcellpercentage (tumorcellpercentage, pathologyNum, mapd, totalMappedFusionPanelReads) \
-	         values(@tumorcellpercentage, @pathologyNum, @mapd, @totalMappedFusionPanelReads)";
+  const qry = "insert into tumorcellpercentage (tumorcellpercentage, pathologyNum  ) \
+	         values(@tumorcellpercentage, @pathologyNum )"; 
 		   
   logger.info('[24][tumorcellpercentageMessageHandler]insert sql=' + qry  );
 
     try {
         const request = pool.request()
         .input('tumorcellpercentage', mssql.VarChar, tumorcellpercentage)
-        .input('pathologyNum', mssql.VarChar, pathologyNum)
-        .input('mapd',mssql.mssql.VarChar, mapd)
-        .input('totalMappedFusionPanelReads', mssql.VarChar, totalMappedFusionPanelReads);
+        .input('pathologyNum', mssql.VarChar, pathologyNum);
         
         const result = await request.query(qry);
         
@@ -46,15 +44,14 @@ const  tumorcellpercentageMessageHandler = async (req) => {
   logger.info('[44][tumorcellpercentageMessageHandler]req=' + JSON.stringify(req.body));
 
   const tumorcellpercentage = req.body.percentage;
-  const mapd = req.body.mapd;
-  const totalMappedFusionPanelReads = req.body.totalMappedFusionPanelReads;
   const pathologyNum  =  req.body.pathologyNum;
+
   logger.info('[47][tumorcellpercentageMessageHandler]tumorcellpercentage=' + tumorcellpercentage);
   logger.info('[47][tumorcellpercentageMessageHandler]pathologyNum=' + pathologyNum  );
  
   //insert Query 생성
   let sql2 = "delete from tumorcellpercentage where pathologyNum = @pathologyNum ";
-
+ 
   logger.info('[54][tumorcellpercentageMessageHandler]delete sql=' + sql2  );
  
   try {
@@ -66,12 +63,13 @@ const  tumorcellpercentageMessageHandler = async (req) => {
     result.then(data => {
       console.log(data);
 
-      const res_ins = tumorcellpercentageInsertHandler(pathologyNum, tumorcellpercentage, mapd, totalMappedFusionPanelReads);
+      const res_ins = tumorcellpercentageInsertHandler(pathologyNum, tumorcellpercentage );
       res_ins.then(data_ins => {
         console.log(data_ins);
       });
     });
-	
+
+
 	  //return result;
     } catch (error) {
 	  logger.error('[76][tumorcellpercentageMessageHandler]err=' + error.message);
@@ -101,7 +99,7 @@ const  tumorcellpercentageMessageHandler2 = async (req) => {
 	logger.info('[96][tumorcellpercentageMessageHandler2]pathologyNum=' + pathologyNum  );
 
 	//insert Query 생성
-	const qry = "select tumorcellpercentage from tumorcellpercentage where pathologyNum = @pathologyNum ";
+	const qry = "select tumorcellpercentage   from tumorcellpercentage where pathologyNum = @pathologyNum ";
   
   logger.info('[101][tumorcellpercentageMessageHandler2]select qry=' + qry );
  

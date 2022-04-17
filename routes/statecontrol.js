@@ -6,5 +6,5 @@ const statecontrolController = require('../controller/statecontrol');
       
 //병리 statecontrol 보고서 입력
 router.post('/list', statecontrolController.statecontrolList);
-
+router.post('/insert', statecontrolController.statecontrolInsert);
 module.exports = router;

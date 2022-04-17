@@ -23,6 +23,7 @@ const poolConnect = pool.connect();
   return st ;
 }
 
+// 정도관리 리스트
 const  statecontrolSelectHandler = async (pathologyNum) => {
     await poolConnect; // ensures that the pool has been created
 
@@ -87,4 +88,53 @@ exports.statecontrolList = (req, res, next) => {
         res.sendStatus(500)
     }); 
  };
+
+ // 정도관리 입력
+ const  statecontrolInsertHandler = async (pathologyNum, mapd, totalMappedFusionPanelReads) => {
+    logger.info('[94][statecontrolInsertHandler]pathologyNum=' + pathologyNum  );
+    logger.info('[95][statecontrolInsertHandler] mapd =' + mapd);
+    logger.info('[96][statecontrolInsertHandler]totalMappedFusionPanelReads=' + totalMappedFusionPanelReads  );
+   
+    // 삭제
+    const sql = "delete from statecontrol where pathology_num = @pathologyNum ";
+    logger.info('[100][statecontrolInsertHandler]delete sql=' + sql);
+    const insertSql = "insert into  statecontrol (pathology_num, mapd, rnaMapped) values(@pathologyNum, @mapd, @totalMappedFusionPanelReads)"
+    logger.info('[102][statecontrolInsertHandler]delete sql=' + insertSql);
+     try {
+        const request = pool.request()
+		.input('pathologyNum', mssql.VarChar, pathologyNum)
+        .input('mapd', mssql.VarChar, mapd)
+        .input('totalMappedFusionPanelReads', mssql.VarChar, totalMappedFusionPanelReads);
+		
+        const deleteResult = request.query(sql);
+        deleteResult.then( async (data)  => {
+            console.log('[111][statecontrolInsertHandler]' , data);
+            const result = await request.query(insertSql);
+            return result;
+        });
+         
+     } catch(err) {
+        logger.error('[117][statecontrolInsertHandler] err=' + error.message);
+     }
+
+ }
+
+ exports.statecontrolInsert = (req, res, next) => {
+    logger.info('[123] statecontrolInsert req=' + JSON.stringify(req.body));
+
+    const pathologyNum = req.body.pathologyNum;
+    const mapd = req.body.mapd;
+    const totalMappedFusionPanelReads = req.body.totalMappedFusionPanelReads;
+
+    const result = statecontrolInsertHandler(pathologyNum, mapd, totalMappedFusionPanelReads);
+    result.then(data => {
+        res.json(data);
+    })
+    .catch( error => {
+        logger.error('[134] statecontrolInsert err=' + error.message);
+        res.sendStatus(500)
+    }); 
+
+ }
+
 
