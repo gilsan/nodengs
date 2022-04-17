@@ -14,19 +14,21 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
-const  tumorcellpercentageInsertHandler = async (pathologyNum, tumorcellpercentage) => {
+const  tumorcellpercentageInsertHandler = async (pathologyNum, tumorcellpercentage, mpd, totalMappedFusionPanelReads) => {
   await poolConnect; // ensures that the pool has been created
 
   //insert Query 생성;
-  const qry = "insert into tumorcellpercentage (tumorcellpercentage, pathologyNum) \
-	         values(@tumorcellpercentage, @pathologyNum)";
+  const qry = "insert into tumorcellpercentage (tumorcellpercentage, pathologyNum, mapd, totalMappedFusionPanelReads) \
+	         values(@tumorcellpercentage, @pathologyNum, @mapd, @totalMappedFusionPanelReads)";
 		   
   logger.info('[24][tumorcellpercentageMessageHandler]insert sql=' + qry  );
 
     try {
         const request = pool.request()
         .input('tumorcellpercentage', mssql.VarChar, tumorcellpercentage)
-        .input('pathologyNum', mssql.VarChar, pathologyNum);
+        .input('pathologyNum', mssql.VarChar, pathologyNum)
+        .input('mapd',mssql.mssql.VarChar, mapd)
+        .input('totalMappedFusionPanelReads', mssql.VarChar, totalMappedFusionPanelReads);
         
         const result = await request.query(qry);
         
@@ -44,6 +46,8 @@ const  tumorcellpercentageMessageHandler = async (req) => {
   logger.info('[44][tumorcellpercentageMessageHandler]req=' + JSON.stringify(req.body));
 
   const tumorcellpercentage = req.body.percentage;
+  const mapd = req.body.mapd;
+  const totalMappedFusionPanelReads = req.body.totalMappedFusionPanelReads;
   const pathologyNum  =  req.body.pathologyNum;
   logger.info('[47][tumorcellpercentageMessageHandler]tumorcellpercentage=' + tumorcellpercentage);
   logger.info('[47][tumorcellpercentageMessageHandler]pathologyNum=' + pathologyNum  );
@@ -62,7 +66,7 @@ const  tumorcellpercentageMessageHandler = async (req) => {
     result.then(data => {
       console.log(data);
 
-      const res_ins = tumorcellpercentageInsertHandler(pathologyNum, tumorcellpercentage);
+      const res_ins = tumorcellpercentageInsertHandler(pathologyNum, tumorcellpercentage, mapd, totalMappedFusionPanelReads);
       res_ins.then(data_ins => {
         console.log(data_ins);
       });
