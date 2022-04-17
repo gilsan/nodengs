@@ -64,7 +64,7 @@ const  messageHandler_mutation_c = async (pathologyNum) => {
 		  
   	//select Query 생성
   	const sql = "select pathology_num, report_date, \
-			gene, amino_acid_change,nucleotide_change, \
+			gene, amino_acid_change,nucleotide_change, transcript, \
 			variant_allele_frequency, variant_id, isnull(tier, '') tier, seq \
 			from  report_mutation \
 			where pathology_num=@pathologyNum \
@@ -341,7 +341,7 @@ const  messageHandler_mutation_p = async (pathologyNum) => {
 
 	//select Query 생성
 	const sql = "select pathology_num, report_date, \
-	            gene, amino_acid_change,nucleotide_change, \
+	            gene, amino_acid_change,nucleotide_change, transcript, \
 	            variant_allele_frequency, variant_id, isnull(tier, '') tier, seq \
 	            from  report_mutation \
 	            where pathology_num = @pathologyNum \

@@ -41,6 +41,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	let gene              = mutation.gene;
 	let amino_acid_change = mutation.aminoAcidChange;
 	let nucleotide_change = mutation.nucleotideChange;
+	let transcript        = mutation.transcript;
 	let variant_allele_frequency = mutation.variantAlleleFrequency;
 	let variant_id       = mutation.ID;
 	let tier             = mutation.tier;
@@ -52,6 +53,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	logger.info("[51][mutation] gene=" + gene);
 	logger.info("[51][mutation] nucleotide_change=" + nucleotide_change);
 	logger.info("[51][mutation] amino_acid_change=" + amino_acid_change);
+	logger.info("[51][mutation] transcript=" + transcript);
 	logger.info("[51][mutation] variant_allele_frequency=" + variant_allele_frequency);
 	logger.info("[51][mutation] variant_id=" + variant_id);
 	logger.info("[51][mutation] tier=" + tier);
@@ -69,6 +71,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 			.input('gene', mssql.VarChar(100), gene) 
 			.input('amino_acid_change', mssql.VarChar(100), amino_acid_change) 
 			.input('nucleotide_change', mssql.VarChar(100), nucleotide_change) 
+			.input('transcript', mssql.VarChar(100), transcript) 
 			.input('variant_allele_frequency', mssql.VarChar(100), variant_allele_frequency) 
 			.input('variant_id', mssql.VarChar(100), variant_id)
 			.input('tier', mssql.VarChar(10), tier)
