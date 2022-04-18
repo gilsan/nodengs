@@ -38,6 +38,7 @@ const  filteredOrigindataSaveHandler = async (body_data) => {
       const type  =  body_data[i].type; 
       const variantID  =  body_data[i].variantID;
       const variantName  =  body_data[i].variantName;
+      const transcript  =  body_data[i].transcript;
 
       logger.info("[51][filteredOriginData]aminoAcidChange=" + aminoAcidChange);
       logger.info("[51][filteredOriginData]coding=" + coding);
@@ -52,13 +53,14 @@ const  filteredOrigindataSaveHandler = async (body_data) => {
       logger.info("[51][filteredOriginData]type=" + type);
       logger.info("[51][filteredOriginData]variantID=" + variantID);
       logger.info("[51][filteredOriginData]variantName=" + variantName);
+      logger.info("[51][filteredOriginData]transcript=" + transcript);
 
       const qry = "insert into filteredOriginData (aminoAcidChange, coding, comsmicID, cytoband, \
           frequency, gene, locus, oncomine, pathologyNum, readcount, type, \
-          variantID, variantName, OncomineVariant) \
+          variantID, variantName, OncomineVariant, transcript) \
           values(@aminoAcidChange, @coding, @comsmicID, @cytoband, \
             @frequency, @gene, @locus, @oncomine, @pathologyNum, @readcount, @type, \
-          @variantID, @variantName, @OncomineVariant)";
+          @variantID, @variantName, @OncomineVariant, @transcript)";
         
       logger.info("[109][filteredOriginData] sql=" + qry);
 
@@ -77,7 +79,8 @@ const  filteredOrigindataSaveHandler = async (body_data) => {
           .input('type', mssql.VarChar, type)
           .input('variantID', mssql.VarChar, variantID)
           .input('variantName', mssql.VarChar, variantName)
-          .input('OncomineVariant', mssql.VarChar, OncomineVariant);
+          .input('OncomineVariant', mssql.VarChar, OncomineVariant)
+          .input('transcript', mssql.VarChar, transcript);
           
           result = await request.query(qry);
           
@@ -174,6 +177,7 @@ const  filteredOrigindataMessageHandler2 = async (req) => {
                 ,type  ,variantID \
                 ,variantName \
                 ,OncomineVariant \
+                , transcript \
 				from filteredOriginData  \
 				where pathologyNum = @pathologyNum ";
 
