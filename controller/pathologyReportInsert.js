@@ -41,7 +41,7 @@ const MutationSaveHandler = async (pathology_num, mutation, report_gb ) => {
 	let gene              = mutation.gene;
 	let amino_acid_change = mutation.aminoAcidChange;
 	let nucleotide_change = mutation.nucleotideChange;
-	let transcript = mutation.transcript;
+	let transcript        = mutation.transcript;
 	let variant_allele_frequency = mutation.variantAlleleFrequency;
 	let variant_id       = mutation.ID;
 	let tier             = mutation.tier;
