@@ -217,7 +217,8 @@ router.post('/upload', function (req, res) {
 
           // file name compare
           let s_All = filename.search("All");
-          let s_Rna = filename.search("RNA");
+        //  let s_Rna = filename.search("RNA");
+          let s_Rna = filename.search("Non-Filtered"); // 2022.04.20 수정
 
           logger.info("s_all=" + s_All ); 
           logger.info("s_Rna=" + s_Rna ); 
