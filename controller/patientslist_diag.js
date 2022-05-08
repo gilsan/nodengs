@@ -375,9 +375,6 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
         }
     }
 
-    if (name.length > 0) {
-        sql = sql + "  and name = '" + name + "'";
-    }
     //sql = sql + " order by accept_date desc, specimenNo desc   ";
     sql = sql + " order by accept_date2 asc  ";
 
