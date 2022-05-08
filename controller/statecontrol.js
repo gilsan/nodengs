@@ -108,7 +108,7 @@ exports.statecontrolList = (req, res, next) => {
         if (result.recordset[0].cnt === 0) {
             qry = `insert into statecontrol 
                 (dnaRnasep, pathology_num ,rna18s, averageBase, uniformity, meanRead, meanRaw, mapd, rnaMapped)
-            values('', @pathology_num, '', '', '%', 'bp', '%', @mapd,@totalMappedFusionPanelReads)`;
+            values('', @pathology_num, '', '', '%', 'bp', '%', @mapd, @totalMappedFusionPanelReads)`;
         } else {
             qry = `update statecontrol   
                         set  mapd = @mapd, 
