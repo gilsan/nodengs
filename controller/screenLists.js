@@ -1357,7 +1357,6 @@ logger.info('[669][screenList][saveScreen]req=' + JSON.stringify(req.body));
 const chron = req.body.chron ;
 const flt3ITD = req.body.flt3itd ; 
 const leukemia = req.body.leukemia;
-const comment2          = req.body.comment2;
 const specimenNo        = req.body.specimenNo;
 const detected_variants = req.body.detected_variants;
 const comments          = req.body.comments;
@@ -1386,7 +1385,7 @@ result2.then(data => {
             // 검사지 변경
             //const statusResult = messageHandler2(specimenNo, screenstatus, chron, flt3ITD, leukemia, examin, recheck, vusmsg);
             const statusResult = messageHandler4(specimenNo, chron, flt3ITD, detectedtype, 
-                                                    leukemia, examin, recheck, vusmsg, comment2);
+                                                    leukemia, examin, recheck, vusmsg);
             statusResult.then(data => {
                   res.json({message: 'OK'});
               });
