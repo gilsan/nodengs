@@ -94,6 +94,41 @@ exports.statecontrolList = (req, res, next) => {
     logger.info('[94][statecontrolInsertHandler]pathologyNum=' + pathologyNum  );
     logger.info('[95][statecontrolInsertHandler] mapd =' + mapd);
     logger.info('[96][statecontrolInsertHandler]totalMappedFusionPanelReads=' + totalMappedFusionPanelReads  );
+ 
+    let result;  
+    //insert Query 생성;
+    const query = `select count(*) as cnt from statecontrol where pathology_num = @pathologyNum`;
+    try {
+        request = pool.request()
+        .input('pathologyNum', mssql.VarChar, pathologyNum);
+
+        result = await request.query(query); 
+       
+        console.log(result.recordset[0].cnt);
+        if (result.recordset[0].cnt === 0) {
+            qry = `insert into statecontrol 
+                (dnaRnasep, pathology_num ,rna18s, averageBase, uniformity, meanRead, meanRaw, mapd, rnaMapped)
+            values('', @pathology_num, '', '', '%', 'bp', '%', @mapd,@totalMappedFusionPanelReads)`;
+        } else {
+            qry = `update statecontrol   
+                        set  mapd = @mapd, 
+                        rnaMapped =  @totalMappedFusionPanelReads 
+                        where pathology_num = @test_code`;
+        }
+        console.log(qry);
+        request = pool.request()
+            .input('pathologyNum', mssql.VarChar, pathologyNum)
+            .input('mapd', mssql.VarChar, mapd)
+            .input('totalMappedFusionPanelReads', mssql.VarChar, totalMappedFusionPanelReads);
+
+        result = request.query(qry);     
+        return result;
+
+    } catch (error) {
+        logger.error('[825] *** [limsDnactSaveHandler] *** err=  ****  ' + error.message);
+    }
+
+    /*
    
     // 삭제
     const sql = "delete from statecontrol where pathology_num = @pathologyNum ";
@@ -116,6 +151,7 @@ exports.statecontrolList = (req, res, next) => {
      } catch(err) {
         logger.error('[117][statecontrolInsertHandler] err=' + error.message);
      }
+     */
 
  }
 
