@@ -113,7 +113,6 @@ const getPatientDiagHandler = async (specimenNo) => {
                 , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
                 , case when isnull(screenstatus, '') = '' then  'T' 
                     else isnull(saveyn, 'S') end saveyn
-                , a.vusmsg as vusmsg
                 from [dbo].[patientinfo_diag]
                  where specimenNo=@specimenNo `;
     logger.info('[118][screenList][find patient]sql=' + sql);
@@ -184,7 +183,6 @@ const  messageHandler = async (today) => {
     , case when isnull(screenstatus, '') = ''
          then  'T' 
         else isnull(saveyn, 'S')  end saveyn
-      , vusmsg as vusmsg
     from [dbo].[patientinfo_diag] 
     where left(accept_date, 8) = '` + today + "'";
     logger.info('[102][patientinfo_diag list]sql=' + sql);
@@ -291,7 +289,6 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             , case when isnull(a.screenstatus, '') = '10' 
                 then  'T' 
                 else isnull(saveyn, 'S') end saveyn
-            , a.vusmsg as vusmsg
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
             on a.specimenNo = b.specimenNo
