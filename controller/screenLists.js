@@ -727,7 +727,7 @@ const updateDetectedHandler = async (specimenNo, detectedtype) => {
 // 스크린 완료
 exports.insertScreen = (req, res, next) => {
 
-logger.info('[343][screenList][insertScreen]req=' + JSON.stringify(req.body));
+logger.info('[730][screenList][insertScreen]req=' + JSON.stringify(req.body));
 
 const chron = req.body.chron ;
 const flt3ITD = req.body.flt3itd ; 
@@ -741,7 +741,7 @@ const examin            = req.body.patientInfo.examin;
 const recheck           = req.body.patientInfo.recheck;
 const vusmsg            = req.body.patientInfo.vusmsg;
 
-logger.info('[698][screenList][update screenspecimenNo=, ' + specimenNo
+logger.info('[744][screenList][update screenspecimenNo=, ' + specimenNo
                               + ", chron=" + chron + ", flt3ITD=" + flt3ITD 
                               + ", examin=" + examin + ", recheck=" + recheck + ", detectedtype=" + detectedtype 
                               + ", leukemia=" +leukemia + ", vusmsg=" + vusmsg); 
