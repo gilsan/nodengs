@@ -128,6 +128,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                 logger.info('[104][limsinsertHandler]dan_rna=' + dan_rna + ', dw=' + dw + ', tot_ct=' + tot_ct + ', ct=' + ct + ', ng_ui=' + ng_ui );
                 logger.info('[104][limsinsertHandler]quantity=' + quantity + ', quantity_2=' + quantity_2 + ', tot_ct=' + tot_ct);
                 logger.info('[104][limsinsertHandler]quan_tot_vol=' + quan_tot_vol + ', lib_hifi=' + lib_hifi + ', te=' + te);
+                logger.info('[175][limsinsertHandler]bigo=' + bigo + ', jindan=' + jindan  );
                 logger.info('[104][limsinsertHandler]pm=' + pm + ', x100=' + x100 + ', report_date=' + report_date );
                 logger.info('[104][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw + ', dna_rna_gbn=' + dna_rna_gbn );
                 
