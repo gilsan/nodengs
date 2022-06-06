@@ -76,6 +76,9 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         let block_cnt         = lims[i].block_cnt;
         let key_block         = lims[i].key_block;
         
+        let bigo              = lims[i].bigo;
+        let jindan            = lims[i].jindan;
+
         let tumorburden       = lims[i].tumorburden;
         let nano_ng           = lims[i].nano_ng;
         let nano_280          = lims[i].nano_280;
@@ -134,12 +137,14 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                                 nano_ng, nano_280, nano_230, nano_dil, 
                                 dan_rna, dw, tot_ct, ct, te, quan_dna,
                                 quantity, quantity_2, quan_tot_vol, ng_ui, lib_hifi, 
+                                bigo, jindan  ,
                                 pm, x100, lib, lib_dw, lib2, lib2_dw, examin, recheck, dna_rna_gbn, seq, del_flag) 
                             values(@pathology_num, @report_date,  @path_type,
                                 @prescription_code, @test_code, @key_block, @block_cnt, @tumorburden, 
                                 @nano_ng, @nano_280, @nano_230, @nano_dil,
                                 @dan_rna, @dw, @tot_ct, @ct, @te, @quan_dna,
                                 @quantity, @quantity_2, @quan_tot_vol, @ng_ui, @lib_hifi,
+                                @bigo, @jindan ,
                                 @pm, @x100, @lib, @lib_dw, @lib2, @lib2_dw, @examin, @recheck, @dna_rna_gbn, @seq, 'N')`;
                         
                 logger.info('[129][limsinsertHandler]sql=' + qry);
@@ -154,6 +159,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                     .input('test_code', mssql.NVarChar, test_code)
                     .input('block_cnt', mssql.NVarChar, block_cnt)
                     .input('key_block', mssql.NVarChar, key_block)
+                    .input('bigo', mssql.NVarChar, bigo)
+                    .input('jindan', mssql.NVarChar, jindan)
                     .input('tumorburden', mssql.VarChar, tumorburden)
                     .input('nano_ng', mssql.VarChar, nano_ng)
                     .input('nano_280', mssql.VarChar, nano_280)
@@ -197,6 +204,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                 logger.info('[175][limsinsertHandler]quantity=' + quantity + ', quantity_2=' + quantity_2 + ', tot_ct=' + tot_ct);
                 logger.info('[175][limsinsertHandler]quan_tot_vol=' + quan_tot_vol + ', lib_hifi=' + lib_hifi + ', te=' + te);
                 logger.info('[175][limsinsertHandler]pm=' + pm + ', x100=' + x100 + ', report_date=' + report_date );
+                logger.info('[175][limsinsertHandler]bigo=' + bigo + ', jindan=' + jindan  );
                 logger.info('[175][limsinsertHandler]lib=' + lib + ', lib_dw=' + lib_dw + ', lib2=' + lib2 + ', lib2_dw=' + lib2_dw + ', dna_rna_gbn=' + dna_rna_gbn );
                 
                 //insert Query 생성;
@@ -205,6 +213,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                                 prescription_code = @prescription_code,
                                 test_code = @test_code,  
                                 key_block = @key_block,
+                                bigo =  @bigo, 
+                                jindan =@jindan ,
                                 block_cnt = @block_cnt, 
                                 tumorburden = @tumorburden, 
                                 nano_ng = @nano_ng,  
@@ -247,6 +257,8 @@ const limsinsertHandler = async (lims, examin, recheck) => {
                     .input('test_code', mssql.NVarChar, test_code)
                     .input('block_cnt', mssql.NVarChar, block_cnt)
                     .input('key_block', mssql.NVarChar, key_block)
+                    .input('bigo', mssql.NVarChar, bigo)
+                    .input('jindan', mssql.NVarChar, jindan)
                     .input('tumorburden', mssql.VarChar, tumorburden)
                     .input('nano_ng', mssql.VarChar, nano_ng)
                     .input('nano_280', mssql.VarChar, nano_280)
@@ -468,6 +480,48 @@ exports.limsTumorSave = (req, res, next) => {
     });
 }
 
+const limsPathologyDigonsisHandler = async (test_code, tumor_type) => {
+    // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
+    logger.info('[332][limsPathologyDigonsisHandler]test_code=' + test_code);
+    logger.info('[332][limsPathologyDigonsisHandler]tumor_type=' + tumor_type);
+
+    let result;
+    
+    //insert Query 생성;
+    const qry = `update patientinfo_path 
+                    set  tumor_type = @tumor_type
+                where pathology_num = @test_code  `;
+            
+    logger.info('[342][limsPathologyDigonsisHandler]sql=' + qry);
+    
+    try {
+        const request = pool.request()
+        .input('test_code', mssql.VarChar, test_code)
+        .input('tumor_type', mssql.VarChar, tumor_type);
+
+        result = request.query(qry);         
+
+    } catch (error) {
+        logger.error('[352] *** [limsPathologyDigonsisHandler] *** err=  ****  ' + error.message);
+    }
+}
+
+// set lims 
+//  test_code, jindan
+exports.limsPathologyDigonsisSave = (req, res, next) => {
+    
+    let test_code  =  req.body.test_code; 
+    let jindan     = req.body.jindan;
+    logger.info('[362][limsPathologyDigonsis] ===> ' + test_code + ", jindan=" + jindan );
+    const result = limsPathologyDigonsisHandler(test_code, jindan);
+    result.then( data => {
+         res.json({message: 'SUCCESS'});
+    })
+    .catch( error => {
+        logger.error('[368][limsPathologyDigonsis]err=' + error.message);
+    });
+}
+
 const  limsSelectHandler = async (start, end) => {
     await poolConnect; // ensures that the pool has been created
     logger.info('[374] limsSelectHandler =' + start + ', ' + end);
@@ -485,6 +539,8 @@ const  limsSelectHandler = async (start, end) => {
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
             , isnull(key_block, '') key_block 
+            , isnull(bigo, '') bigo 
+            , isnull(jindan, '') jindan 
             , isnull(block_cnt, '') block_cnt 
             , isnull(tumorburden, '') tumorburden
             , isnull(report_date, '') report_date
@@ -529,6 +585,8 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull( a.tumor_type, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
+                , isnull(b.bigo, '') bigo 
+                , isnull(b.jindan, '') jindan 
                 , isnull(b.block_cnt, '') block_cnt 
                 , isnull(a.tumor_cell_per, '') tumorburden
                 , isnull(b.report_date, '') report_date
@@ -579,6 +637,8 @@ const  limsSelectHandler = async (start, end) => {
                 , isnull( a.tumor_type, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
+                , isnull(b.bigo, '') bigo 
+                , isnull(b.jindan, '') jindan 
                 , isnull(b.block_cnt, '') block_cnt 
                 , isnull(a.tumor_cell_per, '') tumorburden
                 , isnull(b.report_date, '') report_date
@@ -668,6 +728,8 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
             , isnull(key_block, '') key_block 
+            , isnull(bigo, '') bigo 
+            , isnull(jindan, '') jindan 
             , isnull(block_cnt, '') block_cnt 
             , isnull(tumorburden, '') tumorburden
             , isnull(report_date, '') report_date
@@ -712,6 +774,8 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
+                , isnull(b.bigo, '') bigo 
+                , isnull(b.jindan, '') jindan 
                 , isnull(b.block_cnt, '') block_cnt 
                 , isnull(b.tumorburden, '') tumorburden
                 , isnull(b.report_date, '') report_date
@@ -762,6 +826,8 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 , isnull( b.test_code, '') test_code
                 , isnull( path_type, '') path_type
                 , isnull(b.key_block, '') key_block 
+                , isnull(b.bigo, '') bigo 
+                , isnull(b.jindan, '') jindan 
                 , isnull(b.block_cnt, '') block_cnt 
                 , isnull(b.tumorburden, '') tumorburden
                 , isnull(b.report_date, '') report_date
