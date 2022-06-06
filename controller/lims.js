@@ -484,7 +484,7 @@ exports.limsTumorSave = (req, res, next) => {
 const limsPathologyDigonsisHandler = async (test_code, jindan) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
     logger.info('[332][limsPathologyDigonsisHandler]test_code=' + test_code);
-    logger.info('[332][limsPathologyDigonsisHandler]tumor_type=' + tumor_type);
+    logger.info('[332][limsPathologyDigonsisHandler]jindan=' + jindan);
 
     let result;
     
