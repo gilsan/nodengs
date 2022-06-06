@@ -481,10 +481,10 @@ exports.limsTumorSave = (req, res, next) => {
     });
 }
 
-const limsPathologyDigonsisHandler = async (test_code, jindan) => {
+const PathologyDigonsisHandler = async (test_code, jindan) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
-    logger.info('[332][limsPathologyDigonsisHandler]test_code=' + test_code);
-    logger.info('[332][limsPathologyDigonsisHandler]jindan=' + jindan);
+    logger.info('[332][PathologyDigonsisHandler]test_code=' + test_code);
+    logger.info('[332][PathologyDigonsisHandler]jindan=' + jindan);
 
     let result;
     
@@ -493,7 +493,7 @@ const limsPathologyDigonsisHandler = async (test_code, jindan) => {
                     set  pathological_dx = @jindan
                 where pathology_num = @test_code  `;
             
-    logger.info('[342][limsPathologyDigonsisHandler]sql=' + qry);
+    logger.info('[342][PathologyDigonsisHandler]sql=' + qry);
     
     try {
         const request = pool.request()
@@ -503,23 +503,23 @@ const limsPathologyDigonsisHandler = async (test_code, jindan) => {
         result = request.query(qry);         
 
     } catch (error) {
-        logger.error('[352] *** [limsPathologyDigonsisHandler] *** err=  ****  ' + error.message);
+        logger.error('[352] *** [PathologyDigonsisHandler] *** err=  ****  ' + error.message);
     }
 }
 
 // set lims 
 //  test_code, jindan
-exports.limsPathologyDigonsisSave = (req, res, next) => {
+exports.PathologyDigonsisSave = (req, res, next) => {
     
     let test_code  =  req.body.test_code; 
     let jindan     = req.body.jindan;
-    logger.info('[362][limsPathologyDigonsis] ===> ' + test_code + ", jindan=" + jindan );
-    const result = limsPathologyDigonsisHandler(test_code, jindan);
+    logger.info('[362][PathologyDigonsis] ===> ' + test_code + ", jindan=" + jindan );
+    const result = PathologyDigonsisHandler(test_code, jindan);
     result.then( data => {
          res.json({message: 'SUCCESS'});
     })
     .catch( error => {
-        logger.error('[368][limsPathologyDigonsis]err=' + error.message);
+        logger.error('[368][PathologyDigonsis]err=' + error.message);
     });
 }
 

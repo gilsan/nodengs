@@ -12,7 +12,7 @@ router.post('/save', limsController.limsSave);
 router.post('/delete', limsController.limsDelete);
 router.post('/RelPathologynumSave', limsController.limsRelPathologynumSave);
 router.post('/tumorTypeSave', limsController.limsTumorSave);
-router.post('/limsPathologyDigonsisSave', limsController.limsPathologyDigonsisSave);
+router.post('/PathologyDigonsisSave', limsController.PathologyDigonsisSave);
 router.post('/tmorCellSave', limsController.limsCellPerSave);
 router.post('/keyBlockSave', limsController.limsKeyblockSave);
 router.post('/organSave', limsController.limsOrganSave);
