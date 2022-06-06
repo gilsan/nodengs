@@ -480,7 +480,7 @@ exports.limsTumorSave = (req, res, next) => {
     });
 }
 
-const limsPathologyDigonsisHandler = async (test_code, tumor_type) => {
+const limsPathologyDigonsisHandler = async (test_code, jindan) => {
     // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
     logger.info('[332][limsPathologyDigonsisHandler]test_code=' + test_code);
     logger.info('[332][limsPathologyDigonsisHandler]tumor_type=' + tumor_type);
@@ -489,7 +489,7 @@ const limsPathologyDigonsisHandler = async (test_code, tumor_type) => {
     
     //insert Query 생성;
     const qry = `update patientinfo_path 
-                    set  tumor_type = @tumor_type
+                    set  pathological_dx = @jindan
                 where pathology_num = @test_code  `;
             
     logger.info('[342][limsPathologyDigonsisHandler]sql=' + qry);
@@ -497,7 +497,7 @@ const limsPathologyDigonsisHandler = async (test_code, tumor_type) => {
     try {
         const request = pool.request()
         .input('test_code', mssql.VarChar, test_code)
-        .input('tumor_type', mssql.VarChar, tumor_type);
+        .input('jindan', mssql.VarChar, jindan);
 
         result = request.query(qry);         
 
