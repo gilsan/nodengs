@@ -765,7 +765,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 isnull(a.pathology_num, '') pathology_num 
                 , isnull(rel_pathology_num, '') rel_pathology_num 
                 , isnull( a.prescription_date, '') prescription_date
-                , isnull(a.pathology_num, '') + isnull( a.prescription_date, '') path_date
+                , isnull( a.prescription_date, '') + isnull(a.pathology_num, '')   path_date
                 , isnull( a.patientID, '') patientID
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
@@ -817,7 +817,7 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
                 isnull(a.pathology_num, '') pathology_num 
                 , isnull(rel_pathology_num, '') rel_pathology_num 
                 , isnull( a.prescription_date, '') prescription_date
-                , isnull(a.pathology_num, '') + isnull( a.prescription_date, '') path_date
+                , isnull( a.prescription_date, '') + isnull(a.pathology_num, '')  path_date
                 , isnull( a.patientID, '') patientID
                 , isnull(gender, '') gender 
                 , isnull(age, '') age 
