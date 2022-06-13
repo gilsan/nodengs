@@ -498,7 +498,7 @@ const PathologyDigonsisHandler = async (test_code, jindan) => {
     try {
         const request = pool.request()
         .input('test_code', mssql.VarChar, test_code)
-        .input('jindan', mssql.VarChar, jindan);
+        .input('jindan', mssql.NVarChar, jindan);
 
         result = request.query(qry);         
 
