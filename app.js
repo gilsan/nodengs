@@ -158,9 +158,13 @@ const sequencingdiagRouter = require('./routes/sequencingdiagRouter')
 // middleware
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false}));
  
+//before
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: false}));
+// after
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: false}));
 
 // 로그인
 app.use('/loginDiag', loginDiagRouter);
