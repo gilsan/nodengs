@@ -1826,6 +1826,54 @@ const  messageHandler = async (pathology_num) => {
     }
 }
 
+const  messageHandler_amplication = async (pathology_num) => {
+    await poolConnect; // ensures that the pool has been created
+  
+    logger.info("[messageHandler_amplication]select pathology_num=" + pathology_num);
+    
+    const sql =`select report_gb,
+                gene
+            from  [dbo].[report_amplification]
+            where pathology_num=@pathology_num  `;
+  
+    logger.info("[messageHandler_amplication]select sql=" + sql);
+  
+    try {
+        const request = pool.request()
+          .input('pathology_num', mssql.VarChar, pathology_num); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+      //  console.dir( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[messageHandler_amplication]SQL error=' + err.message);
+    }
+}
+
+const  messageHandler_fusion = async (pathology_num) => {
+    await poolConnect; // ensures that the pool has been created
+  
+    logger.info("[messageHandler_fusion]select pathology_num=" + pathology_num);
+    
+    const sql =`select report_gb,
+                gene
+            from  [dbo].[report_fusion]
+            where pathology_num=@pathology_num  `;
+  
+    logger.info("[messageHandler_fusion]select sql=" + sql);
+  
+    try {
+        const request = pool.request()
+          .input('pathology_num', mssql.VarChar, pathology_num); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+      //  console.dir( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[messageHandler_fusion]SQL error=' + err.message);
+    }
+}
+
 const patientHandler = async(patients, res) => {
 
     console.log (patients.length);
@@ -1855,30 +1903,73 @@ const patientHandler = async(patients, res) => {
 
         let rs_data = await messageHandler(pathology_num);
         
-        logger.info("[2499][report_xml]rs_data=" + JSON.stringify (rs_data));
+        logger.info("[1882][report_xml]rs_data=" + JSON.stringify (rs_data));
         
         var patientJson = JSON.stringify(rs_data); 
 
         let patient_gene = JSON.parse(patientJson);
+
+        let rs_data_amp = await messageHandler_amplication(pathology_num);
+        
+        logger.info("[1891][report_xml]rs_data=" + JSON.stringify (rs_data_amp));
+        
+        var patientJson_amp = JSON.stringify(rs_data_amp); 
+
+        let patient_gene_amp = JSON.parse(patientJson_amp);
+
+        let rs_data_fus = await messageHandler_fusion(pathology_num);
+        
+        logger.info("[1891][report_xml]rs_data=" + JSON.stringify (rs_data_fus));
+        
+        var patientJson_fus = JSON.stringify(rs_data_fus); 
+
+        let patient_gene_fus = JSON.parse(patientJson_fus);
 
         patients[i].pv = 'N';
         patients[i].pv_gene = '';
         patients[i].vus = 'N';
         patients[i].vus_gene = '';
         
-        if (patient_gene.lenght !== 0 )
+        if (patient_gene.length !== 0 )
         {
             for (var j = 0;  j < patient_gene.length; j ++)
             {
                 if (patient_gene[j].report_gb === 'P') {            
                     patients[i].vus = 'Y';
-                    patients[i].vus_gene = patients[i].vus_gene + " " +  patient_gene[j].gene ;
+                    patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene[j].gene ;
                 }
                 else if (patient_gene[j].report_gb === 'C') {            
                     patients[i].pv = 'Y';
-                    patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
+                    patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene[j].gene;
                 }
             }
+
+            if (patient_gene_amp.length !== 0 )
+            {
+                for (var j = 0;  j < patient_gene_amp.length; j ++)
+                {
+                    if (patient_gene_amp[j].report_gb === 'P') {  
+                        patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_amp[j].gene ;
+                    }
+                    else if (patient_gene_amp[j].report_gb === 'C') {                                    
+                        patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
+                    }
+                }
+            }
+
+            if (patient_gene_fus.length !== 0 )
+            {
+                for (var j = 0;  j < patient_gene_fus.length; j ++)
+                {
+                    if (patient_gene_fus[j].report_gb === 'P') {  
+                        patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_fus[j].gene ;
+                    }
+                    else if (patient_gene_fus[j].report_gb === 'C') {                                    
+                        patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
+                    }
+                }
+            }
+    
         }
     }
 
