@@ -104,7 +104,7 @@ const limsinsertHandler = async (lims, examin, recheck) => {
         let report_date       = lims[i].report_date;
         
         let dna_rna_gbn       = lims[i].dna_rna_gbn;
-        let seq               = lims[i].id;
+        let seq               = i; //lims[i].id;
     
         /*
         if (seq < 10) {
@@ -304,8 +304,7 @@ const limsDeleteHandler = async (report_date, examin, recheck) => {
    
     logger.info('[283][Lims][delete lims]report_date=' + report_date + ', examin=' + examin + ', recheck=' + recheck  );
       //delete Query 생성;    
-      const qry =`update lims 
-                set del_flag = 'Y'
+      const qry =`delete from lims 
                 where report_date = @report_date 
                 and   examin = @examin 
                 and   recheck = @recheck`;
