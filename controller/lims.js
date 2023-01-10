@@ -534,7 +534,7 @@ const  limsSelectHandler = async (start, end) => {
             , isnull(gender, '') gender 
             , isnull(age, '') age 
             , isnull(name, '') name
-            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY path_date desc ) id  
+            , ROW_NUMBER() OVER (PARTITION BY dna_rna_gbn ORDER BY path_date  ) id  
             , isnull( prescription_code, '') prescription_code
             , isnull( test_code, '') test_code
             , isnull( path_type, '') path_type
@@ -918,7 +918,7 @@ const  limsSelectHandler3 = async () => {
                     ,[examin] examin
                     ,[recheck] recheck
                 FROM  [dbo].[lims] 
-                where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-2,getdate()),112 ) 
+                where left(report_date, 10) >= CONVERT(NVARCHAR,dateadd(m,-6,getdate()),112 ) 
                 and del_flag = 'N'
             ) a
             left outer join dbo.users b
