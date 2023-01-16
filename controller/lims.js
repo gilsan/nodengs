@@ -924,7 +924,8 @@ const  limsSelectHandler3 = async () => {
             left outer join dbo.users b
             on a.examin = b.user_id
             left outer join dbo.users c
-            on a.recheck = c.user_id `;
+            on a.recheck = c.user_id 
+            order by report_date desc `;
 
         logger.info('[760]limsSelectHandler3 sql=' + qry);
     
