@@ -30,7 +30,7 @@ const listHandler = async (req) => {
 
   logger.info("[27][mutationMapper list]genes=" + genes + ", coding=" + coding + ", type=" + type );
 	
-	let sql ="select id	"
+	let sql ="select a.id	"
 				+"	,buccal "
 				+"	,patient_name "
 				+"	,register_number "
@@ -61,7 +61,11 @@ const listHandler = async (req) => {
         +" ,isnull(dbsnp_hgmd, '') dbsnp_hgmd"
         +" ,isnull(gnomad_eas, '') gnomad_eas"
         +" ,isnull(omim, '') omim";
-  sql = sql + " from mutation ";
+        +" ,isnull(b.user_nm, '') user_nm";
+        +" ,case when [savetime] is null then '' else  format ( [savetime], 'yyyyMMdd-HHmmss') end savetime";
+  sql = sql + " from mutation a ";
+       + " left outer join users b ";
+       + " on a.userid = b.user_id ";
   sql = sql + " where 1 = 1";
 
 	if(genes != "") 
@@ -73,7 +77,7 @@ const listHandler = async (req) => {
     if(type != "") 
       sql = sql + " and type like '%"+type+"%'";
 
-  sql = sql + " order by id";
+  sql = sql + " order by a.savetime desc";
   
   logger.info("[54][mutationMapper list]sql" + sql);
 

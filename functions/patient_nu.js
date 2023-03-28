@@ -19,26 +19,45 @@ const poolConnect = pool.connect();
 // patientid/gender/age/name no update 
 const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1,
 	                                chormosomal, orddeptcd, orddrid, orddrnm, orddeptnm, 
-									execprcpuniqno, prcpdd, testcd, sex, birth, ftl3) => {
+									execprcpuniqno, prcpdd, testcd, sex, birth, ftl3,
+									diagnm, genetic1, genetic2, genetic3, genetic4) => {
 	await poolConnect; // ensures that the pool has been created
  
 	 logger.info('[41][patient_nu]bcnno=' +  bcnno + ', patnm=' + patnm + ', tclsscmnm=' + tclsscmnm 
-					 + ', pid=' + pid + ', spcacptdt=' + spcacptdt + ', spccd=' + spccd + ', spcnm=' + spcnm
-					 + ', ikzk1=' + ikzk1 + ', chormosomal=' + chormosomal + ', orddeptcd= ' + orddeptcd + ',orddrid=' + orddrid
-					 + ', orddrnm= ' + orddrnm + ', orddeptnm=' + orddeptnm + ', execprcpuniqno=' + execprcpuniqno + ', prcpdd= ' + prcpdd
-					 + ', testcd=' + testcd + ', sex=' + sex + ', birth=' + birth + ', ftl3=' + ftl3 ); 
+				+ ', pid=' + pid + ', spcacptdt=' + spcacptdt + ', spccd=' + spccd + ', spcnm=' + spcnm
+				+ ', ikzk1=' + ikzk1 + ', chormosomal=' + chormosomal + ', orddeptcd= ' + orddeptcd + ',orddrid=' + orddrid
+				+ ', orddrnm= ' + orddrnm + ', orddeptnm=' + orddeptnm + ', execprcpuniqno=' + execprcpuniqno + ', prcpdd= ' + prcpdd
+				+ ', testcd=' + testcd + ', sex=' + sex + ', birth=' + birth + ', ftl3=' + ftl3
+				+ ', diagnm= ' + diagnm + ', genetic1=' + genetic1 + ', genetic2=' + genetic2 + ', genetic3= ' + genetic3 + ', genetic4= ' + genetic4 ); 
 
-	const qry=`update patientinfo_diag 
-		  set method= @tclsscmnm,
-		  accept_date = @spcacptdt,
-		  specimen=@spccd,
-		  IKZK1Deletion=@ikzk1,
-		  chromosomalanalysis=@chormosomal,
-		  request=@orddeptnm,
-		  prescription_no=@execprcpuniqno,
-		  prescription_date=@prcpdd,
-		  FLT3ITD=@ftl3
-		  where specimenNo = @bcnno`;
+	let qry= `update patientinfo_diag 
+				set method= @tclsscmnm,
+				accept_date = @spcacptdt,
+				specimen=@spccd,
+				chromosomalanalysis=@chormosomal,
+				request=@orddeptnm,
+				prescription_no=@execprcpuniqno,
+				prescription_date=@prcpdd `;
+
+	if (testcd == 'LPE471' || testcd == 'LPE472') //  AML/ALL   
+	{
+		qry = qry + `, IKZK1Deletion=@ikzk1, 
+					FLT3ITD=@ftl3`;
+	}
+	else if(testcd == 'LPE474' || testcd == 'LPE475') // 악성림프종/형질세포종
+	{
+		qry = qry + ', bonenmarrow=@diagnm ';
+	}
+	else if (testcd == "LPE473") //  MDS/MPN
+	{
+		qry = qry +	`,  diagnosis=@diagnm, 
+			genetic1=@genetic1, 
+		  	genetic2=@genetic2, 
+		  	genetic3=@genetic3,
+		  	genetic4=@genetic4 `;
+	}
+
+	qry = qry +	' where specimenNo = @bcnno';
 	logger.info('[63][patient_nu][update patientinfo_diag]sql=' +  qry) ;
   
 	try {
@@ -53,6 +72,11 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
 		.input('prcpdd', mssql.VarChar, prcpdd)
 		.input('testcd', mssql.VarChar, testcd)
 		.input('ftl3', mssql.VarChar, ftl3)
+		.input('diagnm', mssql.VarChar, diagnm)
+		.input('genetic1', mssql.VarChar, genetic1)
+		.input('genetic2', mssql.VarChar, genetic2)
+		.input('genetic3', mssql.VarChar, genetic3)
+		.input('genetic4', mssql.VarChar, genetic4)
 		.input('bcnno', mssql.VarChar, bcnno);
 		const result = await request.query(qry)
 		console.dir( result);
@@ -63,9 +87,9 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
 	}
   }
 
-exports.patient_nu = (testedID) => {
+exports.patient_nu = (testedID, test_code) => {
 	let sendUrl = configEnv.emr_path; //'http://emr012.cmcnu.or.kr/cmcnu/.live
-	sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
+	sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&testcd=' + test_code + '&bcno=' + testedID;
 
 	//sendUrl += data;
 
@@ -103,7 +127,12 @@ exports.patient_nu = (testedID) => {
 				let orddeptcd = item.orddeptcd;
 				let orddrid = item.orddrid;
 				let orddrnm = item.orddrnm;
-				let orddeptnm = item.orddeptnm;
+				let diagnm = item.diagnm;
+
+				let genetic1 = item.genetic1;
+				let genetic2 = item.genetic2;
+				let genetic3 = item.genetic3;
+				let genetic4 = item.genetic4;
 
 				let execprcpuniqno = item.execprcpuniqno;
 				let prcpdd = item.prcpdd;
@@ -113,15 +142,17 @@ exports.patient_nu = (testedID) => {
 				let ftl3 = item.ftl3;
 
 				logger.info('[143][patient_nu]bcnno=' +  bcnno + ', patnm=' + patnm + ', tclsscmnm=' + tclsscmnm 
-							+ ', pid=' + pid + ', spcacptdt=' + spcacptdt + ', spccd=' + spccd + ', spcnm=' + spcnm
-							+ ', ikzk1=' + ikzk1 + ', chormosomal=' + chormosomal + ', orddeptcd= ' + orddeptcd + ',orddrid=' + orddrid
-							+ ', orddrnm= ' + orddrnm + ', orddeptnm=' + orddeptnm + ', execprcpuniqno=' + execprcpuniqno + ', prcpdd= ' + prcpdd
-							+ ', testcd=' + testcd + ', sex=' + sex + ', birth=' + birth + ', ftl3=' + ftl3 ); 
+						+ ', pid=' + pid + ', spcacptdt=' + spcacptdt + ', spccd=' + spccd + ', spcnm=' + spcnm
+						+ ', ikzk1=' + ikzk1 + ', chormosomal=' + chormosomal + ', orddeptcd= ' + orddeptcd + ',orddrid=' + orddrid
+						+ ', orddrnm= ' + orddrnm + ', orddeptnm=' + orddeptnm + ', execprcpuniqno=' + execprcpuniqno + ', prcpdd= ' + prcpdd
+						+ ', diagnm= ' + diagnm + ', genetic1=' + genetic1 + ', genetic2=' + genetic2 + ', genetic3= ' + genetic3 + ', genetic4= ' + genetic4
+						+ ', testcd=' + testcd + ', sex=' + sex + ', birth=' + birth + ', ftl3=' + ftl3 ); 
 
            		// 2021.02.15  patientinfo_nu
 		   		const result6 =  patientinfo_nu(bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1, 
-			                            chormosomal, orddeptcd, orddrid, orddrnm,  orddeptnm,
-										execprcpuniqno, prcpdd, testcd, sex, birth, ftl3);
+			                            chormosomal, orddeptcd, orddrid, orddrnm,  orddeptnm,										
+										execprcpuniqno, prcpdd, testcd, sex, birth, ftl3,
+										diagnm, genetic1, genetic2, genetic3, genetic4);
 		   		result6.then(data => {
  
 					 console.log(data);

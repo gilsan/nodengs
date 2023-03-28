@@ -23,6 +23,27 @@ function nvl(st, defaultStr){
   return st ;
 }
 
+// get mutation Count
+const mutationCountHandler = async (gene, nucleotide_change, type) => {
+  await poolConnect; // ensures that the pool has been created
+ 
+  logger.info('[30][mutation]get mutationCountHandler data=' + gene + ", " + nucleotide_change + ", " + type);
+  const sql ="select count(1) as count from mutation where gene = '" + gene 
+            + "' and nucleotide_change = '" + nucleotide_change 
+            + "' and type = '" + type + "'";
+  logger.info('[33][mutation]get mutationCountHandler sql=' + sql);  
+
+  try {
+    const request = pool.request(); 
+    const result = await request.query(sql)
+    // console.dir( result);
+    
+    return result.recordset;
+  } catch (error) {
+    logger.error('[42][mutation]get mutationCountHandler err=' + error.message);
+  }
+}
+
 // insert mutation
 const  messageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
@@ -49,6 +70,7 @@ const  messageHandler = async (req) => {
   const etc1           = nvl(req.body.etc1, "");
   const etc2           = nvl(req.body.etc2, "");
   const etc3           = nvl(req.body.etc3, "");
+  const userid           = nvl(req.body.userid, "");
   let type =  nvl(req.body.type, "AMLALL");
 
   logger.info('[47][mutation]patient_name=' + patient_name + ' register_number=' + register_number + ' gene=' +  gene + ' fusion=' +  fusion);   
@@ -57,58 +79,107 @@ const  messageHandler = async (req) => {
   logger.info('[47][mutation]zygosity=' + zygosity  + ' vaf=' + vaf  + ' reference=' +  reference + ' cosmic_id= ' + cosmic_id);
   logger.info('[47][mutation]buccal=' + buccal  + ' buccal2=' + buccal2);
   logger.info('[47][mutation]exac=' + exac  + ' exac_east_asia=' + exac_east_asia + ' krgdb=' + krgdb);
-  logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3 + ", type=" + type);
+  logger.info('[47][mutation]etc1=' + etc1  + ' etc2=' + etc2 + ' etc3=' + etc3 + ", type=" + type + ", userid=" + userid);
 
-  let sql ="insert into mutation   ";
-  sql = sql + " (igv, sanger,patient_name,register_number,  fusion,  ";
-  sql = sql + " gene,functional_impact,transcript,  ";
-  sql = sql + " exon_intro,nucleotide_change,  ";
-  sql = sql + " amino_acid_change,zygosity,vaf,  ";
-  sql = sql + " reference,cosmic_id, buccal, buccal2,   ";
-  sql = sql + " exac, exac_east_asia, krgdb, etc1, etc2, etc3, type)   ";
-  sql = sql + " values (@igv, @sanger, @patient_name, @register_number,  @fusion, ";
-  sql = sql + " @gene, @functional_impact, @transcript,  ";
-  sql = sql + " @exon_intro, @nucleotide_change,  ";
-  sql = sql + " @amino_acid_change, @zygosity, @vaf,  ";
-  sql = sql + " @reference,@cosmic_id,@buccal,@buccal2,   ";
-  sql = sql + " @exac, @exac_east_asia, @krgdb, @etc1, @etc2, @etc3, @type)";
+  let result = mutationCountHandler(gene, nucleotide_change, type);
 
-  logger.info('[64][mutation]sql=' + sql);
+    let sql; 
+    result.then(data => {
 
-  try {
-      const request = pool.request()
-        .input('igv', mssql.NVarChar, igv) 
-        .input('sanger', mssql.NVarChar, sanger) 
-        .input('patient_name', mssql.NVarChar, patient_name) 
-        .input('register_number', mssql.VarChar, register_number) 
-        .input('fusion', mssql.VarChar, fusion) 
-        .input('gene', mssql.VarChar, gene) 
-        .input('functional_impact', mssql.VarChar, functional_impact) 
-        .input('transcript', mssql.VarChar, transcript) 
-        .input('exon_intro', mssql.VarChar, exon_intro) 
-        .input('nucleotide_change', mssql.VarChar, nucleotide_change) 
-        .input('amino_acid_change', mssql.VarChar, amino_acid_change) 
-        .input('zygosity', mssql.VarChar, zygosity) 
-        .input('vaf', mssql.VarChar, vaf) 
-        .input('reference', mssql.VarChar, reference) 
-        .input('cosmic_id', mssql.VarChar, cosmic_id)
-        .input('buccal', mssql.VarChar, buccal) 
-        .input('buccal2', mssql.VarChar, buccal2)
-        .input('exac', mssql.VarChar, exac)
-        .input('exac_east_asia', mssql.VarChar, exac_east_asia)
-        .input('krgdb', mssql.VarChar, krgdb)
-        .input('etc1', mssql.VarChar, etc1)
-        .input('etc2', mssql.VarChar, etc2)
-        .input('etc3', mssql.VarChar, etc3)
-        .input('type', mssql.VarChar, type); 
+      let resultCnt = data[0].count;
 
-      const result = await request.query(sql);
-     // console.dir( result);
+      console.log ("cnt=", resultCnt);
+
+      if (resultCnt > 0)
+      {
+        //update Query 생성
+        sql = `update mutation 
+                set igv = @igv, 
+                  sanger = @sanger, 
+                  patient_name = @patient_name, 
+                  register_number = @register_number, 
+                  fusion = @fusion, 
+                  functional_impact = @functional_impact, 
+                  transcript = @transcript, 
+                  exon_intro = @exon_intro, 
+                  amino_acid_change = @amino_acid_change, 
+                  zygosity = @zygosity, 
+                  vaf = @vaf, 
+                  reference = @reference, 
+                  buccal = @buccal, 
+                  buccal2 = @buccal2, 
+                  exac = @exac, 
+                  exac_east_asia = @exac_east_asia, 
+                  krgdb = @krgdb, 
+                  etc1 = @etc1, 
+                  etc2 = @etc2, 
+                  etc3 = @etc3, 
+                  userid = @userid, 
+                  savetime = getdate()
+                where  gene = @gene 
+                and  nucleotide_change = @nucleotide_change
+                and  type =   @type  `;
+      }
+      else
+      {
+        //insert Query 생성
+        sql = `insert into mutation   
+                 (igv, sanger,patient_name,register_number,  fusion,  
+                 gene,functional_impact,transcript,
+                 exon_intro,nucleotide_change,
+                 amino_acid_change,zygosity,vaf,
+                 reference,cosmic_id, buccal, buccal2,
+                 exac, exac_east_asia, krgdb, etc1, etc2, etc3, type, userid, savetime)
+              values (@igv, @sanger, @patient_name, @register_number,  @fusion,
+                 @gene, @functional_impact, @transcript,
+                 @exon_intro, @nucleotide_change,
+                 @amino_acid_change, @zygosity, @vaf,  
+                 @reference,@cosmic_id,@buccal,@buccal2,
+                 @exac, @exac_east_asia, @krgdb, @etc1, @etc2, @etc3, @type, @userid, getdate())`;
+      }
+
+      logger.info('[64][mutation]sql=' + sql);
+
+      try {
+        const request = pool.request()
+          .input('igv', mssql.NVarChar, igv) 
+          .input('sanger', mssql.NVarChar, sanger) 
+          .input('patient_name', mssql.NVarChar, patient_name) 
+          .input('register_number', mssql.VarChar, register_number) 
+          .input('fusion', mssql.VarChar, fusion) 
+          .input('gene', mssql.VarChar, gene) 
+          .input('functional_impact', mssql.VarChar, functional_impact) 
+          .input('transcript', mssql.VarChar, transcript) 
+          .input('exon_intro', mssql.VarChar, exon_intro) 
+          .input('nucleotide_change', mssql.VarChar, nucleotide_change) 
+          .input('amino_acid_change', mssql.VarChar, amino_acid_change) 
+          .input('zygosity', mssql.VarChar, zygosity) 
+          .input('vaf', mssql.VarChar, vaf) 
+          .input('reference', mssql.VarChar, reference) 
+          .input('cosmic_id', mssql.VarChar, cosmic_id)
+          .input('buccal', mssql.VarChar, buccal) 
+          .input('buccal2', mssql.VarChar, buccal2)
+          .input('exac', mssql.VarChar, exac)
+          .input('exac_east_asia', mssql.VarChar, exac_east_asia)
+          .input('krgdb', mssql.VarChar, krgdb)
+          .input('etc1', mssql.VarChar, etc1)
+          .input('etc2', mssql.VarChar, etc2)
+          .input('etc3', mssql.VarChar, etc3)
+          .input('type', mssql.VarChar, type)
+          .input('userid', mssql.VarChar, userid); 
+
+        const result = request.query(sql);
+      // console.dir( result);
       
-      return result;
-  } catch (error) {
-    logger.error('[87][mutation]err=' + error.message);
-  }
+        return result;
+      } catch (error) {
+        logger.error('[87][mutation]err=' + error.message);
+      }
+  })
+  .catch( error => {
+    logger.error('[181][mutation]messageHandler insert err=' + error.message);
+    res.sendStatus(500);
+  });
 }
 
  exports.saveMutation = (req,res, next) => {
@@ -309,7 +380,7 @@ const  variantsHandler = async (req) => {
   const nucleotide_change = req.body.coding;
   const gubun = nvl(req.body.gubun, 'AMLALL');
   
-  logger.info('[742][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
+  logger.info('[742][mutation]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
   let sql =`select top 1 functional_impact , reference, cosmic_id, type
                 from report_detected_variants 
@@ -321,7 +392,7 @@ const  variantsHandler = async (req) => {
                 and cosmic_id != ''
                  order by id desc`
                
-  logger.info('[749][geneinfo]list sql=' + sql);
+  logger.info('[749][mutation]list sql=' + sql);
 
   try {
       const request = pool.request()
@@ -331,19 +402,19 @@ const  variantsHandler = async (req) => {
       const result = await request.query(sql);
       return result.recordset;
   } catch (error) {
-    logger.error('[759][geneinfo]list err=' + error.message);
+    logger.error('[759][mutation]list err=' + error.message);
   }
 }
 
 exports.getVariantsLists = (req,res, next) => {
-  logger.info('[764][geneinfo]getCommentInsert req=' + JSON.stringify(req.body));
+  logger.info('[764][mutation]getCommentInsert req=' + JSON.stringify(req.body));
    
   const result = variantsHandler(req);
   result.then(data => {
     res.json(data);
   })
   .catch( error => {
-    logger.error('[771][geneinfo][getVariantsLists] err=' +error.message);
+    logger.error('[771][mutation][getVariantsLists] err=' +error.message);
     res.sendStatus(500);
   });
 }
@@ -356,7 +427,7 @@ const  variantsGeneticHandler = async (req) => {
   const nucleotide_change = req.body.coding;
   //const gubun = nvl(req.body.gubun, 'AMLALL');
   
-  logger.info('[361][geneinfo][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
+  logger.info('[361][mutation][variantsListsGeneticHandler]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
   let sql =`   select top 1 isnull(functional_impact, '') functionalImpact, amino_acid_change, transcript, 
               isnull(exon_intro, '') exon, 
@@ -444,7 +515,7 @@ const listHandler = async (req) => {
     const type    = nvl(req.body.type, "");
     logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding + ", type=" + type );
 	
-	let sql =`select id	
+	let sql =`select a.id	
 					,buccal 
 					,patient_name 
 					,register_number 
@@ -461,21 +532,26 @@ const listHandler = async (req) => {
 					,cosmic_id 
 					,sift_polyphen_mutation_taster 
 					,buccal2 
-         ,igv, sanger
-         ,isnull(exac, '') exac
-         ,isnull(exac_east_asia, '') exac_east_asia
-         ,isnull(krgdb, '') krgdb
-         ,isnull(etc1, '') etc1
-         ,isnull(etc2, '') etc2
-         ,isnull(etc3, '') etc3
-         ,isnull(type, 'AMLALL') type
-         ,isnull(rsid, '') rsid
-         ,isnull(genbank_accesion, '') genbank_accesion
-         ,isnull(dbsnp_hgmd, '') dbsnp_hgmd
-         ,isnull(gnomad_eas, '') gnomad_eas
-         ,isnull(omim, '') omim
-         from mutation 
-		     where 1=1`;
+          ,igv, sanger
+          ,isnull(exac, '') exac
+          ,isnull(exac_east_asia, '') exac_east_asia
+          ,isnull(krgdb, '') krgdb
+          ,isnull(etc1, '') etc1
+          ,isnull(etc2, '') etc2
+          ,isnull(etc3, '') etc3
+          ,isnull(type, 'AMLALL') type
+          ,isnull(rsid, '') rsid
+          ,isnull(genbank_accesion, '') genbank_accesion
+          ,isnull(dbsnp_hgmd, '') dbsnp_hgmd
+          ,isnull(gnomad_eas, '') gnomad_eas
+          ,isnull(omim, '') omim
+          ,isnull(a.userid, '') userid
+          ,isnull(b.user_nm, '') user_nm
+          ,case when [savetime] is null then '' else  format ( [savetime], 'yyyyMMdd-HHmmss') end savetime
+        from mutation a 
+        left outer join users b 
+        on a.userid = b.user_id 
+		    where 1=1`;
 
 	if(genes != "") 
 		sql = sql + " and gene like '%"+genes+"%'";
@@ -486,9 +562,9 @@ const listHandler = async (req) => {
   if(type != "") 
     sql = sql + " and type like '%"+type+"%'";
 
-  sql = sql + " order by id desc";
+  sql = sql + " order by a.savetime desc";
 
-    logger.info("[293][mutationMapper list]sql" + sql);
+    logger.info("[293][mutationMapper list]sql=" + sql);
     try {
        const request = pool.request();
         // .input('gene', mssql.VarChar, genes); 

@@ -29,8 +29,13 @@ const listHandler = async (req) => {
 
     logger.info('[12]artifcats listHandler genes=' + genes + ", coding=" + coding + ", type=" + type);
 	
-	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change, type ";
-    sql = sql + " from artifacts ";
+	let sql =`select a.id, genes, location, exon, transcript, coding, amino_acid_change, type 
+                ,isnull(a.userid, '') userid
+                ,isnull(b.user_nm, '') user_nm
+                ,case when [savetime] is null then '' else  format ( [savetime], 'yyyyMMdd-HHmmss') end savetime
+            from artifacts a 
+            left outer join users b 
+            on a.userid = b.user_id `
     sql = sql + " where 1=1 " 
 	if(genes != "") 
 		sql = sql + " and genes like '%"+genes+"%'";
@@ -42,15 +47,36 @@ const listHandler = async (req) => {
         sql = sql +  " and type = '"+ type + "'";
     }
     
-    sql = sql + " order by id ";
+    sql = sql + " order by a.savetime desc ";
 
-	logger.info('[12]artifcats listHandler sql' + sql);
+	logger.info('[12]artifcats listHandler sql=' + sql);
     try {
        const request = pool.request(); 
        const result = await request.query(sql) 
        return result.recordset;
     } catch (error) {
         logger.error('[27]artifcats listHandler err=' + error.message);
+    }
+}
+
+// get artifacts Count
+const artifactsCountHandler = async (genes, coding, type) => {
+    await poolConnect; // ensures that the pool has been created
+   
+    logger.info('[30][artifcats]get artifactsCountHandler data=' + genes + ", " + coding + ", " + type);
+    const sql ="select count(1) as count from artifacts where genes = '" + genes 
+              + "' and coding = '" + coding 
+              + "' and type = '" + type + "'";
+    logger.info('[33][artifcats]get artifactsCountHandler sql=' + sql);  
+  
+    try {
+      const request = pool.request(); 
+      const result = await request.query(sql)
+      // console.dir( result);
+      
+      return result.recordset;
+    } catch (error) {
+      logger.error('[42][artifcats]get artifcatsCountHandler err=' + error.message);
     }
 }
 
@@ -63,36 +89,71 @@ const insertHandler = async (req) => {
      const coding            = req.body.coding;
      const aminoAcidChange   = req.body.aminoAcidChange;
      let type =  nvl(req.body.type, "AMLALL");
+     const userid           = nvl(req.body.userid, "");
 
      logger.info('[39]artifcats insertHandler genes=' + genes + ', locat=' + locat + ", exon" + exon
                                     + ", transcript" + transcript + ', coding=' + coding
-                                    + ', aminoAcidChange=' + aminoAcidChange + ', type=' + type);   
- 
-     let sql = "insert into artifacts " ;
-     sql = sql + " (genes, location, exon, "
-     sql = sql + " transcript,coding, amino_acid_change, type)  "
-     sql = sql + " values(  "
-	 sql = sql + " @genes, @locat, @exon, "
-     sql = sql + " @transcript, @coding, @aminoAcidChange, @type)";
-     
-    logger.info('[50]artifcats insertHandler sql=' + sql);
+                                    + ', aminoAcidChange=' + aminoAcidChange + ', type=' + type);  
 
-    try {
-        const request = pool.request()
-          .input('genes', mssql.VarChar, genes) 
-          .input('locat', mssql.VarChar, locat) 
-          .input('exon', mssql.VarChar, exon) 
-          .input('transcript', mssql.VarChar, transcript) 
-          .input('coding', mssql.VarChar, coding) 
-          .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
-          .input('type', mssql.VarChar, type); 
+    let result = artifactsCountHandler(genes, coding, type);
 
-        const result = await request.query(sql)
-      //  console.dir( result); 
-        return result;
-    } catch (error) {
-        logger.error('[64]artifcats insertHandler err=' + error.message);
-    }
+    let sql; 
+    result.then(data => {
+
+      let resultCnt = data[0].count;
+
+      console.log ("cnt=", resultCnt);
+
+      if (resultCnt > 0)
+      {
+        //update Query 생성
+        sql = `update artifacts 
+                set location = @locat, 
+                    exon = @exon, 
+                    transcript = @transcript, 
+                  amino_acid_change = @aminoAcidChange, 
+                  userid = @userid, 
+                  savetime = getdate()
+                where  genes = @genes 
+                and  coding = @coding
+                and  type =   @type  `;
+      }
+      else
+      {
+        //insert Query 생성
+        sql = `insert into artifacts   
+                 (genes,location,exon,
+                    transcript,coding,
+                 amino_acid_change,type, userid, savetime)
+              values (@genes, @locat, @exon,
+                 @transcript, @coding,
+                 @aminoAcidChange, @type, @userid, getdate())`;
+      }                                     
+        
+        logger.info('[50]artifcats insertHandler sql=' + sql);
+
+        try {
+            const request = pool.request()
+            .input('genes', mssql.VarChar, genes) 
+            .input('locat', mssql.VarChar, locat) 
+            .input('exon', mssql.VarChar, exon) 
+            .input('transcript', mssql.VarChar, transcript) 
+            .input('coding', mssql.VarChar, coding) 
+            .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
+            .input('type', mssql.VarChar, type)
+            .input('userid', mssql.VarChar, userid); 
+
+            const result = request.query(sql)
+        //  console.dir( result); 
+            return result;
+        } catch (error) {
+            logger.error('[64]artifcats insertHandler err=' + error.message);
+        }
+    })
+    .catch( error => {
+        logger.error('[181][artifcats]messageHandler insert err=' + error.message);
+        res.sendStatus(500);
+    });
 }
 
 // update

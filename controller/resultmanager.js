@@ -8,6 +8,57 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
+const  cntHandler = async (type) => {
+    await poolConnect; // ensures that the pool has been created
+
+    logger.info('[61][resultmanager][cntHandler] type=' + type);
+
+    const sql=`select  count(1) as count1 from resultmanager  where type =@type`;
+    logger.info('[64][resultmanager][cntHandler] sql=' + sql);
+
+    try {
+
+        const request = pool.request()
+        .input('type', mssql.VarChar, type);
+      const result = await request.query(sql);      
+      return result.recordset;
+    } catch {
+        logger.error('[74][resultmanager][cntHandler]  err=' + error);
+    }
+
+}
+
+const  insertHandler = async (req) => {
+    await poolConnect; // ensures that the pool has been created
+
+    const type     = req.body.type;
+    const checker =  req.body.checker; // 검사자
+    const reader  = req.body.reader;   // 판독자
+    
+    logger.info('[18][resultmanager][insertHandler] type=' + type);
+    logger.info('[19][resultmanager][insertHandler] reader=' + reader);
+    logger.info('[20][resultmanager][insertHandler] checker=' + checker);
+
+    const sql="insert into resultmanager (reader, checker, type ) values (@reader, @checker, @type)";
+    logger.info('[23][resultmanager][insertHandler] sql=' + sql);
+
+    try {
+
+        const request = pool.request()
+        .input('type', mssql.VarChar, type)
+        .input('checker', mssql.NVarChar, checker)
+        .input('reader', mssql.NVarChar, reader); // or: new sql.Request(pool1)
+      const result = await request.query(sql)
+      console.dir( result);
+      
+      return result;
+
+    } catch {
+        logger.error('[37][resultmanager][insertHandler]  err=' + error.message);
+    }
+
+}
+
 const  updateHandler = async (req) => {
     await poolConnect; // ensures that the pool has been created
 
@@ -43,15 +94,37 @@ exports.update = (req,res, next) => {
 
     logger.info('[44][resultmanager][update] data=' + JSON.stringify( req.body));
 
-    const result = updateHandler(req);
-    result.then(data => {
-       res.json(data);
-    })
-    .catch( error  => {
-        logger.error('[51][resultmanager][update] err= ' + error.message);
-        res.sendStatus(500);
-    }); 
- }
+    const type     = req.body.type;   
+    const result6 = cntHandler (type);
+    result6.then(data => {
+    
+        let cnt = data[0].count1;
+        if (cnt === 0)
+        {
+            const result = insertHandler(req);
+            result.then(data => {
+            res.json(data);
+            })
+            .catch( error  => {
+                logger.error('[51][resultmanager][update] err= ' + error.message);
+                res.sendStatus(500);
+            }); 
+
+        }
+        else {
+
+            const result = updateHandler(req);
+            result.then(data => {
+            res.json(data);
+            })
+            .catch( error  => {
+                logger.error('[51][resultmanager][update] err= ' + error.message);
+                res.sendStatus(500);
+            }); 
+        }
+        
+    });
+}
 
  ////////////////////////////////////////////////////////////////////////////
  const  listHandler = async (req) => {

@@ -91,7 +91,7 @@ const  patientHandler = async (testedID) => {
   await poolConnect; // ensures that the pool has been created
  
   logger.info('[88][fileupload patient]testedID=' + testedID );
-  const qry=`select isnull (patientID, '') patientID
+  const qry=`select isnull (patientID, '') patientID, isnull (test_code, '') test_code
                 from patientinfo_diag
                  where specimenNo=@testedID `;
   logger.info('[93][fileupload patient]sql=' + qry);
@@ -102,7 +102,7 @@ const  patientHandler = async (testedID) => {
       const result = await request.query(qry)
       console.dir( result.recordset);
       
-      return result.recordset[0].patientID;
+      return result.recordset[0];
   } catch (error) {
     logger.error('[104][fileupload patient]err=' + error.message);
   }
@@ -277,12 +277,14 @@ router.post('/upload', function (req, res) {
             testedID = req.body.testedID;
 
             let patient_id = '';
+            let test_code = '';
 
             const res_patient = patientHandler(testedID);
               res_patient.then(data => {       
                 console.log('[252][patient]',data);
 
-                patient_id = data;
+                patient_id = data[0].patientID;
+                test_code = data[0].test_code;
 
                 //const surfix = item.originalname.split('.');
                 //let patientID = surfix[0].split('_');
@@ -471,14 +473,14 @@ router.post('/upload', function (req, res) {
             if ( tsv > 0) {
               console.log('필터링한 화일', item.originalname);
 
-                main_nu.patient_nu(testedID);
+                main_nu.patient_nu(testedID, test_code);
 
                 main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
             }	
             else if ( txt > 0) {
               console.log('필터링한 화일', item.originalname);
 
-                main_nu.patient_nu(testedID);
+                main_nu.patient_nu(testedID, test_code);
 
                 main_form6.main(loadData_mod.loadData(item.path),item.originalname,testedID);
             }	

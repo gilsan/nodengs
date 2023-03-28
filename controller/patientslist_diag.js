@@ -216,6 +216,191 @@ exports.getDiagLists = (req,res, next) => {
 
 // 진검 환자 검색
 // 2021.01.29 prescription_date -> accept_date 조회 조건 변경
+const  messageHandler3 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
+
+    await poolConnect; // ensures that the pool has been created
+   
+  logger.info('[196][patientinfo_diag list]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo); 
+  logger.info('[196][patientinfo_diag list] ' + sheet + ' ' +  status + ' ' + research + ' ' + name);
+
+    let patient =  nvl(patientID, "");
+    console.log('patient 0');
+    let specimen_no =  nvl(specimenNo, "");
+    let sheet_1 =  nvl(sheet, "");
+    let status_1 =  nvl(status, "");
+    let research1 = nvl(research, "");
+    let name1 = nvl(name, "");
+
+    logger.info("sheet_1="+sheet_1);
+    logger.info("status_1="+status_1);
+    logger.info("name1="+name1);
+ 
+    let sql = `select isnull(name, '') name  ,isnull(a.patientID, '') patientID 
+            ,isnull(age,  '') age ,isnull(gender, '') gender 
+            ,a.specimenNo
+        ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
+        ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
+        ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
+        ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
+        ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
+        ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
+            ,isnull(targetDisease, '') targetDisease 
+            ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
+            ,case when IsNULL( gbn, '' ) = ''  
+                then isnull(request, '')
+                when IsNULL( gbn, '' ) = 'cmc'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                when IsNULL( gbn, '' ) = '인터넷'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
+                else isnull(request, '') end request 
+            , isnull(appoint_doc, '')  appoint_doc 
+            ,isnull(worker, '') worker 
+            ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
+            ,isnull(prescription_code, '')  prescription_code 
+            ,isnull(testednum, '') testednum 
+            ,isnull(tsvFilteredFilename, '') tsvFilteredFilename 
+            ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate 
+            ,isnull(tsvFilteredStatus, '') tsvFilteredStatus 
+            ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate 
+            ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR 
+            ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
+            ,case when IsNULL( left(accept_date, 4 ), '' ) = '1900'  
+            then '' 
+            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
+            , accept_date accept_date2 
+            ,isnull(test_code, '') test_code  
+            ,isnull(a.screenstatus, '') screenstatus, isnull(path, '') path, isnull(detected, '') detected 
+            ,case when IsNULL( CONVERT(VARCHAR(4), a.report_date, 102 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), a.report_date, 102 ), '' ) end  report_date 
+            ,isnull(examin, '') examin, isnull(recheck, '') recheck 
+            , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
+            , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+            , isnull(report_title, '') reportTitle
+            , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm`
+           
+        sql = sql + ` , isnull(a.path_comment, '') comment, isnull(c.fu_comment, '') fu_comment , isnull(c.init_comment, '') init_comment , 
+                        isnull(c.fu_result, '') fu_result , isnull(c.init_result1, '') init_result1, isnull(c.init_result2, '') init_result2 ,`;
+
+        sql = sql + ` isnull(gbn, '') gbn
+            , case when isnull(a.screenstatus, '') = '10' 
+                then  'T' 
+                else isnull(a.saveyn, 'S') end as saveyn
+            from [dbo].[patientinfo_diag] a
+            left outer join dbo.report_patientsInfo b
+            on a.specimenNo = b.specimenNo `;
+            
+        sql = sql + ` left outer join dbo.report_comments c
+            on a.specimenNo = c.specimenNo `;
+
+        sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
+             + " and left(accept_date, 8) <= '" + end + "'"; 
+ 
+    if(patient.length > 0 )
+    {
+        sql = sql +  " and a.patientID = '" +  patient + "'";
+    }
+
+    if(specimen_no.length > 0 )
+    {
+        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
+    }
+
+    if(name1.length > 0 )
+    {
+        sql = sql +  " and a.name like '" +  name1 + "%'";
+    }
+
+    if(sheet_1.length > 0 )
+    {
+        if (sheet_1 != '') {
+            let sheet_2 = '';
+            let sheet_3 = '';
+
+            if (sheet_1 == 'AMLALL') {
+                sheet_2 = 'AMLALL';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'MDS') {  // MDS/MPN 
+                sheet_2 = 'MDS';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'lymphoma') {  // 악성림프종
+                sheet_2 = 'LYM';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+                sheet_2 = 'Genetic';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'Sequencing') {  // Sequencing
+                sheet_2 = 'SEQ';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'MLPA') {  // MLPA
+                sheet_2 = 'MLPA';
+                sheet_3 = 'type';
+            } else if (sheet_1 == 'igctr') {  // igctr
+                sheet_2 = 'IGTCR';
+                sheet_3 = 'type';
+            }
+            else
+            {
+                sheet_2 = sheet_1;
+            }
+
+            if (sheet_3 == 'type') {
+                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+            } else {
+                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+            }
+            
+        } else {
+            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+        }
+             
+    }
+
+    if(status_1.length == 1 )
+    {
+        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
+    } else if (status_1.length === 2) {
+        sql = sql +  " and isnull(a.screenstatus, '') = ''";
+    } 
+
+    if (research1.length > 0) {
+        if (research1 === 'RESEARCH') {
+            sql = sql +  " and a.gbn = 'RESEARCH'";
+        } else {
+            sql = sql +  " and a.gbn = ''";
+        }
+    }
+
+    //sql = sql + " order by accept_date desc, specimenNo desc   ";
+    sql = sql + " order by accept_date2 asc  ";
+
+    logger.info("[301][patientinfo_diag list]sql="+sql);
+    
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+        console.log( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[310][patientinfo_diag list]SQL error'+ err.message);
+    }
+}
+
+// 진검 환자 검색
+// 2021.01.29 prescription_date -> accept_date 조회 조건 변경
 const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
 
     await poolConnect; // ensures that the pool has been created
@@ -284,15 +469,33 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
             , isnull(report_title, '') reportTitle
-            , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm
-            , isnull(path_comment, '') path_comment ,isnull(gbn, '') gbn
+            , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm`
+
+            if ((sheet_1 == 'igctr') ) {
+                sql = sql + ", isnull(path_comment, '') comment, isnull(b.comment, '') comment1, ";
+            }
+            else {
+                sql = sql + ", isnull(path_comment, '') path_comment, isnull(b.comment, '') comment, ";
+            }
+           
+            if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+                sql = sql + "isnull(c.comment, '') comment_gene , ";
+            }
+
+        sql = sql + `isnull(gbn, '') gbn
             , case when isnull(a.screenstatus, '') = '10' 
                 then  'T' 
-                else isnull(saveyn, 'S') end saveyn
+                else isnull(a.saveyn, 'S') end saveyn
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
-            on a.specimenNo = b.specimenNo
-            where left(accept_date, 8) >= '` + start + "'" 
+            on a.specimenNo = b.specimenNo `;
+            
+            if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+                sql = sql + ` left outer join dbo.report_comments c
+                    on a.specimenNo = c.specimenNo `;
+            }
+
+        sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
              + " and left(accept_date, 8) <= '" + end + "'"; 
  
     if(patient.length > 0 )
@@ -338,6 +541,9 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 
             } else if (sheet_1 == 'MLPA') {  // MLPA
                 sheet_2 = 'MLPA';
+                sheet_3 = 'type';
+            } else if (sheet_1 == 'igctr') {  // igctr
+                sheet_2 = 'IGTCR';
                 sheet_3 = 'type';
             }
             else
@@ -390,6 +596,203 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
 
 
 
+
+// 진검 환자 검색
+// 2021.01.29 prescription_date -> accept_date 조회 조건 변경
+const  messageHandler4 = async (start, end, patientID, specimenNo, sheet, status, research, name) => {
+
+    await poolConnect; // ensures that the pool has been created
+   
+  logger.info('[196][patientinfo_diag list]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo); 
+  logger.info('[196][patientinfo_diag list] ' + sheet + ' ' +  status + ' ' + research + ' ' + name);
+
+    let patient =  nvl(patientID, "");
+    console.log('patient 0');
+    let specimen_no =  nvl(specimenNo, "");
+    let sheet_1 =  nvl(sheet, "");
+    let status_1 =  nvl(status, "");
+    let research1 = nvl(research, "");
+    let name1 = nvl(name, "");
+
+    logger.info("sheet_1="+sheet_1);
+    logger.info("status_1="+status_1);
+    logger.info("name1="+name1);
+ 
+    let sql = `select isnull(name, '') name  ,isnull(patientID, '') patientID 
+            ,isnull(age,  '') age ,isnull(gender, '') gender 
+            ,a.specimenNo
+        ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
+        ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
+        ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
+        ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
+        ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
+        ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
+            ,isnull(targetDisease, '') targetDisease 
+            ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
+            ,case when IsNULL( gbn, '' ) = ''  
+                then isnull(request, '')
+                when IsNULL( gbn, '' ) = 'cmc'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                when IsNULL( gbn, '' ) = '인터넷'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
+                else isnull(request, '') end request 
+            , isnull(appoint_doc, '')  appoint_doc 
+            ,isnull(worker, '') worker 
+            ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
+            ,isnull(prescription_code, '')  prescription_code 
+            ,isnull(testednum, '') testednum 
+            ,isnull(tsvFilteredFilename, '') tsvFilteredFilename 
+            ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate 
+            ,isnull(tsvFilteredStatus, '') tsvFilteredStatus 
+            ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate 
+            ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR 
+            ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
+            ,case when IsNULL( left(accept_date, 4 ), '' ) = '1900'  
+            then '' 
+            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
+            , accept_date accept_date2 
+            ,isnull(test_code, '') test_code  
+            ,isnull(a.screenstatus, '') screenstatus, isnull(path, '') path, isnull(detected, '') detected 
+            ,case when IsNULL( CONVERT(VARCHAR(4), a.report_date, 102 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), a.report_date, 102 ), '' ) end  report_date 
+            ,isnull(examin, '') examin, isnull(recheck, '') recheck 
+            , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
+            , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+            , isnull(report_title, '') reportTitle
+            , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm`
+
+            if ((sheet_1 == 'igctr') ) {
+                sql = sql + ", isnull(path_comment, '') comment, isnull(b.comment, '') comment1, ";
+            }
+            else {
+                sql = sql + ", isnull(path_comment, '') path_comment, isnull(b.comment, '') comment, ";
+            }
+           
+            //if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+                sql = sql + "isnull(c.comment, '') comment_gene , ";
+            //}
+
+        sql = sql + `isnull(gbn, '') gbn
+            , case when isnull(a.screenstatus, '') = '10' 
+                then  'T' 
+                else isnull(a.saveyn, 'S') end saveyn
+            from [dbo].[patientinfo_diag] a
+            left outer join dbo.report_patientsInfo b
+            on a.specimenNo = b.specimenNo `;
+            
+            //if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+                sql = sql + ` left outer join dbo.report_comments c
+                    on a.specimenNo = c.specimenNo `;
+            //}
+
+        sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
+             + " and left(accept_date, 8) <= '" + end + "'"; 
+ 
+    if(patient.length > 0 )
+    {
+        sql = sql +  " and patientID = '" +  patient + "'";
+    }
+
+    if(specimen_no.length > 0 )
+    {
+        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
+    }
+
+    if(name1.length > 0 )
+    {
+        sql = sql +  " and a.name like '" +  name1 + "%'";
+    }
+
+    if(sheet_1.length > 0 )
+    {
+        if (sheet_1 != '') {
+            let sheet_2 = '';
+            let sheet_3 = '';
+
+            if (sheet_1 == 'AMLALL') {
+                sheet_2 = 'AMLALL';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'MDS') {  // MDS/MPN 
+                sheet_2 = 'MDS';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'lymphoma') {  // 악성림프종
+                sheet_2 = 'LYM';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+                sheet_2 = 'Genetic';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'Sequencing') {  // Sequencing
+                sheet_2 = 'SEQ';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'MLPA') {  // MLPA
+                sheet_2 = 'MLPA';
+                sheet_3 = 'type';
+            } else if (sheet_1 == 'igctr') {  // igctr
+                sheet_2 = 'IGTCR';
+                sheet_3 = 'type';
+            }
+            else
+            {
+                sheet_2 = sheet_1;
+            }
+
+            if (sheet_3 == 'type') {
+                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+            } else {
+                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+            }
+            
+        } else {
+            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+        }
+             
+    }
+
+    if(status_1.length == 1 )
+    {
+        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
+    } else if (status_1.length === 2) {
+        sql = sql +  " and isnull(a.screenstatus, '') = ''";
+    } 
+
+    if (research1.length > 0) {
+        if (research1 === 'RESEARCH') {
+            sql = sql +  " and a.gbn = 'RESEARCH'";
+        } else {
+            sql = sql +  " and a.gbn = ''";
+        }
+    }
+
+    //sql = sql + " order by accept_date desc, specimenNo desc   ";
+    sql = sql + " order by accept_date2 asc  ";
+
+    logger.info("[301][patientinfo_diag list]sql="+sql);
+    
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+        console.log( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[310][patientinfo_diag list]SQL error'+ err.message);
+    }
+}
+
+
 // 2021.09.22
 // 진검 mutation gene coding count 검색
 const  counterHandler = async (gene, coding) => {
@@ -435,6 +838,47 @@ exports.count = (req,res, next) => {
         logger.error('[360] patientinfo_diag mutation cnt  err=' + error.message);
         res.sendStatus(500);
     });     
+}
+
+// diag 날자별 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagLists_Excel = (req, res,next) => {
+
+    logger.info('data=' + JSON.stringify( req.body));
+    //console.log(req);
+   let start =  req.body.start; //.replace("-", "");
+   let end   =  req.body.end; //.replace("-", "");
+   let patientID   =  req.body.patientID.trim(); // 환자 id
+   let name   = nvl(req.body.name, ''); // 연구용
+   let specimenNo   =  req.body.specimenNo.trim(); // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  req.body.sheet; // 결과지
+   let research = req.body.research1; // 연구용
+
+   console.log('[218][patientslist_diag][getPatientDiagLists] 검색', start,end, patientID, specimenNo, sheet, status, research, name);
+   logger.info('[218][patientslist_diag][getPatientDiagLists] 검색' + start + ", " + end + ", " + patientID + ", " +  specimenNo + ", " + sheet + ", " + status + ", research1=" + research + ', ' + name );
+   
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler4(start, end, patientID, specimenNo, sheet, status, research, name);
+   result.then(data => {
+ 
+      res.json(data);
+
+      res.end();
+   })
+   .catch( err => {
+      logger.error('[310][patientinfo_diag list]SQL error'+ err.message);
+      res.sendStatus(500);
+    }); 
 }
 
 // diag 날자별 환자ID, 검사ID 로 검사자 조회  
@@ -606,13 +1050,16 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
    let start =  req.body.start; //.replace("-", "");
    let end   =  req.body.end; //.replace("-", "");
    let patientID   =  req.body.patientID; // 환자 id
-   let name   = nvl(req.body.name, ''); // 연구용
+   let name1   = nvl(req.body.name, ''); // 연구용
    let specimenNo   =  req.body.specimenNo; // 검채 번호
-   let status   =  req.body.status; // 상태
+   let status1   =  req.body.status; // 상태
    let sheet   =  nvl(req.body.sheet, 'genetic'); // 결과지 
    let research = req.body.research; // 연구용
 
-   console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status, name);
+   console.log('[440][patientslist_diag][getPatientDiagListsGenetic] 검색', start,end, patientID, specimenNo, sheet, status1, name1);
+   logger.info('[440][patientslist_diag][getPatientDiagListsGenetic] 검색' + " start=" + start + ", end=" + end);
+   logger.info('[440][patientslist_diag][getPatientDiagListsGenetic] 검색' + " patientID=" + patientID + ", specimenNo1=" + specimenNo);
+   logger.info('[440][patientslist_diag][getPatientDiagListsGenetic] 검색' + " sheet=" + sheet + ", status1=" + status1 + ", name1=" +  name1);
    
    const  now = new Date();
    const today = getFormatDate2(now);
@@ -625,7 +1072,7 @@ exports.getPatientDiagListsGenetic = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
+   const result = messageHandler2(start, end, patientID, specimenNo, sheet, status1, research, name1);
    result.then(data => {
 
       res.json(data);
@@ -716,6 +1163,51 @@ exports.getPatientDiagListsMlpa = (req, res,next) => {
      logger.error('[539][patientinfo_diag][getPatientDiagListsMlpa]SQL error'+ err.message);
      res.sendStatus(500);
    }); 
+}
+
+// diag 날자별 유전성유전질환 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsigtcr = (req, res,next) => {
+
+   logger.info('[731][patientslist_diag][getPatientDiagListsigtcr] data=' + JSON.stringify( req.body));
+    //console.log(req);
+   let start =  req.body.start; //.replace("-", "");
+   let end   =  req.body.end; //.replace("-", "");
+   let patientID   =  req.body.patientID; // 환자 id
+   let name   = nvl(req.body.name, ''); // 연구용
+   let specimenNo   =  req.body.specimenNo; // 검채 번호
+   let status   =  req.body.status; // 상태
+   let sheet   =  nvl(req.body.sheet, 'igctr'); // 결과지
+
+   if (sheet === '100') {
+    sheet   =  'igctr'; 
+   }   
+
+   let research = req.body.research1; // 연구용
+
+   console.log('[740][patientslist_diag][getPatientDiagListsigtcr] 검색', start,end, patientID, specimenNo, sheet, status, name);
+   
+   const  now = new Date();
+   const today = getFormatDate2(now);
+
+   const nowTime = new Date().getTime();
+   const requestTime = getFormatDate3(end).getTime();
+
+   if (requestTime > nowTime) {
+	   end = today; // .replace("-", "");
+       console.log('end=', end);
+   }
+
+   const result = messageHandler3(start, end, patientID, specimenNo, sheet, status, research, name);
+   result.then(data => {
+
+      res.json(data);
+
+      res.end();
+   })
+   .catch( err  => {
+    logger.error('[761][patientinfo_diag][getPatientDiagListsigtcr]SQL error'+ err.message);
+    res.sendStatus(500);
+  }); 
 }
 
 /**

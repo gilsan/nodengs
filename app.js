@@ -147,7 +147,10 @@ const excelDvPathRouter = require('./routes/excelDvPathRouter');
 // MLPA Router
 const mlpaRouter = require('./routes/mlpaRouter');
 // 병리 돌연변이 sequencing 입력
-const sequencingdiagRouter = require('./routes/sequencingdiagRouter')
+const sequencingdiagRouter = require('./routes/sequencingdiagRouter');
+
+// igtcr Router
+const igtcrRouter = require('./routes/igtcrRouter');
 
 //나중에 확인후 삭제할것.
 // const allRouter           = require('./routes/allRouter');       //allRouter.js 파일을 선언한다.
@@ -366,6 +369,9 @@ app.use('/tests', function(req, res, next) {
 
 // MLPA
  app.use('/mlpa', mlpaRouter);
+
+ // igtcr
+  app.use('/igtcr', igtcrRouter);
 
 // 병리 돌연변이 sequencing 입력
 app.use('/sequencingdiag',sequencingdiagRouter);
