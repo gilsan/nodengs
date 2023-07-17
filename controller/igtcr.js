@@ -105,10 +105,10 @@ const igtcrReportHandler = async (specimenNo) => {
 }
 
 
-const igtcrListHandler = async (resultspecimenNo) => {
+const igtcrListHandler = async (resultspecimenNo, resultspecimenNo2, specimenNo) => {
     await poolConnect; // ensures that the pool has been created
     
-    logger.info('[55] igtcrListHandler =' + resultspecimenNo);
+    logger.info('[55] igtcrListHandler =' + resultspecimenNo + ", " + resultspecimenNo2 + ", " + specimenNo );
 
         //select Query 생성
         let qry = `select a1.specimenNo specimenNo,
@@ -125,7 +125,7 @@ const igtcrListHandler = async (resultspecimenNo) => {
             a1.bigo bigo,
             a1.comment comment,
             a1.density density,
-            isnull(a1.use_yn, 'false') use_yn1,  
+            a1.use_yn use_yn1,  
 
             aa.sequence1         sequence1, aa.sequence_length1  sequence_length1,  aa.raw_count1   raw_count1,
             aa.v_gene1           v_gene1,   aa.j_gene1           j_gene1, 
@@ -175,7 +175,48 @@ const igtcrListHandler = async (resultspecimenNo) => {
             aa.percent_total_reads10            percent_total_reads10,
             aa.cell_equipment10    cell_equipment10
         from
-            dbo.report_detected_igtcr a1
+            ( select a.specimenNo specimenNo,
+                a.report_date report_date,
+                a.gene gene,
+                a.total_read_count total_read_count,
+                a.percent_of_LQIC percent_of_LQIC ,            
+                a.read_of_LQIC read_of_LQIC ,
+                a.total_Bcell_Tcell_count total_Bcell_Tcell_count,
+                a.total_IGH_read_depth total_IGH_read_depth,
+                a.total_nucelated_cells total_nucelated_cells,
+                a.total_cell_equipment total_cell_equipment,
+                a.IGHV_mutation IGHV_mutation,
+                a.bigo bigo,
+                a.comment comment,
+                a.density density,
+                isnull(a.use_yn, 'false') use_yn  ,
+                a.report_seq report_seq 
+                from    dbo.report_detected_igtcr a
+                left outer join [dbo].[report_igtcr_visible] b
+                    on a.specimenNo = b.disp_specimenNo
+                    and a.report_seq = b.report_seq 
+                where a.specimenNo = '` + specimenNo  + `'
+                and b.id is not null
+                union all 
+                select a.specimenNo specimenNo,
+                a.report_date report_date,
+                a.gene gene,
+                a.total_read_count total_read_count,
+                a.percent_of_LQIC percent_of_LQIC ,            
+                a.read_of_LQIC read_of_LQIC ,
+                a.total_Bcell_Tcell_count total_Bcell_Tcell_count,
+                a.total_IGH_read_depth total_IGH_read_depth,
+                a.total_nucelated_cells total_nucelated_cells,
+                a.total_cell_equipment total_cell_equipment,
+                a.IGHV_mutation IGHV_mutation,
+                a.bigo bigo,
+                a.comment comment,
+                a.density density,
+                isnull(a.use_yn, 'false') use_yn  ,
+                a.report_seq report_seq 
+                from    dbo.report_detected_igtcr a
+                where a.specimenNo in ` + resultspecimenNo2  + `
+            ) a1
             left outer  join 
             (
                 select specimenNo specimenNo,
@@ -927,12 +968,877 @@ const igtcrListHandler = async (resultspecimenNo) => {
 }
 
 
+const igtcrListHandler_557 = async (resultspecimenNo, resultspecimenNo2, specimenNo, gene) => {
+    await poolConnect; // ensures that the pool has been created
+    
+    logger.info('[55] igtcrListHandler_557 =' + resultspecimenNo + ", " + resultspecimenNo2 + ", " + specimenNo + ", " + gene );
+
+        //select Query 생성
+        let qry = `select a1.specimenNo specimenNo,
+            a1.report_date report_date,
+            a1.gene gene,
+            a1.total_read_count total_read_count,
+            a1.percent_of_LQIC percent_of_LQIC ,            
+            a1.read_of_LQIC read_of_LQIC ,
+            a1.total_Bcell_Tcell_count total_Bcell_Tcell_count,
+            a1.total_IGH_read_depth total_IGH_read_depth,
+            a1.total_nucelated_cells total_nucelated_cells,
+            a1.total_cell_equipment total_cell_equipment,
+            a1.IGHV_mutation IGHV_mutation,
+            a1.bigo bigo,
+            a1.comment comment,
+            a1.density density,
+            a1.use_yn use_yn1,  
+
+            aa.sequence1         sequence1, aa.sequence_length1  sequence_length1,  aa.raw_count1   raw_count1,
+            aa.v_gene1           v_gene1,   aa.j_gene1           j_gene1, 
+            aa.percent_total_reads1  percent_total_reads1,       aa.cell_equipment1 cell_equipment1, 
+
+            aa.sequence2        sequence2,  aa.sequence_length2  sequence_length2,  aa.raw_count2   raw_count2,
+            aa.v_gene2          v_gene2,    aa.j_gene2           j_gene2,   
+            aa.percent_total_reads2  percent_total_reads2,       aa.cell_equipment2 cell_equipment2, 
+
+            aa.sequence3        sequence3,  aa.sequence_length3  sequence_length3,   aa.raw_count3   raw_count3,
+            aa.v_gene3          v_gene3,    aa.j_gene3           j_gene3,    
+            aa.percent_total_reads3  percent_total_reads3,       aa.cell_equipment3 cell_equipment3, 
+        
+            aa.sequence4        sequence4,  aa.sequence_length4  sequence_length4,  aa.raw_count4   raw_count4,
+            aa.v_gene4          v_gene4,    aa.j_gene4           j_gene4,   
+            aa.percent_total_reads4  percent_total_reads4,       aa.cell_equipment4 cell_equipment4, 
+
+            aa.sequence5        sequence5,  aa.sequence_length5  sequence_length5,  aa.raw_count5 raw_count5,
+            aa.v_gene5          v_gene5,    aa.j_gene5           j_gene5,
+            aa.percent_total_reads5  percent_total_reads5,       aa.cell_equipment5 cell_equipment5, 
+    
+            aa.sequence6        sequence6,  aa.sequence_length6 sequence_length6,   aa.raw_count6 raw_count6,
+            aa.v_gene6          v_gene6,    aa.j_gene6           j_gene6,
+            aa.percent_total_reads6  percent_total_reads6,       aa.cell_equipment6 cell_equipment6, 
+    
+            aa.sequence7         sequence7, aa.sequence_length7 sequence_length7,
+            aa.raw_count7 raw_count7,
+            aa.v_gene7            v_gene7,        aa.j_gene7            j_gene7,
+            aa.percent_total_reads7            percent_total_reads7,
+            aa.cell_equipment7    cell_equipment7,
+        
+            aa.sequence8            sequence8, aa.sequence_length8 sequence_length8,
+            aa.raw_count8 raw_count8,
+            aa.v_gene8            v_gene8, aa.j_gene8            j_gene8,
+            aa.percent_total_reads8            percent_total_reads8,
+            aa.cell_equipment8    cell_equipment8,
+            
+            aa.sequence9         sequence9, aa.sequence_length9 sequence_length9,
+            aa.raw_count9 raw_count9,
+            aa.v_gene9            v_gene9, aa.j_gene9            j_gene9,
+            aa.percent_total_reads9            percent_total_reads9,
+            aa.cell_equipment9    cell_equipment9,
+            
+            aa.sequence10 sequence10, aa.sequence_length10 sequence_length10,
+            aa.raw_count10 raw_count10,
+            aa.v_gene10            v_gene10, aa.j_gene10            j_gene10,
+            aa.percent_total_reads10            percent_total_reads10,
+            aa.cell_equipment10    cell_equipment10
+        from
+            ( select a.specimenNo specimenNo,
+                a.report_date report_date,
+                a.gene gene,
+                a.total_read_count total_read_count,
+                a.percent_of_LQIC percent_of_LQIC ,            
+                a.read_of_LQIC read_of_LQIC ,
+                a.total_Bcell_Tcell_count total_Bcell_Tcell_count,
+                a.total_IGH_read_depth total_IGH_read_depth,
+                a.total_nucelated_cells total_nucelated_cells,
+                a.total_cell_equipment total_cell_equipment,
+                a.IGHV_mutation IGHV_mutation,
+                a.bigo bigo,
+                a.comment comment,
+                a.density density,
+                isnull(a.use_yn, 'false') use_yn  ,
+                a.report_seq report_seq 
+                from    dbo.report_detected_igtcr a
+                left outer join [dbo].[report_igtcr_visible] b
+                    on a.specimenNo = b.disp_specimenNo
+                    and a.report_seq = b.report_seq 
+                    and b.gene = '` + gene  + `'
+                where a.specimenNo = '` + specimenNo  + `'
+                and a.gene = '` + gene  + `'
+                and b.id is not null
+                union all 
+                select a.specimenNo specimenNo,
+                a.report_date report_date,
+                a.gene gene,
+                a.total_read_count total_read_count,
+                a.percent_of_LQIC percent_of_LQIC ,            
+                a.read_of_LQIC read_of_LQIC ,
+                a.total_Bcell_Tcell_count total_Bcell_Tcell_count,
+                a.total_IGH_read_depth total_IGH_read_depth,
+                a.total_nucelated_cells total_nucelated_cells,
+                a.total_cell_equipment total_cell_equipment,
+                a.IGHV_mutation IGHV_mutation,
+                a.bigo bigo,
+                a.comment comment,
+                a.density density,
+                isnull(a.use_yn, 'false') use_yn  ,
+                a.report_seq report_seq 
+                from    dbo.report_detected_igtcr a
+                where a.specimenNo in ` + resultspecimenNo2  + `
+                and a.gene = '` + gene  + `'
+            ) a1
+            left outer  join 
+            (
+                select specimenNo specimenNo,
+                    report_date report_date,
+                    isnull(report_seq, 1) report_seq,
+                    max(sequence1)         sequence1, max(sequence_length1)  sequence_length1, 
+                    max(raw_count1)        raw_count1,
+                    max(v_gene1)            v_gene1,  max(j_gene1)            j_gene1,
+                    max(percent_total_reads1)            percent_total_reads1,
+                    max(cell_equipment1)    cell_equipment1,
+
+                    max(sequence2) sequence2, max(sequence_length2) sequence_length2,
+                    max(raw_count2) raw_count2,
+                    max(v_gene2)            v_gene2, max(j_gene2)            j_gene2,
+                    max(percent_total_reads2)            percent_total_reads2,
+                    max(cell_equipment2)    cell_equipment2,
+
+                    max(sequence3) sequence3, max(sequence_length3) sequence_length3,
+                    max(raw_count3) raw_count3,
+                    max(v_gene3)            v_gene3, max(j_gene3)            j_gene3,
+                    max(percent_total_reads3)            percent_total_reads3,
+                    max(cell_equipment3)    cell_equipment3,
+                    
+                    max(sequence4) sequence4, max(sequence_length4) sequence_length4,
+                    max(raw_count4) raw_count4,
+                    max(v_gene4)            v_gene4, max(j_gene4)            j_gene4,
+                    max(percent_total_reads4)            percent_total_reads4,
+                    max(cell_equipment4)    cell_equipment4,
+
+                    max(sequence5) sequence5, max(sequence_length5) sequence_length5,
+                    max(raw_count5) raw_count5,
+                    max(v_gene5)            v_gene5,    max(j_gene5)            j_gene5,
+                    max(percent_total_reads5)            percent_total_reads5,
+                    max(cell_equipment5)    cell_equipment5,
+                
+                    max(sequence6) sequence6,    max(sequence_length6) sequence_length6,
+                    max(raw_count6) raw_count6,
+                    max(v_gene6)            v_gene6,    max(j_gene6)            j_gene6,
+                    max(percent_total_reads6)            percent_total_reads6,
+                    max(cell_equipment6)    cell_equipment6,
+                
+                    max(sequence7) sequence7,    max(sequence_length7) sequence_length7,
+                    max(raw_count7) raw_count7,
+                    max(v_gene7)            v_gene7,    max(j_gene7)            j_gene7,
+                    max(percent_total_reads7)            percent_total_reads7,
+                    max(cell_equipment7)    cell_equipment7,
+                
+                    max(sequence8) sequence8,    max(sequence_length8) sequence_length8,
+                    max(raw_count8) raw_count8,
+                    max(v_gene8)            v_gene8,    max(j_gene8)            j_gene8,
+                    max(percent_total_reads8)            percent_total_reads8,
+                    max(cell_equipment8)    cell_equipment8,
+                    
+                    max(sequence9) sequence9,    max(sequence_length9) sequence_length9,
+                    max(raw_count9) raw_count9,
+                    max(v_gene9)            v_gene9,    max(j_gene9)            j_gene9,
+                    max(percent_total_reads9)            percent_total_reads9,
+                    max(cell_equipment9)    cell_equipment9,
+                    
+                    max(sequence10) sequence10,    max(sequence_length10) sequence_length10,
+                    max(raw_count10) raw_count10,
+                    max(v_gene10)            v_gene10,    max(j_gene10)            j_gene10,
+                    max(percent_total_reads10)            percent_total_reads10,
+                    max(cell_equipment10)    cell_equipment10
+            from
+            (
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    , [sequence]         sequence1      , [sequence_length]  sequence_length1
+                    , [raw_count]        raw_count1
+                    , [v_gene]           v_gene1    , [j_gene]           j_gene1
+                    , [percent_total_reads] percent_total_reads1
+                    , [cell_equipment]    cell_equipment1
+                    
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , ''     v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3      , '' sequence_length3
+                    , '' raw_count3
+                    , ''     v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+                    
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , ''    v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5      , '' sequence_length5
+                    , '' raw_count5
+                    , ''    v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6     , '' sequence_length6
+                    , '' raw_count6
+                    , ''    v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7     , '' sequence_length7
+                    , '' raw_count7
+                    , ''    v_gene7, '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , ''    v_gene8, ''           j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , ''    v_gene9, '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , ''    v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                    and [var_idx]  = 1
+                union all
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      , '' sequence_length1
+                    , '' raw_count1
+                    , ''    v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , [sequence] sequence2  , [sequence_length]  sequence_length2       
+                    , raw_count raw_count2
+                    , [v_gene]   v_gene2    , [j_gene]   j_gene2
+                    , [percent_total_reads] percent_total_reads2
+                    , [cell_equipment]    cell_equipment2
+                    
+                    , '' sequence3      , '' sequence_length3
+                    , '' raw_count3
+                    , ''    v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+                    
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , ''    v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , ''    v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6     , '' sequence_length6
+                    , '' raw_count6
+                    , ''    v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7     , '' sequence_length7
+                    , '' raw_count7
+                    , ''    v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , ''    v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , ''     v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , ''    v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 2
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , ''    v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , ''     v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , [sequence] sequence3  
+                    , [sequence_length] sequence_length3
+                    , [raw_count] raw_count3
+                    , [v_gene]           v_gene3
+                    , [j_gene]           j_gene3
+                    , [percent_total_reads] percent_total_reads3
+                    , [cell_equipment]    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , ''           v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , ''           v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6     , '' sequence_length6
+                    , '' raw_count6
+                    , ''           v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7     , '' sequence_length7
+                    , '' raw_count7
+                    , ''           v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , ''           v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , ''           v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , ''        v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 3
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , ''           v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , ''           v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3
+                    , ''           v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+
+                    , [sequence] sequence4      , [sequence_length] sequence_length4
+                    , [raw_count] raw_count4
+                    , [v_gene]           v_gene4    , [j_gene]           j_gene4
+                    , [percent_total_reads] percent_total_reads4
+                    , [cell_equipment]    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , ''           v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6     , '' sequence_length6
+                    , '' raw_count6
+                    , ''           v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7     , '' sequence_length7
+                    , '' raw_count7
+                    , ''           v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , ''           v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , ''           v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , ''           v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 4
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , ''           v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , ''           v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3
+                    , ''           v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , ''           v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+                    
+                    , [sequence] sequence5      , [sequence_length] sequence_length5
+                    , [raw_count] raw_count5
+                    , [v_gene]           v_gene5    , [j_gene]           j_gene5
+                    , [percent_total_reads] percent_total_reads5
+                    , [cell_equipment]    cell_equipment5
+
+                    , '' sequence6     , '' sequence_length6
+                    , '' raw_count6
+                    , ''           v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7     , '' sequence_length7
+                    , '' raw_count7
+                    , ''           v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , ''           v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , ''           v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , ''           v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 5
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , '' v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , '' v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3
+                    , '' v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , '' v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , '' v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , [sequence] sequence6      , [sequence_length] sequence_length6
+                    , [raw_count] raw_count6
+                    , [v_gene]           v_gene6    , [j_gene]           j_gene6
+                    , [percent_total_reads] percent_total_reads6
+                    , [cell_equipment]    cell_equipment6
+                    
+                    , '' sequence7     , '' sequence_length7
+                    , '' raw_count7
+                    , '' v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , '' v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , '' v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , '' v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 6
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , '' v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , '' v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3
+                    , '' v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , '' v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+                    
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , '' v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6      , '' sequence_length6
+                    , '' raw_count6
+                    , '' v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+                    
+                    , [sequence] sequence7     , [sequence_length] sequence_length7
+                    , [raw_count] raw_count7
+                    , [v_gene]           v_gene7    , [j_gene]           j_gene7
+                    , [percent_total_reads] percent_total_reads7
+                    , [cell_equipment]    cell_equipment7
+
+                    , '' sequence8      , '' sequence_length8
+                    , '' raw_count8
+                    , '' v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , '' v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , '' v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 7
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , '' v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , '' v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3
+                    , '' v_gene3    , '' j_gene3
+                    , '' percent_total_reads
+                    , ''    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , '' v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , '' v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6      , '' sequence_length6
+                    , '' raw_count6
+                    , '' v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7      , '' sequence_length7
+                    , '' raw_count7
+                    , '' v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+                    
+                    , [sequence] sequence8     , [sequence_length] sequence_length8
+                    , [raw_count] raw_count8
+                    , [v_gene]           v_gene8    , [j_gene]           j_gene8
+                    , [percent_total_reads] percent_total_reads8
+                    , [cell_equipment]    cell_equipment8
+                    
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , '' v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10
+                    , '' v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 8
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , '' v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2     , '' v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3    , '' v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4    , '' v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , '' v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6      , '' sequence_length6
+                    , '' raw_count6
+                    , '' v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7      , '' sequence_length7
+                    , '' raw_count7
+                    , '' v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+                    
+                    , '' sequence8     , '' sequence_length8
+                    , '' raw_count8
+                    , '' v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , [sequence] sequence9      , [sequence_length] sequence_length9
+                    , [raw_count] raw_count9
+                    , [v_gene]           v_gene9    , [j_gene]           j_gene9
+                    , [percent_total_reads] percent_total_reads9
+                    , [cell_equipment]    cell_equipment9
+                    
+                    , '' sequence10      , '' sequence_length10
+                    , '' raw_count10 
+                    , '' v_gene10    , '' j_gene10
+                    , '' percent_total_reads10
+                    , ''    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 9
+                union all 
+                SELECT specimenNo specimenNo
+                    , report_date report_date 
+                    , isnull(report_seq, 1) report_seq
+                    ,  '' sequence1      ,  '' sequence_length1
+                    ,  '' raw_count1
+                    , '' v_gene1    , '' j_gene1
+                    , '' percent_total_reads1
+                    , ''    cell_equipment1
+                    
+                    , '' sequence2      , '' sequence_length2
+                    , '' raw_count2
+                    , '' v_gene2    , '' j_gene2
+                    , '' percent_total_reads2
+                    , ''    cell_equipment2
+
+                    , '' sequence3     , '' sequence_length3
+                    , '' raw_count3
+                    , '' v_gene3    , '' j_gene3
+                    , '' percent_total_reads3
+                    , ''    cell_equipment3
+
+                    , '' sequence4     , '' sequence_length4
+                    , '' raw_count4
+                    , '' v_gene4    , '' j_gene4
+                    , '' percent_total_reads4
+                    , ''    cell_equipment4
+
+                    , '' sequence5     , '' sequence_length5
+                    , '' raw_count5
+                    , '' v_gene5    , '' j_gene5
+                    , '' percent_total_reads5
+                    , ''    cell_equipment5
+
+                    , '' sequence6      , '' sequence_length6
+                    , '' raw_count6
+                    , '' v_gene6    , '' j_gene6
+                    , '' percent_total_reads6
+                    , ''    cell_equipment6
+
+                    , '' sequence7      , '' sequence_length7
+                    , '' raw_count7
+                    , '' v_gene7    , '' j_gene7
+                    , '' percent_total_reads7
+                    , ''    cell_equipment7
+
+                    , '' sequence8     , '' sequence_length8
+                    , '' raw_count8
+                    , '' v_gene8    , '' j_gene8
+                    , '' percent_total_reads8
+                    , ''    cell_equipment8
+
+                    , '' sequence9      , '' sequence_length9
+                    , '' raw_count9
+                    , '' v_gene9    , '' j_gene9
+                    , '' percent_total_reads9
+                    , ''    cell_equipment9
+
+                    , [sequence] sequence10      , [sequence_length] sequence_length10
+                    , [raw_count] raw_count10
+                    , [v_gene]           v_gene10    , [j_gene]           j_gene10
+                    , [percent_total_reads] percent_total_reads10
+                    , [cell_equipment]    cell_equipment10
+                FROM [dbo].[report_detected_variants_igtcr]
+                where specimenNo in ` + resultspecimenNo  + `
+                and [var_idx]  = 10
+            ) a 
+            group by specimenNo, report_date , report_seq
+        ) aa
+        on a1.specimenNo = aa.specimenNo
+        and a1.report_date = aa.report_date
+        and a1.report_seq = aa.report_seq
+        where a1.specimenNo in ` + resultspecimenNo  + `
+        order by report_date desc, a1.report_seq desc`;
+
+        logger.info('[951]igtcrListHandler_557 sql=' + qry);
+        
+        try {
+
+            const request = pool.request()
+            .input('specimenNo', mssql.VarChar, resultspecimenNo);
+
+            const result = await request.query(qry);
+            return result.recordset; 
+        }catch (error) {
+            logger.error('[960]igtcrListHandler_557 err=' + error.message);
+        }
+}
+
+
+
 // get igtcr List
 exports.igtcrList = (req, res, next) => {
-    logger.info('[1087]igtcrList req=' + JSON.stringify(req.body));
+    logger.info('[1837]igtcrList req=' + JSON.stringify(req.body));
 
     let specimenNo = req.body.specimenNo;
     let resultspecimenNo = "('";
+    let resultspecimenNo2 = "('";
 
     const result = igtcrSelectHandler(specimenNo);
     result.then(data => {  
@@ -954,28 +1860,91 @@ exports.igtcrList = (req, res, next) => {
         // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
         for (i = 0; i < a_cnt; i++)
         {
+            if (specimenNo !=  data[i].specimenNo ) {
+                resultspecimenNo2 = resultspecimenNo2 + data[i].specimenNo + "','";
+            }
             resultspecimenNo = resultspecimenNo + data[i].specimenNo + "','";
         }
 
         resultspecimenNo = resultspecimenNo + "')";
+        resultspecimenNo2 = resultspecimenNo2 + "')";
 
         logger.info('[64][igtcrList resultspecimenNo=' + resultspecimenNo);
 
-        const result = igtcrListHandler(resultspecimenNo);
+        const result = igtcrListHandler(resultspecimenNo, resultspecimenNo2, specimenNo);
         result.then(data => {  
             //  console.log('[108][igtcrList]', data);
             res.json(data);
         })
         .catch( error => {
-            logger.error('[1117]igtcrList err=' + error.message);
+            logger.error('[1880]igtcrList err=' + error.message);
             res.sendStatus(500)
         }); 
     })
     .catch( error => {
-        logger.error('[1122]igtcrList err=' + error.message);
+        logger.error('[1885]igtcrList err=' + error.message);
         res.sendStatus(500)
     }); 
  };
+
+ // get igtcr List
+ exports.igtcrList_557 = (req, res, next) => {
+     logger.info('[1891]igtcrList_557 req=' + JSON.stringify(req.body));
+ 
+     let specimenNo = req.body.specimenNo;
+     let gene = req.body.gene;
+     let resultspecimenNo = "('";
+     let resultspecimenNo2 = "('";
+ 
+     logger.info('[1899]igtcrList_557 specimenNo=' + specimenNo);
+ 
+     const result = igtcrSelectHandler(specimenNo);
+     result.then(data => {  
+ 
+         let igtcrData_length =  data.length
+   
+         logger.info('[1904][igtcrList_557 specimenNo= ' + specimenNo 
+                                      + ', length=' + igtcrData_length);
+      
+ 
+         var arrData = data.filter(function(e){
+             return e.specimenNo === specimenNo;
+         })
+ 
+         logger.info('[1912][igtcrList_557 arrData= ' + arrData);
+ 
+         var a_cnt = arrData[0].cnt ;
+ 
+         // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
+         for (i = 0; i < a_cnt; i++)
+         {
+             if (specimenNo !=  data[i].specimenNo ) {
+                 resultspecimenNo2 = resultspecimenNo2 + data[i].specimenNo + "','";
+             }
+             resultspecimenNo = resultspecimenNo + data[i].specimenNo + "','";
+         }
+ 
+         resultspecimenNo = resultspecimenNo + "')";
+         resultspecimenNo2 = resultspecimenNo2 + "')";
+ 
+         logger.info('[1928][igtcrList_557 resultspecimenNo=' + resultspecimenNo);
+ 
+         const result = igtcrListHandler_557(resultspecimenNo, resultspecimenNo2, specimenNo, gene);
+         result.then(data => {  
+             //  console.log('[108][igtcrList]', data);
+             res.json(data);
+         })
+         .catch( error => {
+             logger.error('[1935]igtcrList_557 err=' + error.message);
+             res.sendStatus(500)
+         }); 
+     })
+     .catch( error => {
+         logger.error('[1941]igtcrList_557 err=' + error.message);
+         res.sendStatus(500)
+     }); 
+  };
+ 
 
  const reportigtcrHandler = async (specimenNo) => {
     await poolConnect; // ensures that the pool has been created
@@ -1091,10 +2060,12 @@ exports.reportigtcr2 = (req, res, next) => {
 const checkerHandler = async (specimenNo, examin, recheck, method, sendEMRDate, report_date, detected, comment) => {
     await poolConnect; // ensures that the pool has been created
 
-    logger.info('[987][checkerHandler][update screen]data=' + specimenNo + ", "  + examin  + ", " + recheck
+    logger.info('[2063][checkerHandler][update screen]data=' + specimenNo + ", "  + examin  + ", " + recheck
                          + ", method=" + method  +  ", " + sendEMRDate + ", " + report_date +  ", " + detected + ", " + comment ); 
 
     var detected2 = nvl(detected, '0');
+
+    logger.info('[2068][checkerHandler][update screen]detected=' + detected2  ); 
 
     let sql =`update [dbo].[patientinfo_diag]
                 set examin=@examin, 
@@ -1218,7 +2189,7 @@ const insertigtcrReportHandler = async (specimenNo, fu_comment, init_comment, fu
 
 };
 
-const  insertigtcrDataHandler = async (specimenNo, igtcrData) => {
+const  insertigtcrDataHandler = async (specimenNo, igtcrData, patientid) => {
     await poolConnect; // ensures that the pool has been created
       
     //입력 파라미터를 수신한다
@@ -1226,7 +2197,7 @@ const  insertigtcrDataHandler = async (specimenNo, igtcrData) => {
     
     let igtcrData_length =  igtcrData.length
   
-    logger.info('[1014][insertigtcrDataHandler specimenNo= ' + specimenNo 
+    logger.info('[1014][insertigtcrDataHandler specimenNo= ' + specimenNo + ", patientid=" + patientid
                                  + ', igtcrData=' +  JSON.stringify( igtcrData)
                                  + ', length=' + igtcrData_length);
 
@@ -1331,8 +2302,9 @@ const  insertigtcrDataHandler = async (specimenNo, igtcrData) => {
         let comment                 = nvl(igtcrData[i].comment, '');
         let density                 = nvl(igtcrData[i].density, '');
         let use_yn1                 = igtcrData[i].use_yn1; 
+        let deleted                 = nvl(igtcrData[i].deleted, ''); 
           
-      logger.info("[1012][insertigtcrDataHandler  specimenNo=" + specimenNo2 + ", gene=" + gene + ", report_date=" + report_date 
+      logger.info("[1012][insertigtcrDataHandler  specimenNo=" + specimenNo2 + ", deleted=" + deleted  + ", gene=" + gene + ", report_date=" + report_date 
                             + ", total_read_count=" + total_read_count
                             + ', read_of_LQIC=' + read_of_LQIC
                             + ', percent_of_LQIC=' + percent_of_LQIC + ' ,total_Bcell_Tcell_count=' + total_Bcell_Tcell_count 
@@ -1370,12 +2342,36 @@ const  insertigtcrDataHandler = async (specimenNo, igtcrData) => {
             .input('comment', mssql.NVarChar, comment)
             .input('density', mssql.NVarChar, density)
             .input('use_yn1', mssql.NVarChar, use_yn1)
-            .input('j', mssql.NVarChar, j);
+            .input('j', mssql.VarChar, j);
             
             const result = await request.query(qry);
   
         } catch (error) {
             logger.error('[1361][insertigtcrDataHandler err=' + error.message);
+        }
+
+
+        if (deleted !== "y" )
+        {
+            qry = "insert into report_igtcr_visible (patientid, specimenNo, disp_specimenNo, report_seq, gene) \
+               values(@patientid, @specimenNo2, @disp_specimenNo, @j, @gene)";
+             
+            logger.info('[110][insertigtcrDataHandler report_igtcr_visible messageHandler sql=' + qry);
+    
+            try {
+                const request = pool.request()
+                .input('specimenNo2', mssql.VarChar, specimenNo2)
+                .input('disp_specimenNo', mssql.VarChar, specimenNo)
+                .input('patientid', mssql.VarChar, patientid)
+                .input('j', mssql.VarChar, j)
+                .input('gene', mssql.VarChar, gene);
+                
+                const result = await request.query(qry);
+    
+            } catch (error) {
+                logger.error('[1361][insertigtcrDataHandler err=' + error.message);
+            }
+
         }
             //insert Query 생성;
          qry = "insert into report_detected_variants_igtcr (specimenNo, report_date, var_idx, \
@@ -1761,6 +2757,30 @@ const deleteigtcrHandler = async (specimenNo) => {
     return result;
 };
 
+// igtcr Visible 삭제
+const deleteigtcrVisibleHandler = async (specimenNo, arrSpecimenNo) => {
+    await poolConnect;
+
+    //for (i = 0; i < arrSpecimenNo.length; i++)
+    //{
+        logger.info('[1745][deleteigtcrVisibleHandler]delete igtcrData] disp_specimenNo=' + arrSpecimenNo[i] + ", specimenNo=" + specimenNo);
+        //delete Query 생성;    
+        const qry ="delete report_igtcr_visible where disp_specimenNo=@specimenNo ";           
+        logger.info("[1748][deleteigtcrVisibleHandler][del igtcr Data]del sql=" + qry);
+    
+        try {
+            const request = pool.request()
+            .input('specimenNo', mssql.VarChar, specimenNo);
+
+            result = await request.query(qry);          
+        } catch (error) {
+        logger.error('[1755][deleteigtcrVisibleHandler][del igtcr Data]err=' +  error.message);
+        }
+    //}
+      
+    return result;
+};
+
 exports.saveScreenigtcr = (req,res, next) => {
     logger.info('[1763][igtcr][saveScreenigtcr]req=' + JSON.stringify(req.body));
     
@@ -1778,11 +2798,12 @@ exports.saveScreenigtcr = (req,res, next) => {
     let report_date   = req.body.report_date;
     
     let fu_comment   = nvl(req.body.fu_comment, '');
-    let fu_result    = nvl(req.body.fU_result, '');
+    let fu_result    = nvl(req.body.fu_result, '');
 
     let init_comment  = nvl(req.body.init_comment, '');
     let init_result1   = nvl(req.body.init_result1,'');
     let init_result2   = nvl(req.body.init_result2,'');
+    let patientid = nvl (req.body.patientid, '');
 
     var igtcrSpecimenNo = igtcrData.filter(function(item1, idx1){
         //filter() 메서드는 콜백함수에서 정의한 조건이 true인 항목만 리턴한다.(필터링)
@@ -1807,7 +2828,7 @@ exports.saveScreenigtcr = (req,res, next) => {
 
     logger.info('[169][igtcr][saveScreenigtcr]arrSpecimenNo= ' + arrSpecimenNo); 
     logger.info('[169][igtcr][saveScreenigtcr]specimenNo= ' + specimenNo); 
-    logger.info('[169][igtcr][saveScreenigtcr]fu_result= ' + fu_result + ", " + nvl(req.body.fU_result, '')); 
+    logger.info('[169][igtcr][saveScreenigtcr]fu_result= ' + fu_result + ", " + nvl(req.body.fu_result, '')); 
 
     const igtcrDataDel = deleteigtcrDataHandler(arrSpecimenNo);
     igtcrDataDel.then(data => {
@@ -1815,37 +2836,41 @@ exports.saveScreenigtcr = (req,res, next) => {
         const igtcrDel = deleteigtcrHandler(arrSpecimenNo);
         igtcrDel.then(data => {
 
-            const  igtcrDataInsert = insertigtcrDataHandler(specimenNo, igtcrData);
-            igtcrDataInsert.then(data => {
+            const igtcrDel = deleteigtcrVisibleHandler(specimenNo, arrSpecimenNo);
+            igtcrDel.then(data => {
+    
+              const  igtcrDataInsert = insertigtcrDataHandler(specimenNo, igtcrData, patientid);
+              igtcrDataInsert.then(data => {
 
                 const  igtcrDataComment = igtcrReportHandler(specimenNo );
                 igtcrDataComment.then(data => {
 
-                    let igtcrData_length =  data.length;
-                    let igtcrData_cnt =  '';
-  
-                    logger.info('[1709][igtcrList specimenNo= ' + specimenNo 
-                                                + ', length=' + igtcrData_length);
-                
-                    // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
-                    for (i = 0; i < igtcrData_length; i++)
-                    {
-                        if (specimenNo == data[i].specimenNo)
+                        let igtcrData_length =  data.length;
+                        let igtcrData_cnt =  '';
+    
+                        logger.info('[1709][igtcrList specimenNo= ' + specimenNo 
+                                                    + ', length=' + igtcrData_length);
+                    
+                        // for 루프를 돌면서 Detected Variants 카운트 만큼       //Detected Variants Count
+                        for (i = 0; i < igtcrData_length; i++)
                         {
-                            igtcrData_cnt = data[i].cnt;
-                            break;
+                            if (specimenNo == data[i].specimenNo)
+                            {
+                                igtcrData_cnt = data[i].cnt;
+                                break;
+                            }
                         }
-                    }
 
-                    logger.info('[1722][igtcrList specimenNo= ' + specimenNo 
-                                                + ', cnt=' + igtcrData_cnt);
+                        logger.info('[1722][igtcrList specimenNo= ' + specimenNo 
+                                                    + ', cnt=' + igtcrData_cnt);
 
-                    const  igtcrReportInsert = insertigtcrReportHandler(specimenNo, fu_comment, init_comment, fu_result, init_result1, init_result2, igtcrData_cnt);
-                    igtcrReportInsert.then(data => {
-                        // 검사지 변경
-                        const check = checkerHandler(specimenNo,  examin, recheck, method, sendEMRDate, report_date, detected, comment);
-                        check.then(data => {
-                            res.json({message: 'OK'});
+                        const  igtcrReportInsert = insertigtcrReportHandler(specimenNo, fu_comment, init_comment, fu_result, init_result1, init_result2, igtcrData_cnt);
+                        igtcrReportInsert.then(data => {
+                            // 검사지 변경
+                            const check = checkerHandler(specimenNo,  examin, recheck, method, sendEMRDate, report_date, detected, comment);
+                            check.then(data => {
+                                res.json({message: 'OK'});
+                            });
                         });
                     });
                 });

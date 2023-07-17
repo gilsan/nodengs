@@ -2554,6 +2554,11 @@ const patientHandler = async(patients, res) => {
                     patients[i].pv = 'Y';
                     patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
                 }
+                else if ((patient_gene[j].functional_impact === 'Oncogenic') ||
+                         (patient_gene[j].functional_impact === 'Likely Oncogenic')) {            
+                    patients[i].pv = 'Y';
+                    patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
+                }
             }
         }
 

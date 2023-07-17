@@ -1802,6 +1802,35 @@ var jsondata = `
 </root>  
 `;
 
+const  messageHandler_path = async (pathology_num, orddd, prcpdd) => {
+    await poolConnect; // ensures that the pool has been created
+  
+    logger.info("[patientinfo_path]select pathology_num=" + pathology_num + "," + orddd +  ", " + prcpdd);
+
+    const sql =`select  '` +  prcpdd +  `' prcpdd
+                    , '` + orddd + `' orddd 
+                    , isnull(pathology_num, '') pathology_num
+                    , isnull(rel_pathology_num, '') rel_pathology_num
+                    , isnull(organ, '') organ
+                    , isnull(pathological_dx, '') pathological_dx
+                    , isnull(tumor_type, '') tumor_type
+                from [dbo].[patientinfo_path] 
+            where pathology_num=@pathology_num  `;
+  
+    logger.info("[report_mutation]select sql=" + sql);
+  
+    try {
+        const request = pool.request()
+          .input('pathology_num', mssql.VarChar, pathology_num); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+      //  console.dir( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[report_mutation]SQL error=' + err.message);
+    }
+}
+
 const  messageHandler = async (pathology_num) => {
     await poolConnect; // ensures that the pool has been created
   
@@ -1896,10 +1925,50 @@ const patientHandler = async(patients, res) => {
         patients[i].testcd = testcd;
 
         patients[i].pv = 'Y';
-
+        
+        let orddd = patients[i].orddd;
+        
+        let prcpdd = patients[i].prcpdd;
+           
         let pathology_num = patients[i].bcno.substr(0, 3) + "-" + patients[i].bcno.substring(3);
 
         patients[i].bcno = pathology_num;
+
+        let rs_data_path = await messageHandler_path(pathology_num, orddd, prcpdd);
+
+        if (rs_data_path !== undefined) {
+            
+            logger.info("[1944][report_xml_path]rs_data_path=" + JSON.stringify (rs_data_path));
+            
+            var patientJson = JSON.stringify(rs_data_path); 
+
+            var patient_gene_path = JSON.parse(patientJson);
+
+            if (patient_gene_path.length > 0 )
+            {
+                logger.info("[1818][report_xml_path]patient_gene_path.length=" + patient_gene_path.length);
+            
+                patients[i].tumor_type = patient_gene_path[0].tumor_type ;
+                patients[i].organ = patient_gene_path[0].organ ;
+                patients[i].diagnosis = patient_gene_path[0].pathological_dx ;     
+            }
+            else {
+
+                logger.info("[1993][report_xml_path]rs_data_path not found" );
+
+                patients[i].tumor_type = "";
+                patients[i].organ = "";
+                patients[i].diagnosis = "";
+            }
+        }
+        else {
+
+            logger.info("[1993][report_xml_path]rs_data_path not found" );
+
+            patients[i].tumor_type = "";
+            patients[i].organ = "";
+            patients[i].diagnosis = "";
+        }
 
         let rs_data = await messageHandler(pathology_num);
         
@@ -1949,9 +2018,11 @@ const patientHandler = async(patients, res) => {
                 for (var j = 0;  j < patient_gene_amp.length; j ++)
                 {
                     if (patient_gene_amp[j].report_gb === 'P') {  
+                        patients[i].vus = 'Y';
                         patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_amp[j].gene ;
                     }
-                    else if (patient_gene_amp[j].report_gb === 'C') {                                    
+                    else if (patient_gene_amp[j].report_gb === 'C') {    
+                        patients[i].pv = 'Y';                                
                         patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
                     }
                 }
@@ -1962,9 +2033,11 @@ const patientHandler = async(patients, res) => {
                 for (var j = 0;  j < patient_gene_fus.length; j ++)
                 {
                     if (patient_gene_fus[j].report_gb === 'P') {  
+                        patients[i].vus = 'Y';
                         patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_fus[j].gene ;
                     }
-                    else if (patient_gene_fus[j].report_gb === 'C') {                                    
+                    else if (patient_gene_fus[j].report_gb === 'C') {  
+                        patients[i].pv = 'Y';                                  
                         patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
                     }
                 }

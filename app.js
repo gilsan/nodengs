@@ -300,7 +300,7 @@ app.use('/searchpatient_path', searchpatientPathRouter);
 
 
 app.use('/tests', function(req, res, next) {
-   // console.log('Time: %d', Date.now());
+    console.log('Time: %d', Date.now());
     //console.log(req);
     const start = req.query.start;
     const end  = req.query.end;

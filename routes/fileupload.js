@@ -282,9 +282,10 @@ router.post('/upload', function (req, res) {
             const res_patient = patientHandler(testedID);
               res_patient.then(data => {       
                 console.log('[252][patient]',data);
+                logger.info('[252][patient]data='+data);
 
-                patient_id = data[0].patientID;
-                test_code = data[0].test_code;
+                patient_id = data.patientID;
+                test_code = data.test_code;
 
                 //const surfix = item.originalname.split('.');
                 //let patientID = surfix[0].split('_');
