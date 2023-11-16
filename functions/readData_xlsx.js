@@ -7,7 +7,10 @@ function loadData_xlsx(filePath) {
     var workbook = XLSX.readFile(filePath);
     let ws = workbook.Sheets['Sheet1'];
 
-    ws['!ref'] = 'A15:J22';
+    // 8
+    //ws['!ref'] = 'A15:J22';
+    // max 20
+    ws['!ref'] = 'A15:J35';
 
     const records = XLSX.utils.sheet_to_json(ws, {header :'A'});
     console.log(records);

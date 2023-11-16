@@ -1651,6 +1651,9 @@ var jsondata = `
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
 <stage>340</stage>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1680,6 +1683,9 @@ var jsondata = `
 <spcacptdt>20210526</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
 <stage>340</stage>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1728,7 +1734,7 @@ var jsondata = `
 <age>64</age>
 <testcd>PMO12072</testcd>
 <testnm>NGS 고형암 검사</testnm>
-<bcno>M21007704</bcno>
+<bcno>M20008516</bcno>
 <orddd>20210523</orddd>
 <prcpdd>20210525</prcpdd>
 <prcpno>1409183754</prcpno>
@@ -1738,6 +1744,9 @@ var jsondata = `
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
 <stage>340</stage>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1767,6 +1776,9 @@ var jsondata = `
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
 <stage>340</stage>
+<monogenicyn>y</monogenicyn>
+<monogenicdd>20231110</monogenicdd>
+<monogenicnm>test</monogenicnm>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1796,6 +1808,9 @@ var jsondata = `
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
 <stage>340</stage>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
 </worklist>
 <resultKM error="no" type="status" clear="true" description="info||정상 처리되었습니다." updateinstance="true" source="1635582105857"/>
 </worklist>
@@ -2012,37 +2027,47 @@ const patientHandler = async(patients, res) => {
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene[j].gene;
                 }
             }
+        }
 
-            if (patient_gene_amp.length !== 0 )
+        if (patient_gene_amp.length !== 0 )
+        {
+            for (var j = 0;  j < patient_gene_amp.length; j ++)
             {
-                for (var j = 0;  j < patient_gene_amp.length; j ++)
-                {
-                    if (patient_gene_amp[j].report_gb === 'P') {  
-                        patients[i].vus = 'Y';
-                        patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_amp[j].gene ;
-                    }
-                    else if (patient_gene_amp[j].report_gb === 'C') {    
-                        patients[i].pv = 'Y';                                
-                        patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
-                    }
+                if (patient_gene_amp[j].report_gb === 'P') {  
+                    patients[i].vus = 'Y';
+                    patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_amp[j].gene ;
+                }
+                else if (patient_gene_amp[j].report_gb === 'C') {    
+                    patients[i].pv = 'Y';                                
+                    patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
                 }
             }
+        }
 
-            if (patient_gene_fus.length !== 0 )
+        if (patient_gene_fus.length !== 0 )
+        {
+            for (var j = 0;  j < patient_gene_fus.length; j ++)
             {
-                for (var j = 0;  j < patient_gene_fus.length; j ++)
-                {
-                    if (patient_gene_fus[j].report_gb === 'P') {  
-                        patients[i].vus = 'Y';
-                        patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_fus[j].gene ;
-                    }
-                    else if (patient_gene_fus[j].report_gb === 'C') {  
-                        patients[i].pv = 'Y';                                  
-                        patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
-                    }
+                if (patient_gene_fus[j].report_gb === 'P') {  
+                    patients[i].vus = 'Y';
+                    patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_fus[j].gene ;
+                }
+                else if (patient_gene_fus[j].report_gb === 'C') {  
+                    patients[i].pv = 'Y';                                  
+                    patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
                 }
             }
-    
+        }
+
+        if (patients[i].vus_gene.length != 0)
+        {
+            patients[i].vus_gene = patients[i].vus_gene.substr(1);
+        }
+        
+
+        if (patients[i].pv_gene.length != 0)
+        {
+            patients[i].pv_gene = patients[i].pv_gene.substr(1);
         }
     }
 

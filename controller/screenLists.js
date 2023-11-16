@@ -159,7 +159,7 @@ const getPatientPathInfo = async (pathologyNum) => {
         isnull(tumor_cell_per, '') tumor_cell_per, \
         isnull(tumor_type, '') tumor_type, \
         isnull(tumorburden, '') tumorburden, \
-        isnull(worker, '') worker  from [dbo].[patientinfo_path] \
+        isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] \
              where  pathology_num=@pathologyNum";
   logger.info('[161][screenList][find path patient]sql=' + sql);
      

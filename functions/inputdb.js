@@ -249,8 +249,8 @@ exports.inputdb = (
 		   allele_coverage, allele_ratio,p_value,phred_qual_score,coverage,
 		   ref_ref_var_var,homopolymer_length,subset_of,krgdb_622_lukemia,krgdb_1100_leukemia,filename, testedID,
 		   loc1, loc2,loc3,loc4,loc5,loc6,loc7 ) => {
-          console.log('inputdb: ', locus);
-
+          // console.log('inputdb: ======>', locus);
+          console.log('[253][inputdb][gmaf][tracing]===> ', gmaf);
           logger.info('[255][inputdb ]testedID=' + testedID);
 	
 

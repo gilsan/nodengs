@@ -31,7 +31,8 @@ const igtcrSelectHandler = async (specimenNo) => {
                 c.specimenNo specimenNo,  
                 RANK() OVER(PARTITION BY c.patientID ORDER BY c.accept_date) AS cnt
             from  [patientinfo_diag] b 
-            inner join (select patientID, specimenNo, accept_date from dbo.[patientinfo_diag] ) c
+            inner join (select patientID, specimenNo, accept_date from dbo.[patientinfo_diag] 
+                where  test_code in (select code from codedefaultvalue where type = 'igtcr')) c
                 on b.patientID  = c.patientID
         where b.specimenNo = @specimenNo `;
 
@@ -83,7 +84,8 @@ const igtcrReportHandler = async (specimenNo) => {
                 c.specimenNo,  
                 RANK() OVER(PARTITION BY c.patientID ORDER BY c.accept_date) AS cnt
             from  [patientinfo_diag] b 
-            inner join (select patientID, specimenNo, accept_date from dbo.[patientinfo_diag] ) c
+            inner join (select patientID, specimenNo, accept_date from dbo.[patientinfo_diag]
+                         where  test_code in (select code from codedefaultvalue where type = 'igtcr') ) c
                 on b.patientID  = c.patientID
             inner join	report_comments a         
                 on b.specimenNo  = a.specimenNo

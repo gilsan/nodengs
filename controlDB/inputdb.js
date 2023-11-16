@@ -69,7 +69,7 @@ function varianEffect(variant_effect) {
 }
 
 function phredQualScore(score) {
-   if (parseFloat(score) > 10) {
+   if (parseFloat(score) > 9) { //  2023.08.21 수정 10 을 9로
 	   return true;
    }
    return false;
@@ -679,7 +679,7 @@ for (let i=0; i < data.length ; i++ ) {
        // Varian effect: Synonymous 제거 존재하면:false, 존재하지않으면: true
           const varian_effect_result = varianEffect(variant_effect);
 		
-       // PhredQualScoe: 10 이하 존재여부 있음: true, 없음: false
+       // PhredQualScoe: 10 => 9 이하 존재여부 있음: true, 없음: false
           const  phredQualScore_result = phredQualScore(phred_qual_score);
 	   
        // Location: Exon 포함된것과 5-UTR 필드값 없음을 남김(그 외에 것들은 제거) 존재하면:true,  없으면: false

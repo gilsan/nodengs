@@ -95,7 +95,7 @@ const  messageHandler = async (today) => {
                 isnull(tumor_cell_per, '') tumor_cell_per, \
                 isnull(tumor_type, '') tumor_type, \
                 isnull(tumorburden, '') tumorburden, \
-                isnull(worker, '') worker from [dbo].[patientinfo_path] \
+                isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver from [dbo].[patientinfo_path] \
                 where left(prescription_date, 10) = '" + today + "'";
     logger.info('[49][patientinfo_path select]sql=' + sql);
     
@@ -175,7 +175,7 @@ const  messageHandler2 = async (start, end) => {
                     isnull(tumor_cell_per, '') tumor_cell_per, \
                     isnull(tumor_type, '') tumor_type, \
                     isnull(tumorburden, '') tumorburden, \
-                    isnull(worker, '') worker from [dbo].[patientinfo_path]"
+                    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver from [dbo].[patientinfo_path]"
                + " where left(prescription_date, 8) >= '" + start 
                + "' and left(prescription_date, 8) <= '" + end + "'";
     logger.info('[58][patientinfo_path select2]sql=' + sql);

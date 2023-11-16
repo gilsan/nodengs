@@ -108,7 +108,7 @@ const  messageHandler = async (today) => {
     isnull(tumor_cell_per, '') tumor_cell_per, \
     isnull(tumor_type, '') tumor_type, \
     isnull(tumorburden, '') tumorburden, \
-    isnull(worker, '') worker \
+    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver \
      from [dbo].[patientinfo_path] \
      where isnull(Research_yn, 'N') = 'N' \
      and  left(prescription_date, 8) = '" + today + "'";
@@ -192,7 +192,7 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(tumor_cell_per, '') tumor_cell_per, 
     isnull(tumor_type, '') tumor_type, 
     isnull(tumorburden, '') tumorburden, 
-    isnull(worker, '') worker  from [dbo].[patientinfo_path] 
+    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
                where isnull(Research_yn, 'N') = 'N' 
                and left(prescription_date, 8) >= '` + start + `' 
                and left(prescription_date, 8) <= '` + end + "' ";
@@ -322,7 +322,7 @@ const messageSeqHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(tumor_cell_per, '') tumor_cell_per, 
     isnull(tumor_type, '') tumor_type, 
     isnull(tumorburden, '') tumorburden, 
-    isnull(worker, '') worker  from [dbo].[patientinfo_path] 
+    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
                where isnull(Research_yn, 'N') = 'N' 
                and left(prescription_date, 8) >= '` + start + `' 
                and left(prescription_date, 8) <= '` + end + "' ";
@@ -565,7 +565,7 @@ const getPatientInfo = async (pathologyNum) => {
     isnull(tumor_cell_per, '') tumor_cell_per, 
     isnull(tumor_type, '') tumor_type, 
     isnull(tumorburden, '') tumorburden, 
-    isnull(worker, '') workerr  from [dbo].[patientinfo_path] 
+    isnull(worker, '') workerr, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
                where  pathology_num=@pathologyNum 
                and screenstatus != '5'`;
 

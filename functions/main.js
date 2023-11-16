@@ -44,13 +44,37 @@ function removeQuote(value) {
 	return value;
 }
 
-const  messageHandler_ver = async (ver_file, testedID) => {
+const  messageHandler_ver2 = async (ver_file, testedID) => {
 	await poolConnect; // ensures that the pool has been created
 	 
 	logger.info('[45][main update][messageHandler3]ver_file=' + ver_file + ", testedID=" + testedID);
 	const qry=`update patientinfo_diag 
 		  set ver_file = @ver_file,
 		  saveyn = 'T'   
+		  where specimenNo = @testedID`;
+	logger.info('[48][main][update patientinfo_diag]sql=' +  qry) ;
+  
+	try {
+		const request = pool.request() // or: new sql.Request(pool1)
+		.input('ver_file', mssql.VarChar, ver_file)
+		.input('testedID', mssql.VarChar, testedID);
+		const result = await request.query(qry)
+		console.dir( result);
+	  //  console.log('[158][update patientinfo_diag] ', result)
+		return result;
+	} catch (error) {
+	  logger.error('[56][main]update patient diag err=' + error.message);
+	}
+}
+
+
+// 2023.03.24 버전 업데이트는 파일 다운로드시만 변경한다.
+const  messageHandler_ver = async (ver_file, testedID) => {
+	await poolConnect; // ensures that the pool has been created
+	 
+	logger.info('[45][main update][messageHandler3]ver_file=' + ver_file + ", testedID=" + testedID);
+	const qry=`update patientinfo_diag 
+		  set saveyn = 'T'   
 		  where specimenNo = @testedID`;
 	logger.info('[48][main][update patientinfo_diag]sql=' +  qry) ;
   
@@ -347,7 +371,9 @@ exports.main = (data, filename, testedID) => {
 		  }
            
        	  // PhredQualScoe: 10 이하 존재여부 있음: true, 없음: false
-          let  phredQualScore_result = phredQualScroe_mod.phredQualScore(phred_qual_score, 10);
+          //let  phredQualScore_result = phredQualScroe_mod.phredQualScore(phred_qual_score, 10);
+		  //2023.08.22 10->9 로 변경
+          let  phredQualScore_result = phredQualScroe_mod.phredQualScore(phred_qual_score, 9);
 	   
        	  // Location: Exon 포함된것과 5-UTR 필드값 없음을 남김(그 외에 것들은 제거) 존재하면:true,  없으면: false
   		  //  console.log('[3][main]', i, locations);
@@ -362,17 +388,19 @@ exports.main = (data, filename, testedID) => {
 		  let loc7 = loc_result.loc7;
 		  // console.log('[4][main]', i, locations_result);
 		  // gmaf: 0.01 미만 남김 미만인경우: true, 이상인 경우: false
-          let gmaf_result
-		  logger.info('[8][main]' + genes + ',' + gmaf)
+          let gmaf_result, gmafValue
+		  logger.info('[368][main]' + genes + ',' + gmaf)
 
 		  if (gmaf.length === 0) { // 길이가 0 이면 true
             gmaf_result = true;
 		  } else {
+			 
             const temp_gmaf_result = gmaf_mod.gmafProcess(gmaf, 0.01);
-			gmaf = temp_gmaf_result.gmaf;
+			gmafValue = temp_gmaf_result.gmaf;
 			gmaf_result = temp_gmaf_result.result;
+			 
 		  }
-		  //console.log('[5][main]', i,  gmaf_result);       		  
+		  // console.log('[379][main][gmaf]   =======> ', i, gmaf,gmafValue,  gmaf_result);       		  
        	  //  Krgdb에서 0.01  이상 제외 0.01 미만인경우: true, 0.01 이상인경우: false
           let krgdb = krgdb_mod.krgdb(krgdb_622_lukemia,krgdb_1100_leukemia, 0.01); 
 		  //console.log('[6][main]', krgdb);    
@@ -385,14 +413,17 @@ exports.main = (data, filename, testedID) => {
 		  /////////////////////////////////////////////////////////////////////////////////////////
 		  if(locations_result && varian_effect_result && phredQualScore_result && gmaf_result  && krgdb && info_result) {	
 			logger.info('[388][main ][messageHandler3]testedID=' + testedID);
-	
-			let ver_path = '5.10';
+			 
+			// 2023.10.24 무조건 5.18로 바꾼다			
+			//let ver_path = '5.10';
+			let ver_path = '5.18';
 
 			if (len == 63 )
 			{
 				ver_path = '5.16';
 			}
-          
+			
+            // 2023.10.24 버전 정보는 환자 정보 upload시만 적용한다.
 			// patient tsv 상태 update
 			const result5 = messageHandler_ver(ver_path, testedID);
 			result5.then(data => {
@@ -408,7 +439,7 @@ exports.main = (data, filename, testedID) => {
 			//  console.log('locus: ', locus);
 
 			logger.info('[411][main ][messageHandler3]testedID=' + testedID);
-	
+			 
 			inputdb_mod.inputdb(
 				locus,genotype,filter,ref,observed_allele,
 				type,no_call_reason,genes,locations,length2,
