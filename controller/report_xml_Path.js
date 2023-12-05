@@ -1852,7 +1852,7 @@ const  messageHandler = async (pathology_num) => {
     logger.info("[report_mutation]select pathology_num=" + pathology_num);
     
     const sql =`select report_gb,
-                gene
+                gene, tier
             from  [dbo].[report_mutation]
             where pathology_num=@pathology_num  `;
   
@@ -1876,7 +1876,7 @@ const  messageHandler_amplication = async (pathology_num) => {
     logger.info("[messageHandler_amplication]select pathology_num=" + pathology_num);
     
     const sql =`select report_gb,
-                gene
+                gene, tier
             from  [dbo].[report_amplification]
             where pathology_num=@pathology_num  `;
   
@@ -1900,7 +1900,7 @@ const  messageHandler_fusion = async (pathology_num) => {
     logger.info("[messageHandler_fusion]select pathology_num=" + pathology_num);
     
     const sql =`select report_gb,
-                gene
+                gene, tier
             from  [dbo].[report_fusion]
             where pathology_num=@pathology_num  `;
   
@@ -2013,6 +2013,10 @@ const patientHandler = async(patients, res) => {
         patients[i].pv_gene = '';
         patients[i].vus = 'N';
         patients[i].vus_gene = '';
+
+        // 23.11.30
+        patients[i].tier = '';
+        let duptier = [];
         
         if (patient_gene.length !== 0 )
         {
@@ -2026,6 +2030,15 @@ const patientHandler = async(patients, res) => {
                     patients[i].pv = 'Y';
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene[j].gene;
                 }
+
+                // 23.11.30
+                if (patient_gene[j].tier === 'I') {
+                    duptier.push ('I');
+                } else if (patient_gene[j].tier === 'II') {
+                    duptier.push ('II');
+                } else if (patient_gene[j].tier === 'III') {
+                    duptier.push ( 'III');
+                } 
             }
         }
 
@@ -2041,6 +2054,15 @@ const patientHandler = async(patients, res) => {
                     patients[i].pv = 'Y';                                
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
                 }
+                
+                // 23.11.30
+                if (patient_gene_amp[j].tier === 'I') {
+                    duptier.push ('I');
+                } else if (patient_gene_amp[j].tier === 'II') {
+                    duptier.push ('II');
+                } else if (patient_gene_amp[j].tier === 'III') {
+                    duptier.push ( 'III');
+                } 
             }
         }
 
@@ -2056,6 +2078,15 @@ const patientHandler = async(patients, res) => {
                     patients[i].pv = 'Y';                                  
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
                 }
+
+                // 23.11.30
+                if (patient_gene_fus[j].tier === 'I') {
+                    duptier.push ('I');
+                } else if (patient_gene_fus[j].tier === 'II') {
+                    duptier.push ('II');
+                } else if (patient_gene_fus[j].tier === 'III') {
+                    duptier.push ( 'III');
+                } 
             }
         }
 
@@ -2069,6 +2100,18 @@ const patientHandler = async(patients, res) => {
         {
             patients[i].pv_gene = patients[i].pv_gene.substr(1);
         }
+
+        // 23.11.30
+        let tierArr = [];
+        duptier.forEach((element) => {
+            if (!tierArr.includes(element)) {
+                tierArr.push(element);
+            }
+        });
+
+        let tier = tierArr.sort().toString();
+
+        patients[i].tier = tier;
     }
 
     res.json(patients);
