@@ -402,7 +402,9 @@ exports.main = (data, filename, testedID) => {
 		  }
 		  // console.log('[379][main][gmaf]   =======> ', i, gmaf,gmafValue,  gmaf_result);       		  
        	  //  Krgdb에서 0.01  이상 제외 0.01 미만인경우: true, 0.01 이상인경우: false
-          let krgdb = krgdb_mod.krgdb(krgdb_622_lukemia,krgdb_1100_leukemia, 0.01); 
+          // 24.01.03
+		  //let krgdb = krgdb_mod.krgdb(krgdb_622_lukemia,krgdb_1100_leukemia, 0.01); 
+		  let krgdb = krgdb_mod.krgdb(krgdb_622_lukemia,krgdb_1100_leukemia, 0.01, genes, coding); 
 		  //console.log('[6][main]', krgdb);    
        	  // info HS 이고 type 이 REF 인것 제외 2개 존재하면 false, 존재 하지 않으면: true
 		  info_result = infotype_mod.infotype(info, type);

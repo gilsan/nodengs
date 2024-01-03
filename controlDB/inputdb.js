@@ -260,7 +260,94 @@ function krgdb622(krgbdata, locus) {
    }   
 }
 
-function krgdb1100(krgbdata,locus) {
+function krgdb1100(krgbdata, genes, coding) {
+	
+   if (krgbdata.toString().length === 0 || krgbdata.toString().length === 1 ) { 
+	 //  fs.appendFileSync('./krgdb.txt', '[' + locus +'] 데이타['+ krgbdata + '] 길이 [' + krgbdata.toString().length + ']'  +'\n');
+	   return true;
+   }
+
+   const conloncheck =  krgbdata.indexOf(';');
+
+   if ( conloncheck === -1) {
+       const idrs = krgbdata.split('=');
+	   if (idrs[0] === 'id') {
+           return true;
+	   }
+	   
+   } else {  // 콜론이 있는경우
+
+   const items = krgbdata.split(';');
+  
+   const results = items.map(item => { 
+         temp_items = item.split('=');
+	  
+	    if (temp_items[0] === 'Alt_Freq') {
+        
+        logger.info('[287][krgb][genes]' + genes );
+        logger.info('[287][krgb][coding]' + coding );
+ 			 // Alt_Freq 한개인경우
+            const commacheck = temp_items[1].indexOf(',');
+			  if (commacheck == -1)  {
+			    krgdb1100val =  parseFloat(temp_items[1].split(':')[1]); 
+			   
+		      if ( krgdb1100val > 0.01) {
+              
+              if (parseFloat(data) > parseFloat(val)) {
+
+                if ((genes === 'TPMT') && (coding === 'c.719A>G'))
+                {
+                  return true;
+                }
+                else {
+                  return false;
+                }
+              }
+            }
+			        //return false;
+		      } else {
+              return true;
+		      }
+			} else {
+				// Alt_Freq 한개 이상인 경우
+              comma_sepate =  temp_items[1].split(',');
+			  const value = comma_sepate.map( data => {
+                   return data.split(':')[1];
+			  }).map(data => {
+				   
+            if (parseFloat(data) > 0.01) {
+              
+              if (parseFloat(data) > parseFloat(val)) {
+
+                if ((genes === 'TPMT') && (coding === 'c.719A>G'))
+                {
+                  return true;
+                }
+                else {
+                      return false;
+                }
+              }
+					 //return false;
+            } else { return true; }
+			  });
+			  
+			  if (value.includes(false)) {
+				  return false;
+			  }
+			  return true;   
+			}
+	     //} 
+		 
+       }).filter(data => data !== undefined);
+
+   if ( results.includes(true)) {
+	   return true
+   } 
+   return false;   
+   }  
+}
+
+function krgdb1100_24013(krgbdata,locus) {
 	
    if (krgbdata.toString().length === 0 || krgbdata.toString().length === 1 ) { 
 	 //  fs.appendFileSync('./krgdb.txt', '[' + locus +'] 데이타['+ krgbdata + '] 길이 [' + krgbdata.toString().length + ']'  +'\n');
@@ -703,7 +790,9 @@ for (let i=0; i < data.length ; i++ ) {
        //  Krgdb에서 0.01  이상 제외 0.01 미만인경우: true, 0.01 이상인경우: false
 	   // krgdb_622_lukemia , krgdb_1100_leukemia
 	    let krgdb_lukemia_result = krgdb622(krgdb_622_lukemia, locus);
-        let krgdb_leukemia_result = krgdb1100(krgdb_1100_leukemia, locus);
+      // 23.01.03
+      //let krgdb_leukemia_result = krgdb1100(krgdb_1100_leukemia, locus);
+      let krgdb_leukemia_result = krgdb1100(krgdb_1100_leukemia, genes, coding);
         
        // info HS 이고 Type REF 인것 제외 2개 존재하면 false, 존재 하지 않으면: true
 	     info_result = infoProcess(info, type);
