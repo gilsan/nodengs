@@ -88,7 +88,9 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 			if (commacheck == -1)  {
 			     krgdb1100val =  parseFloat(temp_items[1].split(':')[1]); 			  
 		        if ( krgdb1100val > parseFloat(val)) {
-					
+					//24.01.10
+					//진검과 요구로 막음
+					/*
 					logger.info('[92][krgb][krgdb1100val]' + krgdb1100val );
 
 
@@ -99,6 +101,8 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 					else {
 			        	return false;
 					}
+					*/
+					return false;
 		        } else {
                    return true;
 		        }
@@ -110,6 +114,9 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 			  }).map(data => {
 				  
                  if (parseFloat(data) > parseFloat(val)) {
+					//24.01.10
+					//진검과 요구로 막음
+					/*
 					if ((genes === 'TPMT') && (coding === 'c.719A>G'))
 					{
 						return true;
@@ -117,6 +124,8 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 					else {
 			        	return false;
 					}
+					*/
+					return false;
 					 
                  } else { return true; }
 			  });

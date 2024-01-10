@@ -395,7 +395,9 @@ exports.main = (data, filename, testedID) => {
             gmaf_result = true;
 		  } else {
 			 
-            const temp_gmaf_result = gmaf_mod.gmafProcess(gmaf, 0.01);
+			// 24.01.10
+            //const temp_gmaf_result = gmaf_mod.gmafProcess(gmaf, 0.01);
+			const temp_gmaf_result = gmaf_mod.gmafProcess(gmaf, 0.01, genes, coding);
 			gmafValue = temp_gmaf_result.gmaf;
 			gmaf_result = temp_gmaf_result.result;
 			 
