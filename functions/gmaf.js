@@ -42,6 +42,8 @@ function convert(sample) {
 // gmaf: 0.01 미만 남김 미만인경우: true, 이상인 경우: false
 // val 값은 현재 0.01
 // gmaf 값이 val 값과 비교하여 val 값이하면 TRUE, 이상이면 FALSE 반환
+// 24.01.10
+/*
  function gmafprocess(gmafVal, val) {
 	     const gmafLength = gmafVal.toString().length;
 		  
@@ -54,13 +56,44 @@ function convert(sample) {
 			return true;
 		} 
 }
+*/
+
+// gmaf: 0.01 미만 남김 미만인경우: true, 이상인 경우: false
+// val 값은 현재 0.01
+// gmaf 값이 val 값과 비교하여 val 값이하면 TRUE, 이상이면 FALSE 반환
+// genes == TMPT coding  coding == 'c.719A>G'
+function gmafprocess(gmafVal, val, genes, coding) {
+
+	logger.info('67][gmafVal=' + gmafVal);
+	logger.info('[68][genes=' + genes);
+	logger.info('[69][coding=' + coding);
+	const gmafLength = gmafVal.toString().length;
+	 
+   if (gmafLength > 0) {			
+		   if(parseFloat(gmafVal) > parseFloat(val)) {
+				//return false;
+				if ((genes === 'TPMT') && (coding === 'c.719A>G'))
+					{
+						return true;
+					}
+					else {
+			        	return false;
+					}
+			} else {
+				return true;
+			}
+   } else if (gmafLength === 0) {
+	   return true;
+   } 
+}
 
 /***
  * 2023-10-23 추가분
  * 6.0E-7,7.0E-8 인 경우 val 값과 비교
  * 반환값: { gmaf값, true/false}
  */
-
+//24.01.10
+/*
 function singleGmaf(gmaf, val) {
 
     const result_gmaf = gmaf.indexOf('E');
@@ -81,6 +114,30 @@ function singleGmaf(gmaf, val) {
         }
     }
 }
+*/
+
+function singleGmaf(gmaf, val, genes, coding) {
+
+    const result_gmaf = gmaf.indexOf('E');
+
+	logger.info('[56][result_gmaf=' + result_gmaf);
+	logger.info('[56][genes=' + genes);
+	logger.info('[56][coding=' + coding);
+
+    //if (result_gmaf != -1 && gmaf.length ) {
+	if (result_gmaf !== -1 ) {
+			gmaf = convert(gmaf); // 7.0E-4 같은 경우처리 
+        const result = gmafprocess(gmaf, val, genes, coding);
+        return { gmaf, result };
+    } else {
+        if (gmaf.toString().length === 0) { // 길이가 0 이면 false
+            return true;
+        } else {
+            const result = gmafprocess(gmaf, val, genes, coding);
+            return { gmaf, result };
+        }
+    }
+}
 
 
 /**
@@ -92,6 +149,7 @@ function singleGmaf(gmaf, val) {
  * 현재 val 값은 0.01 이다
  *   
  */
+/*
 function multiGmaf(multiGmaf, val) {
     const gmafList = multiGmaf.split(';');
     const gmafTestResult = [];
@@ -117,12 +175,43 @@ function multiGmaf(multiGmaf, val) {
     } else {
         return { multiGmaf, result: false };
     }
+}
+*/
 
+function multiGmaf_t(multiGmaf, val, genes, coding) {
+	logger.info('[191][multiGmaf=' + multiGmaf);
+	logger.info('[192][genes=' + genes);
+	logger.info('[193][coding=' + coding);
+	
+    const gmafList = multiGmaf.split(';');
+    const gmafTestResult = [];
+    for (const gmafExponent of gmafList) {
+		// 지수 값을 소수로 변환 
+		// 7.0E-4 => 0.0001 * 7.0 => 0.0007 로 변환		
+        gmaf = convert(gmafExponent); // 7.0E-4 같은 경우처리  
+		// gmaf 값과 val 값을 비교
+		// gmaf 값이 val 값 보다 작으면 true, 크면 false
+        const result = gmafprocess(gmaf, val, genes, coding); // return 값은 true,false
+        gmafTestResult.push(result);
+    }
+    // gmaf 값과 val 값을 비교한 결과를 저장한곳
+	// 전체가 true 이면 true 반환, 
+	// 한개라도 false 면 false 반환
+    //let testResult = gmafTestResult.includes(true);
+
+	// result : true (es6)
+	let testResult = gmafTestResult.every((elem, index, gmafTestResult) => elem == true);
+
+    if (testResult) {
+        return { multiGmaf, result: true };
+    } else {
+        return { multiGmaf, result: false };
+    }
 }
 
 
-
-
+// 24.01.10
+/*
 exports.gmafProcess = (gmaf, val) => {
     const gmafVal = gmaf.split(';');
     // console.log('[376][gmaf][gmaf][tracing)] =======> ',gmaf,  gmafVal.length);
@@ -136,8 +225,26 @@ exports.gmafProcess = (gmaf, val) => {
     }
 
 }
+*/
 
+exports.gmafProcess = (gmaf, val, genes, coding) => {
+    const gmafVal = gmaf.split(';');
+    // console.log('[376][gmaf][gmaf][tracing)] =======> ',gmaf,  gmafVal.length);
 
+	logger.info('[299][gmafVal=' + gmafVal);
+	logger.info('[299][gmafVal.length=' + gmafVal.length);
+	logger.info('[299][genes=' + genes);
+	logger.info('[299][coding=' + coding);
+
+	if (gmafVal.length >= 2) {
+		logger.info('[299][gmafVal2=' + gmafVal);
+        return multiGmaf_t(gmaf, val, genes, coding);
+    } else {
+		logger.info('[299][gmafVal1=' + gmafVal);
+        return singleGmaf(gmaf, val, genes, coding);
+    }
+
+}
 
 
  exports.gmafProcess2 = (gmaf, val) => {
