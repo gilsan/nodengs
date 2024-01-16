@@ -1,7 +1,11 @@
 const fs = require('fs');
 const logger = require('../common/winston');
 
-function krgdb622(krgbdata, val) {
+function krgdb622(krgbdata, val, genes, coding) {
+
+	logger.info('[6][krgbdata]' + krgbdata );
+	logger.info('[6][krgb622][genes]' + genes );
+	logger.info('[6][krgb622][coding]' + coding );
 
    if (krgbdata.toString().length === 0 ) { 
 // fs.appendFileSync('./krgdb622.txt', '[' + locus +'] 데이타['+ krgbdata + '] 길이 [' + krgbdata.toString().length + ']'  +'\n');
@@ -27,7 +31,21 @@ function krgdb622(krgbdata, val) {
 			if (commacheck == -1)  {
 			     krgdb622val =  parseFloat(temp_items[1].split(':')[1]); 			  
 		        if ( krgdb622val > parseFloat(val)) {
-			        return false;
+			        
+					//24.01.12
+					//진검과 요구로 다시 오픈 필요. 결국 GMAF, KRGDB 2개 필드에 대한 예외처리를 모두 적용시키는 것임.
+					
+					logger.info('[92][krgb][krgdb622val]' + krgdb622val );
+
+					if ((genes === 'TPMT') && (coding === 'c.719A>G'))
+					{
+						return true;
+					}
+					else {
+			        	return false;
+					}
+					
+					//return false;
 		        } else {
                    return true;
 		        }
@@ -39,7 +57,21 @@ function krgdb622(krgbdata, val) {
 			  }).map(data => {
 				  
                  if (parseFloat(data) > parseFloat(val)) {
-					 return false;
+					 
+					//24.01.12
+					//진검과 요구로 다시 오픈 필요. 결국 GMAF, KRGDB 2개 필드에 대한 예외처리를 모두 적용시키는 것임.
+					
+					logger.info('[92][krgb][krgdb622val]' + krgdb622val );
+
+					if ((genes === 'TPMT') && (coding === 'c.719A>G'))
+					{
+						return true;
+					}
+					else {
+			        	return false;
+					}
+					
+					//return false;
                  } else { return true; }
 			  });
 			  
@@ -90,9 +122,10 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 		        if ( krgdb1100val > parseFloat(val)) {
 					//24.01.10
 					//진검과 요구로 막음
-					/*
+					//24.01.12
+					//진검과 요구로 다시 오픈 필요. 결국 GMAF, KRGDB 2개 필드에 대한 예외처리를 모두 적용시키는 것임.
+					
 					logger.info('[92][krgb][krgdb1100val]' + krgdb1100val );
-
 
 					if ((genes === 'TPMT') && (coding === 'c.719A>G'))
 					{
@@ -101,8 +134,8 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 					else {
 			        	return false;
 					}
-					*/
-					return false;
+					
+					//return false;
 		        } else {
                    return true;
 		        }
@@ -116,7 +149,9 @@ function krgdb1100(krgbdata1, val, genes, coding) {
                  if (parseFloat(data) > parseFloat(val)) {
 					//24.01.10
 					//진검과 요구로 막음
-					/*
+					//24.01.12
+					//진검과 요구로 다시 오픈 필요. 결국 GMAF, KRGDB 2개 필드에 대한 예외처리를 모두 적용시키는 것임.
+					
 					if ((genes === 'TPMT') && (coding === 'c.719A>G'))
 					{
 						return true;
@@ -124,8 +159,8 @@ function krgdb1100(krgbdata1, val, genes, coding) {
 					else {
 			        	return false;
 					}
-					*/
-					return false;
+					
+					//return false;
 					 
                  } else { return true; }
 			  });
@@ -204,8 +239,11 @@ function krgdb1100(krgbdata ,val) {
 */
  //  Krgdb에서 0.01  이상 제외 0.01 미만인경우: true, 0.01 이상인경우: false
 exports.krgdb = (krgdb_622_lukemia, krgdb_1100_leukemia, value, genes, coding) => {
-        const krgdb_leukemia_result = krgdb1100(krgdb_1100_leukemia, value, genes, coding);
-        const krgdb_lukemia_result  = krgdb622(krgdb_622_lukemia ,value);
+	//24.01.12
+	// 622 1100 상관없이
+    //진검과 요구로 다시 오픈 필요. 결국 GMAF, KRGDB 2개 필드에 대한 예외처리를 모두 적용시키는 것임.
+	    const krgdb_leukemia_result = krgdb1100(krgdb_1100_leukemia, value, genes, coding);
+        const krgdb_lukemia_result  = krgdb622(krgdb_622_lukemia ,value, genes, coding);
       //  const krgdb_leukemia_result = krgdb1100(krgdb_1100_leukemia, value, locus);
    
         if (krgdb_lukemia_result == true && krgdb_leukemia_result === true ) {
