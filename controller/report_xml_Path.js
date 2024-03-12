@@ -1641,7 +1641,7 @@ var jsondata = `
 <age>74</age>
 <testcd>PMO12072</testcd>
 <testnm>NGS 고형암 검사</testnm>
-<bcno>M21007655</bcno>
+<bcno>ZM20008257</bcno>
 <orddd>20210522</orddd>
 <prcpdd>20210525</prcpdd>
 <prcpno>1409183890</prcpno>
@@ -1944,8 +1944,17 @@ const patientHandler = async(patients, res) => {
         let orddd = patients[i].orddd;
         
         let prcpdd = patients[i].prcpdd;
-           
-        let pathology_num = patients[i].bcno.substr(0, 3) + "-" + patients[i].bcno.substring(3);
+        
+        
+        let pathology_num = '';
+
+        // 24.03.12 
+        // 수탁인 경우 Z로 시작하면서 10자리인 경우 (추가)
+        // 일반인 경우 9자리인 경우
+        if (patients[i].bcno.length > 9) 
+            pathology_num = patients[i].bcno.substr(0, 4) + "-" + patients[i].bcno.substring(4);
+        else
+            pathology_num = patients[i].bcno.substr(0, 3) + "-" + patients[i].bcno.substring(3);
 
         patients[i].bcno = pathology_num;
 
