@@ -271,232 +271,232 @@ router.post('/upload', function (req, res) {
         let dirPath2 = '' ; 
 
         for(let item of req.files) {
-            uploadedFiles.push({filename: item.originalname});
-
-            // 검체번호로 atientInfo_diag update 함
-            testedID = req.body.testedID;
-
-            let patient_id = '';
-            let test_code = '';
-
-            const res_patient = patientHandler(testedID);
-              res_patient.then(data => {       
-                console.log('[252][patient]',data);
-                logger.info('[252][patient]data='+data);
-
-                patient_id = data.patientID;
-                test_code = data.test_code;
-
-                //const surfix = item.originalname.split('.');
-                //let patientID = surfix[0].split('_');
-
-                let file_names = '';
-                file_names = item.originalname.toLowerCase(); 
-                let xlsx = file_names.indexOf('xlsx');
-                let tsv = file_names.indexOf('tsv');
-                let txt = file_names.indexOf('txt');
-                let patientID = file_names.indexOf(patient_id);
-
-                logger.info('[283]item.originalname=' + item.originalname);
-                logger.info('[283]xlsx=' + xlsx);
-                logger.info('[283]tsv=' + tsv);
-                logger.info('[283]txt=' + txt);
-                logger.info('[283]patientID=' + patientID);
-
-                if ( xlsx > 0) {
-                    
-                  if ( patientID <= 0  ) {
-
-                    logger.error('[303][fileupload] patient dismatch' );
-                    return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
-                  }
-                
-                }
-                else if ( tsv > 0) {
-                    
-                  if ( patientID <= 0  ) {
-
-                    logger.error('[313][fileupload] patient dismatch' );
-                    return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
-                  }
-                
-                }
-                else if ( txt > 0) {
-                    
-                  if ( patientID <= 0  ) {
-
-                    logger.error('[313][fileupload] patient dismatch' );
-                    return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
-                  }
-                
-                }
-                else {
-                  logger.error('[326][fileupload] file dismatch' );
-                  return res.status(500).json('{"err":"환자와 파일확장자(tsv, xlsx, tst) 가  일치하지 않습니다"}');
+                  uploadedFiles.push({filename: item.originalname});
                   
-                } 
-        
-                // 금일 날자와 검체번호로 존재 하는지 조사.
-                const year1  = new Date().getFullYear();
-                const month1 = new Date().getMonth() + 1;
-                const day1   = new Date().getDate();
-              
-                if (month1 < 10) {
-                  thismonth = '0' + month1;
-                }
+                  // 검체번호로 atientInfo_diag update 함
+                  testedID = req.body.testedID;
 
-                if (day1 < 10) {
-                  thisday = '0' + day1;
-                }
+                  let patient_id = '';
+                  let test_code = '';
 
-              if (month1 < 10) {
-              
-                if (day1 < 10) {
-                  today = year1 + '-' + thismonth + '-' + thisday;
-                  dirPath2 = 'diag_temp/' + year1 + '/' + thismonth + '/' + thisday;
-                } else {
-                  today = year1 + '-' + thismonth + '-' + day1;
-                  dirPath2 = 'diag_temp/' + year1 + '/' + thismonth + '/' + day1;
-                }
-              } else {
-                if (day1 < 10) {
-                  today = year1 + '-' + month1 + '-' + thisday;
-                  dirPath2 = 'diag_temp/' + year1 + '/' + month1 + '/' + thisday;
-                } else {
-                  today = year1 + '-' + month1 + '-' + day1;
-                  dirPath2 = 'diag_temp/' + year1 + '/' + month1 + '/' + day1;
-                }
-              }
+                  const res_patient = patientHandler(testedID);
+                  res_patient.then(data => {       
+                    
+                    logger.info('[285][patient]data='+data);
+                    
+                    patient_id = data.patientID;
+                    test_code = data.test_code;
 
-              // directory check  
-              let isDirExists = fs.existsSync(dirPath2) && fs.lstatSync(dirPath2).isDirectory();
-              
-              if (!isDirExists){
-                  fs.mkdirSync( dirPath2, { recursive: true });
-              }
-                
-              // destination will be created or overwritten by default.
-              fs.copyFile(dirPath + '/' + item.originalname, dirPath2 + '/' + item.originalname, (err) => {
-                if (err) logger.error('[293][fileupload uplod]err=' + err.message);
-                logger.info('[screenList][293][fileupload uplod]File was copied to destination');
-              });
-        
-              ///////////////////////////////////////////////////////////////////////////////////////////////////////  
-              // 기존 count 체크
-              const result = messageHandler(testedID, today);
-              result.then(data => {
+                    //const surfix = item.originalname.split('.');
+                    //let patientID = surfix[0].split('_');
 
-              console.log('[381][fileupload][count] ', data);
-              logger.info('[382][fileupload][count]count=' + data);
+                    let file_names = '';
+                    file_names = item.originalname.toLowerCase(); 
+                    let xlsx = file_names.indexOf('xlsx');
+                    let tsv = file_names.indexOf('tsv');
+                    let txt = file_names.indexOf('txt');
+                    let patientID = file_names.indexOf(patient_id);
 
-              const count = parseInt(data,10);
-              logger.info('[385][fileupload][count]count=' + count);
-    
-              // console.log('[247] 시험용', count);
-              if (count > 0) {
-                // tsv 레코드 삭제
-                const result2 = messageHandler2(testedID, today);
-                result2.then(data => {       
-                  console.log('[392][fileupload]',data);
-          
-                  //const count2 = parseInt(count,10);                      
-                // console.log('이전것 삭제');             
-                })
-                .catch( error  => {
-                  logger.error('[398][fileupload]err=' + error.message);
-                })
-              }
-              })
-              .catch( error  => {
-                logger.error('[403][fileupload]err=' + error.message);
-              })
+                    logger.info('[300]item.originalname=' + item.originalname);
+                    logger.info('[301]xlsx=' + xlsx);
+                    logger.info('[302]tsv=' + tsv);
+                    logger.info('[303]txt=' + txt);
+                    logger.info('[304]patientID=' + patientID);
 
-              /////////////////////////////////////////////////////////////////////////////////////////////
-              console.log('Next...');
-              
-              logger.info('[409][fileupload][count]next 1');
-          
-              // patient tsv 상태 update
-              const result3 = messageHandler3(item.originalname, dirPath, testedID);
-              result3.then(data => {
+                    if ( xlsx > 0) {
+                        
+                      if ( patientID <= 0  ) {
 
-                console.log('[415][fileupload] ', data);
-                //res.json(data);
-              })
-              .catch( error => {
-                logger.error('[419][fileupload] update patient diag err=' + error.message);
-              });
-        
-              logger.info('[422][fileupload][count]next 2');
-            // console.log('insert...');
-          
-            // jintsv insert
-            const result4 = messageHandler4(item.originalname, dirPath, testedID);
-            result4.then(data => {
+                        logger.error('[310][fileupload] patient dismatch' );
+                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                      }
+                    
+                    }
+                    else if ( tsv > 0) {
+                        
+                      if ( patientID <= 0  ) {
 
-              console.log(data);
-              //res.json(data);
-            })
-            .catch( error => {
-              logger.error('[433][fileupload] inset jintsv err=' + error.message)
-            });	  
+                        logger.error('[319][fileupload] patient dismatch' );
+                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                      }
+                    
+                    }
+                    else if ( txt > 0) {
+                        
+                      if ( patientID <= 0  ) {
 
-            logger.info('[436][fileupload][count]next 3');
-
-            // 2021.01.29  deleteDetectedVariantsHandler add
-            //  deleteDetectedVariantsHandler
-            const result5 =  deleteDetectedVariantsHandler(testedID);
-            result5.then(data => {
-  
-              console.log(data);
-              //res.json(data);
-            })
-            .catch( error => {
-              logger.error('[447][fileupload] inset jintsv err=' + error.message);
-            });	  
-
-            logger.info('[450][fileupload][count]next 4');
-
-            // 2021.02.02  deleteReportHandler add
-            //  deleteReportHandler
-            const result6 =  deleteReportHandler(testedID);
-            result6.then(data => {
-  
-              console.log(data);
-              //res.json(data);
-            })
-            .catch( error => {
-              logger.error('[461][fileupload] deleteReportHandler err=' + error.message);
-            });	  
-          
-            logger.info('[464][fileupload][count]next 5');
-
-            if ( tsv > 0) {
-              console.log('필터링한 화일', item.originalname);
-
-                main_nu.patient_nu(testedID, test_code);
-
-                main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
-            }	
-            else if ( txt > 0) {
-              console.log('필터링한 화일', item.originalname);
-
-                main_nu.patient_nu(testedID, test_code);
-
-                main_form6.main(loadData_mod.loadData(item.path),item.originalname,testedID);
-            }	
-            else if ( xlsx > 0) {
-              console.log('필터링한 화일', item.originalname);
-
-                //main_nu.patient_nu(testedID);
-
-                main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID);
-            }		
+                        logger.error('[328][fileupload] patient dismatch' );
+                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                      }
+                    
+                    }
+                    else {
+                      logger.error('[334][fileupload] file dismatch' );
+                      return res.status(500).json('{"err":"환자와 파일확장자(tsv, xlsx, tst) 가  일치하지 않습니다"}');
+                      
+                    } 
             
-          })
-          .catch( error  => {
-            logger.error('[472][fileupload]err=' + error.message);
-          })
+                    // 금일 날자와 검체번호로 존재 하는지 조사.
+                    const year1  = new Date().getFullYear();
+                    const month1 = new Date().getMonth() + 1;
+                    const day1   = new Date().getDate();
+                  
+                    if (month1 < 10) {
+                      thismonth = '0' + month1;
+                    }
+
+                    if (day1 < 10) {
+                      thisday = '0' + day1;
+                    }
+
+                    if (month1 < 10) {
+                    
+                      if (day1 < 10) {
+                        today = year1 + '-' + thismonth + '-' + thisday;
+                        dirPath2 = 'diag_temp/' + year1 + '/' + thismonth + '/' + thisday;
+                      } else {
+                        today = year1 + '-' + thismonth + '-' + day1;
+                        dirPath2 = 'diag_temp/' + year1 + '/' + thismonth + '/' + day1;
+                      }
+                    } else {
+                      if (day1 < 10) {
+                        today = year1 + '-' + month1 + '-' + thisday;
+                        dirPath2 = 'diag_temp/' + year1 + '/' + month1 + '/' + thisday;
+                      } else {
+                        today = year1 + '-' + month1 + '-' + day1;
+                        dirPath2 = 'diag_temp/' + year1 + '/' + month1 + '/' + day1;
+                      }
+                    }
+
+                    // directory check  
+                    let isDirExists = fs.existsSync(dirPath2) && fs.lstatSync(dirPath2).isDirectory();
+                    
+                    if (!isDirExists){
+                        fs.mkdirSync( dirPath2, { recursive: true });
+                    }
+                    
+                    // destination will be created or overwritten by default.
+                    fs.copyFile(dirPath + '/' + item.originalname, dirPath2 + '/' + item.originalname, (err) => {
+                      if (err) logger.error('[380][fileupload uplod]err=' + err.message);
+                      logger.info('[screenList][381][fileupload uplod]File was copied to destination');
+                    });
+            
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////  
+                    // 기존 count 체크
+                    const result = messageHandler(testedID, today);
+                    result.then(data => {
+
+                    console.log('[389][fileupload][count] ', data);
+                    logger.info('[390][fileupload][count]count=' + data);
+
+                    const count = parseInt(data,10);
+                    logger.info('[393][fileupload][count]count=' + count);
+        
+                    // console.log('[247] 시험용', count);
+                    if (count > 0) {
+                      // tsv 레코드 삭제
+                      const result2 = messageHandler2(testedID, today);
+                      result2.then(data => {       
+                        console.log('[400][fileupload]',data);
+                
+                        //const count2 = parseInt(count,10);                      
+                      // console.log('이전것 삭제');             
+                      })
+                      .catch( error  => {
+                        logger.error('[406][fileupload]err=' + error.message);
+                      })
+                    }
+                    })
+                    .catch( error  => {
+                      logger.error('[411][fileupload]err=' + error.message);
+                    })
+
+                    /////////////////////////////////////////////////////////////////////////////////////////////
+                    console.log('Next...');
+                    
+                    logger.info('[417][fileupload][count]next 1');
+                
+                    // patient tsv 상태 update
+                    const result3 = messageHandler3(item.originalname, dirPath, testedID);
+                    result3.then(data => {
+
+                      console.log('[423][fileupload] ', data);
+                      //res.json(data);
+                    })
+                    .catch( error => {
+                      logger.error('[427][fileupload] update patient diag err=' + error.message);
+                    });
+            
+                    logger.info('[430][fileupload][count]next 2');
+                    // console.log('insert...');
+                  
+                    // jintsv insert
+                    const result4 = messageHandler4(item.originalname, dirPath, testedID);
+                    result4.then(data => {
+
+                      console.log(data);
+                      //res.json(data);
+                    })
+                    .catch( error => {
+                      logger.error('[441][fileupload] inset jintsv err=' + error.message)
+                    });	  
+
+                    logger.info('[444][fileupload][count]next 3');
+
+                    // 2021.01.29  deleteDetectedVariantsHandler add
+                    //  deleteDetectedVariantsHandler
+                    const result5 =  deleteDetectedVariantsHandler(testedID);
+                    result5.then(data => {
+          
+                      console.log(data);
+                      //res.json(data);
+                    })
+                    .catch( error => {
+                      logger.error('[455][fileupload] inset jintsv err=' + error.message);
+                    });	  
+
+                    logger.info('[458][fileupload][count]next 4');
+
+                    // 2021.02.02  deleteReportHandler add
+                    //  deleteReportHandler
+                    const result6 =  deleteReportHandler(testedID);
+                    result6.then(data => {
+          
+                      console.log(data);
+                      //res.json(data);
+                    })
+                    .catch( error => {
+                      logger.error('[469][fileupload] deleteReportHandler err=' + error.message);
+                    });	  
+                  
+                    logger.info('[472][fileupload][count]next 5');
+
+                    if ( tsv > 0) {
+                      console.log('필터링한 화일', item.originalname);
+
+                        main_nu.patient_nu(testedID, test_code);
+
+                        main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
+                    }	
+                    else if ( txt > 0) {
+                      console.log('필터링한 화일', item.originalname);
+
+                        main_nu.patient_nu(testedID, test_code);
+
+                        main_form6.main(loadData_mod.loadData(item.path),item.originalname,testedID);
+                    }	
+                    else if ( xlsx > 0) {
+                      console.log('[489][fileupload] 필터링한 화일 XLSX', item.originalname + "  === " + patient_id);
+
+                        //main_nu.patient_nu(testedID);
+
+                        main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID,patient_id);
+                    }		
+                
+                  })
+                  .catch( error  => {
+                    logger.error('[498][fileupload]err=' + error.message);
+                  })
           /////////////////////////////////////////////////////////////////////////////////////////////
 	 
         }  // End of For Loop

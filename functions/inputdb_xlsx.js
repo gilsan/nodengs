@@ -14,8 +14,8 @@ const  messageHandler_del = async (testedID) => {
 
     const sql_del =`delete from report_detected_variants where specimenNo = @testedID`;
 
-    logger.info("[28][inputdb_form6 del][sql_del]" + sql_del);
-    logger.info("[28][inputdb_form6 del][testedId]" + testedID);
+    logger.info("[17][inputdb_form6 del][sql_del]" + sql_del);
+    logger.info("[17][inputdb_form6 del][testedId]" + testedID);
 
     try {
         const request = pool.request()
@@ -50,10 +50,10 @@ const  messageHandler = async (
 
   await poolConnect; // ensures that the pool has been created
 
-    logger.info ('[244][inputdb_form6]genes=' + genes + ', exon=' + exon  + ', functional_impact=' + functional_impact);
-    logger.info ('[244][inputdb_form6]transcript=' + transcript + ', coding=' + coding + ', amino_acid_change=' + amino_acid_change );
-    logger.info ('[244][inputdb_form6]cosmic=' + cosmic + ', vaf=' + vaf + ', references=' + references);
-    logger.info ('[244][inputdb_form6]zygosity=' + zygosity +  ', testedID=' + testedID );
+    logger.info ('[56][inputdb_form6]genes=' + genes + ', exon=' + exon  + ', functional_impact=' + functional_impact);
+    logger.info ('[56][inputdb_form6]transcript=' + transcript + ', coding=' + coding + ', amino_acid_change=' + amino_acid_change );
+    logger.info ('[56][inputdb_form6]cosmic=' + cosmic + ', vaf=' + vaf + ', references=' + references);
+    logger.info ('[56][inputdb_form6]zygosity=' + zygosity +  ', testedID=' + testedID );
 
     let functional_code = i;
 
@@ -69,7 +69,7 @@ const  messageHandler = async (
         @transcript, @functional_impact, @exon, @coding, @amino_acid_change, @zygosity, 
         @vaf, @references, @cosmic, @functional_code, 'T')`;
     
-    logger.info('[282][inputdb_form6][insert detected_variants]sql=' + qry);
+    logger.info('[72][inputdb_form6][insert detected_variants]sql=' + qry);
 
     try {
         const request = pool.request()
@@ -92,7 +92,7 @@ const  messageHandler = async (
         return result;
     } catch (err) {
         console.error('SQL error', err);
-        logger.error ('[244][inputdb_xlsx]err=' + err.message);
+        logger.error ('[95][inputdb_xlsx]err=' + err.message);
     }
 }
 
@@ -112,5 +112,37 @@ exports.inputdb_xlsx = (
       // res.json(data);
   })
   .catch( err  => console.log(err));
+    
+}
+
+
+// vus message 환자 정보에 저장
+
+const put_vus_message_handler = async (patientID, vusmsg) => {
+            await poolConnect;
+            logger.info ('[123]][input_xlsx inputdb_vus_메세지] ======> ' + patientID  +  '   '  + vusmsg);
+
+        // 환자정보에 vus 내용 저장;
+        const query =`update patientinfo_diag set vusmsg=@vusmsg where patientID=@patientID`;
+        logger.info ('[127]][input_xlsx inputdb_vus_query] ======> ' + query);
+        try {
+            const request = pool.request()
+                            .input('vusmsg', mssql.NVarChar, vusmsg)
+                            .input('patientID', mssql.VarChar, patientID);
+            result = await request.query(query); 
+            return result;
+        } catch (err) {
+            console.error('[135][input_xlsx put_vus_message_handler] SQL error', err);
+        }
+ 
+}
+
+exports.input_vusmsg_xlsx =  (patientID, vusmsg) => {
+
+    const result = put_vus_message_handler(patientID, vusmsg)
+         result.then(data => {
+            console.log(data);
+         })
+         .catch( err  => console.log(err));
     
 }

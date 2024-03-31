@@ -36,8 +36,9 @@ function removeQuote(value) {
 	return value;
 }
 
-exports.main = (data, filename, testedID) => {
-    logger.info ('[main]' +  filename  + " " +  testedID + " " + data.length);
+exports.main = (data, filename, testedID,patientID) => {
+     
+    logger.info ('[main.xlsx][40] ==>' +  filename  + " " +  testedID + " " + data.length + ' ' + patientID);
 
 	inputdb_xlsx.inputdb_del(testedID);
 
@@ -50,18 +51,20 @@ exports.main = (data, filename, testedID) => {
     let vaf               = '';
     let references        = '';
 	let cosmic            = '';
+  let vus_msg           = '';
 
 	for (let i=0; i < data.length ; i++ ) { 
 		
         const len = data[i].length;
-        logger.info ('[main]' +  JSON.stringify(data[i]) + " " + data[i].A);
+        logger.info ('[main][57]' +  JSON.stringify(data[i]) + " " + data[i].A);
         let field   = data[i].toString().split(',');
         /*
+        // 액셀의 유전자 읽어드림
         */
-       
+        
         if (data[i]["B"] )
         {
-            logger.info ('[main]A=' + data[i].A);
+          //  logger.info ('[main_xlsx.js][65][main :A 항목]=' + data[i].A);
             genes             = data[i].A;
             functional_impact = data[i].B;
             transcript        = data[i].C;
@@ -72,10 +75,10 @@ exports.main = (data, filename, testedID) => {
             vaf               = data[i].H;
             references 		  = data[i].I;
             cosmic            = data[i].J;
-        
+      
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  console.log('locus: ', locus);
-            
+            // 액셀의 유전자 읽어 디비에 저장
             inputdb_xlsx.inputdb_xlsx(
                 genes,   functional_impact, transcript,  exon,
                 coding,  amino_acid_change , zygosity,
@@ -84,6 +87,17 @@ exports.main = (data, filename, testedID) => {
             	
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
+
+            ////////////////////////////////////////////////////////////////////
+            // vus 문구읽어 디비에 저장
+            // 
+            vus_msg = data[i].A.slice(0,3);
+             
+            if (vus_msg === 'VUS') {
+              console.log("[main_xlsx][95][VUS 내용]", data[i].A);
+              inputdb_xlsx.input_vusmsg_xlsx(patientID, data[i].A);
+            }
+
                         
 		//  console.log('i 값: ', i);
 	} // end for loop
