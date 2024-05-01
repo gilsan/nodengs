@@ -64,13 +64,13 @@ exports.main = (data, filename, testedID) => {
 			amino_acid_change = removeQuote(field[9]);
 			zygosity 		  = removeQuote(field[11]);
 			cosmic            = removeQuote(field[16]);
-
+			console.log('[main][main_form data][67]locus: ', data[i]);
 			if (locus !== 'VID')
 			{
 				locus = '';
 			
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//  console.log('locus: ', locus);
+				console.log('[main][main_form][73]locus: ', locus);
 				inputdb_form.inputdb_form6(
 					genes,  transcript,  exon,
 					coding,  amino_acid_change , zygosity,

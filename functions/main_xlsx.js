@@ -56,15 +56,17 @@ exports.main = (data, filename, testedID,patientID) => {
 	for (let i=0; i < data.length ; i++ ) { 
 		
         const len = data[i].length;
-        logger.info ('[main][57]' +  JSON.stringify(data[i]) + " " + data[i].A);
+        //logger.info ('[main][57]' +  JSON.stringify(data[i]) + " " + data[i].A);
         let field   = data[i].toString().split(',');
         /*
-        // 액셀의 유전자 읽어드림
-        */
-        
-        if (data[i]["B"] )
+        // 액셀의 Detected variants  항목 읽어드림
+        */  
+        // const functionalImpact =   String(data[i]["B"]).trim() ;  
+        // logger.info ('[main][65][main data]====>' + functionalImpact);
+       
+      if ( data[i]['B'] === 'Pathogenic'  ||  data[i]['B']  === 'VUS' ||  data[i]['B']  === 'Likely Pathogenic')
         {
-          //  logger.info ('[main_xlsx.js][65][main :A 항목]=' + data[i].A);
+       
             genes             = data[i].A;
             functional_impact = data[i].B;
             transcript        = data[i].C;
