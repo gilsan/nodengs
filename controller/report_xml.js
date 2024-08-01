@@ -614,7 +614,7 @@ const patientHandler = async(patients, res) => {
 
         if (patients[i].reqfrmcd == "14") {
             reqfrmcd = "유전성 NGS 검사의뢰서";
-        } else if (patients[i].reqfrmcd == "14") {
+        } else if (patients[i].reqfrmcd == "15") {
             reqfrmcd = "비유전성 NGS 검사의뢰서";
         }
 

@@ -13,10 +13,19 @@ const poolConnect = pool.connect();
 
 // patientid/gender/age/name no update 
 const path_patientinfo_nu = async (bcnno, key_block) => {
+ /*
+	   //2024.06.13 
+	   //병리과 김태은 선생 확인
+	   //원래 업무 순서가 이러함
+	   - 환자정보 다운로드
+	   - LIMS 데이터 입력 
+	   - TSV 파일 변환
+	   (TSV 파일 변환시 환자정보 'key_block' update 하면 안됨)
 	await poolConnect; // ensures that the pool has been created
- 
+	
 	 logger.info('[41][path_patient_nu]bcnno=' +  bcnno + ', key_block=' + key_block  ); 
 
+	
 	const qry=`update patientinfo_path 
 		  set key_block= @key_block
 		  where pathology_num = @bcnno`;
@@ -33,6 +42,7 @@ const path_patientinfo_nu = async (bcnno, key_block) => {
 	} catch (error) {
 	  logger.error('[57][path_patient_nu]update patient path err=' + error);
 	}
+	*/
 }
 
 // 병리 환자 검색

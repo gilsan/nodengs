@@ -19,7 +19,7 @@ const dailyRotateFileTransport = new transports.DailyRotateFile({
   datePattern: "YYYY-MM-DD-HH",
   zippedArchive: false,
   maxSize: "10m",
-  maxFiles: "14d",
+  maxFiles: "90d",
   format: format.combine(
     format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss"

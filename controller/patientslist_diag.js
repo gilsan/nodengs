@@ -215,13 +215,13 @@ exports.getDiagLists = (req,res, next) => {
 }
 
 // 진검 환자 검색
-// 2021.01.29 prescription_date -> accept_date 조회 조건 변경
-const  messageHandler3 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
+// 2024.07.26 igtcr 분리
+const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
 
     await poolConnect; // ensures that the pool has been created
    
-  logger.info('[196][patientinfo_diag list]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo); 
-  logger.info('[196][patientinfo_diag list] ' + sheet + ' ' +  status + ' ' + research + ' ' + name);
+  logger.info('[196][patientinfo_diag Listsigtcr]]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo); 
+  logger.info('[196][patientinfo_diag Listsigtcr]] ' + sheet + ' ' +  status + ' ' + research + ' ' + name);
 
     let patient =  nvl(patientID, "");
     console.log('patient 0');
@@ -291,7 +291,192 @@ const  messageHandler3 = async (start, end, patientID, specimenNo, sheet, status
 
         sql = sql + ` isnull(gbn, '') gbn
             , case when isnull(a.screenstatus, '') = '10' 
-                then  'T' 
+                then isnull(a.saveyn, 'T') 
+                else isnull(a.saveyn, 'S') end as saveyn
+            from [dbo].[patientinfo_diag] a
+            left outer join dbo.report_patientsInfo b
+            on a.specimenNo = b.specimenNo `;
+            
+        sql = sql + ` left outer join dbo.report_comments c
+            on a.specimenNo = c.specimenNo `;
+
+        sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
+             + " and left(accept_date, 8) <= '" + end + "'"; 
+ 
+    if(patient.length > 0 )
+    {
+        sql = sql +  " and a.patientID = '" +  patient + "'";
+    }
+
+    if(specimen_no.length > 0 )
+    {
+        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
+    }
+
+    if(name1.length > 0 )
+    {
+        sql = sql +  " and a.name like '" +  name1 + "%'";
+    }
+
+    if(sheet_1.length > 0 )
+    {
+        if (sheet_1 != '') {
+            let sheet_2 = '';
+            let sheet_3 = '';
+
+            if (sheet_1 == 'AMLALL') {
+                sheet_2 = 'AMLALL';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'MDS') {  // MDS/MPN 
+                sheet_2 = 'MDS';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'lymphoma') {  // 악성림프종
+                sheet_2 = 'LYM';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+                sheet_2 = 'Genetic';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'Sequencing') {  // Sequencing
+                sheet_2 = 'SEQ';
+                sheet_3 = 'type';
+                
+            } else if (sheet_1 == 'MLPA') {  // MLPA
+                sheet_2 = 'MLPA';
+                sheet_3 = 'type';
+            } else if (sheet_1 == 'igctr') {  // igctr
+                sheet_2 = 'IGTCR';
+                sheet_3 = 'type';
+            }
+            else
+            {
+                sheet_2 = sheet_1;
+            }
+
+            if (sheet_3 == 'type') {
+                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+            } else {
+                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+            }
+            
+        } else {
+            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+        }
+             
+    }
+
+    if(status_1.length == 1 )
+    {
+        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
+    } else if (status_1.length === 2) {
+        sql = sql +  " and isnull(a.screenstatus, '') = ''";
+    } 
+
+    if (research1.length > 0) {
+        if (research1 === 'RESEARCH') {
+            sql = sql +  " and a.gbn = 'RESEARCH'";
+        } else {
+            sql = sql +  " and a.gbn = ''";
+        }
+    }
+
+    //sql = sql + " order by accept_date desc, specimenNo desc   ";
+    sql = sql + " order by accept_date2 asc  ";
+
+    logger.info("[301][patientinfo_diag Listsigtcr]sql="+sql);
+    
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+        const result = await request.query(sql)
+        console.log( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[310][patientinfo_diag Listsigtcr]SQL error'+ err.message);
+    }
+}
+
+// 진검 환자 검색
+// 2021.01.29 prescription_date -> accept_date 조회 조건 변경
+const  messageHandler3 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
+
+    await poolConnect; // ensures that the pool has been created
+   
+  logger.info('[196][patientinfo_diag Listsigtcr]]qry start=' + start + ' ' + end + ' ' +  patientID + ' ' + specimenNo); 
+  logger.info('[196][patientinfo_diag Listsigtcr]] ' + sheet + ' ' +  status + ' ' + research + ' ' + name);
+
+    let patient =  nvl(patientID, "");
+    console.log('patient 0');
+    let specimen_no =  nvl(specimenNo, "");
+    let sheet_1 =  nvl(sheet, "");
+    let status_1 =  nvl(status, "");
+    let research1 = nvl(research, "");
+    let name1 = nvl(name, "");
+
+    logger.info("sheet_1="+sheet_1);
+    logger.info("status_1="+status_1);
+    logger.info("name1="+name1);
+ 
+    let sql = `select isnull(name, '') name  ,isnull(a.patientID, '') patientID 
+            ,isnull(age,  '') age ,isnull(gender, '') gender 
+            ,a.specimenNo
+        ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
+        ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
+        ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
+        ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
+        ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
+        ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
+            ,isnull(targetDisease, '') targetDisease 
+            ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
+            ,case when IsNULL( gbn, '' ) = ''  
+                then isnull(request, '')
+                when IsNULL( gbn, '' ) = 'cmc'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                when IsNULL( gbn, '' ) = '인터넷'
+                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
+                else isnull(request, '') end request 
+            , isnull(appoint_doc, '')  appoint_doc 
+            ,isnull(worker, '') worker 
+            ,isnull(prescription_no, '') rescription_no  ,isnull(prescription_date, '') prescription_date 
+            ,isnull(prescription_code, '')  prescription_code 
+            ,isnull(testednum, '') testednum 
+            ,isnull(tsvFilteredFilename, '') tsvFilteredFilename 
+            ,case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate 
+            ,isnull(tsvFilteredStatus, '') tsvFilteredStatus 
+            ,case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 102 ), '' ) end tsvFilteredDate 
+            ,isnull(bamFilename, '') bamFilename , isnull(sendEMR, '') sendEMR 
+            ,case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 102 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
+            ,case when IsNULL( left(accept_date, 4 ), '' ) = '1900'  
+            then '' 
+            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
+            , accept_date accept_date2 
+            ,isnull(test_code, '') test_code  
+            ,isnull(a.screenstatus, '') screenstatus, isnull(path, '') path, isnull(detected, '') detected 
+            ,case when IsNULL( CONVERT(VARCHAR(4), a.report_date, 102 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), a.report_date, 102 ), '' ) end  report_date 
+            ,isnull(examin, '') examin, isnull(recheck, '') recheck 
+            , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
+            , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
+            , isnull(report_title, '') reportTitle
+            , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm`
+           
+        sql = sql + ` , isnull(a.path_comment, '') comment, isnull(c.fu_comment, '') fu_comment , isnull(c.init_comment, '') init_comment , 
+                        isnull(c.fu_result, '') fu_result , isnull(c.init_result1, '') init_result1, isnull(c.init_result2, '') init_result2 ,`;
+
+        sql = sql + ` isnull(gbn, '') gbn
+            , case when isnull(a.screenstatus, '') = '10' 
+                then  isnull(a.saveyn, 'T') 
                 else isnull(a.saveyn, 'S') end as saveyn
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
@@ -1197,7 +1382,7 @@ exports.getPatientDiagListsigtcr = (req, res,next) => {
        console.log('end=', end);
    }
 
-   const result = messageHandler3(start, end, patientID, specimenNo, sheet, status, research, name);
+   const result = messageHandler3_1(start, end, patientID, specimenNo, sheet, status, research, name);
    result.then(data => {
 
       res.json(data);

@@ -1935,9 +1935,38 @@ const patientHandler = async(patients, res) => {
 
         patients[i].hospnm = hospnm;
 
-        let testcd = '02';
+        let testcd2 = '02';
+        let preccd = patients[i].testcd;
 
-        patients[i].testcd = testcd;
+        patients[i].testcd = testcd2;
+
+        if (preccd == 'PMO12110') { // 고형암_CancerSCAN(DNA/RNA)
+            patients[i].testcd2 = '2023000191';
+            patients[i].canceryn = 'Y';
+        } else if (preccd == 'PMO12104' ) { // 갑상선암Thychase(DNA/RNA)
+            patients[i].testcd2 = '2023000932';
+            patients[i].canceryn = 'Y';
+        } else if (preccd == 'PMO12113' ) { // 고형암OCA(DNA)
+            patients[i].testcd2 = '2023000933';
+            patients[i].canceryn = 'Y';
+        } else if (preccd == 'PMO12072' ) { // 고형암OCA(DNA/RNA)
+            patients[i].testcd2 = '2023000934';
+            patients[i].canceryn = 'Y';
+        } else if (preccd == 'PMO12105' ) { // 고형암CancerSCAN(DNA)
+            patients[i].testcd2 = '2023000935';
+            patients[i].canceryn = 'Y';
+        } else if (preccd == 'PMO12099' ) { // 림프종CLUG(DNA)
+            patients[i].testcd2 = '2023000936';
+            patients[i].canceryn = '';
+        } else if (preccd == 'PMO12114' ) { // 림프종CLUG(DNA/RNA)	
+            patients[i].testcd2 = '2023000937';
+            patients[i].canceryn = '';
+        } else {
+            patients[i].testcd2 = '';
+            patients[i].canceryn = '';
+        }
+
+        logger.info("[1944][report_xml_path]patients[i].testcd2=" + patients[i].testcd2);
 
         patients[i].pv = 'Y';
         

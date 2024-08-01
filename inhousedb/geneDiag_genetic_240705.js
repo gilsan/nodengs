@@ -37,7 +37,7 @@ function nvl(st, defaultStr){
 }
 
 function parse_tsv(s, f) {
-  s = s.replace(/, /g, ";");
+  s = s.replace(/,/g, ";");
   var ix_end = 0;
   for (var ix = 0; ix < s.length; ix = ix_end + 1) {
     ix_end = s.indexOf('\n', ix);
@@ -45,7 +45,7 @@ function parse_tsv(s, f) {
       ix_end = s.length;
     }
   
-    var row = s.substring(ix, ix_end).split(';');
+    var row = s.substring(ix, ix_end).split('\t');
 
     f(row);
   }
@@ -58,9 +58,6 @@ function loadData(filePath) {
      var scenarios = [];
      parse_tsv(tsvData, (row) => {
        rowCount++;
-
-       logger.info('row =' + row);
-
        if (rowCount >= 0) {
          scenarios.push(row);
        }
@@ -71,41 +68,36 @@ function loadData(filePath) {
    }
 }
 
-const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
-
-async function delData(test_code) {
+async function delData() {
 
   await poolConnect;
   
   const sql2 =`
     delete from genediag 
     where type = 'genetic'
-    and test_code  in ('LPE517', 'LPE520', 'LPE635', 'LPE636', 'LPE637', 'LPE638', 'LPE639')
   `; 
 
   logger.info('[77][genediag]sql=' + sql2);
 
-
   try {      
-    const request2 = pool.request()
-      .input('test_code', mssql.NVarChar, test_code);
+  const request2 = pool.request();
 
-    //let result =  '';
-    const result2 = request2.query(sql2); /*, (err, recordset) => {
-      if (err)
-      {
-          console.log("err=", err.message);  
-      }
-      console.log("recordset=", recordset);
+  //let result =  '';
+  const result2 = request2.query(sql2); /*, (err, recordset) => {
+    if (err)
+    {
+         console.log("err=", err.message);  
+    }
+    console.log("recordset=", recordset);
 
-      result = recordset;
-    });*/
-    result2.then(data => {
-      console.dir(data);
-    }).catch( err => console.log(err));
+    result = recordset;
+  });*/
+  result2.then(data => {
+    console.dir(data);
+  }).catch( err => console.log(err));
 
   }   catch(err) {
-    logger.error('[97][genetic]del err=' + err.message);
+    logger.error('[97][artifacts]del err=' + err.message);
   } 
 }
   
@@ -114,13 +106,11 @@ var rowCount = 0;
 
 var type = 'genetic';
 
-delData();
+delData()
 
 var rowData = loadData(tsvData);
 
 rowData.forEach ( async (row, index) =>  {
-
-  await sleep(5000);
 
   await poolConnect;
   rowCount++;
@@ -132,15 +122,15 @@ rowData.forEach ( async (row, index) =>  {
       var test_code = nvl(row[0].replace( /"/gi, ''), "");
       logger.info('[84][genediag]test_code=' + test_code);
 
-      if (test_code != "") {       
+      if (test_code != "") {
 
         for (var i= 1; i < row.length -1; i ++ ) {
         var temp_data = nvl(row[i].replace( /"/gi, ''), "");
         var gene = findChar(temp_data);   
 
         if (gene != "") {
-          logger.info('[87][genediag]test_code=' + test_code + ', gene=' + gene);
-          
+          logger.info('[87][genediag]gene=' + gene);
+                    
             const sql =`insert_genediag_genetic` ;
 
             try {
