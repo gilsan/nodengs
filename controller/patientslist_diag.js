@@ -291,6 +291,8 @@ const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, stat
 
         sql = sql + ` isnull(gbn, '') gbn
             , case when isnull(a.screenstatus, '') = '10' 
+                then isnull(a.saveyn, 'T')
+                when isnull(a.screenstatus, '') = '' 
                 then isnull(a.saveyn, 'T') 
                 else isnull(a.saveyn, 'S') end as saveyn
             from [dbo].[patientinfo_diag] a
@@ -379,7 +381,7 @@ const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, stat
         if (research1 === 'RESEARCH') {
             sql = sql +  " and a.gbn = 'RESEARCH'";
         } else {
-            sql = sql +  " and a.gbn = ''";
+            sql = sql +  " and a.gbn != 'RESEARCH'";
         }
     }
 

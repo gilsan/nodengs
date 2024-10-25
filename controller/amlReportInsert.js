@@ -19,12 +19,12 @@ const  messageHandler = async (req) => {
   //입력 파라미터를 수신한다
   //1. Detected Variants
 
-  const pathology_num = req.body.pathology_num;
+  const specimenNo = req.body.specimenNo;
   const detected_variants = req.body.detected_variants;
   const detected_length =  detected_variants.length
   const report_gb  = 'C'
 
-  logger.info('[110][amlReportinsert messageHandler pathology_num= ' + pathology_num 
+  logger.info('[110][amlReportinsert messageHandler specimenNo= ' + specimenNo 
 							   + ', detected_variants=' +  JSON.stringify( detected_variants)
 							   + ', length=' + detected_variants.length);
 
@@ -51,7 +51,7 @@ const  messageHandler = async (req) => {
 	const qry = "insert into report_detected_variants (specimenNo, report_date, report_gb, gene, \
 	         functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
 	         vaf, reference, cosmic_id) \
-	         values(@pathology_num, getdate(), @report_gb, @gene, \
+	         values(@specimenNo, getdate(), @report_gb, @gene, \
 	           @functional_impact, @transcript, @exon, @nucleotide_change, @amino_acid_change, @zygosity, \
 	         @vaf, @reference, @cosmic_id)";
 		   
@@ -59,7 +59,7 @@ const  messageHandler = async (req) => {
 
 	try {
 		const request = pool.request()
-		.input('pathology_num', mssql.VarChar, pathology_num)
+		.input('specimenNo', mssql.VarChar, specimenNo)
 		.input('report_gb', mssql.VarChar, report_gb)
 		.input('gene', mssql.VarChar, gene)
 		.input('functional_impact', mssql.VarChar, functional_impact)
@@ -101,14 +101,14 @@ const  messageHandler = async (req) => {
 	  //insert Query 생성
 	  const qry = "insert into report_comments (specimenNo, report_date, \
 		            report_gb, gene, variants)   \
-					  values(@pathology_num, getdate(), \
+					  values(@specimenNo, getdate(), \
 					  @report_gb, @gene, @variants)";
 
 	  logger.info('[107][amlReportinsert comment messageHandler sql=' + qry);
 		   
 	  try {
 		  const request = pool.request()
-			.input('pathology_num', mssql.VarChar, pathology_num)
+			.input('specimenNo', mssql.VarChar, specimenNo)
 			.input('report_gb', mssql.VarChar, report_gb)
 			.input('gene', mssql.VarChar, gene)
 			.input('variants', mssql.VarChar, variants); 

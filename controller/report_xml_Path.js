@@ -1764,7 +1764,7 @@ var jsondata = `
 <brthdd>19600101</brthdd>
 <sex>1</sex>
 <age>61</age>
-<testcd>PMO12072</testcd>
+<testcd>PMO12071</testcd>
 <testnm>NGS 고형암 검사</testnm>
 <bcno>M21007708</bcno>
 <orddd>20210520</orddd>
@@ -1966,12 +1966,68 @@ const patientHandler = async(patients, res) => {
             patients[i].canceryn = '';
         }
 
-        logger.info("[1944][report_xml_path]patients[i].testcd2=" + patients[i].testcd2);
+        /*
+       // 24.10.25 병릭과 요구 사항
+       // 아래 조건 무시
+        // 24.08.29 병리과 요구사항
+        // 아래 코드가 아닌 경우 현재 단일유전자 검사 시행일 = "", 현재 단일유전자 검사 시행여부 = "" 처리한다
+        const arr_pmo = ['PMO04007','PMO04008','PMO04010','PMO04024','PMO04025',
+                    'PMO04035','PMO04031','PMO04034','PMO04036','PMO04032',
+                    'PMO04034','PMO04043','PMO04034S','PMO12031','PMO04049',
+                    'PMO04051','PMO10001','PMO11005B','PMO11007','PMO11017',
+                    'PMO11019','PMO11020','PMO11042','PMO12002','PMO12004',
+                    'PMO12012','PMO12021','PMO12022','PMO12024','PMO12027',
+                    'PMO12028','PMO12029','PMO12030','PMO12032','PMO12036',
+                    'PMO12037','PMO12038','PMO12042','PMO12043','PMO12044',
+                    'PMO12045','PMO12046','PMO12052','PMO12054','PMO12057',
+                    'PMO12059','PMO12060','PMO12062','PMO12063','PMO12064',
+                    'PMO12065','PMO12066','PMO12069','PMO12070','PMO12071',
+                    'PMO12076','PMO12077','PMO12080','PMO12106','PMO12108','PMO12115','PMO12118'];
 
+        logger.info("[211][report_xml_path]preccd=" + preccd);
+        let arr_idx = arr_pmo.indexOf(preccd);
+        logger.info("[211][report_xml_path]arr_idx=" + arr_idx);
+        if ( arr_idx < 0)
+        {
+                patients[i].monogenicdd = "";
+                patients[i].monogenicyn = "";
+        }
+        else 
+        {
+            let spcacptdt = patients[i].spcacptdt;
+            
+            logger.info("[211][report_xml_path]spcacptdt=" + spcacptdt);
+            patients[i].monogenicdd = spcacptdt;
+            patients[i].monogenicyn = "Y";
+        }
+        */
+
+        // 24.10.25 병릭과 요구 사항
+        // 단일유전자 검사 종목 != '' => 단일유전자 검사 시행 여부 = 'Y'
+        if (patients[i].monogenicnm === '')
+        {
+            patients[i].monogenicdd = "";
+            patients[i].monogenicyn = "";
+        }
+        else 
+        {
+            patients[i].monogenicyn = "Y";
+        }
+
+        logger.info("[1944][report_xml_path]patients[i].testcd2=" + patients[i].testcd2);
+        logger.info("[1944][report_xml_path]patients[i].monogenicdd=" + patients[i].monogenicdd);
+        logger.info("[1944][report_xml_path]arr_idx=" + arr_idx);
+        
         patients[i].pv = 'Y';
+        
+        // 24.08.29 병리과 요구사항
+        // 현재 단일유전자 검사 시행일(monogenicdd) => '접수일자(spcacptdt)' 
+        // 24.08.29 접수일자(spcacptdt)로 변경
+        // 진료일(orddd) -> 접수일자(spcacptdt)
         
         let orddd = patients[i].orddd;
         
+        // 처방일 : spcacptdt
         let prcpdd = patients[i].prcpdd;
         
         
@@ -2064,7 +2120,10 @@ const patientHandler = async(patients, res) => {
                     patients[i].vus = 'Y';
                     patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene[j].gene ;
                 }
-                else if (patient_gene[j].report_gb === 'C') {            
+                // 24.08.29 병리과 요구사항
+                // tier == 'I' 만 암 유전자
+                //else if (patient_gene[j].report_gb === 'C') {            
+                else if ((patient_gene[j].report_gb === 'C') && (patient_gene[j].tier === 'I')) {            
                     patients[i].pv = 'Y';
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene[j].gene;
                 }
@@ -2072,10 +2131,14 @@ const patientHandler = async(patients, res) => {
                 // 23.11.30
                 if (patient_gene[j].tier === 'I') {
                     duptier.push ('I');
+                /*
+                // 24.08.29 병리과 요구사항
+                // tier == 'I' 만 암 유전자
                 } else if (patient_gene[j].tier === 'II') {
                     duptier.push ('II');
                 } else if (patient_gene[j].tier === 'III') {
                     duptier.push ( 'III');
+                */
                 } 
             }
         }
@@ -2088,7 +2151,10 @@ const patientHandler = async(patients, res) => {
                     patients[i].vus = 'Y';
                     patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_amp[j].gene ;
                 }
-                else if (patient_gene_amp[j].report_gb === 'C') {    
+                // 24.08.29 병리과 요구사항
+                // tier == 'I' 만 암 유전자
+                //else if (patient_gene_amp[j].report_gb === 'C') {    
+                else if ((patient_gene_amp[j].report_gb === 'C') && (patient_gene_amp[j].tier === 'I'))  {    
                     patients[i].pv = 'Y';                                
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
                 }
@@ -2096,10 +2162,14 @@ const patientHandler = async(patients, res) => {
                 // 23.11.30
                 if (patient_gene_amp[j].tier === 'I') {
                     duptier.push ('I');
+                /*
+                // 24.08.29 병리과 요구사항
+                // tier == 'I' 만 암 유전자
                 } else if (patient_gene_amp[j].tier === 'II') {
                     duptier.push ('II');
                 } else if (patient_gene_amp[j].tier === 'III') {
                     duptier.push ( 'III');
+                */
                 } 
             }
         }
@@ -2112,7 +2182,10 @@ const patientHandler = async(patients, res) => {
                     patients[i].vus = 'Y';
                     patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_fus[j].gene ;
                 }
-                else if (patient_gene_fus[j].report_gb === 'C') {  
+                // 24.08.29 병리과 요구사항
+                // tier == 'I' 만 암 유전자
+                //else if (patient_gene_fus[j].report_gb === 'C') {  
+                else if ((patient_gene_fus[j].report_gb === 'C')  && (patient_gene_fus[j].tier === 'I')){ 
                     patients[i].pv = 'Y';                                  
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
                 }
@@ -2120,11 +2193,15 @@ const patientHandler = async(patients, res) => {
                 // 23.11.30
                 if (patient_gene_fus[j].tier === 'I') {
                     duptier.push ('I');
+                /*
+                // 24.08.29 병리과 요구사항
+                // tier == 'I' 만 암 유전자
                 } else if (patient_gene_fus[j].tier === 'II') {
                     duptier.push ('II');
                 } else if (patient_gene_fus[j].tier === 'III') {
                     duptier.push ( 'III');
-                } 
+                */
+               } 
             }
         }
 
@@ -2159,7 +2236,7 @@ exports.getList= (req, res, next) => {
 
     let jsonObj = parser.parse(jsondata, options)  ;
     var patientJson = JSON.stringify(jsonObj); 
-    console.log('[114][patient_nu]json=' ,  patientJson);
+    console.log('[114][report_xml]json=' ,  patientJson);
 
     let patientObj = JSON.parse(patientJson);
 

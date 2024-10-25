@@ -741,6 +741,7 @@ const  variantsHandler = async (req) => {
   
   logger.info('[742][geneinfo]select data=' + gene + ", " + nucleotide_change + ", " + gubun); 
  
+  /* 24.08.13 reference, cosmic_id 조건에서 제외
   let sql =`select top 1 functional_impact , reference, cosmic_id, type, transcript, exon, amino_acid_change
                 from report_detected_variants 
                 where gene=@gene 
@@ -748,7 +749,16 @@ const  variantsHandler = async (req) => {
                 and sendyn = '3'
                 and reference != ''
                 and cosmic_id != ''
-                order by id desc`;
+                order by id desc`;ㄴ
+  */
+
+
+  let sql =`select top 1 functional_impact , reference, cosmic_id, type, transcript, exon, amino_acid_change
+                  from report_detected_variants 
+                  where gene=@gene 
+                  and nucleotide_change =@nucleotide_change and (gubun='AMLALL' or gubun = 'LYM' or gubun='MDS')
+                  and sendyn = '3'
+                  order by id desc`;  
                
   logger.info('[749][geneinfo]list sql=' + sql);
 

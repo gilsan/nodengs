@@ -1890,7 +1890,7 @@ exports.getList= (req, res, next) => {
 
     let jsonObj = parser.parse(jsondata, options)  ;
     var patientJson = JSON.stringify(jsonObj); 
-    console.log('[114][patient_nu]json=' ,  patientJson);
+    console.log('[114][report_xml]json=' ,  patientJson);
 
     let patientObj = JSON.parse(patientJson);
 

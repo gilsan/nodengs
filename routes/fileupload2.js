@@ -59,13 +59,13 @@ var storage = multer.diskStorage({
         if (day < 10) {
           dirPath = 'diag/'+ year + '/' + thisMonth + '/' + thisDay;
         } else {
-                  dirPath = 'diag/'+ year + '/' + thisMonth + '/' + day;
+          dirPath = 'diag/'+ year + '/' + thisMonth + '/' + day;
         }
       } else {
         if (day < 10) {
           dirPath = 'diag/'+ year + '/' + month + '/' + thisDay;
         } else {
-            dirPath = 'diag/'+ year + '/' + month + '/' + day;
+          dirPath = 'diag/'+ year + '/' + month + '/' + day;
         }
       }
 

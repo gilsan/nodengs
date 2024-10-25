@@ -39,7 +39,8 @@ router.post('/redirectEMR', (req, res, next) => {
    console.log('[웹에서 받은 데이타]', req.body);
 
    const examcd      = req.body.examcd;
-   logger.info ('[웹에서 받은 데이타]url=' + examcd);
+   const spcno      = req.body.spcno;
+   logger.info ('[웹에서 받은 데이타]url=' + examcd + ', ' + spcno);
    
    axios({
        method: 'post',

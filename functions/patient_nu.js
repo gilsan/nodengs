@@ -89,10 +89,28 @@ const  patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, s
 
 exports.patient_nu = (testedID, test_code) => {
 	let sendUrl = configEnv.emr_path; //'http://emr012.cmcnu.or.kr/cmcnu/.live
-	sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&testcd=' + test_code + '&bcno=' + testedID;
 
+	// 24.09.03 specimenno_? start
+	//sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&testcd=' + test_code + '&bcno=' + testedID;
+	
+	logger.info('[96][patient_nu]testedID=' +  testedID); 
+	
+	let indexOfFirst = testedID.indexOf('_');
+
+	if (indexOfFirst > 0)
+	{
+		const words = testedID.split('_');
+		logger.info('[96][patient_nu]testedID=' +  words[0]); 
+	
+		sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&testcd=' + test_code + '&bcno=' + words[0];
+	}
+	else {
+		
+		logger.info('[96][patient_nu]testedID=' +  testedID); 
+		sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&testcd=' + test_code + '&bcno=' + testedID;
+	}
+	// 24.09.03 specimenno_? end
 	//sendUrl += data;
-
 	logger.info('[96][patient_nu]sendUrl=' +  sendUrl); 
 
    	axios({

@@ -521,7 +521,7 @@ var jsondata = `<root>
 <posticd10cd/>
 <posticd10hngnm/>
 <pid>27224290</pid>
-<hngnm>알렉스</hngnm>
+<hngnm>홍길동</hngnm>
 <brthdd>19760101</brthdd>
 <sex>1</sex>
 <age>47</age>
@@ -546,11 +546,307 @@ var jsondata = `<root>
 <familyhist/>
 <reqfrmcd>15</reqfrmcd>
 </worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE473</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>I28652960</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE473</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>O27372VP0</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE473</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>O274E00B0</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE473</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>O27DY62P0</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE473</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>O27DY58V0</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE473</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>O27DZ5YB0</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+<worklist>
+<gbn>L</gbn>
+<hospnm>가톨릭대학교 서울성모병원</hospnm>
+<proccorpcd>11100338</proccorpcd>
+<clamacptno/>
+<docuseqno/>
+<pay100ownbrate/>
+<preicd10cd>C711</preicd10cd>
+<preicd10hngnm>뇌암, 전두엽</preicd10hngnm>
+<posticd10cd/>
+<posticd10hngnm/>
+<pid>27224291</pid>
+<hngnm>홍길동2</hngnm>
+<brthdd>19760101</brthdd>
+<sex>1</sex>
+<age>47</age>
+<testcd>LPE472</testcd>
+<testnm>급성골수성백혈병 [NGS]</testnm>
+<bcno>O27D95U00</bcno>
+<orddd>20231123</orddd>
+<prcpdd>20231123</prcpdd>
+<prcpno>1667566413</prcpno>
+<execprcpuntqno>1787084902</execprcpuntqno>
+<spcnm>Bone marrow</spcnm>
+<spccd>3</spccd>
+<spcacptdt>20231123</spcacptdt>
+<lstreptdt>20231123</lstreptdt>
+<stage/>
+<monogenicyn/>
+<monogenicdd/>
+<monogenicnm/>
+<racial>히스패닉/라틴</racial>
+<bmtyn/>
+<testexec>진단시</testexec>
+<familyhist/>
+<reqfrmcd>15</reqfrmcd>
+</worklist>
+
+<worklist>
 <resultKM error="no" type="status" clear="true" description="info||정상 처리되었습니다." updateinstance="true" source="1701244810749"/>
 </worklist>
 </root>
 `;
 
+// 24.09.03 specimenno_? start
+const  messageHandler2 = async (specimenNo, testcd) => {
+    await poolConnect; // ensures that the pool has been created
+  
+    logger.info("[patientinfo_diag]select specimenNo=" + specimenNo + ", testcd=" + testcd);
+  
+    const sql =`SELECT specimenNo FROM patientinfo_diag 
+                        WHERE specimenNo in (@specimenNo, 
+                                            @specimenNo_1, 
+                                            @specimenNo_2,  
+                                            @specimenNo_3, 
+                                            @specimenNo_4, 
+                                            @specimenNo_5 )                                             
+                                    AND test_code = @testcd  `;
+
+    logger.info("[patientinfo_diag]select sql=" + sql);
+  
+    try {
+        const request = pool.request()
+          .input('testcd', mssql.VarChar, testcd)
+          .input('specimenNo', mssql.VarChar, specimenNo)
+          .input('specimenNo_1', mssql.VarChar, specimenNo + "_1") 
+          .input('specimenNo_2', mssql.VarChar, specimenNo + "_2") 
+          .input('specimenNo_3', mssql.VarChar, specimenNo + "_3") 
+          .input('specimenNo_4', mssql.VarChar, specimenNo + "_4")
+          .input('specimenNo_5', mssql.VarChar, specimenNo + "_5"); 
+        const result = await request.query(sql)
+      //  console.dir( result);
+        
+        return result.recordset;
+    } catch (err) {
+        logger.error('[patientinfo_diag]SQL error=' + err.message);
+    }
+}
+// 24.09.03 specimenno_? end
 
 const  messageHandler = async (specimenNo) => {
     await poolConnect; // ensures that the pool has been created
@@ -558,7 +854,7 @@ const  messageHandler = async (specimenNo) => {
     const sql =`select gene, functional_impact  from [dbo].[report_detected_variants] 
                     where specimenNo=@specimenNo 
                     order by functional_impact desc `;
-  
+
     logger.info("[report_detected_variants]select sql=" + sql);
   
     try {
@@ -597,6 +893,9 @@ const patientHandler = async(patients, res) => {
         patients[i].hospnm = hospnm;
 
         let testcd = patients[i].testcd;
+        // 24.09.03 specimenno_? start
+        let testcd2 = patients[i].testcd;
+        // 24.09.03 specimenno_? end
 
         if (arr_testcd.indexOf(testcd) > 0) {
             testcd = '01';
@@ -607,7 +906,10 @@ const patientHandler = async(patients, res) => {
 
         patients[i].testcd = testcd;
 
-        patients[i].pv = 'Y';
+        // 24.09.03 specimenno_? start
+        //patients[i].pv = 'Y';
+        patients[i].pv = 'N';
+        // 24.09.03 specimenno_? end
 
         // 23.11.30 ----------
         let reqfrmcd = "";
@@ -623,40 +925,71 @@ const patientHandler = async(patients, res) => {
 
         let specimenNo = patients[i].bcno;
 
-        let rs_data = await messageHandler(specimenNo);
-        
-        logger.info("[2499][report_xml]rs_data=" + JSON.stringify (rs_data));
-        
-        var patientJson = JSON.stringify(rs_data); 
+        // 24.09.03 specimenno_? start
+        let rs_specimenNo = await messageHandler2(specimenNo, testcd2);
 
-        let patient_gene = JSON.parse(patientJson);
+        logger.info("[2499][report_xml]rs_data=" + JSON.stringify (rs_specimenNo));
 
-        patients[i].pv = 'N';
-        patients[i].pv_gene = '';
-        patients[i].vus = 'N';
-        patients[i].vus_gene = '';
-        
-        if (patient_gene.lenght !== 0 )
+        var specimenNoJson = JSON.stringify(rs_specimenNo);  
+
+        let patient_specimenNo = JSON.parse(specimenNoJson);
+
+        if (patient_specimenNo.length !== 0 )
         {
-            for (var j = 0;  j < patient_gene.length; j ++)
+            let specimenNo2 = patient_specimenNo[0].specimenNo;
+
+            if (specimenNo2.length !== 0 )
             {
-                if (patient_gene[j].functional_impact === 'VUS') {            
-                    patients[i].vus = 'Y';
-                    patients[i].vus_gene = patients[i].vus_gene + " " +  patient_gene[j].gene ;
-                }
-                else if ((patient_gene[j].functional_impact === 'Pathogenic') ||
-                         (patient_gene[j].functional_impact === 'Likely Pathogenic')) {            
-                    patients[i].pv = 'Y';
-                    patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
-                }
-                else if ((patient_gene[j].functional_impact === 'Oncogenic') ||
-                         (patient_gene[j].functional_impact === 'Likely Oncogenic')) {            
-                    patients[i].pv = 'Y';
-                    patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
+                logger.info("[2499][report_xml]specimenNo2=" + specimenNo2);
+                let rs_data = await messageHandler(specimenNo2);
+                
+                logger.info("[2499][report_xml]rs_data=" + JSON.stringify (rs_data));
+                
+                var patientJson = JSON.stringify(rs_data); 
+
+                let patient_gene = JSON.parse(patientJson);
+
+                patients[i].pv = 'N';
+                patients[i].pv_gene = '';
+                patients[i].vus = 'N';
+                patients[i].vus_gene = '';
+                
+                if (patient_gene.length !== 0 )
+                {
+                    for (var j = 0;  j < patient_gene.length; j ++)
+                    {
+                        logger.info("[961][report_xml]patient_gene[j].functional_impact=" + patient_gene[j].functional_impact);
+                
+                        //24.08.29 VUS가 포함되면 예) VUS(carrier) 형태도 VUS로 간주
+                        //if (patient_gene[j].functional_impact === 'VUS') 
+                        if (patient_gene[j].functional_impact.includes('VUS')) 
+                        {            
+                            patients[i].vus = 'Y';
+                            patients[i].vus_gene = patients[i].vus_gene + " " +  patient_gene[j].gene ;
+                        }
+                        //24.09.05 Pathogenic 포함되면 예) Pathogenic(carrier) 형태도 VUS로 간주
+                        //else if ((patient_gene[j].functional_impact === 'Pathogenic') ||
+                        //        (patient_gene[j].functional_impact === 'Likely Pathogenic')) {            
+                        else if (patient_gene[j].functional_impact.includes('Pathogenic'))  {            
+                                  patients[i].pv = 'Y';
+                            patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
+                        }
+                        //24.09.05 Oncogenic 포함되면 예) Oncogenic(carrier) 형태도 VUS로 간주
+                        //else if ((patient_gene[j].functional_impact === 'Oncogenic') ||
+                        //        (patient_gene[j].functional_impact === 'Likely Oncogenic')) {            
+                        else if (patient_gene[j].functional_impact.includes('Oncogenic') ) {
+
+                            logger.info("[961][report_xml]Oncogenic=" + patient_gene[j].functional_impact);
+                            logger.info("[961][report_xml]gene=" + patient_gene[j].gene);
+
+                            patients[i].pv = 'Y';
+                            patients[i].pv_gene = patients[i].pv_gene + " " +  patient_gene[j].gene;
+                        }
+                    }
                 }
             }
         }
-
+        // 24.09.03 specimenno_? end
     }
 
     res.json(patients);
@@ -666,7 +999,7 @@ exports.getList= (req, res, next) => {
 
     let jsonObj = parser.parse(jsondata, options)  ;
     var patientJson = JSON.stringify(jsonObj); 
-    console.log('[114][patient_nu]json=' ,  patientJson);
+    console.log('[114][report_xml]json=' ,  patientJson);
 
     let patientObj = JSON.parse(patientJson);
 

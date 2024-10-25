@@ -145,7 +145,7 @@ exports.patient_nu = async (testedID) => {
 							+ ', testcd=' + testcd + ', sex=' + sex + ', birth=' + birth + ', ftl3=' + ftl3 ); 
 
            		// 2021.02.15  patientinfo_nu
-		   		const result6 =  await  patientinfo_nu(bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1, 
+		   		const result6 = patientinfo_nu(bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, spcnm, ikzk1, 
 			                            chormosomal, orddeptcd, orddrid, orddrnm,  orddeptnm,
 										execprcpuniqno, prcpdd, testcd, sex, birth, ftl3);
 		   		

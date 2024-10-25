@@ -146,14 +146,14 @@ exports.getList= (req, res, next) => {
     })
     .then(function(response) {
        
-		logger.info('[106][patient_nu]data=' + response.data); 
+		logger.info('[106][report_xml]data=' + response.data); 
 
 		let res_data =  response.data;
 
 		const parser = new xml2js.Parser(/* options */); 
 		parser.parseStringPromise(res_data).then(function (result) {
 
-			logger.info('[114][path_patient_nu]json=' + JSON.stringify( result.root.worklist[0]));
+			logger.info('[114][report_xml]json=' + JSON.stringify( result.root.worklist[0]));
 				
             let patients = patientObj.root.worklist.worklist;
 

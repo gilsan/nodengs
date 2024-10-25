@@ -19,18 +19,18 @@ const  messageHandler = async (req) => {
   //입력 파라미터를 수신한다
   //1. Detected Variants
   
-	const pathology_num = req.body.pathology_num;
+	const specimenNo = req.body.specimenNo;
 	const report_date = req.body.report_date;
 	const report_gb  = 'C'
 
-	logger.info('[25][amlReport messageHandler]pathology_num=' +pathology_num + ", report_date=" + report_date);
+	logger.info('[25][amlReport messageHandler]specimenNo=' +specimenNo + ", report_date=" + report_date);
 
 	//insert Query 생성;
 	const qry = "select gene, \
 	         functional_impact, transcript, exon, nucleotide_change, amino_acid_change, zygosity, \
 			 vaf, reference, cosmic_id \
 			 from  report_detected_variants \
-			 where specimenNo = @pathology_num \
+			 where specimenNo = @specimenNo \
 			 and convert(varchar, report_date, 112) = @report_date \
 			 and report_gb = @report_gb";
 		   
@@ -38,7 +38,7 @@ const  messageHandler = async (req) => {
 
 	try {
 		  const request = pool.request()
-			.input('pathology_num', mssql.VarChar, pathology_num)
+			.input('specimenNo', mssql.VarChar, specimenNo)
 			.input('report_date', mssql.VarChar, report_date)
 			.input('report_gb', mssql.VarChar, report_gb);
 			
@@ -74,16 +74,16 @@ const  messageHandler2 = async (req) => {
 	//입력 파라미터를 수신한다
 	//1. Detected Variants
 	
-	const pathology_num = req.body.pathology_num;
+	const specimenNo = req.body.specimenNo;
 	const report_date = req.body.report_date;
 	const report_gb  = 'C'
 
-	logger.info('[25][amlReport messageHandler2 pathology_num=' + pathology_num + ', report_date=' + report_date);
+	logger.info('[25][amlReport messageHandler2 specimenNo=' + specimenNo + ', report_date=' + report_date);
 
 	//insert Query 생성
 	const qry = "select gene, variants \
 				from report_comments  \
-				where specimenNo = @pathology_num \
+				where specimenNo = @specimenNo \
 				and convert(varchar, report_date, 112) = @report_date \
 				and report_gb = @report_gb";
 
@@ -91,7 +91,7 @@ const  messageHandler2 = async (req) => {
 		   
 	try {
 		  const request = pool.request()
-			.input('pathology_num', mssql.VarChar, pathology_num)
+			.input('specimenNo', mssql.VarChar, specimenNo)
 			.input('report_date', mssql.VarChar, report_date)
 			.input('report_gb', mssql.VarChar, report_gb); 
 			
