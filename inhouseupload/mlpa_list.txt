@@ -1,9 +1,8 @@
-id	report_type	target	testmethod	analyzedgene
-1	LPE232	Duchene Muscular Dystrophy	*MLPA (Multiplex Ligation-dependent Probe Amplification)	DMD on Xp21
-2	LPE351	Alpha-Thalassemia	* Multiplex Ligation-dependent Probe Amplification (MLPA)	HBA1, HBA2 on 16p13.3
-3	LPE322	Spinal Muscular Atrophy	* Multiplex Ligation-dependent Probe Amplification (MLPA)	SMN1, SMN2
-4	LPE332	21-hydroxylase deficiency	* Multiplex Ligation-dependent Probe Amplification (MLPA)	CYP21A2 on 1p34.3-p32
-5	LPE294	Prader-Willi/Angelman syndrome (PWS/AS)	* Methylation-specific Multiplex Ligation-dependent Probe Amplification (MS-MLPA)	chromosome 15q11
-6	LPE294_2	Beckwith-Wiedemann/Russell-Silver syndrome (BWS/RSS)	* Methylation-specific Multiplex Ligation-dependent Probe Amplification (MS-MLPA)	chromosome 11p15
-7	LPE369	von Hippel-Lindau disease (VHL) (MM #19330)	*MLPA (Multiplex Ligation-dependent Probe Amplification)	VHL on 3p25
-8	LPE377	Hereditary neuropathy with liability to pressure palsies; MM #162500,Charcot-Marie-Tooth disease, type 1A, MIM#118220	*MLPA (Multiplex Ligation-dependent Probe Amplification	PMP22 on 17p11.2
+﻿2	LPE322	Spinal Muscular Atrophy	* Multiplex Ligation-dependent Probe Amplification (MLPA)	"SMN1	 SMN2"
+3	LPE232	Duchene Muscular Dystrophy	*MLPA (Multiplex Ligation-dependent Probe Amplification)	DMD on Xp21
+4	LPE351	Alpha-Thalassemia	* Multiplex Ligation-dependent Probe Amplification (MLPA)	"HBA1	 HBA2 on 16p13.3"
+5	LPE294_2	Beckwith-Wiedemann/Russell-Silver syndrome (BWS/RSS)	* Methylation-specific Multiplex Ligation-dependent Probe Amplification (MS-MLPA)	chromosome 11p15
+6	LPE294	Prader-Willi/Angelman syndrome (PWS/AS)	* Methylation-specific Multiplex Ligation-dependent Probe Amplification (MS-MLPA)	chromosome 15q11
+7	LPE332	21-hydroxylase deficiency	* Multiplex Ligation-dependent Probe Amplification (MLPA)	CYP21A2 on 1p34.3-p32
+8	LPE369	von Hippel-Lindau disease (VHL) (MM #19330)	*MLPA (Multiplex Ligation-dependent Probe Amplification)	VHL on 3p25
+9	LPE377	"Hereditary neuropathy with liability to pressure palsies; MM #162500	Charcot-Marie-Tooth disease	 type 1A	 MIM#118220"	*MLPA (Multiplex Ligation-dependent Probe Amplification	PMP22 on 17p11.2

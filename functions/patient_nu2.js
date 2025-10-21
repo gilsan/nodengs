@@ -81,7 +81,7 @@ const patientinfo_nu = async (bcnno, patnm, tclsscmnm, pid, spcacptdt, spccd, sp
 
 async function get_patient_nu(testedID) {
 	let sendUrl = configEnv.emr_path; //'http://emr012.cmcnu.or.kr/cmcnu/.live
-	sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=012&bcno=' + testedID;
+	sendUrl = sendUrl + '?submit_id=TRLII00144&business_id=li&instcd=' + configEnv.instcd + '&bcno=' + testedID;
 
 	logger.info('[96][patient_nu]sendUrl=' +  sendUrl); 
 

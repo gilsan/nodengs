@@ -8,6 +8,21 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
+/**
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param st           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+ function nvl(st, defaultStr){
+    
+    //console.log('st=', st);
+    if(st === undefined || st == null || st == "") {
+        st = defaultStr ;
+    }
+        
+    return st ;
+}
+
 const  clinicalInsertHandler = async (pathologyNum, clinical) => {
     await poolConnect; // ensures that the pool has been created
 
@@ -20,17 +35,19 @@ const  clinicalInsertHandler = async (pathologyNum, clinical) => {
     if (len > 0) {
         for (let i =0; i < len; i++) {
 
-            const frequency = clinical[i].frequency;
-            const gene      = clinical[i].gene;
-            const tier      = clinical[i].tier;
-            logger.info( '[25][clinicaldata]' + pathologyNum  + " " + frequency + " " + gene + " " + tier);
-            const qry = "insert into clinical (pathologyNum, frequency, gene, tier) values(@pathologyNum,  @frequency, @gene, @tier)"; 
+            const frequency         = clinical[i].frequency;
+            const gene              = clinical[i].gene;
+            const aminoAcidChange   = nvl (clinical[i].aminoAcidChange, '');
+            const tier              = clinical[i].tier;
+            logger.info( '[25][clinicaldata]' + pathologyNum  + " " + frequency + " " + gene + " " + tier + " " + aminoAcidChange);
+            const qry = "insert into clinical (pathologyNum, frequency, gene, tier, aminoAcidChange) values(@pathologyNum,  @frequency, @gene, @tier, @aminoAcidChange)"; 
             logger.info('[27][clinicaldata] sql='+ qry);
             try {
                 const request = pool.request()
                 .input('pathologyNum', mssql.VarChar, pathologyNum)
                 .input('frequency', mssql.VarChar, frequency)
                 .input('gene', mssql.VarChar, gene)
+                .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
                 .input('tier', mssql.VarChar, tier);
     
                 result = await request.query(qry);
@@ -101,7 +118,7 @@ const  clinicalSelectHandler = async (pathologyNum) => {
 
     logger.info('[105]clinicalSelect data=' + pathologyNum);
     //insert Query 생성
-    const qry = "select frequency, gene, tier  from clinical   where pathologyNum = @pathologyNum ";
+    const qry = "select frequency, gene, tier, aminoAcidChange  from clinical   where pathologyNum = @pathologyNum ";
     
     try {
 

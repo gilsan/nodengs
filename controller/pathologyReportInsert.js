@@ -585,7 +585,9 @@ const  messageHandler = async (pathology_num, patientinfo, mutation_c, amplifica
   try {
 	  const request = pool.request()
 		  .input('dnarna', mssql.VarChar, dnarna)
-		  .input('rel_pathology_num', mssql.VarChar, rel_pathology_num) 
+		  // 25.08.05 한글 들어오는 경우 있음
+		  //.input('rel_pathology_num', mssql.VarChar, rel_pathology_num) 
+		  .input('rel_pathology_num', mssql.NVarChar, rel_pathology_num) 
 		  .input('keyblock', mssql.NVarChar, keyblock) 
 		  .input('tumorcellpercentage', mssql.VarChar, tumorcellpercentage) 
 		  .input('organ', mssql.NVarChar, organ) 

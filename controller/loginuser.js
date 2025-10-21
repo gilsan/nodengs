@@ -5,6 +5,9 @@ const logger = require('../common/winston');
 const mssql = require('mssql');
 
 const dbConfigMssql = require('../common/dbconfig.js');
+
+const { encrypt, decrypt } = require('../common/cryptoHelper');
+
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect();
 
@@ -330,4 +333,55 @@ exports.listDiag = (req, res, next) => {
     .catch(error => {
       logger.error('[75][loginUser 진검]err=' + error.message);
     });
+}
+
+
+// 병리 쿼리
+const  pWmessageHandler = async (user, pwd) => {
+  await poolConnect; // ensures that the pool has been created
+
+  logger.info('[122][pWmessageHandler 병리]data=' + user + ", " + pwd);
+
+  //const uuid = uuidv4();
+
+  //console.log('uuid:', uuid);
+
+  const sql= `update users set  password=@pwd where user_id=@user`;
+  
+  logger.info('[352][pWmessageHandler 병리]sql=' + sql);
+
+  try {
+      const request = pool.request()
+        .input('user', mssql.VarChar, user) // id
+        .input('pwd', mssql.VarChar, pwd); // dept 
+      const result = await request.query(sql)
+      console.dir(result);
+      const data = result;
+      return data;
+  } catch (error) {
+    logger.error('[363][pWmessageHandler 병리]err=' + error.message);
+  }
+}
+   
+// 병리
+exports.pwChange = (req,res, next) => {
+  
+  logger.info('[370][pwChange 병리]data=' + JSON.stringify(req.body));
+
+  const user     = req.body.user;
+  const password = req.body.password;
+ 
+  logger.info('[375][pwChange 병리]data=' + user + ", " + password);
+
+  const dept  = "P";
+  const result = pWmessageHandler(user, password);
+  result.then(data => {
+    
+    res.json({message: 'success'});
+    
+  })
+  .catch( error  => {
+    logger.error('[385][pwChange 병리]err=' + error.message);
+    res.sendStatus(500)
+  }); 
 }

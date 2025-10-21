@@ -29,7 +29,12 @@ function findChar(findChar) {
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
       st = defaultStr ;
   }
       
@@ -92,64 +97,68 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/mlpa_list.txt';
-var rowCount = 0;
+async function processData() {
+  var tsvData = '../inhouseupload/mlpa_list.txt';
+  var rowCount = 0;
 
-delData();
+  delData();
 
-var rowData = loadData(tsvData);
+  var rowData = loadData(tsvData);
 
-rowData.forEach ( async (row, index) =>  {
+  rowData.forEach ( async (row, index) =>  {
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-      var report_type = nvl(row[1].replace( /"/gi, ''), "");
-      logger.info('[84][mlpa_list]report_type=' + report_type);
+        var report_type = nvl(row[1].replace( /"/gi, ''), "");
+        logger.info('[84][mlpa_list]report_type=' + report_type);
 
-      var temp_data = nvl(row[2].replace( /"/gi, ''), "");
-      var target = findChar(temp_data);   
-      logger.info('[87][mlpa_list][seq]=' + target);
+        var temp_data = nvl(row[2].replace( /"/gi, ''), "");
+        var target = findChar(temp_data);   
+        logger.info('[87][mlpa_list][seq]=' + target);
 
-      var temp_data = nvl(row[3].replace( /"/gi, ''), "");
-      var testmethod = findChar(temp_data);   
-      logger.info('[87][mlpa_list][testmethod]=' + testmethod);
+        var temp_data = nvl(row[3].replace( /"/gi, ''), "");
+        var testmethod = findChar(temp_data);   
+        logger.info('[87][mlpa_list][testmethod]=' + testmethod);
 
-      var temp_data = nvl(row[4].replace( /"/gi, ''), "");
-      var analyzedgene = findChar(temp_data);   
-      logger.info('[87][mlpa_list][analyzedgene]=' + analyzedgene);
+        var temp_data = nvl(row[4].replace( /"/gi, ''), "");
+        var analyzedgene = findChar(temp_data);   
+        logger.info('[87][mlpa_list][analyzedgene]=' + analyzedgene);
+              
+        const sql =`insert_mlpa_list` ;
+
+        try {
             
-      const sql =`insert_mlpa_list` ;
+            const request = pool.request()
+              .input('report_type', mssql.VarChar, report_type)
+              .input('target', mssql.VarChar, target)  
+              .input('testmethod', mssql.VarChar, testmethod)  
+              .input('analyzedgene', mssql.VarChar, analyzedgene)  
+              .output('TOTALCNT', mssql.int, 0);
+            
+          let result2 =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[mlpa_list]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('report_type', mssql.VarChar, report_type)
-            .input('target', mssql.VarChar, target)  
-            .input('testmethod', mssql.VarChar, testmethod)  
-            .input('analyzedgene', mssql.VarChar, analyzedgene)  
-            .output('TOTALCNT', mssql.int, 0);
-          
-        let result2 =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[mlpa_list]err message=" + err.message);
-            }
+              console.log("[175][mlpa_list]recordset="+ recordset);
+              console.log("[176][mlpa_list]returnValue="+ returnValue);
 
-            console.log("[175][mlpa_list]recordset="+ recordset);
-            console.log("[176][mlpa_list]returnValue="+ returnValue);
+              result3 = returnValue;
+              console.log("[179][mlpa_list]result=" + JSON.stringify(result3));
+            }); 
 
-            result3 = returnValue;
-            console.log("[179][mlpa_list]result=" + JSON.stringify(result3));
-          }); 
+            console.log("result=", result2);
 
-          console.log("result=", result2);
+      } catch(err) {
+          logger.error('[185][mlpa_list]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][mlpa_list]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

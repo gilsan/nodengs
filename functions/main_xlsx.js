@@ -64,7 +64,11 @@ exports.main = (data, filename, testedID,patientID) => {
         // const functionalImpact =   String(data[i]["B"]).trim() ;  
         // logger.info ('[main][65][main data]====>' + functionalImpact);
        
-      if ( data[i]['B'] === 'Pathogenic'  ||  data[i]['B']  === 'VUS' ||  data[i]['B']  === 'Likely Pathogenic' || data[i]['B']  === 'Likey Benign')
+      if ( data[i]['B'] === 'Pathogenic'  
+          || data[i]['B']  === 'VUS' 
+          || data[i]['B']  === 'Likely Pathogenic' 
+          || data[i]['B']  === 'Likely Benign' 
+          || data[i]['B']  === 'Likey Benign')
         {
        
             genes             = data[i].A;

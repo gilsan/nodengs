@@ -29,7 +29,12 @@ function findChar(findChar) {
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
       st = defaultStr ;
   }
       
@@ -100,74 +105,83 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/artifacts.txt';
-var rowCount = 0;
+async function processData() {
+  var tsvData = '../inhouseupload/artifacts.txt';
+  var rowCount = 0;
 
-delData();
+  delData();
 
-var rowData = loadData(tsvData);
+  var rowData = loadData(tsvData);
 
-rowData.forEach ( async (row, index) =>  {
+  rowData.forEach ( async (row, index) =>  {
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-      var genes = nvl(row[7].replace( /"/gi, ''), "");
-      logger.info('[84][artifacts]genes=' + genes);
+        var genes = nvl(row[1].replace( /"/gi, ''), "");
+        logger.info('[84][artifacts]genes=' + genes);
 
-      var temp_data = nvl(row[8].replace( /"/gi, ''), "");
-      var location = findChar(temp_data);   
-      logger.info('[87][artifacts]location=' + location);
+        var temp_data = nvl(row[2].replace( /"/gi, ''), "");
+        var location = findChar(temp_data);   
+        logger.info('[87][artifacts]location=' + location);
 
-      var temp_data = nvl(row[15].replace( /"/gi, ''), "");
-      var transcript = findChar(temp_data);        
-      logger.info('[91][artifacts]transcript=' + transcript);
+        var temp_data = nvl(row[4].replace( /"/gi, ''), "");
+        var transcript = findChar(temp_data);        
+        logger.info('[91][artifacts]transcript=' + transcript);
 
-      temp_data = nvl(row[14].replace( /"/gi, ''), "");
-      var exon = findChar(temp_data);
-      logger.info('[95][artifacts]exon=' + exon);
+        temp_data = nvl(row[3].replace( /"/gi, ''), "");
+        var exon = findChar(temp_data);
+        logger.info('[95][artifacts]exon=' + exon);
 
-      temp_data = nvl(row[16].replace( /"/gi, ''), "");
-      var coding = findChar(temp_data);      
-      logger.info('[99][artifacts]coding=' + coding);
+        temp_data = nvl(row[5].replace( /"/gi, ''), "");
+        var coding = findChar(temp_data);      
+        logger.info('[99][artifacts]coding=' + coding);
 
-      temp_data = nvl(row[17].replace( /"/gi, ''), "");
-      var amino_acid_change = findChar(temp_data);     
-      logger.info('[103][artifacts]amino_acid_change=' + amino_acid_change);
+        temp_data = nvl(row[6].replace( /"/gi, ''), "");
+        var amino_acid_change = findChar(temp_data);     
+        logger.info('[103][artifacts]amino_acid_change=' + amino_acid_change);
+
+        temp_data = nvl(row[7].replace( /"/gi, ''), "");
+        var type = findChar(temp_data);     
+        logger.info('[103][artifacts]type=' + type);
+              
+        const sql =`insert_Artifacts` ;
+
+        try {
             
-      const sql =`insert_Artifacts` ;
+            const request = pool.request()
+              .input('genes', mssql.VarChar, genes)
+              .input('location', mssql.NVarChar, location)  
+              .input('transcript', mssql.VarChar, transcript)  
+              .input('exon', mssql.VarChar, exon)
+              .input('coding', mssql.VarChar, coding)  
+              .input('amino_acid_change', mssql.VarChar, amino_acid_change)  
+              .input('type', mssql.VarChar, type)  
+              .output('TOTALCNT', mssql.int, 0);
+            
+          let result =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[artifacts]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('genes', mssql.VarChar, genes)
-            .input('location', mssql.NVarChar, location)  
-            .input('transcript', mssql.VarChar, transcript)  
-            .input('exon', mssql.VarChar, exon)
-            .input('coding', mssql.VarChar, coding)  
-            .input('amino_acid_change', mssql.VarChar, amino_acid_change)  
-            .output('TOTALCNT', mssql.int, 0);
-          
-        let result =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[artifacts]err message=" + err.message);
-            }
+              console.log("[175][artifacts]recordset="+ recordset);
+              console.log("[176][artifacts]returnValue="+ returnValue);
 
-            console.log("[175][artifacts]recordset="+ recordset);
-            console.log("[176][artifacts]returnValue="+ returnValue);
+              result = returnValue;
+              console.log("[179]result=" + JSON.stringify(result));
+            }); 
 
-            result = returnValue;
-            console.log("[179]result=" + JSON.stringify(result));
-          }); 
+            console.log("result=", result);
 
-          console.log("result=", result);
+      } catch(err) {
+          logger.error('[185][artifacts]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][artifacts]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

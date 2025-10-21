@@ -14,7 +14,12 @@ const poolConnect = pool.connect();
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
       st = defaultStr ;
   }
       
@@ -78,61 +83,66 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/path_essential.txt';
-var rowCount = 0;
+async function processData() {
 
-delData();
+  var tsvData = '../inhouseupload/path_essential.txt';
+  var rowCount = 0;
 
-var rowData = loadData(tsvData);
+  delData();
 
-rowData.forEach ( async (row, index) =>  {
+  var rowData = loadData(tsvData);
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+  rowData.forEach ( async (row, index) =>  {
 
-      var title = nvl(row[0].replace( /"/gi, ''), "");
-      logger.info('[84][path_essential]title=' + title);
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-      var mutation = nvl(row[1].replace( /"/gi, ''), "");
-      logger.info('[87][path_essential]mutation=' + mutation);
+        var title = nvl((row[1] || '').replace( /"/gi, ''), "");
+        logger.info('[84][path_essential]title=' + title);
 
-      var amplification = nvl(row[2].replace( /"/gi, ''), "");
-      logger.info('[87][path_essential]amplification=' + amplification);
+        var mutation = nvl((row[2] || '').replace( /"/gi, ''), "");
+        logger.info('[87][path_essential]mutation=' + mutation);
 
-      var fusion = nvl(row[3].replace( /"/gi, ''), "");
-      logger.info('[87][path_essential]fusion=' + fusion);
+        var amplification = nvl((row[3] || '').replace( /"/gi, ''), "");
+        logger.info('[87][path_essential]amplification=' + amplification);
+
+        var fusion = nvl((row[4] || '').replace( /"/gi, ''), "");
+        logger.info('[87][path_essential]fusion=' + fusion);
+              
+        const sql =`insert_path_essential` ;
+
+        try {
             
-      const sql =`insert_path_essential` ;
+            const request = pool.request()
+              .input('title', mssql.VarChar, title)
+              .input('mutation', mssql.NVarChar, mutation) 
+              .input('amplification', mssql.NVarChar, amplification) 
+              .input('fusion', mssql.NVarChar, fusion) 
+              .output('TOTALCNT', mssql.int, 0);
+            
+          let result =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[path_essential]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('title', mssql.VarChar, title)
-            .input('mutation', mssql.NVarChar, mutation) 
-            .input('amplification', mssql.NVarChar, amplification) 
-            .input('fusion', mssql.NVarChar, fusion) 
-            .output('TOTALCNT', mssql.int, 0);
-          
-        let result =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[path_essential]err message=" + err.message);
-            }
+              console.log("[175][path_essential]recordset="+ recordset);
+              console.log("[176][path_essential]returnValue="+ returnValue);
 
-            console.log("[175][path_essential]recordset="+ recordset);
-            console.log("[176][path_essential]returnValue="+ returnValue);
+              result = returnValue;
+              console.log("[179[path_essential]]result=" + JSON.stringify(result));
+            }); 
 
-            result = returnValue;
-            console.log("[179[path_essential]]result=" + JSON.stringify(result));
-          }); 
+            console.log("result=", result);
 
-          console.log("result=", result);
+      } catch(err) {
+          logger.error('[185][path_essential]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][path_essential]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

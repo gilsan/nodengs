@@ -6,6 +6,9 @@ const multer = require('multer');
 const cors = require('cors');
 const fs    = require('fs');
 
+
+const logger = require('./common/winston');
+
 const app = express();
 // 로그인
 const loginDiagRouter     = require('./routes/loginDiag');
@@ -157,6 +160,11 @@ const igtcrRouter = require('./routes/igtcrRouter');
 // const mdsmpnRouter        = require('./routes/mdsmpnRouter');    //mdsmpnRouter.js 파일을 선언한다.
 // const lymphomaRouter      = require('./routes/lymphomaRouter');  //lymphomaRouter.js 파일을 선언한다.
 
+// 1️⃣ 전역 Promise reject 안전망 (마지막 안전망)
+process.on('unhandledRejection', (reason) => {
+    logger.error('Unhandled Promise Rejection:', reason);
+    // 필요하면 로그 기록, 알림 전송 등 추가 가능
+});
 
 // middleware
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -411,4 +419,5 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, (req,res)=> {
    console.log('Running Server 3000 ....');
+   logger.info('node start' );
   });

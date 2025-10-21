@@ -1,0 +1,45 @@
+41	Dystonia (51 genes)	genetic	LPE548
+42	Long QT syndrome (187 genes)	genetic	LPE439
+43	Hereditary hemolytic anemia (48 genes)	genetic	LPE452
+44	Bone Marrow Failure (112 genes)	genetic	LPE454
+45	Fanconi anemia (103 genes)	genetic	LPE453
+46	Thrombocytopenia (89 genes)	genetic	LPE455
+47	Neutropenia (23 genes)	genetic	LPE456
+48	Hereditary Hearing Loss (282 genes)	genetic	LPE488
+49	Primary Immunodeficiency (363 genes)	genetic	LPE489
+50	 Hereditary Aortic disorders (232 genes)	genetic	LPE490
+51	Thrombotic Microangiopathy (48 genes)	genetic	LPE498
+52	Cancer (151 genes)	genetic	LPE497
+53	Polycystic Kidney Disease (3 genes)	genetic	LPE499
+54	Kidney Disease (783 genes)	genetic	LPE517
+55	Cardiomyopathy (170 genes)	genetic	LPE518
+56	Skin disorder (101 genes)	genetic	LPE519
+57	Neuromuscular disorder (414 genes)	genetic	LPE520
+58	Neuropathy (470 genes)	genetic	LPE521
+59	Skeletal dysplasia (185 genes)	genetic	LPE522
+60	Developmental delay/Autism spectrum disorder (985 genes)	genetic	LPE523
+61	Short stature (233 genes)	genetic	LPE524
+62	Connective tissue disorder (60 genes)	genetic	LPE525
+63	Muscular dystrophy (153 genes)	genetic	LPE526
+64	Congenital Myopathy (91 genes)	genetic	LPE527
+65	Charcot-Marie-Tooth disease (85 genes)	genetic	LPE528
+66	Ataxia (402 genes)	genetic	LPE529
+67	Hereditary Spastic Paraplegia (66 genes)	genetic	LPE530
+68	Disorders of Sex Development (164 genes)	genetic	LPE531
+69	Rasopathy (21 genes)	genetic	LPE532
+70	Genetic Endocrine disorders (538 genes)	genetic	LPE533
+71	Coagulopathy (81 genes)	genetic	LPE534
+72	Epilepsy (355 genes)	genetic	LPE535
+73	Alzheimer's disease (60 genes)	genetic	LPE536
+74	Dementia (1097 genes)	genetic	LPE537
+75	Retinopathy (121 genes)	genetic	LPE539
+76	Parkinson's disease (68 genes)	genetic	LPE538
+77	MODY Neonata Diabetes (383 genes)	genetic	LPE540
+78	Lysosomal storage disorders (169 genes)	genetic	LPE541
+79	Retinitis Pigmentosa (439 genes)	genetic	LPE543
+80	Inborn error of metabolism (371 genes)	genetic	LPE542
+81	Leukodystrophy (181 genes)	genetic	LPE635
+82	Eye disease (1421 genes)	genetic	LPE636
+83	Gastrointestinal disease (243 genes)	genetic	LPE637
+84	Inborn Errors of Immunity (583 genes)	genetic	LPE638
+85	Malformations (953 genes)	genetic	LPE639

@@ -1,0 +1,284 @@
+﻿id,type,seq,site,result
+769,LPE294,1,Q-fragments,Normal/Normal
+770,LPE294,2,X-fragments,Normal/Normal
+771,LPE294,3,Y-fragments,Normal/Normal
+772,LPE294,4,TUBGCP5,Normal/Normal
+773,LPE294,6,CDKN1C Exon1_01,Normal/Normal
+774,LPE294,7,MAGEL2 15q11.2a,Normal/Maternal UPD
+775,LPE294,10,NDN Exon 1 (B),Normal/Normal
+776,LPE294,8,MAGEL2 15q11.2b,Normal/Normal
+777,LPE294,9,NDN Exon 1 (A),Normal/Normal
+778,LPE294,12,SNRPN Exon u1B(B,Normal/Normal
+779,LPE294,13,SNRPN Intron u2 (A),Normal/Normal
+780,LPE294,11,SNRPN Exon u1B(A),Normal/Normal
+781,LPE294,14,SNRPN Intron u2 (B),Normal/Normal
+782,LPE294,15,SNRPN Exon u5 (A),Normal/Normal
+783,LPE294,16,SNRPN Exon u5 (B),Normal/Normal
+784,LPE294,18,SNRPN CpG island (B),Normal/Maternal UPD
+785,LPE294,17,SNRPN CpG island (A),Normal/Maternal UPD
+786,LPE294,20,SNRPN CpG island (D),Normal/Maternal UPD
+787,LPE294,19,SNRPN CpG island (C),Normal/Maternal UPD
+788,LPE294,22,SNRPN Exon 7,Normal/Normal
+789,LPE294,21,SNRPN Exon 3,Normal/Normal
+790,LPE294,23,SNORD116 (A),Normal/Normal
+791,LPE294,24,SNORD116 (B),Normal/Normal
+792,LPE294,25,SNORD116 (C),Normal/Normal
+793,LPE294,26,UBE3A Exon 9,Normal/Normal
+794,LPE294,27,UBE3A Exon 4,Normal/Normal
+795,LPE294,28,UBE3A Exon 3,Normal/Normal
+796,LPE294,29,UBE3A Exon 2,Normal/Normal
+797,LPE294,30,UBE3A Exon 1 (A),Normal/Normal
+798,LPE294,31,UBE3A Exon 1 (B),Normal/Normal
+799,LPE294,33,ATP10A Exon 1,Normal/Normal
+800,LPE294,32,ATP10A Exon 5,Normal/Normal
+801,LPE294,34,GABRB3 Exon 12,Normal/Normal
+802,LPE294,35,GABRB3 Exon 10,Normal/Normal
+803,LPE377,1,COX10_a,Normal
+804,LPE294,36,APBA2 Exon 14,Normal/Normal
+805,LPE377,2,COX10_b,Normal
+806,LPE377,3,ELAC2,Normal
+807,LPE377,4,KIF1B_a,Normal
+808,LPE377,5,KIF1B_b,Normal
+809,LPE377,6,LRRC48,Normal
+810,LPE377,7,PMP22,Normal
+811,LPE377,9,PMP22 Exon1a,Normal
+812,LPE377,8,PMP22,Normal
+813,LPE377,10,PMP22 Exon1b,Normal
+814,LPE377,11,PMP22 Exon2,Normal
+815,LPE377,13,PMP22 Exon3b,Normal
+816,LPE377,12,PMP22 Exon3a,Normal
+817,LPE377,14,PMP22 Exon4a,Normal
+818,LPE377,15,PMP22 Exon4b,Normal
+819,LPE377,16,PMP22 Exon5a,Normal
+820,LPE377,17,PMP22 Exon5b,Normal
+821,LPE377,18,TEKT3_a,Normal
+822,LPE377,19,TEKT3_b,Normal
+823,LPE351,1,Q-fragments,Normal
+824,LPE377,20,Upstream PMP22,Normal
+825,LPE351,2,X-fragments,Normal
+826,LPE351,4,AXIN1,Normal
+827,LPE351,3,Y-fragments,Normal
+828,LPE351,5,DECR2,Normal
+829,LPE351,6,HBA1 intron 2A,Normal
+830,LPE351,8,HBA1+HBA2 exon 1A,25% Decrease
+831,LPE351,7,HBA1 intron 2B,Normal
+832,LPE351,9,HBA1+HBA2 exon 1B,25% Decrease
+833,LPE351,10,HBA1+HBA2 exon 3,25% Decrease
+834,LPE351,11,0.2 kb downstream HBA1,Normal
+835,LPE351,12,0.5 kb downstream HBA1,Normal
+836,LPE351,13,2.3 kb downstream HBA1,Normal
+837,LPE351,14,HBA2 intron 2A,50% Decrease
+838,LPE351,15,HBA2 intron 2B,50% Decrease
+839,LPE351,16,Between HBA2 and HBA1(A),50% Decrease
+840,LPE351,18,Between HBA2 and HBA1(C),50% Decrease
+841,LPE351,17,Between HBA2 and HBA1(B),50% Decrease
+842,LPE351,19,Between HBA2 and HBA1(D),50% Decrease
+843,LPE351,20,Between HBA2 and HBA1(E),50% Decrease
+844,LPE351,21,Between  HBA2P and HBA1P,Normal
+845,LPE351,22,2.5 kb before HBA2,Normal
+846,LPE351,23,3.0 kb before HBA2,Normal
+847,LPE351,24,0.6 kb before HBA2 exon 1,Normal
+848,LPE351,25,0.9 kb upstream HBA2,Normal
+849,LPE351,26,HBQ1 exon 3,Normal
+850,LPE351,27,Between HBZ and HBZP,Normal
+851,LPE351,29,3.5 kb upstream HBZ,Normal
+852,LPE351,28,0.2 kb upstream HBZ,Normal
+853,LPE351,30,9.3 kb upstream HBZ,Normal
+854,LPE351,31,HS-40 (A),Normal
+855,LPE351,32,HS-40 (B),Normal
+856,LPE351,34,LUC7L,Normal
+857,LPE351,33,ITFG3,Normal
+858,LPE351,35,POLR3K,Normal
+859,LPE351,36,RGS11,Normal
+860,LPE351,37,Constant Spring mutation,Normal
+861,LPE322,1,NAIP exon5,Normal
+862,LPE322,2,SMN1/2 exon1,Normal
+863,LPE322,3,SMN1/2 exon2a,Normal
+864,LPE322,4,SMN1/2 exon2b,Normal
+865,LPE322,5,SMN1/2 exon3,Normal
+866,LPE322,6,SMN1/2 exon4,Normal
+867,LPE322,7,SMN1/2 exon5,Normal
+868,LPE322,8,SMN1/2 exon6,Normal
+869,LPE322,9,SMN1/2 intron6,Normal
+870,LPE322,10,SMN1/2 intron7,Normal
+871,LPE322,11,SMN1/2 exon8,Normal
+872,LPE322,12,SMN1 exon7,Normal
+873,LPE322,13,SMN2 exon7,Normal
+874,LPE322,14,SMN1 exon8,Normal
+875,LPE322,15,SMN2 exon8,Normal
+876,LPE232,1,Q-fragments,Normal
+877,LPE232,2,X-fragments,Normal
+878,LPE232,3,Y-fragments,Normal
+879,LPE232,5,exon2,Normal
+880,LPE232,4,exon1,Normal
+881,LPE232,6,exon3,Normal
+882,LPE232,7,exon4,Normal
+883,LPE232,10,exon7,Normal
+884,LPE232,9,exon6,Normal
+885,LPE232,8,exon5,Normal
+886,LPE232,13,exon10,Normal
+887,LPE232,11,exon8,Normal
+888,LPE232,12,exon9,Normal
+889,LPE232,14,exon11,Normal
+890,LPE232,15,exon12,Normal
+891,LPE232,16,exon13,Normal
+892,LPE232,18,exon15,Normal
+893,LPE232,17,exon14,Normal
+894,LPE232,19,exon16,Normal
+895,LPE232,20,exon17,Normal
+896,LPE232,21,exon18,Normal
+897,LPE232,22,exon19,Normal
+898,LPE232,23,exon20,Normal
+899,LPE232,24,exon21,Normal
+900,LPE232,25,exon22,Normal
+901,LPE232,26,exon23,Normal
+902,LPE232,27,exon24,Normal
+903,LPE232,28,exon25,Normal
+904,LPE232,29,exon26,Normal
+905,LPE232,30,exon27,Normal
+906,LPE232,31,exon28,Normal
+907,LPE232,33,exon30,Normal
+908,LPE232,32,exon29,Normal
+909,LPE232,34,exon31,Normal
+910,LPE232,35,exon32,Normal
+911,LPE232,37,exon34,Normal
+912,LPE232,36,exon33,Normal
+913,LPE232,38,exon35,Normal
+914,LPE232,39,exon36,Normal
+915,LPE232,40,exon37,Normal
+916,LPE232,41,exon38,Normal
+917,LPE232,42,exon39,Normal
+918,LPE232,43,exon40,Normal
+919,LPE232,44,exon41,Normal
+920,LPE232,46,exon43,Normal
+921,LPE232,45,exon42,Normal
+922,LPE232,47,exon44,Normal
+923,LPE232,48,exon45,Normal
+924,LPE232,49,exon46,Normal
+925,LPE232,50,exon47,Normal
+926,LPE232,51,exon48,Normal
+927,LPE232,53,exon50,Normal
+928,LPE232,52,exon49,Normal
+929,LPE232,54,exon51,Normal
+930,LPE232,55,exon52,Normal
+931,LPE232,56,exon53,Normal
+932,LPE232,58,exon55,Normal
+933,LPE232,57,exon54,Normal
+934,LPE232,59,exon56,Normal
+935,LPE232,62,exon59,Normal
+936,LPE232,61,exon58,Normal
+937,LPE232,60,exon57,Normal
+938,LPE232,63,exon60,Normal
+939,LPE232,65,exon62,Normal
+940,LPE232,64,exon61,Normal
+941,LPE232,66,exon63,Normal
+942,LPE232,67,exon64,Normal
+943,LPE232,68,exon65,Normal
+944,LPE232,70,exon67,Normal
+945,LPE232,69,exon66,Normal
+946,LPE232,73,exon70,Normal
+947,LPE232,71,exon68,Normal
+948,LPE232,74,exon71,Normal
+949,LPE232,72,exon69,Normal
+950,LPE232,77,exon74,Normal
+951,LPE232,76,exon73,Normal
+952,LPE232,75,exon72,Normal
+953,LPE232,78,exon75,Normal
+954,LPE232,81,exon78,Normal
+955,LPE232,79,exon76,Normal
+956,LPE232,80,exon77,Normal
+957,LPE232,82,exon DP427C,Normal
+958,LPE332,1,ATF6B,Normal
+959,LPE332,3,CYP21A1P_ex03,Normal
+960,LPE332,2,CYP21A1P_ex01,Normal
+961,LPE332,4,CYP21A1P_ex04,Normal
+962,LPE332,5,CYP21A1P_ex07,Normal
+963,LPE332,7,CYP21A2_ex03 del8bp location,Normal
+964,LPE332,8,"CYP21A2_ex03 I2G location, A-allele",Normal
+965,LPE332,6,CYP21A2_ex01,Normal
+966,LPE332,9,"CYP21A2_ex03 I2G location, C-allele",Normal
+967,LPE332,11,CYP21A2_ex06 M239K location,Normal
+968,LPE332,10,CYP21A2_ex04,Normal
+969,LPE332,12,CYP21A2_ex06 V237E location,Normal
+970,LPE332,13,CYP21A2_ex07,Normal
+971,LPE332,15,Ref.18q21,Normal
+972,LPE332,14,Ref.13q14,Normal
+973,LPE332,16,Ref.1q43,Normal
+974,LPE332,18,Ref.4q12,Normal
+975,LPE332,17,Ref.3q.21,Normal
+976,LPE332,19,Ref.5q31,Normal
+977,LPE332,20,Ref.6p12,Normal
+978,LPE332,21,Ref.8q13,Normal
+979,LPE332,22,TNXB_ex19,Normal
+980,LPE332,24,TNXB_ex26,Normal
+981,LPE332,23,TNXB_ex23,Normal
+982,LPE332,25,TNXB_ex31,Normal
+983,LPE332,26,TNXB_ex35a,Normal
+984,LPE332,27,TNXB_ex35b,Normal
+985,LPE332,28,X-100,Normal
+986,LPE332,30,Y-118,Normal
+987,LPE332,29,Y-105,Normal
+992,LPE294_2,5,CDKN1C Exon1,Normall/Normal
+993,LPE294_2,1,Q-fragments,Normall/Normal
+994,LPE294,5,"NIPA1 ",Normal/Normal
+995,LPE294_2,3,X-fragments,Normall/Normal
+996,LPE294_2,2,D-fragments,Normal/Normal
+997,LPE294_2,4,Y-fragments,Normall/Normal
+998,LPE294_2,6,CDKN1C Exon1_01,Normall/Normal
+999,LPE294_2,7,CDKN1C Exon3,Normall/Normal
+1000,LPE294_2,8,H19_H19DMR_01,Normall/GOM
+1001,LPE294_2,9,H19_H19DMR_02,Normall/GOM
+1002,LPE294_2,11,H19_H19DMR_04,Normall/GOM
+1003,LPE294_2,10,H19_H19DMR_03,Normall/GOM
+1004,LPE294_2,13,H19_Upstream_02,Normall/Normal
+1005,LPE294_2,12,H19_Upstream_01,Normall/Normal
+1006,LPE294_2,14,H19_Upstream_03,Normall/Normal
+1007,LPE294_2,17,IGF2 Exon4,Normall/Normal
+1008,LPE294_2,16,H1H19_Exon5,Normall/Normal
+1009,LPE294_2,15,H19_Upstream_04,Normall/Normal
+1010,LPE294_2,19,KCNQ1OT1_01,Normall/LOM
+1011,LPE294_2,18,IGF2 Exon7,Normall/Normal
+1012,LPE294_2,21,KCNQ1OT1_03,Normall/LOM
+1013,LPE294_2,22,KCNQ1OT1_04,Normall/LOM
+1014,LPE294_2,20,KCNQ1OT1_02,Normall/LOM
+1015,LPE294_2,23,KCNQ1 Exon2,Normall/Normal
+1016,LPE294_2,26,KCNQ1 Exon8,Normall/Normal
+1017,LPE294_2,24,KCNQ1 Exon3,Normall/Normal
+1018,LPE294_2,25,KCNQ1 Exon7,Normall/Normal
+1019,LPE294_2,29,KCNQ1 Exon15,Normall/Normal
+1020,LPE294_2,27,KCNQ1 Exon9,Normall/Normal
+1021,LPE294_2,28,KCNQ1 Exon13,Normall/Normal
+1022,LPE294_2,31,NSD1 Exon21,Normall/Normal
+1023,LPE294_2,30,KCNQ1 Exon17,Normall/Normal
+1024,LPE294_2,32,NSD1 Exon23,Normall/Normal
+1025,LPE369,2,BRK1_3p25.3b,Normal
+1026,LPE369,1,BRK1_3p25.3a,Normal
+1027,LPE369,3,CNTN6_3p26.3,Normal
+1028,LPE369,5,FANCD2_3p25.3b,Normal
+1029,LPE369,4,FANCD2_3p25.3a,Normal
+1030,LPE369,6,GHRL_3p25.3,Normal
+1031,LPE369,8,MLH1_3p22.1,Normal
+1032,LPE369,7,IRAK2_3p25.3,Normal
+1033,LPE369,9,Ref.10q21,Normal
+1034,LPE369,11,Ref.11q22,Normal
+1035,LPE369,10,Ref.11p13,Normal
+1036,LPE369,12,Ref.13q14,Normal
+1037,LPE369,13,Ref.15q21,Normal
+1038,LPE369,14,Ref.16p13,Normal
+1039,LPE369,16,Ref.20p12,Normal
+1040,LPE369,15,Ref.17q21,Normal
+1041,LPE369,17,Ref.22q11,Normal
+1042,LPE369,18,Ref.5q31,Normal
+1043,LPE369,20,Ref.7q34,Normal
+1044,LPE369,21,VHL_ex01a,Normal
+1045,LPE369,19,Ref.7q11,Normal
+1046,LPE369,22,VHL_ex01b,Normal
+1047,LPE369,24,VHL_ex01d,Normal
+1048,LPE369,25,VHL_ex02a,Normal
+1049,LPE369,23,VHL_ex01c,Normal
+1050,LPE369,27,VHL_ex02c,Normal
+1051,LPE369,26,VHL_ex02b,Normal
+1052,LPE369,30,X-fragments,Normal
+1053,LPE369,28,VHL_ex03a,Normal
+1054,LPE369,29,VHL_ex03b,Normal
+1055,LPE369,31,Y-fragments,Normal

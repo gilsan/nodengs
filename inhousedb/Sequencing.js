@@ -29,7 +29,12 @@ function findChar(findChar) {
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
       st = defaultStr ;
   }
       
@@ -92,54 +97,58 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/sequencing.txt';
-var rowCount = 0;
+async function processData() {
+  var tsvData = '../inhouseupload/sequencing.txt';
+  var rowCount = 0;
 
-delData();
+  delData();
 
-var rowData = loadData(tsvData);
+  var rowData = loadData(tsvData);
 
-rowData.forEach ( async (row, index) =>  {
+  rowData.forEach ( async (row, index) =>  {
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-      var report_type = nvl(row[0].replace( /"/gi, ''), "");
-      logger.info('[84][sequncing]report_type=' + report_type);
+        var report_type = nvl(row[0].replace( /"/gi, ''), "");
+        logger.info('[84][sequncing]report_type=' + report_type);
 
-      var temp_data = nvl(row[1].replace( /"/gi, ''), "");
-      var method = findChar(temp_data);   
-      logger.info('[87][sequncing][method]=' + method);
+        var temp_data = nvl(row[1].replace( /"/gi, ''), "");
+        var method = findChar(temp_data);   
+        logger.info('[87][sequncing][method]=' + method);
+              
+        const sql =`insert_Sequncings` ;
+
+        try {
             
-      const sql =`insert_Sequncings` ;
+            const request = pool.request()
+              .input('report_type', mssql.VarChar, report_type)
+              .input('method', mssql.NVarChar, method)  
+              .output('TOTALCNT', mssql.int, 0);
+            
+          let result =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[sequncing]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('report_type', mssql.VarChar, report_type)
-            .input('method', mssql.NVarChar, method)  
-            .output('TOTALCNT', mssql.int, 0);
-          
-        let result =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[sequncing]err message=" + err.message);
-            }
+              console.log("[175][sequncing]recordset="+ recordset);
+              console.log("[176][sequncing]returnValue="+ returnValue);
 
-            console.log("[175][sequncing]recordset="+ recordset);
-            console.log("[176][sequncing]returnValue="+ returnValue);
+              result = returnValue;
+              console.log("[179]result=" + JSON.stringify(result));
+            }); 
 
-            result = returnValue;
-            console.log("[179]result=" + JSON.stringify(result));
-          }); 
+            console.log("result=", result);
 
-          console.log("result=", result);
+      } catch(err) {
+          logger.error('[185][sequncing]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][sequncing]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

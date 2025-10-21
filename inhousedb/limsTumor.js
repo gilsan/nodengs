@@ -29,7 +29,12 @@ function findChar(findChar) {
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
       st = defaultStr ;
   }
       
@@ -92,59 +97,63 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/limstumor.txt';
-var rowCount = 0;
+async function processData() {
+  var tsvData = '../inhouseupload/limstumor.txt';
+  var rowCount = 0;
 
-delData();
+  delData();
 
-var rowData = loadData(tsvData);
+  var rowData = loadData(tsvData);
 
-rowData.forEach ( async (row, index) =>  {
+  rowData.forEach ( async (row, index) =>  {
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-    // 	code	report	type
-      var gene = nvl(row[1].replace( /"/gi, ''), "");
-      logger.info('[87][limstumor][gene]=' + gene);
+      // 	code	report	type
+        var gene = nvl(row[1].replace( /"/gi, ''), "");
+        logger.info('[87][limstumor][gene]=' + gene);
 
-      var orderby =nvl(row[0].replace( /"/gi, ''), "");
-      logger.info('[87][limstumor][orderby]=' + orderby);
+        var orderby =nvl(row[0].replace( /"/gi, ''), "");
+        logger.info('[87][limstumor][orderby]=' + orderby);
 
-      var seq =nvl(row[2].replace( /"/gi, ''), "");
-      logger.info('[87][limstumor][seq]=' + seq);
+        var seq =nvl(row[2].replace( /"/gi, ''), "");
+        logger.info('[87][limstumor][seq]=' + seq);
 
+              
+        const sql =`insert_limstumor` ;
+
+        try {
             
-      const sql =`insert_limstumor` ;
+            const request = pool.request()
+              .input('gene', mssql.VarChar, gene)  
+              .input('orderby', mssql.VarChar, orderby) 
+              .input('seq', mssql.Int, seq) 
+              .output('TOTALCNT', mssql.Int, 0);
+            
+          let result2 =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[limstumor]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('gene', mssql.VarChar, gene)  
-            .input('orderby', mssql.VarChar, orderby) 
-            .input('seq', mssql.Int, seq) 
-            .output('TOTALCNT', mssql.Int, 0);
-          
-        let result2 =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[limstumor]err message=" + err.message);
-            }
+              console.log("[175][limstumor]recordset="+ recordset);
+              console.log("[176][limstumor]returnValue="+ returnValue);
 
-            console.log("[175][limstumor]recordset="+ recordset);
-            console.log("[176][limstumor]returnValue="+ returnValue);
+              result3 = returnValue;
+              console.log("[179]result=" + JSON.stringify(result3));
+            }); 
 
-            result3 = returnValue;
-            console.log("[179]result=" + JSON.stringify(result3));
-          }); 
+            console.log("result=", result2);
 
-          console.log("result=", result2);
+      } catch(err) {
+          logger.error('[185][limstumor]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][limstumor]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

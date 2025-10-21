@@ -213,18 +213,23 @@ router.post('/upload', function (req, res) {
           const filename     = item.originalname;     // 화일명
 
           logger.info("pathologyNum=" + pathologyNum ); 
-          logger.info("exceluploadedFiles=" + filename ); 
+          logger.info("[216 ]uploadedFiles=" + filename ); 
 
           // file name compare
           let s_All = filename.search("All");
-        //  let s_Rna = filename.search("RNA");
-          let s_Rna = filename.search("Non-Filtered"); // 2022.04.20 수정
+          
+          //25.08.05 파일유형추가
+          let s_Rna = filename.search("RNA");
+          let s_Filtered = filename.search("Non-Filtered"); // 2022.04.20 수정
 
           logger.info("s_all=" + s_All ); 
           logger.info("s_Rna=" + s_Rna ); 
 
               
-          if ( s_Rna > 0) {
+          //25.08.05 파일유형추가
+          if ( s_Filtered > 0) {
+            fileType = 'Filtered';
+          } else if ( s_Rna > 0) {
             fileType = 'RNA';
           } else if ( s_All > 0) { 
             fileType = 'OR';
@@ -328,7 +333,12 @@ router.post('/upload', function (req, res) {
           }
     
         } else if (type === 'R') {  // 재입력
-          if (fileType === 'RNA') {
+          //25.08.05 파일유형추가
+          if (fileType === 'Filtered') {
+      
+            logger.info("Filtered 추가"); 
+
+          } else if (fileType === 'RNA') {
       
             logger.info("rna 추가"); 
 
@@ -379,7 +389,7 @@ router.post('/upload', function (req, res) {
     logger.info("exceluploadedFiles" + exceluploadedFiles ); 
     logger.info("returnValue" + returnValue ); 
 
-    main_nu.path_patient_nu(pathologyNum);
+    //main_nu.path_patient_nu(pathologyNum);
   
     // patientInof_path 사용자 초기화
     const PatientUpdate = updatePatient(pathologyNum);

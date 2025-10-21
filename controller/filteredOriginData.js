@@ -20,8 +20,7 @@ const  filteredOrigindataSaveHandler = async (body_data) => {
   //insert Query 생성;
   //for 루프를 돌면서 filteredOriginData 카운트 만큼 
   const len = body_data.length;
-  let result;
-  if (len > 0 ) {
+  
     for (let i = 0; i < len; i++) {
 
       const aminoAcidChange = body_data[i].aminoAcidChange;
@@ -54,48 +53,79 @@ const  filteredOrigindataSaveHandler = async (body_data) => {
       logger.info("[51][filteredOriginData]variantID=" + variantID);
       logger.info("[51][filteredOriginData]variantName=" + variantName);
       logger.info("[51][filteredOriginData]transcript=" + transcript);
+      
+      try 
+      {
+        const request = pool.request()
+            .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
+            .input('coding', mssql.VarChar, coding)
+            .input('comsmicID', mssql.VarChar, comsmicID)
+            .input('cytoband', mssql.VarChar, cytoband)
+            .input('frequency', mssql.VarChar, frequency)
+            .input('gene', mssql.VarChar, gene)
+            .input('locus', mssql.VarChar, locus)
+            .input('oncomine', mssql.VarChar, oncomine)
+            .input('pathologyNum', mssql.VarChar, pathologyNum)
+            .input('readcount', mssql.VarChar, readcount)
+            .input('type', mssql.VarChar, type)
+            .input('variantID', mssql.VarChar, variantID)
+            .input('variantName', mssql.VarChar, variantName)
+            .input('OncomineVariant', mssql.VarChar, OncomineVariant)
+            .input('transcript', mssql.VarChar, transcript);
 
-      const qry = "insert into filteredOriginData (aminoAcidChange, coding, comsmicID, cytoband, \
-          frequency, gene, locus, oncomine, pathologyNum, readcount, type, \
-          variantID, variantName, OncomineVariant, transcript) \
-          values(@aminoAcidChange, @coding, @comsmicID, @cytoband, \
-            @frequency, @gene, @locus, @oncomine, @pathologyNum, @readcount, @type, \
-          @variantID, @variantName, @OncomineVariant, @transcript)";
-        
-      logger.info("[109][filteredOriginData] sql=" + qry);
+        const sql = `
+          MERGE INTO filteredOriginData AS target
+          USING (
+            SELECT 
+                @pathologyNum as pathologyNum, @gene AS gene, @coding AS coding, @type AS type
+          ) AS source
+          ON target.pathologyNum = source.pathologyNum 
+          AND target.gene = source.gene
+          AND target.coding = source.coding 
+          AND target.type = source.type
+          
+          WHEN MATCHED THEN
+            UPDATE SET
+              aminoAcidChange = @aminoAcidChange,
+              comsmicID = @comsmicID,
+              cytoband = @cytoband,
+              frequency = @frequency,
+              locus = @locus,
+              oncomine = @oncomine,
+              readcount = @readcount,
+              variantID = @variantID,
+              variantName = @variantName,
+              OncomineVariant = @OncomineVariant,
+              transcript = @transcript,
+              DEL_YN = ''
 
-      try {
-          const request = pool.request()
-          .input('aminoAcidChange', mssql.VarChar, aminoAcidChange)
-          .input('coding', mssql.VarChar, coding)
-          .input('comsmicID', mssql.VarChar, comsmicID)
-          .input('cytoband', mssql.VarChar, cytoband)
-          .input('frequency', mssql.VarChar, frequency)
-          .input('gene', mssql.VarChar, gene)
-          .input('locus', mssql.VarChar, locus)
-          .input('oncomine', mssql.VarChar, oncomine)
-          .input('pathologyNum', mssql.VarChar, pathologyNum)
-          .input('readcount', mssql.VarChar, readcount)
-          .input('type', mssql.VarChar, type)
-          .input('variantID', mssql.VarChar, variantID)
-          .input('variantName', mssql.VarChar, variantName)
-          .input('OncomineVariant', mssql.VarChar, OncomineVariant)
-          .input('transcript', mssql.VarChar, transcript);
-          
-          result = await request.query(qry);
-          
-          //return result;
+          WHEN NOT MATCHED THEN
+            INSERT (
+              aminoAcidChange, coding, comsmicID, cytoband,
+              frequency, gene, locus, oncomine, pathologyNum, readcount, type,
+              variantID, variantName, OncomineVariant, transcript, DEL_YN
+            )
+            VALUES (
+              @aminoAcidChange, @coding, @comsmicID, @cytoband,
+              @frequency, @gene, @locus, @oncomine, @pathologyNum, @readcount, @type,
+              @variantID, @variantName, @OncomineVariant, @transcript, ''
+            );
+          `;
+
+        await request.query(sql);      
   
       } catch (error) {
         logger.error('[115]filteredOrigindata err=' + error.message);
       }
-    }
-  } // End of If
+    
+  } // End of for
+  
 }
 
 const  filteredOrigindataMessageHandler = async (req) => {
   await poolConnect; // ensures that the pool has been created
   
+  let result2;
   logger.info('[19][save][messageHandler][filteredOriginData]req=' + JSON.stringify( req.body));
     
   //입력 파라미터를 수신한다
@@ -103,37 +133,31 @@ const  filteredOrigindataMessageHandler = async (req) => {
   const data_body  =  req.body.data;
 
   logger.info("[25][filteredOriginData]pathologyNum="+ pathologyNum);
- 
-  //insert Query 생성
-  let sql2 = "delete from filteredOriginData where  pathologyNum = @pathologyNum ";
 
-  logger.info('[30]filteredOrigindata sql=' + sql2);
+  const query = "update filteredOriginData set DEL_YN = 'D' where  pathologyNum = @pathologyNum ";
+  logger.info('[27][filteredOriginData]query=' + query);
   
-  
-  let result;
+  try {
+      const request = pool.request()
+          .input('pathologyNum', mssql.VarChar, pathologyNum);            
+      const result = await request.query(query);
+      
+      //return result;
+    } catch (error) {
+      logger.info('[27][filteredOriginData ins]err='+ error.message);
+    }
 
   try {
-    const request = pool.request()
-      .input('pathologyNum', mssql.VarChar, pathologyNum); 
-      
-      result = request.query(sql2);
-    
-    result.then( data => {
-      console.log (data);
 
-      result = filteredOrigindataSaveHandler(data_body);
+    result = filteredOrigindataSaveHandler(data_body);
 
-      result.then (data_ins => {
-        console.log (data_ins);
-      })
-      .catch(error => {
-        logger.error('[40][filteredOrigindata ins err]err=' + error.message);
-      })
-    });
+    result.then (data_ins => {
+      console.log (data_ins);
+    })
 	
 	//return result;
   } catch (error) {
-	  logger.error('[40][filteredOrigindata del err]err=' + error.message);
+	  logger.error('[40][filteredOrigindata save err]err=' + error.message);
   }
   
   return result;
@@ -179,7 +203,8 @@ const  filteredOrigindataMessageHandler2 = async (req) => {
                 ,OncomineVariant \
                 , transcript \
 				from filteredOriginData  \
-				where pathologyNum = @pathologyNum ";
+				where pathologyNum = @pathologyNum \
+        and ISNULL(DEL_YN, '') = '' ";
 
 	logger.info("[163][filteredOrigindata]select sql=" + qry);
 		   

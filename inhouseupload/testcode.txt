@@ -1,138 +1,146 @@
-id	code	report	type
-135	LPC117	MLH1 Gene Sequencing Analysis Report	SEQ
-136	LPC100	BRCA1 Gene Analysis Report	SEQ
-139	LPC118	MSH2 Gene Sequencing Analysis Report	SEQ
-140	LPE115	LDLR Gene Sequencing Analysis Report	SEQ
-141	LPE156	MYD88 Gene Sequencing Analysis Report	SEQ
-142	LPE141	FBN1 Gene Sequencing Analysis Report	SEQ
-143	LPE194	VHL Gene Sequencing Analysis Report	SEQ
-144	LPE221	PARK2 Gene Sequencing Analysis Report	SEQ
-145	LPE227	CYP21A2 Gene Sequencing Analysis Report	SEQ
-148	LPE231	FGFR3 Gene Sequencing Analysis Report	SEQ
-150	LPE237	KCNH2 Gene Sequencing Analysis Report	SEQ
-152	LPE238	KCNQ1 Gene Sequencing Analysis Report	SEQ
-153	LPE243	NOTCH3 Gene Sequencing Analysis Report	SEQ
-155	LPE247	BTK Gene Sequencing Analysis Report	SEQ
-156	LPE251	STK11 Gene Sequencing Analysis Report	SEQ
-160	LPE267	PTPN11 Gene Sequencing Analysis Report	SEQ
-162	LPE275	PKD 1 Gene Sequencing Analysis Report	SEQ
-165	LPE282	TSC1 Gene Sequencing Analysis Report	SEQ
-166	LPE285	PAX6 Gene Sequencing Analysis Report	SEQ
-169	LPE290	KRAS Gene Sequencing Analysis Report	SEQ
-172	LPE310	MEN1 Gene Sequencing Analysis Report	SEQ
-175	LPE314	UNC13D Gene Sequencing Analysis Report	SEQ
-176	LPE313	PRF1 Gene Sequencing Analysis Report	SEQ
-179	LPE320	ATP7B Gene Sequencing Analysis Report	SEQ
-181	LPE341	DHCR7 Gene Sequencing Analysis Report	SEQ
-183	LPE337	RPS19 Gene Sequencing Analysis Report	SEQ
-184	LPE343	MUTYH Gene Sequencing Analysis Report	SEQ
-187	LPE352	SPTB Gene Sequencing Analysis Report	SEQ
-188	LPE362	SF3B1 Gene Sequencing Analysis Report	SEQ
-191	LPE360	DNMT3A Gene Sequencing Analysis Report	SEQ
-192	LPE364	TET2 Gene Sequencing Analysis Report	SEQ
-193	LPE366	"DNAH5, DNAI1 Gene Sequencing Analysis Report"	SEQ
-194	LPE368	THRB Gene Sequencing Analysis Report	SEQ
-197	LPE375	TGFBR2 Gene Sequencing Analysis Report	SEQ
-200	LPE391	HBA1 Gene Sequencing Analysis Report	SEQ
-202	LPE384	G6PD Gene Sequencing Analysis Report	SEQ
-204	LPE412	FLCN Gene Sequencing Analysis Report	SEQ
-206	LPE414	PKHD1 Gene Sequencing Analysis Report	SEQ
-207	LPE418	HAX1 Gene Sequencing Analysis Report	SEQ
-209	LPE431	IKBKG Gene Sequencing Analysis Report	SEQ
-211	LPE457	FANCG Gene Sequencing Analysis Report	SEQ
-214	LPE460	NSD1 Gene Sequencing Analysis Report	SEQ
-216	LPE462	CHD7 Gene Sequencing Analysis Report	SEQ
-218	LPE482	AVP Gene Sequencing Analysis Report	SEQ
-219	LPE495	SLC12A3 Gene Sequencing Analysis Report	SEQ
-277	LPE3200	LPE3200 REPORT	MLPA
-278	LPE3330	LPE3330 REPORT	MLPA
-226	LPE369	VHL Gene MLPA Analysis Report	MLPA
-228	LPE464	PARK2 Gene MLPA Analysis Report	MLPA
-230	LPE452	유전성 용혈성 빈혈 [NGS]	Genetic
-231	LPE377	PMP22 Gene MLPA Analysis Report	MLPA
-233	LPE454	골수부전증후군 [NGS]	Genetic
-236	LPE456	선천성 백혈구 감소증 [NGS]	Genetic
-237	LPE489	선천성 면역결핍증 [NGS]	Genetic
-238	LPE498	혈전성 미세혈관병증 [NGS]	Genetic
-242	LPE517	유전성 신장질환 [NGS]	Genetic
-243	LPE518	유전성 심근병증 [NGS]	Genetic
-247	LPE523	유전성 발달지연(DD/ASD) [NGS]	Genetic
-248	LPE522	유전성 골형성이상 질환 [NGS]	Genetic
-249	LPE524	유전성 저신장증 [NGS]	Genetic
-250	LPE525	유전성 결합조직 질환 [NGS]	Genetic
-254	LPE529	유전성 운동실조증 [NGS]	Genetic
-255	LPE530	유전성 강직하반신마비 [NGS]	Genetic
-258	LPE535	유전성 뇌전증 [NGS]	Genetic
-259	LPE534	유전성 응고병증 [NGS]	Genetic
-263	LPE538	파킨슨병 [NGS]	Genetic
-264	LPE541	라이소좀 축적 질환 [NGS]	Genetic
-265	LPE540	유전성 당뇨 [NGS]	Genetic
-267	LPE543	유전성 망막색소병증 [NGS]	Genetic
-268	LPE542	선천성 대사이상 [NGS]	Genetic
-279	LPE3333	LPE3333 TEST	MLPA
-281	LPE5500	LPE5500	MLPA
-138	LPC194	RUNX1 Gene Sequencing Analysis Report	SEQ
-146	LPE229	TGFBI Gene Sequencing Analysis Report	SEQ
-149	LPE233	ELA2 Gene Sequencing Analysis Report	SEQ
-154	LPE245	NF1 Gene Sequencing Analysis Report	SEQ
-163	LPE276	PKD 2 Gene Sequencing Analysis Report	SEQ
-168	LPE287	RET Gene Sequencing Analysis Report	SEQ
-173	LPE306	HNF1A Gene Sequencing Analysis Report	SEQ
-178	LPE334	MAPT Gene Sequencing Analysis Report	SEQ
-185	LPE349	HBB Gene Sequencing Analysis Report	SEQ
-190	LPE358	ASXL1 Gene Sequencing Analysis Report	SEQ
-195	LPE371	JAK3 Gene Sequencing Analysis Report	SEQ
-205	LPE420	DMD Gene Sequencing Analysis Report	SEQ
-208	LPE428	MLL2 Gene Sequencing Analysis Report	SEQ
-217	LPE481	"TGFBI Exon4,11,12,14 Sequencing Analysis Report"	SEQ
-221	LPE494	CFH Gene Sequencing Analysis Report	SEQ
-229	LPE548	근긴장이상 질환 [NGS]	Genetic
-232	LPE453	판코니빈혈 [NGS]	Genetic
-241	LPE497	유전성 암 [NGS]	Genetic
-244	LPE519	유전성 피부질환 [NGS]	Genetic
-253	LPE527	유전성 근육병증 [NGS]	Genetic
-256	LPE531	유전성 강직하반신마비 [NGS]	Genetic
-262	LPE537	치매 [NGS]	Genetic
-137	LPC101	BRCA2 Gene Analysis Report	SEQ
-147	LPE236	SCN5A Gene Sequencing Analysis Report	SEQ
-151	LPE241	NF2 Gene Sequencing Analysis Report	SEQ
-157	LPE249	CDH1 Gene Sequencing Analysis Report	SEQ
-164	LPE280	FGFR2 Gene Sequencing Analysis Report	SEQ
-167	LPE289	NRAS Gene Sequencing Analysis Report	SEQ
-174	LPE308	PTEN Gene Sequencing Analysis Report	SEQ
-177	LPE316	FANCA Gene Sequencing Analysis Report	SEQ
-186	LPE356	COL1A2 Gene Sequencing Analysis Report	SEQ
-189	LPE354	COL1A1 Gene Sequencing Analysis Report	SEQ
-196	LPE378	UGT1A1 Gene Sequencing Analysis Report	SEQ
-201	LPE392	HBA2 Gene Sequencing Analysis Report	SEQ
-212	LPE436	EPOR Gene Sequencing Analysis Report	SEQ
-213	LPE469	TTR Gene Sequencing Analysis Report	SEQ
-224	LPE351	HBA1/2 Gene MLPA Analysis Report	MLPA
-225	LPE439	Long QT panel [NGS]	Genetic
-234	LPE488	유전성 난청 [NGS]	Genetic
-239	LPE499	다낭성 신장질환 [NGS]	Genetic
-246	LPE521	유전성 신경병증 [NGS]	Genetic
-251	LPE526	유전성 근육퇴행위축 질환 [NGS]	Genetic
-257	LPE533	유전성 내분비질환 [NGS]	Genetic
-266	LPE539	유전성 망막병증 [NGS]	Genetic
-158	LPE258	TSC2 Gene Sequencing Analysis Report	SEQ
-161	LPE272	WAS Gene Sequencing Analysis Report	SEQ
-170	LPE302	LHON Gene Sequencing Analysis Report	SEQ
-171	LPE295	TP53 Gene Sequencing Analysis Report	SEQ
-180	LPE342	STAR Gene Sequencing Analysis Report	SEQ
-182	LPE340	CFTR Gene Sequencing Analysis Report	SEQ
-198	LPE374	TGFBR1 Gene Sequencing Analysis Report	SEQ
-199	LPE379	PANK2 Gene Sequencing Analysis Report	SEQ
-203	LPE410	CSF3R Gene Sequencing Analysis Report	SEQ
-210	LPE433	PRRT2 Gene Sequencing Analysis Report	SEQ
-215	LPE477	GNAS Gene Sequencing Analysis Report	SEQ
-223	LPE322	SMN1/2 Gene MLPA Analysis Report	MLPA
-227	LPE294	미세결실증후군 MLPA Analysis Report	MLPA
-235	LPE455	선천성 혈소판 감소증 [NGS]	Genetic
-240	LPE490	유전성 대동맥질환 [NGS]	Genetic
-245	LPE520	유전성 근신경계 질환 [NGS]	Genetic
-252	LPE528	샤르코 마리 투스병 [NGS]	Genetic
-260	LPE532	Ras질병(Rasopahy) [NGS]	Genetic
-261	LPE536	알츠하이머병  [NGS]	Genetic
-276	LPE2000	LPE200 REPORT	MLPA
-280	LPE5000	LPE5000	MLPA
+﻿1	LPC117	MLH1 Gene Sequencing Analysis Report	SEQ
+2	LPE141	FBN1 Gene Sequencing Analysis Report	SEQ
+4	LPE194	VHL Gene Sequencing Analysis Report	SEQ
+5	LPE227	CYP21A2 Gene Sequencing Analysis Report	SEQ
+6	LPE221	PARK2 Gene Sequencing Analysis Report	SEQ
+7	LPE231	FGFR3 Gene Sequencing Analysis Report	SEQ
+8	LPE238	KCNQ1 Gene Sequencing Analysis Report	SEQ
+9	LPE237	KCNH2 Gene Sequencing Analysis Report	SEQ
+10	LPE243	NOTCH3 Gene Sequencing Analysis Report	SEQ
+12	LPE247	BTK Gene Sequencing Analysis Report	SEQ
+13	LPE251	STK11 Gene Sequencing Analysis Report	SEQ
+14	LPC100	BRCA1 Gene Analysis Report	SEQ
+15	LPE275	PKD1 Gene Sequencing Analysis Report	SEQ
+16	LPC118	MSH2 Gene Sequencing Analysis Report	SEQ
+17	LPE438	"CACNA1A Gene Sequencing Analysis Report  "	SEQ
+18	LPE115	LDLR Gene Sequencing Analysis Report	SEQ
+19	LPE310	MEN1 Gene Sequencing Analysis Report	SEQ
+20	LPE156	MYD88 Gene Sequencing Analysis Report	SEQ
+21	LPE282	TSC1 Gene Sequencing Analysis Report	SEQ
+22	LPE285	PAX6 Gene Sequencing Analysis Report	SEQ
+23	LPE314	UNC13D Gene Sequencing Analysis Report	SEQ
+24	LPE313	PRF1 Gene Sequencing Analysis Report	SEQ
+25	LPE320	ATP7B Gene Sequencing Analysis Report	SEQ
+26	LPE341	DHCR7 Gene Sequencing Analysis Report	SEQ
+27	LPE337	RPS19 Gene Sequencing Analysis Report	SEQ
+28	LPE343	MUTYH Gene Sequencing Analysis Report	SEQ
+29	LPE352	SPTB Gene Sequencing Analysis Report	SEQ
+30	LPC208	SF3B1 Gene Sequencing Analysis Report	SEQ
+31	LPE360	DNMT3A Gene Sequencing Analysis Report	SEQ
+32	LPE364	TET2 Gene Sequencing Analysis Report	SEQ
+33	LPE366	"DNAH5	 DNAI1 Gene Sequencing Analysis Report "	SEQ
+34	LPE368	THRB Gene Sequencing Analysis Report	SEQ
+35	LPE375	TGFBR2 Gene Sequencing Analysis Report	SEQ
+36	LPE391	HBA1 Gene Sequencing Analysis Report	SEQ
+37	LPE412	FLCN Gene Sequencing Analysis Report	SEQ
+38	LPE384	G6PD Gene Sequencing Analysis Report	SEQ
+39	LPE414	PKHD1 Gene Sequencing Analysis Report	SEQ
+40	LPE418	HAX1 Gene Sequencing Analysis Report	SEQ
+41	LPE431	IKBKG Gene Sequencing Analysis Report	SEQ
+42	LPE457	FANCG Gene Sequencing Analysis Report	SEQ
+43	LPE460	NSD1 Gene Sequencing Analysis Report	SEQ
+44	LPE462	CHD7 Gene Sequencing Analysis Report	SEQ
+45	LPE482	AVP Gene Sequencing Analysis Report	SEQ
+46	LPE495	SLC12A3 Gene Sequencing Analysis Report	SEQ
+49	LPE369	VHL Gene MLPA Analysis Report	MLPA
+50	LPE464	PARK2 Gene MLPA Analysis Report	MLPA
+51	LPE452	유전성 용혈성 빈혈 [NGS]	Genetic
+52	LPE377	PMP22 Gene MLPA Analysis Report	MLPA
+53	LPE454	골수부전증후군 [NGS]	Genetic
+54	LPE456	선천성 백혈구 감소증 [NGS]	Genetic
+55	LPE489	선천성 면역결핍증 [NGS]	Genetic
+56	LPE498	혈전성 미세혈관병증 [NGS]	Genetic
+57	LPE517	유전성 신장질환 [NGS]	Genetic
+58	LPE518	유전성 심근병증 [NGS]	Genetic
+59	LPE524	유전성 저신장증 [NGS]	Genetic
+60	LPE523	유전성 발달지연(DD/ASD) [NGS]	Genetic
+61	LPE522	유전성 골형성이상 질환 [NGS]	Genetic
+62	LPE525	유전성 결합조직 질환 [NGS]	Genetic
+63	LPE529	유전성 운동실조증 [NGS]	Genetic
+64	LPE530	유전성 강직하반신마비 [NGS]	Genetic
+65	LPE535	유전성 뇌전증 [NGS]	Genetic
+66	LPE534	유전성 응고병증 [NGS]	Genetic
+67	LPE538	파킨슨병 [NGS]	Genetic
+68	LPE541	라이소좀 축적 질환 [NGS]	Genetic
+69	LPE540	유전성 당뇨 [NGS]	Genetic
+70	LPE543	유전성 망막색소병증 [NGS]	Genetic
+71	LPE542	선천성 대사이상 [NGS]	Genetic
+75	LPE229	TGFBI Gene Sequencing Analysis Report	SEQ
+76	LPE233	ELA2 Gene Sequencing Analysis Report	SEQ
+77	LPE245	NF1 Gene Sequencing Analysis Report	SEQ
+78	LPE276	PKD2 Gene Sequencing Analysis Report	SEQ
+79	LPE287	RET Gene Sequencing Analysis Report	SEQ
+80	LPE306	HNF1A Gene Sequencing Analysis Report	SEQ
+81	LPE334	MAPT Gene Sequencing Analysis Report	SEQ
+82	LPE349	HBB Gene Sequencing Analysis Report	SEQ
+83	LPE358	ASXL1 Gene Sequencing Analysis Report	SEQ
+84	LPE371	JAK3 Gene Sequencing Analysis Report	SEQ
+85	LPE420	DMD Gene Sequencing Analysis Report	SEQ
+86	LPE428	MLL2 Gene Sequencing Analysis Report	SEQ
+87	LPE481	"TGFBI Exon4	11	12	14 Sequencing Analysis Report "	SEQ
+88	LPE494	CFH Gene Sequencing Analysis Report	SEQ
+89	LPE548	근긴장이상 질환 [NGS]	Genetic
+90	LPE453	판코니빈혈 [NGS]	Genetic
+91	LPE497	유전성 암 [NGS]	Genetic
+92	LPE519	유전성 피부질환 [NGS]	Genetic
+93	LPE527	유전성 근육병증 [NGS]	Genetic
+94	LPE531	유전성 강직하반신마비 [NGS]	Genetic
+95	LPE537	치매 [NGS]	Genetic
+96	LPC101	BRCA2 Gene Analysis Report	SEQ
+97	LPE236	SCN5A Gene Sequencing Analysis Report	SEQ
+98	LPE241	NF2 Gene Sequencing Analysis Report	SEQ
+99	LPE249	CDH1 Gene Sequencing Analysis Report	SEQ
+100	LPE280	FGFR2 Gene Sequencing Analysis Report	SEQ
+101	LPE308	PTEN Gene Sequencing Analysis Report	SEQ
+102	LPE330	OPA1 Gene Sequencing Analysis Report	SEQ
+103	LPE316	FANCA Gene Sequencing Analysis Report	SEQ
+104	LPE356	COL1A2 Gene Sequencing Analysis Report	SEQ
+105	LPE354	COL1A1 Gene Sequencing Analysis Report	SEQ
+106	LPE378	UGT1A1 Gene Sequencing Analysis Report	SEQ
+107	LPE392	HBA2 Gene Sequencing Analysis Report	SEQ
+108	LPE436	EPOR Gene Sequencing Analysis Report	SEQ
+109	LPE469	TTR Gene Sequencing Analysis Report	SEQ
+110	LPE351	HBA1/2 Gene MLPA Analysis Report	MLPA
+111	LPE439	Long QT panel [NGS]	Genetic
+112	LPE488	유전성 난청 [NGS]	Genetic
+113	LPE499	다낭성 신장질환 [NGS]	Genetic
+114	LPE521	유전성 신경병증 [NGS]	Genetic
+115	LPE526	유전성 근육퇴행위축 질환 [NGS]	Genetic
+116	LPE533	유전성 내분비질환 [NGS]	Genetic
+117	LPE539	유전성 망막병증 [NGS]	Genetic
+118	LPE258	TSC2 Gene Sequencing Analysis Report	SEQ
+119	LPE272	WAS Gene Sequencing Analysis Report	SEQ
+120	LPE302	LHON Gene Sequencing Analysis Report	SEQ
+121	LPE295	TP53 Gene Sequencing Analysis Report	SEQ
+122	LPE342	STAR Gene Sequencing Analysis Report	SEQ
+123	LPE340	CFTR Gene Sequencing Analysis Report	SEQ
+124	LPE379	PANK2 Gene Sequencing Analysis Report	SEQ
+125	LPE374	TGFBR1 Gene Sequencing Analysis Report	SEQ
+127	LPE477	GNAS Gene Sequencing Analysis Report	SEQ
+128	LPE433	PRRT2 Gene Sequencing Analysis Report	SEQ
+129	LPE322	SMN1/2 Gene MLPA Analysis Report	MLPA
+130	LPE294	미세결실증후군 MLPA Analysis Report	MLPA
+131	LPE455	선천성 혈소판 감소증 [NGS]	Genetic
+132	LPE490	유전성 대동맥질환 [NGS]	Genetic
+133	LPE520	유전성 근신경계 질환 [NGS]	Genetic
+134	LPE528	샤르코 마리 투스병 [NGS]	Genetic
+135	LPE532	Ras질병(Rasopahy) [NGS]	Genetic
+136	LPE536	알츠하이머병  [NGS]	Genetic
+139	LPE232	DMD Gene MLPA Analysis Report	" MLPA"
+140	LPE232	DMD Gene MLPA Analysis Report	MLPA
+141	LPE332	CYP21A2 Gene MLPA Analysis Report	MLPA
+143	"LPC194"	"RUNX1 Gene Sequencing Analysis Report"	SEQ
+144	LPE267	"PTPN11 Gene Sequencing Analysis Report"	SEQ
+145	LPE410	"CSF3R Gene Sequencing Analysis Report"	SEQ
+146	LPE290	"KRAS Gene Sequencing Analysis Report"	SEQ
+147	"LPE289"	"NRAS Gene Sequencing Analysis Report"	SEQ
+148	LPE262	APC Gene Sequencing Analysis Report	SEQ
+150	LPE465	GLA Gene Sequencing Analysis Report	SEQ
+151	LPE635	유전성 백질형성장애[NGS]	Genetic
+152	LPE636	유전성 안질환[NGS]	Genetic
+153	LPE637	유전성 소화기계 질환[NGS]	Genetic
+154	LPE638	선천면역이상질환[NGS]	Genetic
+155	LPE639	선천기형[NGS]	Genetic
+156	LPE224	GCH1 Gene Sequencing Analysis Report	SEQ
+157	LPE427	EXT1 Gene Sequencing Analysis Report	SEQ
+158	LPE434	EXT2 Gene Sequencing Analysis Report	SEQ

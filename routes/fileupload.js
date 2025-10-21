@@ -15,7 +15,9 @@ const main_form6   = require('../functions/main_form6');
 const main_nu      = require('../functions/patient_nu');
 const loadData_mod = require('../functions/readData');
 const loadData_xlsx = require('../functions/readData_xlsx');
+const loadData_xlsx_gen = require('../functions/readData_xlsx_gen');
 const main_xlsx   = require('../functions/main_xlsx');
+const main_xlsx_gen   = require('../functions/main_xlsx_gen');
 const logger = require('../common/winston');
 
 var multer = require('multer');
@@ -256,7 +258,7 @@ const deleteDetectedVariantsHandler = async (specimenNo) => {
 var upload = multer({ storage: storage, limits: { fileSize : 3 *1024 * 1000 * 1000, fieldSize: 3 *1024 * 1000 * 1000, fieldNameSize: 1000  } }).array('userfiles', 10);
 
 router.post('/upload', function (req, res) {
-    upload(req, res, function (err) {
+    upload(req, res, async function (err) {
         if (err instanceof multer.MulterError) {
           // A Multer error occurred when uploading.
           return res.status(500).json(err);
@@ -279,13 +281,18 @@ router.post('/upload', function (req, res) {
                   let patient_id = '';
                   let test_code = '';
 
-                  const res_patient = patientHandler(testedID);
-                  res_patient.then(data => {       
+              try{
+                  let data = await patientHandler(testedID);       
                     
+                    let js_data = JSON.stringify( data);
+                    logger.info('[285][patient]js_data='+js_data);
                     logger.info('[285][patient]data='+data);
                     
-                    patient_id = data.patientID;
-                    test_code = data.test_code;
+                    let pas_data = JSON.parse( js_data);
+                    logger.info('[285][patient]data.test_code='+pas_data.test_code);
+                    
+                    patient_id = pas_data.patientID;
+                    test_code = pas_data.test_code;
 
                     //const surfix = item.originalname.split('.');
                     //let patientID = surfix[0].split('_');
@@ -302,13 +309,14 @@ router.post('/upload', function (req, res) {
                     logger.info('[302]tsv=' + tsv);
                     logger.info('[303]txt=' + txt);
                     logger.info('[304]patientID=' + patientID);
+                    logger.info('[304]test_code='+ test_code);
 
                     if ( xlsx > 0) {
                         
                       if ( patientID <= 0  ) {
 
                         logger.error('[310][fileupload] patient dismatch' );
-                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                        return res.status(400).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
                       }
                     
                     }
@@ -317,7 +325,7 @@ router.post('/upload', function (req, res) {
                       if ( patientID <= 0  ) {
 
                         logger.error('[319][fileupload] patient dismatch' );
-                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                        return res.status(400).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
                       }
                     
                     }
@@ -326,13 +334,13 @@ router.post('/upload', function (req, res) {
                       if ( patientID <= 0  ) {
 
                         logger.error('[328][fileupload] patient dismatch' );
-                        return res.status(500).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
+                        return res.status(400).json('{"err":"환자와 파일명이 일치하지 않습니다"}');
                       }
                     
                     }
                     else {
                       logger.error('[334][fileupload] file dismatch' );
-                      return res.status(500).json('{"err":"환자와 파일확장자(tsv, xlsx, tst) 가  일치하지 않습니다"}');
+                      return res.status(400).json('{"err":"환자와 파일확장자(tsv, xlsx, tst) 가  일치하지 않습니다"}');
                       
                     } 
             
@@ -383,33 +391,28 @@ router.post('/upload', function (req, res) {
             
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////  
                     // 기존 count 체크
-                    const result = messageHandler(testedID, today);
-                    result.then(data => {
+                    const result = await messageHandler(testedID, today);
+                    
+                    logger.info('[390][fileupload][result]result=' + result);
 
-                    console.log('[389][fileupload][count] ', data);
-                    logger.info('[390][fileupload][count]count=' + data);
-
-                    const count = parseInt(data,10);
+                    const count = parseInt(result,10);
                     logger.info('[393][fileupload][count]count=' + count);
         
                     // console.log('[247] 시험용', count);
                     if (count > 0) {
                       // tsv 레코드 삭제
-                      const result2 = messageHandler2(testedID, today);
-                      result2.then(data => {       
-                        console.log('[400][fileupload]',data);
+                      const result2 = await messageHandler2(testedID, today);
+                      //result2.then(data => {       
+                        console.log('[400][fileupload]',result2);
                 
                         //const count2 = parseInt(count,10);                      
                       // console.log('이전것 삭제');             
-                      })
-                      .catch( error  => {
-                        logger.error('[406][fileupload]err=' + error.message);
-                      })
+                      //})
+                      //.catch( error  => {
+                      //  logger.error('[406][fileupload]err=' + error.message);
+                      //})
                     }
-                    })
-                    .catch( error  => {
-                      logger.error('[411][fileupload]err=' + error.message);
-                    })
+                    
 
                     /////////////////////////////////////////////////////////////////////////////////////////////
                     console.log('Next...');
@@ -417,64 +420,64 @@ router.post('/upload', function (req, res) {
                     logger.info('[417][fileupload][count]next 1');
                 
                     // patient tsv 상태 update
-                    const result3 = messageHandler3(item.originalname, dirPath, testedID);
-                    result3.then(data => {
+                    const result3 = await messageHandler3(item.originalname, dirPath, testedID);
+                    //result3.then(data => {
 
-                      console.log('[423][fileupload] ', data);
+                      console.log('[423][fileupload] ', result3);
                       //res.json(data);
-                    })
-                    .catch( error => {
-                      logger.error('[427][fileupload] update patient diag err=' + error.message);
-                    });
+                    //})
+                    //.catch( error => {
+                    //  logger.error('[427][fileupload] update patient diag err=' + error.message);
+                    //});
             
                     logger.info('[430][fileupload][count]next 2');
                     // console.log('insert...');
                   
                     // jintsv insert
-                    const result4 = messageHandler4(item.originalname, dirPath, testedID);
-                    result4.then(data => {
+                    const result4 = await messageHandler4(item.originalname, dirPath, testedID);
+                    //result4.then(data => {
 
-                      console.log(data);
+                      console.log(result4);
                       //res.json(data);
-                    })
-                    .catch( error => {
-                      logger.error('[441][fileupload] inset jintsv err=' + error.message)
-                    });	  
+                    //})
+                    //.catch( error => {
+                    //  logger.error('[441][fileupload] inset jintsv err=' + error.message)
+                    //});	  
 
                     logger.info('[444][fileupload][count]next 3');
 
                     // 2021.01.29  deleteDetectedVariantsHandler add
                     //  deleteDetectedVariantsHandler
-                    const result5 =  deleteDetectedVariantsHandler(testedID);
-                    result5.then(data => {
+                    const result5 = await deleteDetectedVariantsHandler(testedID);
+                    //result5.then(data => {
           
-                      console.log(data);
+                      console.log(result5);
                       //res.json(data);
-                    })
-                    .catch( error => {
-                      logger.error('[455][fileupload] inset jintsv err=' + error.message);
-                    });	  
+                    //})
+                    //.catch( error => {
+                    //  logger.error('[455][fileupload] inset jintsv err=' + error.message);
+                    //});	  
 
                     logger.info('[458][fileupload][count]next 4');
 
                     // 2021.02.02  deleteReportHandler add
                     //  deleteReportHandler
-                    const result6 =  deleteReportHandler(testedID);
-                    result6.then(data => {
+                    const result6 =  await deleteReportHandler(testedID);
+                    //result6.then(data => {
           
-                      console.log(data);
+                      console.log(result6);
                       //res.json(data);
-                    })
-                    .catch( error => {
-                      logger.error('[469][fileupload] deleteReportHandler err=' + error.message);
-                    });	  
+                    //})
+                    //.catch( error => {
+                    //  logger.error('[469][fileupload] deleteReportHandler err=' + error.message);
+                    //});	  
                   
                     logger.info('[472][fileupload][count]next 5');
 
                     if ( tsv > 0) {
                       console.log('필터링한 화일', item.originalname);
 
-                        main_nu.patient_nu(testedID, test_code);
+                        //main_nu.patient_nu(testedID, test_code);
 
                         main_mod.main(loadData_mod.loadData(item.path),item.originalname,testedID);
                     }	
@@ -487,16 +490,31 @@ router.post('/upload', function (req, res) {
                     }	
                     else if ( xlsx > 0) {
                       console.log('[489][fileupload] 필터링한 화일 XLSX', item.originalname + "  === " + patient_id);
+                      logger.info('[497][fileupload]필터링한 화일 XLSX'+ item.originalname + "  === " + patient_id + ", " + test_code );
 
                         //main_nu.patient_nu(testedID);
+                        const LYM = ['LPE474', 'LPE475'];
+                        const MDS = ['LPE473'];
 
-                        main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID,patient_id);
-                    }		
+                        if (LYM.includes(test_code) > 0) {
+                          logger.info ('pas_data_lym.test_code='+ test_code);
+                          main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID,patient_id);
+                        }		
+                        else if (MDS.includes(test_code) > 0) {
+                          logger.info ('pas_data_mds.test_code='+ test_code);
+                          main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID,patient_id);
+                        }		
+                        else {
+                          logger.info ('pas_data.test_code='+ test_code);
+                          main_xlsx_gen.main(loadData_xlsx_gen.loadData_xlsx_gen(item.path),item.originalname,testedID,patient_id);
+                          
+                        }
+                    }
                 
-                  })
-                  .catch( error  => {
-                    logger.error('[498][fileupload]err=' + error.message);
-                  })
+                  }
+                  catch( err)   {
+                    logger.error('[498][fileupload]err=' + err.message);
+                  }
           /////////////////////////////////////////////////////////////////////////////////////////////
 	 
         }  // End of For Loop

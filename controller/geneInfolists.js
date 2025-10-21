@@ -227,23 +227,28 @@ exports.addGeneToMutation = (req, res, next) => {
  };
 
 // get Comemnts
+// 25.04.23 이전 gene type 을 이용하여  comments 찾기 
+// 25.04.23 이후 gene type variant_id 을 이용하여  comments 찾기 개선 필요
 const  messageHandler4 = async (req) => {
   await poolConnect; // ensures that the pool has been created
 
   const gene   = req.body.gene;
   const type   = req.body.type;
-  logger.info('[192][geneinfo]comments select data=' + gene + ", " + type);
+  const variant_id   = req.body.variant_id;
+  logger.info('[192][geneinfo]comments select data=' + gene + ", " + type + ', variant_id=' + variant_id);
 
   let sql ="select gene, comment, reference, isnull(variant_id, '') variant_id ";
   sql = sql + " from comments ";
   sql = sql + " where gene=@gene ";
   sql = sql + " and type=@type";
+  sql = sql + " and variant_id=@variant_id";
   logger.info('[198][geneinfo]comments selet sql' + sql);
 
   try {
       const request = pool.request()
         .input('gene', mssql.VarChar, gene) 
-        .input('type', mssql.VarChar, type); 
+        .input('type', mssql.VarChar, type)
+        .input('variant_id', mssql.VarChar, variant_id); 
       const result = await request.query(sql)
     // console.dir( result);
       
@@ -757,7 +762,7 @@ const  variantsHandler = async (req) => {
                   from report_detected_variants 
                   where gene=@gene 
                   and nucleotide_change =@nucleotide_change and (gubun='AMLALL' or gubun = 'LYM' or gubun='MDS')
-                  and sendyn = '3'
+                  and sendyn = '3'               
                   order by id desc`;  
                
   logger.info('[749][geneinfo]list sql=' + sql);

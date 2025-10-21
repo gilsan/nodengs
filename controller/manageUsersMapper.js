@@ -8,16 +8,38 @@ const dbConfigMssql = require('../common/dbconfig.js');
 const pool = new mssql.ConnectionPool(dbConfigMssql);
 const poolConnect = pool.connect(); 
 
+// 25.05.28 원하는 달만큼 빼기
+function subtractMonths(dateStr, monthsToSubtract) {
+    const date = new Date(dateStr);
+    
+    // 현재 월에서 원하는 개월 수를 뺌
+    date.setMonth(date.getMonth() - monthsToSubtract);
+  
+    // yyyy-mm-dd 형식으로 반환
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+}
+
 const listHandler = async (req) => {
     await poolConnect;  
 
-    const userId			= req.body.userId; 
-	const userNm			= req.body.userNm; 
-	const startDay			= req.body.startDay; 
-	const endDay			= req.body.endDay;
-    const dept				= req.body.dept;
-    
-    logger.info('[17][manageUser list]data=' + userId + ", " + userNm + ", " + startDay + ", " + endDay + ", " + dept );
+    const userId	= req.body.userId; 
+	const userNm	= req.body.userNm; 
+	let startDay	= req.body.startDay; 
+	const endDay	= req.body.endDay;
+    const dept		= req.body.dept;
+    let startDay2   = '';
+
+    // 25.05.28 원하는 달만큼 빼기
+    // 임시로 3달 더 뻄
+    if (startDay != '') {
+        startDay2	= subtractMonths(startDay, 3); 
+    }
+
+    logger.info('[17][manageUser list]data=' + userId + ", " + userNm + ", " + startDay2 + ", " + endDay + ", " + dept );
 	
 	let sql =`select id, user_id, password, user_nm, user_gb, dept, CONVERT(CHAR(19), login_date, 120) login_date, isnull(approved,'N') approved ,
 	            case when dept ='P' then 'Pathology' when dept ='D' then 'Diagnostic' else '' end dept_nm ,
@@ -30,8 +52,8 @@ const listHandler = async (req) => {
 	if(userNm != "") 
 		sql = sql + " and user_nm like '%"+userNm+"%'";
 	
-	if(startDay != "") 
-		sql = sql + " and isnull(login_date, getdate()) >= '"+startDay+"'";
+	if(startDay2 != "") 
+		sql = sql + " and isnull(login_date, getdate()) >= '"+startDay2+"'";
 	if(endDay != "") 
 		sql = sql + " and isnull(login_date, getdate()) <= DATEADD(d, 1, '"+endDay+ "')";
 	
@@ -165,7 +187,9 @@ const approvedHandler = async (req) => {
     
     logger.info('[164][manageUser approved]data=' + id + ", " + approved);
 
-    let sql = "update users set approved = @approved  " ; 
+    // 25.05.27 승인/미승인 시 pickselect도 같이 변경한다.
+    //let sql = "update users set approved = @approved  " ; 
+    let sql = "update users set approved = @approved,  pickselect = @approved  " ; 
     sql = sql + "where id = @id"; 
 
     logger.info('[169][manageUser approved]sql=' + sql);

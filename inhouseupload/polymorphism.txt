@@ -1,0 +1,32 @@
+﻿1	AURKA	p.Ile57Val	c.169A>G	UCSC common SNP
+2	AURKA	p.Phe31Ile	c.91T>A	UCSC common SNP
+3	BARD1	p.Arg378Ser	c.1134G>C	UCSC common SNP
+4	DAXX	p.Thr181HisfsTer4	c.540_541insC	Homopolymer
+5	KMT2C	p.Tyr816Ter	c.2447_2448insA	Clinvar: Likely benign
+6	KMT2C	p.Tyr816Ter	c.2447dupA	Clinvar: Likely benign
+7	RAD52	p.Ser346Ter	c.1037C>A	UCSC common SNP
+8	RECQL4	Splicing mutant	c.2296+1delC	UCSC common SNP
+10	TPMT	p.Tyr240Cys	c.719A>G	"Clinvar: Likely benign Korean frequency 0.0157"
+11	UGT1A1	p.Gly71Arg	c.211G>A	UCSC common SNP
+12	APC	p.Glu1494LysfsTer13	c.4480delG	UCSC common SNP
+13	APC	p.Glu1494LysfsTer19	c.4479_4480delGG	UCSC common SNP
+14	APC	p.Glu1494LysfsTer13	c.4479_4480delGGinsA	UCSC common SNP
+17	BARD1	p.Thr351=	c.1053G>C	UCSC common SNP
+19	KMT2C	p.Tyr816Ter	c.2447_2448insA	UCSC common SNP
+22	RNF43	p.Arg117ThrfsTer41	c.349_350delCGinsA	UCSC common SNP
+24	ARID1A	p.Gln74Ter	c.220C>T	"제외 LIST 상 변이"
+25	ARID1A	" p.Trp2049Ter"	c.6146G>A	"제외 LIST 상 변이"
+26	HLA-B	p.[Pro6=;Arg7Ter]	c.18_19delCCinsTT	"제외 LIST 상 변이"
+27	ARID1A	p.Gln1334del	c.3999_4001delGCA	"제외_김태은"
+29	ERBB2	p.Ile655Val	c.1963A>G	"SNP	 Clinvar benign"
+30	FGFR4	p.Gly388Arg	c.1162G>A	" "
+31	FGFR4	p.(G388R)	c.1162G>A	" "
+32	ERBB2	p.(I655V)	c.1963A>G	"SNP	 Clinvar benign"
+33	"MLH1"	"p.Val384Asp"	"c.1151T>A"	" "
+34	"MSH6"	"p.Lys1358Aspfs*2"	"c.4065_4066insTTGA"	" "
+35	"KIT"	"p.Met541Leu"	"c.1621A>C"	"likely benign"
+36	"FGFR4"	"p.Gly388Arg"	"c.1162G>A"	" "
+37	"MSH6"	"p.Lys1358AspfsTer2	 p.?"	"c.4071_4072insGATT	 c.*1276A>TCAAA"	"likely benign"
+38	"ELF3"	"p.Gly192AlafsTer62"	"c.573_574delTGinsC"	"UCSC common SNP"
+39	"FAT1"	"p.Thr2369Leu"	"c.7105_7106delinsCT"	" "
+40	KIT	p.(M541L)	c.1621A>C	"likely benign	"

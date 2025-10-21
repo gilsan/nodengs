@@ -1619,9 +1619,16 @@ exports.resetScreenStatus = (req, res, next) => {
 
     if (nvl(req.body.userid, '') !== '')
     {
-        let userinfo = JSON.parse(req.body.userid); 
-    
-        userid = nvl(userinfo.userid, ''); 
+        // 25.05.13 json이 아니고 그냥 문자열
+        try {
+            userinfo = JSON.parse(req.body.userid); 
+        
+            userid = nvl(userinfo.userid, '');
+        }
+        catch {
+            userid = nvl(req.body.userid, '');
+        } 
+
         //  const pw= userinfo.pwd; 
     }
 

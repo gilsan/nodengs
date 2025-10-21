@@ -29,8 +29,14 @@ function findChar(findChar) {
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
-      st = defaultStr ;
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
+    //console.log('st=', st);
+    st = defaultStr ;
   }
       
   return st ;
@@ -100,54 +106,71 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/genediag.txt';
-var rowCount = 0;
+async function processData() {
+  var tsvData = '../inhouseupload/genediag.txt';
+  var rowCount = 0;
 
-delData();
+  delData();
 
-var rowData = loadData(tsvData);
+  var rowData = loadData(tsvData);
 
-rowData.forEach ( async (row, index) =>  {
+  rowData.forEach ( async (row, index) =>  {
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-      var gene = nvl(row[0].replace( /"/gi, ''), "");
-      logger.info('[84][genediag]gene=' + gene);
+      logger.info('[84][genediag]row=' + row);
 
-      var temp_data = nvl(row[1].replace( /"/gi, ''), "");
-      var type = findChar(temp_data);   
-      logger.info('[87][genediag]type=' + type);
+        var gene = nvl((row[1] || '').replace( /"/gi, ''), "");
+        logger.info('[84][genediag]gene=' + gene);
+
+        var temp_data = nvl((row[2] || '').replace( /"/gi, ''), "");
+        var type = findChar(temp_data);   
+        logger.info('[87][genediag]type=' + type);
+
+        var temp_data = nvl((row[3] || '').replace( /"/gi, ''), "");
+        var rowno = findChar(temp_data);   
+        logger.info('[87][genediag]rowno=' + rowno);
+
+        
+        var temp_data = nvl((row[4] || '').replace( /"/gi, ''), ""); 
+        var test_code = findChar(temp_data);   
+        logger.info('[87][genediag]test_code=' + test_code);
+              
+        const sql =`insert_genediag` ;
+
+        try {
             
-      const sql =`insert_genediag` ;
+            const request = pool.request()
+              .input('gene', mssql.VarChar, gene)
+              .input('type', mssql.VarChar, type) 
+              .input('rowno', mssql.VarChar, rowno) 
+              .input('test_code', mssql.VarChar, test_code) 
+              .output('TOTALCNT', mssql.int, 0);
+            
+          let result =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[genediag]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('gene', mssql.VarChar, gene)
-            .input('type', mssql.NVarChar, type) 
-            .output('TOTALCNT', mssql.int, 0);
-          
-        let result =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[genediag]err message=" + err.message);
-            }
+              console.log("[175][genediag]recordset="+ recordset);
+              console.log("[176][genediag]returnValue="+ returnValue);
 
-            console.log("[175][genediag]recordset="+ recordset);
-            console.log("[176][genediag]returnValue="+ returnValue);
+              result = returnValue;
+              console.log("[179]result=" + JSON.stringify(result));
+            }); 
 
-            result = returnValue;
-            console.log("[179]result=" + JSON.stringify(result));
-          }); 
+            console.log("result=", result);
 
-          console.log("result=", result);
+      } catch(err) {
+          logger.error('[185][genediag]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][genediag]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

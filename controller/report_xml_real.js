@@ -132,7 +132,7 @@ exports.getList= (req, res, next) => {
     let intype = 'L'; // 구분 (P - 병리, L - 진검, A - 전체)
 
     let sendUrl = configEnv.emr_path;
-    sendUrl = sendUrl +'?submit_id=TRLII00147&business_id=li&instcd=012';
+    sendUrl = sendUrl +'?submit_id=TRLII00147&business_id=li&instcd=' + configEnv.instcd;
     sendUrl = sendUrl + '&infmdd=' + infmdd
     sendUrl = sendUrl + '&intodd=' + intodd
     sendUrl = sendUrl + '&intype=' + intype;
@@ -156,17 +156,36 @@ exports.getList= (req, res, next) => {
 		const parser = new xml2js.Parser( {explicitArray : false} /*options*/ ); 
 		parser.parseStringPromise(res_data).then(function (result) {
 
-			logger.info('[153][report_xml]json=' + JSON.stringify( result.root.worklist.worklist));
-            var patientJson = JSON.stringify(result.root.worklist.worklist); 
-            console.log('[158][report_xml]json=' ,  patientJson);
+			// 25.09.19 데이타 없는 경우 오류 처리
+            let worklist = result.root.worklist.worklist;
 
-            let patients = JSON.parse(patientJson);
+            if (worklist != undefined) {
         
-            console.log(patients);
-            logger.info('[163][report_xml]json=' +   JSON.stringify(patients));
+                logger.info('[153][report_xml]json=' + JSON.stringify( result.root.worklist.worklist));
+                var patientJson = JSON.stringify(result.root.worklist.worklist); 
+                console.log('[158][report_xml]json=' ,  patientJson);
+    
+                let patients = JSON.parse(patientJson);
+                console.log(patients);
 
-            let patient = patientHandler(patients, res);
+                logger.info('[163][report_xml]json=' +   JSON.stringify(patients));
+            
+                if (patients.length > 0) {
+                    let patient = patientHandler(patients, res);
+                }
+                else {
+                    res.json("{}");  
+                }
+            }
+            else {
+                res.json("{}");  
+            }
 
         })
     })
+    .catch((err) => {
+      // 여기서 axios 에러, xml 파싱 에러 다 잡음
+      logger.error('getList error:', err.message);
+      res.status(200).json({});
+    });
 }

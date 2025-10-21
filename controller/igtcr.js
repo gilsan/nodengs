@@ -3832,11 +3832,14 @@ exports.reportigtcr2 = (req, res, next) => {
 };
 
 // 검사자 갱신
-const checkerHandler = async (transaction, specimenNo2, examin, recheck, method, sendEMRDate, report_date, detected, comment) => {
+//const checkerHandler = async (transaction, specimenNo2, examin, recheck, method, sendEMR, sendEMRDate, report_date, detected, comment) => {
+
+const checkerHandler = async (transaction, specimenNo2, examin, recheck, method, sendEMR, updstatus, sendEMRDate, report_date, detected, comment) => {
     //await poolConnect; // ensures that the pool has been created
 
-    logger.info('[3858][checkerHandler][update screen]data=' + specimenNo2 + ", "  + examin  + ", " + recheck
-                         + ", method=" + method  +  ", " + sendEMRDate + ", " + report_date +  ", " + detected + ", " + comment ); 
+    logger.info('[3858][checkerHandler][update screen]data=' + specimenNo2 + ", "  + examin  + ", " + recheck  + ", method=" + method  ) ;
+    logger.info('[3858][checkerHandler][update screen]sendEMR=' + sendEMR  + ", updstatus=" + updstatus
+                         + ", " + sendEMRDate + ", " + report_date +  ", " + detected + ", " + comment ); 
 
     var detected2 = nvl(detected, '0');
 
@@ -3848,8 +3851,9 @@ const checkerHandler = async (transaction, specimenNo2, examin, recheck, method,
                     report_title=@method,
                     detected=@detected2, 
                     path_comment=@comment,
-                    sendEMRDate=@sendEMRDate,
-                    report_date=@report_date,
+                    sendEMR = case when @sendEMR = '1' then @sendEMR else  sendEMR end,
+                    sendEMRDate = case when @sendEMR = '1' then @sendEMRDate else  sendEMRDate end,
+                    report_date = case when @updstatus = '1' then @report_date else  report_date end,
                     saveyn = 'S'
                 where specimenNo=@specimenNo2 `;   
 
@@ -3864,6 +3868,8 @@ const checkerHandler = async (transaction, specimenNo2, examin, recheck, method,
             .input('comment', mssql.VarChar, comment)
             .input('detected2', mssql.VarChar, detected2)
             .input('report_date', mssql.VarChar, report_date)
+            .input('sendEMR', mssql.VarChar, sendEMR)
+            .input('updstatus', mssql.VarChar, updstatus)
             .input('sendEMRDate', mssql.VarChar, sendEMRDate); 
 
         const result = await request.query(sql).then(data => {
@@ -5062,6 +5068,11 @@ exports.saveScreenigtcr = async (req,res, next) => {
     
     let examin    = req.body.examin;
     let recheck   = req.body.recheck;
+    
+    //25.07.04
+    let sendEMR   = req.body.sendEMR;
+    let updstatus = req.body.updstatus;
+    
     let sendEMRDate   = req.body.sendEMRDate;
     let report_date   = req.body.report_date;
     
@@ -5111,7 +5122,10 @@ exports.saveScreenigtcr = async (req,res, next) => {
             let result2 = await deleteigtcrHandler(transaction, specimenNo);
             let result4 = await insertigtcrDataHandler(transaction, specimenNo, igtcrData, patientid);
             let result5 = await insertigtcrReportHandler(transaction, specimenNo, fu_comment, init_comment, fu_result, init_result1, init_result2);
-            let result6 = await checkerHandler(transaction, specimenNo,  examin, recheck, method, sendEMRDate, report_date, detected, comment);
+
+            // 25.07.04
+            //let result6 = await checkerHandler(transaction, specimenNo,  examin, recheck, method, sendEMRDate, report_date, detected, comment);
+            let result6 = await checkerHandler(transaction, specimenNo,  examin, recheck, method, sendEMR, updstatus, sendEMRDate, report_date, detected, comment);
 
             let results = await Promise.all([result, result2, result4, result5, result6]);
             await transaction.commit();

@@ -29,7 +29,12 @@ function findChar(findChar) {
 function nvl(st, defaultStr){
     
   //console.log('st=', st);
-  if(st === undefined || st == null || st == "") {
+  if(
+    st === undefined ||
+    st === null ||
+    (typeof st === 'string' && st.trim().toUpperCase() === 'NULL') ||
+    (typeof st === 'string' && st.trim() === '')
+  ) {
       st = defaultStr ;
   }
       
@@ -92,59 +97,64 @@ async function delData() {
   } 
 }
 
-var tsvData = '../inhouseupload/testcode.txt';
-var rowCount = 0;
+async function processData() {
 
-delData();
+  var tsvData = '../inhouseupload/testcode.txt';
+  var rowCount = 0;
 
-var rowData = loadData(tsvData);
+  delData();
 
-rowData.forEach ( async (row, index) =>  {
+  var rowData = loadData(tsvData);
 
-  await poolConnect;
-  rowCount++;
-  console.log(rowCount);
-  if (rowCount >= 0) {
+  rowData.forEach ( async (row, index) =>  {
 
-    // 	code	report	type
-      var code = nvl(row[1].replace( /"/gi, ''), "");
-      logger.info('[87][testcodelists][seq]=' + code);
+    await poolConnect;
+    rowCount++;
+    console.log(rowCount);
+    if (rowCount >= 0) {
 
-      var report =nvl(row[2].replace( /"/gi, ''), "");
-      logger.info('[87][testcodelists][site]=' + report);
-    
-      var report_type = nvl(row[3].replace( /"/gi, ''), "");
-      logger.info('[84][testcodelists]report_type=' + report_type);
+      // 	code	report	type
+        var code = nvl((row[1] || '').replace( /"/gi, ''), "");
+        logger.info('[87][testcodelists][seq]=' + code);
 
+        var report =nvl((row[2] || '').replace( /"/gi, ''), "");
+        logger.info('[87][testcodelists][site]=' + report);
+      
+        var report_type = nvl((row[3] || '').replace( /"/gi, ''), "");
+        logger.info('[84][testcodelists]report_type=' + report_type);
+
+              
+        const sql =`insert_testcodelists` ;
+
+        try {
             
-      const sql =`insert_testcodelists` ;
+            const request = pool.request()
+              .input('report_type', mssql.VarChar, report_type)
+              .input('code', mssql.VarChar, code)  
+              .input('report', mssql.NVarChar, report) 
+              .output('TOTALCNT', mssql.int, 0);
+            
+          let result2 =  '';
+          await request.execute(sql, (err, recordset, returnValue) => {
+              if (err)
+              {
+                console.log ("172[testcodelists]err message=" + err.message);
+              }
 
-      try {
-          
-          const request = pool.request()
-            .input('report_type', mssql.VarChar, report_type)
-            .input('code', mssql.VarChar, code)  
-            .input('report', mssql.NVarChar, report) 
-            .output('TOTALCNT', mssql.int, 0);
-          
-        let result2 =  '';
-        await request.execute(sql, (err, recordset, returnValue) => {
-            if (err)
-            {
-              console.log ("172[testcodelists]err message=" + err.message);
-            }
+              console.log("[175][testcodelists]recordset="+ recordset);
+              console.log("[176][testcodelists]returnValue="+ returnValue);
 
-            console.log("[175][testcodelists]recordset="+ recordset);
-            console.log("[176][testcodelists]returnValue="+ returnValue);
+              result3 = returnValue;
+              console.log("[179]result=" + JSON.stringify(result3));
+            }); 
 
-            result3 = returnValue;
-            console.log("[179]result=" + JSON.stringify(result3));
-          }); 
+            console.log("result=", result2);
 
-          console.log("result=", result2);
+      } catch(err) {
+          logger.error('[185][testcodelists]err=' + err.message);
+      }  
+    } 
+  });// end of if loop
+}
 
-    } catch(err) {
-        logger.error('[185][testcodelists]err=' + err.message);
-    }  
-  } 
-});// end of if loop
+processData();

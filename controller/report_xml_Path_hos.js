@@ -180,7 +180,7 @@ exports.getList= (req, res, next) => {
     let intype = req.body.type; // 구분 (P - 병리, L - 진검, A - 전체)
 
     let sendUrl = configEnv.emr_path;
-    sendUrl = sendUrl + '?submit_id=TRLII00147&business_id=li&instcd=012';
+    sendUrl = sendUrl + '?submit_id=TRLII00147&business_id=li&instcd=' + configEnv.instcd;
     sendUrl = sendUrl + '&infmdd=' + infmdd
     sendUrl = sendUrl + '&intodd=' + intodd
     sendUrl = sendUrl + '&intype=' + intype;

@@ -289,6 +289,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210513</spcacptdt>
 <lstreptdt>20210602</lstreptdt>
+<stage>340</stage>
 </worklist>
 <worklist>
 <gbn>P</gbn>
@@ -1775,7 +1776,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
-<stage>340</stage>
+<stage>340/1A</stage>
 <monogenicyn>y</monogenicyn>
 <monogenicdd>20231110</monogenicdd>
 <monogenicnm>test</monogenicnm>
@@ -1807,7 +1808,7 @@ var jsondata = `
 <spccd>2</spccd>
 <spcacptdt>20210527</spcacptdt>
 <lstreptdt>20210630</lstreptdt>
-<stage>340</stage>
+<stage>340/2</stage>
 <monogenicyn/>
 <monogenicdd/>
 <monogenicnm/>
@@ -1918,12 +1919,54 @@ const  messageHandler_fusion = async (pathology_num) => {
     }
 }
 
+// 25.04.28
+function cleanValue(value) {
+    return value.replace(/(\d+)[A-Za-z]+/, '$1');
+}
+
+// 25.04.28
+function hasNumber(str) {
+    return /\d/.test(str);
+}
+
 const patientHandler = async(patients, res) => {
 
     console.log (patients.length);
 
     for (var i = 0;  i < patients.length; i ++)
     {
+        // 25.04.28
+        let pay100ownbrate = patients[i].pay100ownbrate;
+        if (pay100ownbrate == '90') {
+            patients[i].pay100rate = '01';
+            patients[i].pay100report = 'Y';
+        } else if (pay100ownbrate == '80') {
+            patients[i].pay100rate = '03';
+            patients[i].pay100report = 'N';            
+        } else {
+            patients[i].pay100rate = '';
+            patients[i].pay100report = 'N';
+        }
+
+        console.log (patients[i].stage);
+
+        // 25.04.28
+        let stage1 = patients[i].stage ? String(patients[i].stage) : '';
+        let stage =  stage1.split('/');
+        if (stage.length > 1) {
+            patients[i].stage = stage[0];
+            patients[i].stage1 = cleanValue(stage[1]);
+        }
+        else {
+            patients[i].stage = stage[0];
+            patients[i].stage1 = '';
+        }
+
+        if (hasNumber(stage[0])) {
+            patients[i].stage2 = 'Y';
+        } else {
+            patients[i].stage2 = 'N';
+        }
 
         let hospnm = patients[i].hospnm;
 
@@ -2016,7 +2059,7 @@ const patientHandler = async(patients, res) => {
 
         logger.info("[1944][report_xml_path]patients[i].testcd2=" + patients[i].testcd2);
         logger.info("[1944][report_xml_path]patients[i].monogenicdd=" + patients[i].monogenicdd);
-        logger.info("[1944][report_xml_path]arr_idx=" + arr_idx);
+        //logger.info("[1944][report_xml_path]arr_idx=" + arr_idx);
         
         patients[i].pv = 'Y';
         
@@ -2029,7 +2072,6 @@ const patientHandler = async(patients, res) => {
         
         // 처방일 : spcacptdt
         let prcpdd = patients[i].prcpdd;
-        
         
         let pathology_num = '';
 
@@ -2105,6 +2147,8 @@ const patientHandler = async(patients, res) => {
 
         patients[i].pv = 'N';
         patients[i].pv_gene = '';
+        // 25.03.28 tier I, II 함께 표시
+        patients[i].pv_gene2 = '';
         patients[i].vus = 'N';
         patients[i].vus_gene = '';
 
@@ -2117,7 +2161,7 @@ const patientHandler = async(patients, res) => {
             for (var j = 0;  j < patient_gene.length; j ++)
             {
                 if (patient_gene[j].report_gb === 'P') {            
-                    patients[i].vus = 'Y';
+                    patients[i].vus = 'N';
                     patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene[j].gene ;
                 }
                 // 24.08.29 병리과 요구사항
@@ -2126,6 +2170,12 @@ const patientHandler = async(patients, res) => {
                 else if ((patient_gene[j].report_gb === 'C') && (patient_gene[j].tier === 'I')) {            
                     patients[i].pv = 'Y';
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene[j].gene;
+                    // 25.03.28 tier I, II 함께 표시
+                    patients[i].pv_gene2 = patients[i].pv_gene2 + " " + patient_gene[j].gene;
+                }
+                // 25.03.28 tier I, II 함께 표시
+                else if ((patient_gene[j].report_gb === 'C') && (patient_gene[j].tier === 'II')) {            
+                    patients[i].pv_gene2 = patients[i].pv_gene2 + " " + patient_gene[j].gene;
                 }
 
                 // 23.11.30
@@ -2148,7 +2198,7 @@ const patientHandler = async(patients, res) => {
             for (var j = 0;  j < patient_gene_amp.length; j ++)
             {
                 if (patient_gene_amp[j].report_gb === 'P') {  
-                    patients[i].vus = 'Y';
+                    patients[i].vus = 'N';
                     patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_amp[j].gene ;
                 }
                 // 24.08.29 병리과 요구사항
@@ -2157,6 +2207,12 @@ const patientHandler = async(patients, res) => {
                 else if ((patient_gene_amp[j].report_gb === 'C') && (patient_gene_amp[j].tier === 'I'))  {    
                     patients[i].pv = 'Y';                                
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_amp[j].gene;
+                    // 25.03.28 tier I, II 함께 표시
+                    patients[i].pv_gene2 = patients[i].pv_gene2 + " " + patient_gene_amp[j].gene;
+                }
+                // 25.03.28 tier I, II 함께 표시
+                else if ((patient_gene_amp[j].report_gb === 'C') && (patient_gene_amp[j].tier === 'II')) {            
+                    patients[i].pv_gene2 = patients[i].pv_gene2 + " " + patient_gene_amp[j].gene;
                 }
                 
                 // 23.11.30
@@ -2179,7 +2235,7 @@ const patientHandler = async(patients, res) => {
             for (var j = 0;  j < patient_gene_fus.length; j ++)
             {
                 if (patient_gene_fus[j].report_gb === 'P') {  
-                    patients[i].vus = 'Y';
+                    patients[i].vus = 'N';
                     patients[i].vus_gene = patients[i].vus_gene + " " + patient_gene_fus[j].gene ;
                 }
                 // 24.08.29 병리과 요구사항
@@ -2188,6 +2244,12 @@ const patientHandler = async(patients, res) => {
                 else if ((patient_gene_fus[j].report_gb === 'C')  && (patient_gene_fus[j].tier === 'I')){ 
                     patients[i].pv = 'Y';                                  
                     patients[i].pv_gene = patients[i].pv_gene + " " + patient_gene_fus[j].gene;
+                    // 25.03.28 tier I, II 함께 표시
+                    patients[i].pv_gene2 = patients[i].pv_gene2 + " " + patient_gene_fus[j].gene;
+                }
+                // 25.03.28 tier I, II 함께 표시
+                else if ((patient_gene_fus[j].report_gb === 'C') && (patient_gene_fus[j].tier === 'II')) {            
+                    patients[i].pv_gene2 = patients[i].pv_gene2 + " " + patient_gene_fus[j].gene;
                 }
 
                 // 23.11.30
@@ -2210,10 +2272,15 @@ const patientHandler = async(patients, res) => {
             patients[i].vus_gene = patients[i].vus_gene.substr(1);
         }
         
-
         if (patients[i].pv_gene.length != 0)
         {
             patients[i].pv_gene = patients[i].pv_gene.substr(1);
+        }
+        
+        // 25.03.28 tier I, II 함께 표시
+        if (patients[i].pv_gene2.length != 0)
+        {
+            patients[i].pv_gene2 = patients[i].pv_gene2.substr(1);
         }
 
         // 23.11.30
@@ -2242,9 +2309,22 @@ exports.getList= (req, res, next) => {
 
     console.log(patientObj.root.worklist.worklist);
 
-    let patients = patientObj.root.worklist.worklist;
+    let worklist = patientObj.root.worklist.worklist;
 
-    let patient = patientHandler(patients, res);
+    if (worklist != undefined) {
+
+        let patients = patientObj.root.worklist.worklist;
+
+        if (patients.length > 0) {
+            let patient = patientHandler(patients, res);
+        }
+        else {
+            res.json("{}");  
+        }
+    }
+    else {
+        res.json("{}");  
+    }
 
     //res.json(patient);
 }

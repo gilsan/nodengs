@@ -975,7 +975,10 @@ exports.limsList3 = (req, res, next) => {
     try {
         const request = pool.request()
         .input('test_code', mssql.VarChar, test_code)
-        .input('pathology_num2', mssql.VarChar, pathology_num2);
+        
+        // 25.08.05 한글 들어오는 경우 있음
+		//.input('pathology_num2', mssql.VarChar, pathology_num2);
+        .input('pathology_num2', mssql.NVarChar, pathology_num2);
 
         result = request.query(qry);         
 
@@ -1156,8 +1159,12 @@ exports.limsDnactSave = (req, res, next) => {
         result = await request.query(query); 
        
         console.log(result.recordset[0].cnt);
+        console.log(result);
         if (result.recordset[0].cnt === 0) {
+            /*25.04.23 퀴리 문에 콤마 누락 문제 개선
             qry = `insert into statecontrol (rna18s,  pathology_num dnaRnasep, averageBase, mapd, rnaMapped)
+            values(@rnact, @test_code, '','','','')`;*/
+            qry = `insert into statecontrol (rna18s,  pathology_num, dnaRnasep, averageBase, mapd, rnaMapped)
             values(@rnact, @test_code, '','','','')`;
         } else {
             qry = `update statecontrol   set  rna18s = @rnact  where pathology_num = @test_code`;

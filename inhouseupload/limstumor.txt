@@ -1,60 +1,61 @@
-1	Bladder cancer	1
-1-1	Bladder adenocarcinoma	2
-1-2	Bladder small cell neuroendocrine carcinoma	3
-1-3	Bladder squamous cell carcinoma	4
-1-4	Bladder urothelial carcinoma	5
-2	Breast cancer	6
-3	Cervical cancer	7
-4	Colorectal cancer	8
-4-1	Colon cancer	9
-4-2	Rectal cancer	10
-5	Endometrial cancer	11
-6	Esophageal cancer	12
-7	Gastric cancer	13
-8	Gastroesophageal junction adenocarcinoma	14
-9	Gastrointestinal stromal tumor	15
-10	Glioblastoma	16
-11	Head and nect cancer	17
-12	Kidney cancer	18
-13	Liver cancer	19
-13-1	Cholangiocarcinoma	20
-14	Melanoma	21
-15	Mesothelioma	22
-16	Non-small cell lung cancer	23
-17	Osteosarcoma	24
-18	Ovarian cancer	25
-19	Pancreatic cancer	26
-20	Prostate cancer	27
-21	Skin basal cell carcinoma	28
-22	Small cell lung cancer	29
-23	Soft tissue sarcoma	30
-23-1	Angiosarcoma	31
-23-2	Clear cell sarcoma of soft tissue	32
-23-3	Dermatofibrosarcoma protuberans	33
-23-4	Desmoplastic small round cell tumor	34
-23-5	Ewing sarcoma/Peripheral primitive neuroectodermal tumor	35
-23-5-1	Ewing sarcoma	36
-23-5-1-1	Extraskeletal Ewing sarcoma	37
-23-6	Flbrosarcoma	38
-23-7	Leiomyosarcoma	39
-23-8	Liposarcoma	40
-23-9	Lymphangiosacoma	41
-23-10	Malignant peripheral nerve sheath tumor	42
-23-11	Phabdomyosarcoma	43
-23-12	Synovial sarcoma	44
-23-13	Undifferentiated/Unclassified sarcoma	45
-24	Testcular cancer	46
-25	Thyroid cancer	47
-25-1	Differentiated thyroid gland carcinoma	48
-25-2	Poorly differentiated thyroid gland carcinoma	49
-25-3	Thyroid gland anaplastic carcinoma	50
-25-4	Thyroid gland follicular carcinoma	51
-25-4-1	Thyroid gland Hurthle cell carcinoma	52
-25-5	Thyroid gland medullary carcinoma	53
-25-5-1	Sporadic thyroid gland medullary carcinoma	54
-25-6	Thyroid gland papillary carcinoma	55
-25-6-1	Columnar cell variant thyroid gland papillary carcinoma	56
-25-6-2	Tall cell variant thyroid gland papillary carcinoma	57
-26	Triple negative breast cancer	58
-27	Unknown primary origin	59
-28	Other soilid tumor	60
+﻿id	gene	orderby	seq
+121	Bladder cancer	1	1
+122	Bladder adenocarcinoma	1-1	2
+123	Bladder small cell neuroendocrine carcinoma	1-2	3
+124	Bladder squamous cell carcinoma	1-3	4
+125	Bladder urothelial carcinoma	1-4	5
+126	Breast cancer	2	6
+127	Cervical cancer	3	7
+128	Colorectal cancer	4	8
+129	Colon cancer	4-1	9
+130	Rectal cancer	4-2	10
+131	Esophageal cancer	6	12
+132	Endometrial cancer	5	11
+133	Gastric cancer	7	13
+134	Gastroesophageal junction adenocarcinoma	8	14
+135	Gastrointestinal stromal tumor	9	15
+136	Glioblastoma	10	16
+137	Head and neck cancer	11	17
+138	Kidney cancer	12	18
+139	Liver cancer	13	19
+140	Cholangiocarcinoma	13-1	20
+141	Melanoma	14	21
+142	Mesothelioma	15	22
+143	Non-small cell lung cancer	16	23
+144	Ovarian cancer	18	25
+145	Osteosarcoma	17	24
+146	Pancreatic cancer	19	26
+147	Prostate cancer	20	27
+148	Skin basal cell carcinoma	21	28
+149	Small cell lung cancer	22	29
+150	Soft tissue sarcoma	23	30
+151	Angiosarcoma	23-1	31
+152	Dermatofibrosarcoma protuberans	23-3	33
+153	Clear cell sarcoma of soft tissue	23-2	32
+154	Desmoplastic small round cell tumor	23-4	34
+155	Ewing sarcoma/Peripheral primitive neuroectodermal tumor	23-5	35
+156	Ewing sarcoma	23-5-1	36
+157	Extraskeletal Ewing sarcoma	23-5-1-1	37
+158	Flbrosarcoma	23-6	38
+159	Leiomyosarcoma	23-7	39
+160	Liposarcoma	23-8	40
+161	Lymphangiosarcoma	23-9	41
+162	Malignant peripheral nerve sheath tumor	23-10	42
+163	Rhabdomyosarcoma	23-11	43
+164	Synovial sarcoma	23-12	44
+165	Undifferentiated/Unclassified sarcoma	23-13	45
+166	Testicular cancer	24	46
+167	Thyroid cancer	25	47
+168	Differentiated thyroid gland carcinoma	25-1	48
+169	Poorly differentiated thyroid gland carcinoma	25-2	49
+170	Thyroid gland anaplastic carcinoma	25-3	50
+171	Thyroid gland follicular carcinoma	25-4	51
+172	Thyroid gland Hurthle cell carcinoma	25-4-1	52
+173	Thyroid gland medullary carcinoma	25-5	53
+174	Sporadic thyroid gland medullary carcinoma	25-5-1	54
+175	Thyroid gland papillary carcinoma	25-6	55
+176	Tall cell variant thyroid gland papillary carcinoma	25-6-2	57
+177	Columnar cell variant thyroid gland papillary carcinoma	25-6-1	56
+178	Triple negative breast cancer	26	58
+179	Unknown primary origin	27	59
+180	Other solid tumor	28	60

@@ -30,14 +30,20 @@ const  clinicallyInsertHandler = async (pathologyNum, clinically) => {
     if (len > 0) {
         
         clinically.forEach( async (item) => {
-            const clinically = item;
+            
+            const clinically = item.gene;
+            const seq        = item.seq;
+            const tier        = item.tier;
+            const frequency   = item.frequency;
             logger.info('[51][clinically]data=' +  pathologyNum + "," + clinically);
-            const qry = "insert into clinically (pathologyNum, clinically) values(@pathologyNum, @clinically)"; 
+            const qry = "insert into clinically (pathologyNum, clinically, tier, frequency) values(@pathologyNum, @clinically, @tier, @frequency)"; 
             logger.info('[27][clinically]query=' + qry);
             try {
                 const request = pool.request()
                 .input('pathologyNum', mssql.VarChar, pathologyNum)
-                .input('clinically', mssql.VarChar, clinically);
+                .input('clinically', mssql.VarChar, clinically)
+                .input ('tier', mssql.VarChar, tier)
+                .input ('frequency', mssql.VarChar, frequency);
     
                 result2 = await request.query(qry);
     
@@ -73,7 +79,7 @@ exports.clinicallydata = (req, res, next) => {
     await poolConnect; // ensures that the pool has been created
 
     //select Query 생성
-    const qry = "select clinically, seq  from clinically   where pathologyNum = @pathologyNum ";
+    const qry = "select clinically, seq, tier, frequency  from clinically   where pathologyNum = @pathologyNum ";
     logger.info("[78][clinicallySelectHandler]sql=" + qry );
     logger.info("[78][clinicallySelectHandler] pathologyNum" + pathologyNum);
     
@@ -131,14 +137,18 @@ const  clinicallyInsertHandler2 = async (pathologyNum, clinically) => {
         clinically.forEach( async (item) => {
             const clinically = item.gene;
             const seq        = item.seq;
+            const tier        = item.tier;
+            const frequency   = item.frequency;
             logger.info('[134][clinically2]data=' +  pathologyNum + "," + clinically);
-            const qry = "insert into clinically (pathologyNum, clinically, seq) values(@pathologyNum, @clinically, @seq)"; 
+            const qry = "insert into clinically (pathologyNum, clinically, seq, tier, frequency) values(@pathologyNum, @clinically, @seq, @tier, @frequency)"; 
             logger.info('[134][clinically2]query=' + qry);
             try {
                 const request = pool.request()
                 .input('pathologyNum', mssql.VarChar, pathologyNum)
                 .input ('seq', mssql.VarChar, seq)
-                .input('clinically', mssql.VarChar, clinically);
+                .input ('tier', mssql.VarChar, tier)
+                .input ('frequency', mssql.VarChar, frequency)
+                .input('tier', mssql.VarChar, tier);
     
                 result2 = await request.query(qry);
     
