@@ -32,18 +32,27 @@ const listHandler = async (req) => {
 
     logger.info('[13]benign listHandler genes=' + genes + ", coding= " + coding );
 	
-	let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change ";
-    sql = sql + " from benign ";
-    sql = sql + " where 1 = 1 ";
-	if(genes != "") 
-		sql = sql + " and genes like '%"+genes+"%'";
-    if(coding != "") 
-        sql = sql + " and coding like '%"+coding+"%'";
-    sql = sql + " order by id";
-
-	logger.info('[21]benign listHandler sql=' + sql);
     try {
-       const request = pool.request(); 
+        const request = pool.request(); 
+
+        let sql ="select id, genes, location, exon, transcript, coding, amino_acid_change ";
+        sql = sql + " from benign ";
+        sql = sql + " where 1 = 1 ";
+        
+        if(genes != "") {
+            sql = sql + " and genes like @genes";        
+            request.input('genes', mssql.VarChar, `%${genes}%`)
+        }
+        
+        if(coding != "") {
+            sql = sql + " and coding like @coding";
+            request.input('coding', mssql.VarChar, `%${coding}%`)
+        }
+
+        sql = sql + " order by id";
+
+        logger.info('[21]benign listHandler sql=' + sql);
+
        const result = await request.query(sql) 
        return result.recordset;
     } catch (error) {

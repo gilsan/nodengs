@@ -29,29 +29,34 @@ const listHandler = async (req) => {
 
     logger.info('[12]artifcats listHandler genes=' + genes + ", coding=" + coding + ", type=" + type);
 	
-	let sql =`select a.id, genes, location, exon, transcript, coding, amino_acid_change, type 
-                ,isnull(a.userid, '') userid
-                ,isnull(b.user_nm, '') user_nm
-                ,case when [savetime] is null then '' else  format ( [savetime], 'yyyyMMdd-HHmmss') end savetime
-            from artifacts a 
-            left outer join users b 
-            on a.userid = b.user_id `
-    sql = sql + " where 1=1 " 
-	if(genes != "") 
-		sql = sql + " and genes like '%"+genes+"%'";
-    if(coding != "") 
-        sql = sql + " and coding like '%"+coding+"%'";
-
-    if(type.length > 0 )
-    {
-        sql = sql +  " and type = '"+ type + "'";
-    }
-    
-    sql = sql + " order by a.savetime desc ";
-
-	logger.info('[12]artifcats listHandler sql=' + sql);
     try {
-       const request = pool.request(); 
+        const request = pool.request(); 
+        let sql =`select a.id, genes, location, exon, transcript, coding, amino_acid_change, type 
+                    ,isnull(a.userid, '') userid
+                    ,isnull(b.user_nm, '') user_nm
+                    ,case when [savetime] is null then '' else  format ( [savetime], 'yyyyMMdd-HHmmss') end savetime
+                from artifacts a 
+                left outer join users b 
+                on a.userid = b.user_id `
+        sql = sql + " where 1=1 " 
+
+        if(genes != "") 
+            sql = sql + " and genes like @genes";
+            request.input('genes', mssql.VarChar, `%${genes}%`)
+
+        if(coding != "") 
+            sql = sql + " and coding like @coding";
+            request.input('coding', mssql.VarChar, `%${coding}%`)
+
+        if(type.length > 0 )
+        {
+            sql = sql +  " and type = @type";
+            request.input('type', mssql.VarChar, type)
+        }
+        
+        sql = sql + " order by a.savetime desc ";
+
+        logger.info('[12]artifcats listHandler sql=' + sql);
        const result = await request.query(sql) 
        return result.recordset;
     } catch (error) {
@@ -64,14 +69,17 @@ const artifactsCountHandler = async (genes, coding, type) => {
     await poolConnect; // ensures that the pool has been created
    
     logger.info('[30][artifcats]get artifactsCountHandler data=' + genes + ", " + coding + ", " + type);
-    const sql ="select count(1) as count from artifacts where genes = '" + genes 
-              + "' and coding = '" + coding 
-              + "' and type = '" + type + "'";
+    const sql ="select count(1) as count from artifacts where genes = @genes "
+              + "' and coding = @coding "
+              + "' and type = @type ";
     logger.info('[33][artifcats]get artifactsCountHandler sql=' + sql);  
   
     try {
       const request = pool.request(); 
       const result = await request.query(sql)
+      request.input('genes', mssql.VarChar, genes)
+      request.input('coding', mssql.VarChar, coding)
+      request.input('type', mssql.VarChar, type)
       // console.dir( result);
       
       return result.recordset;

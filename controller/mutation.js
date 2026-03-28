@@ -28,13 +28,17 @@ const mutationCountHandler = async (gene, nucleotide_change, type) => {
   await poolConnect; // ensures that the pool has been created
  
   logger.info('[30][mutation]get mutationCountHandler data=' + gene + ", " + nucleotide_change + ", " + type);
-  const sql ="select count(1) as count from mutation where gene = '" + gene 
-            + "' and nucleotide_change = '" + nucleotide_change 
-            + "' and type = '" + type + "'";
+  
+  const sql ="select count(1) as count from mutation where gene = @gene "
+            + " and nucleotide_change = @nucleotide_change "
+            + " and type = @type ";
   logger.info('[33][mutation]get mutationCountHandler sql=' + sql);  
 
   try {
-    const request = pool.request(); 
+    const request = pool.request()
+    .input('gene', mssql.VarChar, gene)
+    .input('gene', mssql.VarChar, nucleotide_change)
+    .input('type', mssql.VarChar, type); 
     const result = await request.query(sql)
     // console.dir( result);
     
@@ -407,7 +411,7 @@ const  variantsHandler = async (req) => {
 }
 
 exports.getVariantsLists = (req,res, next) => {
-  logger.info('[764][mutation]getCommentInsert req=' + JSON.stringify(req.body));
+  logger.info('[764][mutation]getVariantsLists req=' + JSON.stringify(req.body));
    
   const result = variantsHandler(req);
   result.then(data => {
@@ -514,8 +518,10 @@ const listHandler = async (req) => {
     const coding	= req.body.coding; 
     const type    = nvl(req.body.type, "");
     logger.info("[27][mutation list]genes=" + genes + ", coding=" + coding + ", type=" + type );
-	
-	let sql =`select a.id	
+    try {
+      const request = pool.request();
+ 
+	    let sql =`select a.id	
 					,buccal 
 					,patient_name 
 					,register_number 
@@ -553,20 +559,21 @@ const listHandler = async (req) => {
         on a.userid = b.user_id 
 		    where 1=1`;
 
-	if(genes != "") 
-		sql = sql + " and gene like '%"+genes+"%'";
+      if(genes != "") {
+        sql = sql + " and gene like @genes ";
+        request.input('genes', mssql.VarChar, `%${genes}%`)
+      }
+      if(coding != "") {
+        sql = sql + " and nucleotide_change @coding ";
+        request.input('coding', mssql.VarChar, `%${coding}%`)
+      }
+      if(type != "") {
+        sql = sql + " and type like @type ";
+        request.input('type', mssql.VarChar, `%${type}%`)
+      }
+      sql = sql + " order by a.savetime desc";
 
-  if(coding != "") 
-    sql = sql + " and nucleotide_change like '%"+coding+"%'";
-
-  if(type != "") 
-    sql = sql + " and type like '%"+type+"%'";
-
-  sql = sql + " order by a.savetime desc";
-
-    logger.info("[293][mutationMapper list]sql=" + sql);
-    try {
-       const request = pool.request();
+      logger.info("[293][mutationMapper list]sql=" + sql);
         // .input('gene', mssql.VarChar, genes); 
        const result = await request.query(sql) 
        return result.recordset;
@@ -627,7 +634,11 @@ const seqcallHandler = async (req) => {
      isnull(amino_acid_change, '') aminoAcidChange, isnull(zygosity, '') zygosity,
      isnull(cosmic_id, '') rsid,  isnull(GenbankAccesionNo, '') genbankaccesion
    from report_detected_variants  
-   where gubun='SEQ' and sendyn='3' and nucleotide_change=@nucleotideChange and gene=@gene order by id desc`;
+   where gubun='SEQ' 
+   and sendyn='3' 
+   and nucleotide_change=@nucleotideChange 
+   and gene=@gene 
+   order by id desc`;
   logger.info('[460][mutation][seqcallHandler] =' + sql);
 
   try {
@@ -851,7 +862,12 @@ const geneticcallHandler2 = async (req) => {
   sql=`select top 1  isnull(functional_impact, '') functionalImpact, 
             isnull(transcript, '') transcript, isnull(exon, '') exon, isnull(amino_acid_change, '') amino_acid_change,
   isnull(dbSNPHGMD, '') dbSNPHGMD, isnull(gnomADEAS, '') gnomADEAS
-   from report_detected_variants  where  gubun='Genetic' and gene=@gene and nucleotide_change=@coding and  sendyn='3' order by id desc`;
+   from report_detected_variants  
+   where  gubun='Genetic' 
+   and gene=@gene 
+   and nucleotide_change=@coding 
+   and  sendyn='3' 
+   order by id desc`;
   logger.info('[549][mutation][geneticcallHandler2] =' + sql);
 
   try {
@@ -1218,6 +1234,9 @@ exports.deleteEssential = (req,res, next) => {
 /////// essentila lists 
 const  listsEssentialHandler = async (req) => {
   await poolConnect;
+
+  
+  logger.info('[1041][mutation][listsEssentialHandler] req=' +  JSON.stringify(req.body));
  
   const sql =`select id, isnull(title,'') title , isnull(mutation, '') mutation, isnull(amplification, '') amplification, 
     isnull(fusion, '') fusion  from essentialDNAMent`;

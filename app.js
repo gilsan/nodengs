@@ -6,6 +6,10 @@ const multer = require('multer');
 const cors = require('cors');
 const fs    = require('fs');
 
+const dotenv = require('dotenv');
+
+const envFile = process.env.ENV_FILE || '.env';
+dotenv.config({ path: envFile });
 
 const logger = require('./common/winston');
 

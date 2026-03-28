@@ -1,5 +1,5 @@
 
-const inputdb_xlsx  = require('./inputdb_xlsx');
+const inputdb_xlsx_mds  = require('./inputdb_xlsx_mds');
 const logger        = require('../common/winston');
 const mssql = require('mssql');
 
@@ -22,7 +22,7 @@ function convert(sample) {
 		tempValue += "1";
     } else {
        tempValue += "0";
-	}   
+	  }   
   }
   const newValue = Number(tempValue) * firstVal;
   return newValue;
@@ -31,16 +31,16 @@ function convert(sample) {
 function removeQuote(value) {
 	const quot_check = value.indexOf('"');
 	if (quot_check !== -1) {
-			return value.replace(/"/g, "");
+		return value.replace(/"/g, "");
 	}
 	return value;
 }
 
 exports.main = (data, filename, testedID,patientID) => {
      
-    logger.info ('[main.xlsx][40] ==>' +  filename  + " " +  testedID + " " + data.length + ' ' + patientID);
+  logger.info ('[main.xlsx.mds][40] ==>' +  filename  + " " +  testedID + " " + data.length + ' ' + patientID);
 
-	inputdb_xlsx.inputdb_del(testedID);
+	inputdb_xlsx_mds.inputdb_del(testedID);
 
 	let genes             = '';
 	let functional_impact = '';
@@ -48,8 +48,8 @@ exports.main = (data, filename, testedID,patientID) => {
 	let transcript        = '';
 	let coding            = '';
 	let amino_acid_change = '';
-    let vaf               = '';
-    let references        = '';
+  let vaf               = '';
+  let references        = '';
 	let cosmic            = '';
   let vus_msg           = '';
 
@@ -61,18 +61,8 @@ exports.main = (data, filename, testedID,patientID) => {
         /*
         // 액셀의 Detected variants  항목 읽어드림
         */  
-        // const functionalImpact =   String(data[i]["B"]).trim() ;  
-        // logger.info ('[main][65][main data]====>' + functionalImpact);
-       
-      // 25.10.22 Oncogenic 추가
-      /*
-      if ( data[i]['B'] === 'Pathogenic'  
-          || data[i]['B']  === 'VUS' 
-          || data[i]['B']  === 'Likely Pathogenic' 
-          || data[i]['B']  === 'Likely Benign' 
-          || data[i]['B']  === 'Likey Benign')
-      */
-      if ( data[i]['B'] === 'Pathogenic'  
+        
+        if ( data[i]['B'] === 'Pathogenic'  
           || data[i]['B']  === 'VUS' 
           || data[i]['B']  === 'Likely Pathogenic' 
           || data[i]['B']  === 'Likely Benign' 
@@ -95,10 +85,17 @@ exports.main = (data, filename, testedID,patientID) => {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //  console.log('locus: ', locus);
             // 액셀의 유전자 읽어 디비에 저장
-            inputdb_xlsx.inputdb_xlsx(
+            inputdb_xlsx_mds.inputdb_xlsx(
                 genes,   functional_impact, transcript,  exon,
                 coding,  amino_acid_change , zygosity,
                 vaf,  references, cosmic,   testedID, i			   
+            );
+
+            // 25.11.14 feiltered_raw_tsv에도 저장한다
+            inputdb_xlsx_mds.inputdb_tsv(
+                genes,   functional_impact, transcript,  exon,
+                coding,  amino_acid_change, 
+                vaf, references, cosmic,  zygosity, testedID		   
             );
             	
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,8 +107,8 @@ exports.main = (data, filename, testedID,patientID) => {
             vus_msg = data[i].A.slice(0,3);
              
             if (vus_msg === 'VUS') {
-              console.log("[main_xlsx][95][VUS 내용]", data[i].A);
-              inputdb_xlsx.input_vusmsg_xlsx(patientID, data[i].A);
+              console.log("[main_xlsx_mds][95][VUS 내용]", data[i].A);
+              inputdb_xlsx_mds.input_vusmsg_xlsx(patientID, data[i].A);
             }
 
                         

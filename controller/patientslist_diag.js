@@ -184,10 +184,11 @@ const  messageHandler = async (today) => {
          then  'T' 
         else isnull(saveyn, 'S')  end saveyn
     from [dbo].[patientinfo_diag] 
-    where left(accept_date, 8) = '` + today + "'";
+    where left(accept_date, 8) = @today `;
     logger.info('[102][patientinfo_diag list]sql=' + sql);
     try {
-        const request = pool.request(); // or: new sql.Request(pool1)
+        const request = pool.request()
+                .input('today', mssql.VarChar, today); ; // or: new sql.Request(pool1)
         const result = await request.query(sql)
       //  console.dir( result.recordset);
         
@@ -235,16 +236,19 @@ const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, stat
     logger.info("status_1="+status_1);
     logger.info("name1="+name1);
  
-    let sql = `select isnull(name, '') name  ,isnull(a.patientID, '') patientID 
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+
+        let sql = `select isnull(name, '') name  ,isnull(a.patientID, '') patientID 
             ,isnull(age,  '') age ,isnull(gender, '') gender 
             ,a.specimenNo
-        ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
-        ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
-        ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
-        ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
-        ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
-        ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
-        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
+            ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
+            ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
+            ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
+            ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
+            ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
+            ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+            ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
             ,isnull(targetDisease, '') targetDisease 
             ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
             ,case when IsNULL( gbn, '' ) = ''  
@@ -272,8 +276,8 @@ const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, stat
                 then '' 
                 else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
             ,case when IsNULL( left(accept_date, 4 ), '' ) = '1900'  
-            then '' 
-            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
             , accept_date accept_date2 
             ,isnull(test_code, '') test_code  
             ,isnull(a.screenstatus, '') screenstatus, isnull(path, '') path, isnull(detected, '') detected 
@@ -302,96 +306,104 @@ const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, stat
         sql = sql + ` left outer join dbo.report_comments c
             on a.specimenNo = c.specimenNo `;
 
-        sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
-             + " and left(accept_date, 8) <= '" + end + "'"; 
- 
-    if(patient.length > 0 )
-    {
-        sql = sql +  " and a.patientID = '" +  patient + "'";
-    }
+        sql = sql + `where left(accept_date, 8) >= @start 
+                    and left(accept_date, 8) <= @end `; 
 
-    if(specimen_no.length > 0 )
-    {
-        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
-    }
-
-    if(name1.length > 0 )
-    {
-        sql = sql +  " and a.name like '" +  name1 + "%'";
-    }
-
-    if(sheet_1.length > 0 )
-    {
-        if (sheet_1 != '') {
-            let sheet_2 = '';
-            let sheet_3 = '';
-
-            if (sheet_1 == 'AMLALL') {
-                sheet_2 = 'AMLALL';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'MDS') {  // MDS/MPN 
-                sheet_2 = 'MDS';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'lymphoma') {  // 악성림프종
-                sheet_2 = 'LYM';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'genetic') {  // 유전성유전질환
-                sheet_2 = 'Genetic';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'Sequencing') {  // Sequencing
-                sheet_2 = 'SEQ';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'MLPA') {  // MLPA
-                sheet_2 = 'MLPA';
-                sheet_3 = 'type';
-            } else if (sheet_1 == 'igctr') {  // igctr
-                sheet_2 = 'IGTCR';
-                sheet_3 = 'type';
-            }
-            else
-            {
-                sheet_2 = sheet_1;
-            }
-
-            if (sheet_3 == 'type') {
-                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
-            } else {
-                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
-            }
-            
-        } else {
-            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
-        }
-             
-    }
-
-    if(status_1.length == 1 )
-    {
-        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
-    } else if (status_1.length === 2) {
-        sql = sql +  " and isnull(a.screenstatus, '') = ''";
-    } 
-
-    if (research1.length > 0) {
-        if (research1 === 'RESEARCH') {
-            sql = sql +  " and a.gbn = 'RESEARCH'";
-        } else {
-            sql = sql +  " and a.gbn != 'RESEARCH'";
-        }
-    }
-
-    //sql = sql + " order by accept_date desc, specimenNo desc   ";
-    sql = sql + " order by accept_date2 asc  ";
-
-    logger.info("[301][patientinfo_diag Listsigtcr]sql="+sql);
+        request.input('start', mssql.VarChar, start); 
+        request.input('end', mssql.VarChar, end); 
     
-    try {
-        const request = pool.request(); // or: new sql.Request(pool1)
+        if(patient.length > 0 )
+        {
+            sql = sql +  " and a.patientID = @patient ";
+            request.input('patient', mssql.VarChar, patient); 
+        }
+
+        if(specimen_no.length > 0 )
+        {
+            sql = sql +  " and a.specimenNo = @specimen_no ";
+            request.input('specimen_no', mssql.VarChar, specimen_no); 
+        }
+
+        if(name1.length > 0 )
+        {
+            sql = sql +  " and a.name like @ame1 ";
+            request.input('name1', mssql.VarChar, `%${name1}%`)
+        }
+
+        if(sheet_1.length > 0 )
+        {
+            if (sheet_1 != '') {
+                let sheet_2 = '';
+                let sheet_3 = '';
+
+                if (sheet_1 == 'AMLALL') {
+                    sheet_2 = 'AMLALL';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'MDS') {  // MDS/MPN 
+                    sheet_2 = 'MDS';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'lymphoma') {  // 악성림프종
+                    sheet_2 = 'LYM';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+                    sheet_2 = 'Genetic';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'Sequencing') {  // Sequencing
+                    sheet_2 = 'SEQ';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'MLPA') {  // MLPA
+                    sheet_2 = 'MLPA';
+                    sheet_3 = 'type';
+                } else if (sheet_1 == 'igctr') {  // igctr
+                    sheet_2 = 'IGTCR';
+                    sheet_3 = 'type';
+                }
+                else
+                {
+                    sheet_2 = sheet_1;
+                }
+
+                if (sheet_3 == 'type') {
+                    sql = sql +  " and test_code in (select code from codedefaultvalue where type = @sheet )";
+                    request.input('sheet', mssql.VarChar, sheet_2); 
+                } else {
+                    sql = sql +  ` and test_code = @sheet`;
+                    request.input('sheet', mssql.VarChar, sheet_1); 
+                }
+                
+            } else {
+                sql = sql +  ` and test_code = @sheet `;
+                request.input('sheet', mssql.VarChar, sheet_1); 
+            }
+                
+        }
+
+        if(status_1.length == 1 )
+        {
+            sql = sql +  " and a.screenstatus = @status ";
+            request.input('status', mssql.VarChar, status_1); 
+        } else if (status_1.length === 2) {
+            sql = sql +  " and isnull(a.screenstatus, '') = ''";
+        } 
+
+        if (research1.length > 0) {
+            if (research1 === 'RESEARCH') {
+                sql = sql +  " and a.gbn = 'RESEARCH'";
+            } else {
+                sql = sql +  " and a.gbn != 'RESEARCH'";
+            }
+        }
+
+        //sql = sql + " order by accept_date desc, specimenNo desc   ";
+        sql = sql + " order by accept_date2 asc  ";
+
+        logger.info("[301][patientinfo_diag Listsigtcr]sql="+sql);
+        
         const result = await request.query(sql)
         console.log( result);
         
@@ -403,6 +415,7 @@ const  messageHandler3_1 = async (start, end, patientID, specimenNo, sheet, stat
 
 // 진검 환자 검색
 // 2021.01.29 prescription_date -> accept_date 조회 조건 변경
+/*
 const  messageHandler3 = async (start, end, patientID, specimenNo, sheet, status, research,name) => {
 
     await poolConnect; // ensures that the pool has been created
@@ -585,6 +598,7 @@ const  messageHandler3 = async (start, end, patientID, specimenNo, sheet, status
         logger.error('[310][patientinfo_diag list]SQL error'+ err.message);
     }
 }
+*/
 
 // 진검 환자 검색
 // 2021.01.29 prescription_date -> accept_date 조회 조건 변경
@@ -607,24 +621,27 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
     logger.info("status_1="+status_1);
     logger.info("name1="+name1);
  
-    let sql = `select isnull(name, '') name  ,isnull(patientID, '') patientID 
+    try {
+        const request = pool.request(); // or: new sql.Request(pool1)
+
+        let sql = `select isnull(name, '') name  ,isnull(patientID, '') patientID 
             ,isnull(age,  '') age ,isnull(gender, '') gender 
             ,a.specimenNo
-        ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
-        ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
-        ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
-        ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
-        ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
-        ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
-        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
+            ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
+            ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
+            ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
+            ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
+            ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
+            ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+            ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
             ,isnull(targetDisease, '') targetDisease 
             ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
             ,case when IsNULL( gbn, '' ) = ''  
-                then isnull(request, '')
+                    then isnull(request, '')
                 when IsNULL( gbn, '' ) = 'cmc'
-                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
                 when IsNULL( gbn, '' ) = '인터넷'
-                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
                 else isnull(request, '') end request 
             , isnull(appoint_doc, '')  appoint_doc 
             ,isnull(worker, '') worker 
@@ -644,30 +661,30 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 then '' 
                 else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
             ,case when IsNULL( left(accept_date, 4 ), '' ) = '1900'  
-            then '' 
-            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
             , accept_date accept_date2 
             ,isnull(test_code, '') test_code  
             ,isnull(a.screenstatus, '') screenstatus, isnull(path, '') path, isnull(detected, '') detected 
             ,case when IsNULL( CONVERT(VARCHAR(4), a.report_date, 102 ), '' ) = '1900'  
                 then '' 
                 else IsNULL( CONVERT(VARCHAR(10), a.report_date, 102 ), '' ) end  report_date 
-            ,isnull(examin, '') examin, isnull(recheck, '') recheck 
+            , isnull(examin, '') examin, isnull(recheck, '') recheck 
             , isnull(vusmsg, '') vusmsg, isnull(ver_file, '5.10') verfile  
             , isnull(genetic1, '') genetic1, isnull(genetic2, '') genetic2, isnull(genetic3, '') genetic3, isnull(genetic4, '') genetic4
             , isnull(report_title, '') reportTitle
             , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm`
 
-            if ((sheet_1 == 'igctr') ) {
-                sql = sql + ", isnull(path_comment, '') comment, isnull(b.comment, '') comment1, ";
-            }
-            else {
-                sql = sql + ", isnull(path_comment, '') path_comment, isnull(b.comment, '') comment, ";
-            }
-           
-            if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
-                sql = sql + "isnull(c.comment, '') comment_gene , ";
-            }
+        if ((sheet_1 == 'igctr') ) {
+            sql = sql + ", isnull(path_comment, '') comment, isnull(b.comment, '') comment1, ";
+        }
+        else {
+            sql = sql + ", isnull(path_comment, '') path_comment, isnull(b.comment, '') comment, ";
+        }
+        
+        if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+            sql = sql + "isnull(c.comment, '') comment_gene , ";
+        }
 
         sql = sql + `isnull(gbn, '') gbn
             , case when isnull(a.screenstatus, '') = '10' 
@@ -676,102 +693,110 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
             on a.specimenNo = b.specimenNo `;
-            
-            if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
-                sql = sql + ` left outer join dbo.report_comments c
-                    on a.specimenNo = c.specimenNo `;
-            }
+        
+        if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+            sql = sql + ` left outer join dbo.report_comments c
+                on a.specimenNo = c.specimenNo `;
+        }
 
         sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
-             + " and left(accept_date, 8) <= '" + end + "'"; 
- 
-    if(patient.length > 0 )
-    {
-        sql = sql +  " and patientID = '" +  patient + "'";
-    }
+            + " and left(accept_date, 8) <= '" + end + "'"; 
 
-    if(specimen_no.length > 0 )
-    {
-        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
-    }
+            request.input('start', mssql.VarChar, start); 
+            request.input('end', mssql.VarChar, end); 
 
-    if(name1.length > 0 )
-    {
-        sql = sql +  " and a.name like '" +  name1 + "%'";
-    }
+        if(patient.length > 0 )
+        {
+            sql = sql +  " and patientID = @patient ";
+            request.input('patient', mssql.VarChar, patient); 
+        }
 
-    if(sheet_1.length > 0 )
-    {
-        if (sheet_1 != '') {
-            let sheet_2 = '';
-            let sheet_3 = '';
+        if(specimen_no.length > 0 )
+        {
+            sql = sql +  " and a.specimenNo = @specimen_no ";
+            request.input('specimen_no', mssql.VarChar, specimen_no); 
+        }
 
-            if (sheet_1 == 'AMLALL') {
-                sheet_2 = 'AMLALL';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'MDS') {  // MDS/MPN 
-                sheet_2 = 'MDS';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'lymphoma') {  // 악성림프종
-                sheet_2 = 'LYM';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'genetic') {  // 유전성유전질환
-                sheet_2 = 'Genetic';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'Sequencing') {  // Sequencing
-                sheet_2 = 'SEQ';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'MLPA') {  // MLPA
-                sheet_2 = 'MLPA';
-                sheet_3 = 'type';
-            } else if (sheet_1 == 'igctr') {  // igctr
-                sheet_2 = 'IGTCR';
-                sheet_3 = 'type';
-            }
-            else
-            {
-                sheet_2 = sheet_1;
-            }
+        if(name1.length > 0 )
+        {
+            sql = sql +  " and a.name like @name ";
+            request.input('name', mssql.VarChar, `%${name1}%`); 
+        }
 
-            if (sheet_3 == 'type') {
-                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+        if(sheet_1.length > 0 )
+        {
+            if (sheet_1 != '') {
+                let sheet_2 = '';
+                let sheet_3 = '';
+
+                if (sheet_1 == 'AMLALL') {
+                    sheet_2 = 'AMLALL';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'MDS') {  // MDS/MPN 
+                    sheet_2 = 'MDS';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'lymphoma') {  // 악성림프종
+                    sheet_2 = 'LYM';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+                    sheet_2 = 'Genetic';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'Sequencing') {  // Sequencing
+                    sheet_2 = 'SEQ';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'MLPA') {  // MLPA
+                    sheet_2 = 'MLPA';
+                    sheet_3 = 'type';
+                } else if (sheet_1 == 'igctr') {  // igctr
+                    sheet_2 = 'IGTCR';
+                    sheet_3 = 'type';
+                }
+                else
+                {
+                    sheet_2 = sheet_1;
+                }
+
+                if (sheet_3 == 'type') {
+                    sql = sql +  " and test_code in (select code from codedefaultvalue where type = @sheet) ";
+                    request.input('sheet', mssql.VarChar, sheet_2); 
+                } else {
+                    sql = sql +  ` and test_code = @sheet `;
+                    request.input('sheet', mssql.VarChar, sheet_1); 
+                }
+                
             } else {
-                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+                sql = sql +  ` and test_code = @sheet `;
+                request.input('sheet', mssql.VarChar, sheet_1); 
             }
-            
-        } else {
-            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+                
         }
-             
-    }
 
-    if(status_1.length == 1 )
-    {
-        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
-    } else if (status_1.length === 2) {
-        sql = sql +  " and isnull(a.screenstatus, '') = ''";
-    } 
+        if(status_1.length == 1 )
+        {
+            sql = sql +  " and a.screenstatus = @status ";
+            request.input('status', mssql.VarChar, status_1); 
+        } else if (status_1.length === 2) {
+            sql = sql +  " and isnull(a.screenstatus, '') = ''";
+        } 
 
-    if (research1.length > 0) {
-        if (research1 === 'RESEARCH') {
-            sql = sql +  " and a.gbn = 'RESEARCH'";
-        } else {
-            sql = sql +  " and a.gbn = ''";
+        if (research1.length > 0) {
+            if (research1 === 'RESEARCH') {
+                sql = sql +  " and a.gbn = 'RESEARCH'";
+            } else {
+                sql = sql +  " and a.gbn = ''";
+            }
         }
-    }
 
-    //sql = sql + " order by accept_date desc, specimenNo desc   ";
-    sql = sql + " order by accept_date2 asc  ";
+        //sql = sql + " order by accept_date desc, specimenNo desc   ";
+        sql = sql + " order by accept_date2 asc  ";
 
-    logger.info("[301][patientinfo_diag list]sql="+sql);
-    
-    try {
-        const request = pool.request(); // or: new sql.Request(pool1)
+        logger.info("[301][patientinfo_diag list]sql="+sql);
+
         const result = await request.query(sql)
         console.log( result);
         
@@ -805,24 +830,25 @@ const  messageHandler4 = async (start, end, patientID, specimenNo, sheet, status
     logger.info("status_1="+status_1);
     logger.info("name1="+name1);
  
-    let sql = `select isnull(name, '') name  ,isnull(patientID, '') patientID 
+    try {
+        let sql = `select isnull(name, '') name  ,isnull(patientID, '') patientID 
             ,isnull(age,  '') age ,isnull(gender, '') gender 
             ,a.specimenNo
-        ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
-        ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
-        ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
-        ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
-        ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
-        ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
-        ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
+            ,case when a.screenstatus = '3' then  isnull(b.[IKZK1Deletion], '') else isnull(a.[IKZK1Deletion], '') end IKZK1Deletion
+            ,case when a.screenstatus = '3' then  isnull(b.FLT3ITD, '') else isnull(a.FLT3ITD, '') end FLT3ITD
+            ,case when a.screenstatus = '3' then  isnull(b.[chromosomalanalysis], '') else isnull(a.[chromosomalanalysis], '') end chromosomalanalysis
+            ,case when a.screenstatus = '3' then  isnull(b.[leukemiaassociatedfusion], '') else isnull(a.[leukemiaassociatedfusion], '') end leukemiaassociatedfusion
+            ,case when a.screenstatus = '3' then  isnull(b.[diagnosis], '') else isnull(a.[diagnosis], '') end diagnosis
+            ,case when a.screenstatus = '3' then  isnull(b.[genetictest], '') else isnull(a.[genetictest], '') end genetictest
+            ,case when a.screenstatus = '3' then  isnull(b.[bonemarrow], '') else isnull(a.[bonemarrow], '') end bonemarrow
             ,isnull(targetDisease, '') targetDisease 
             ,isnull(method, '') method ,isnull(a.specimen, '') specimen 
             ,case when IsNULL( gbn, '' ) = ''  
-                then isnull(request, '')
+                    then isnull(request, '')
                 when IsNULL( gbn, '' ) = 'cmc'
-                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') 
                 when IsNULL( gbn, '' ) = '인터넷'
-                then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
+                    then  isnull(req_instnm, '') + '/' + isnull(req_pathologist, '')  + '/' + isnull(req_department, '') + '/' + isnull(path_comment, '') 
                 else isnull(request, '') end request 
             , isnull(appoint_doc, '')  appoint_doc 
             ,isnull(worker, '') worker 
@@ -842,8 +868,8 @@ const  messageHandler4 = async (start, end, patientID, specimenNo, sheet, status
                 then '' 
                 else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 102 ), '' ) end sendEMRDate 
             ,case when IsNULL( left(accept_date, 4 ), '' ) = '1900'  
-            then '' 
-            else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), cast(CAST(accept_date as CHAR(8)) as datetime), 102 ), '' ) end accept_date 
             , accept_date accept_date2 
             ,isnull(test_code, '') test_code  
             ,isnull(a.screenstatus, '') screenstatus, isnull(path, '') path, isnull(detected, '') detected 
@@ -856,16 +882,16 @@ const  messageHandler4 = async (start, end, patientID, specimenNo, sheet, status
             , isnull(report_title, '') reportTitle
             , isnull(req_pathologist, '') req_pathologist ,isnull(req_department, '') req_department ,isnull(req_instnm, '') req_instnm`
 
-            if ((sheet_1 == 'igctr') ) {
-                sql = sql + ", isnull(path_comment, '') comment, isnull(b.comment, '') comment1, ";
-            }
-            else {
-                sql = sql + ", isnull(path_comment, '') path_comment, isnull(b.comment, '') comment, ";
-            }
-           
-            //if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
-                sql = sql + "isnull(c.comment, '') comment_gene , ";
-            //}
+        if ((sheet_1 == 'igctr') ) {
+            sql = sql + ", isnull(path_comment, '') comment, isnull(b.comment, '') comment1, ";
+        }
+        else {
+            sql = sql + ", isnull(path_comment, '') path_comment, isnull(b.comment, '') comment, ";
+        }
+        
+        //if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+        sql = sql + "isnull(c.comment, '') comment_gene , ";
+        //}
 
         sql = sql + `isnull(gbn, '') gbn
             , case when isnull(a.screenstatus, '') = '10' 
@@ -874,101 +900,110 @@ const  messageHandler4 = async (start, end, patientID, specimenNo, sheet, status
             from [dbo].[patientinfo_diag] a
             left outer join dbo.report_patientsInfo b
             on a.specimenNo = b.specimenNo `;
-            
-            //if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
-                sql = sql + ` left outer join dbo.report_comments c
-                    on a.specimenNo = c.specimenNo `;
-            //}
+        
+        //if ((sheet_1 == 'genetic') || (sheet_1 == 'Sequencing') ) {
+        sql = sql + ` left outer join dbo.report_comments c
+                on a.specimenNo = c.specimenNo `;
+        //}
 
         sql = sql + `where left(accept_date, 8) >= '` + start + "'" 
-             + " and left(accept_date, 8) <= '" + end + "'"; 
+            + " and left(accept_date, 8) <= '" + end + "'"; 
+
+        request.input('start', mssql.VarChar, start); 
+        request.input('end', mssql.VarChar, end); 
  
-    if(patient.length > 0 )
-    {
-        sql = sql +  " and patientID = '" +  patient + "'";
-    }
+        if(patient.length > 0 )
+        {
+            sql = sql +  " and patientID = @patient  ";
+            request.input('patient', mssql.VarChar, patient); 
+        }
 
-    if(specimen_no.length > 0 )
-    {
-        sql = sql +  " and a.specimenNo = '" +  specimen_no + "'";
-    }
+        if(specimen_no.length > 0 )
+        {
+            sql = sql +  " and a.specimenNo = @specimen_no ";
+            request.input('specimen_no', mssql.VarChar, specimen_no); 
+        }
 
-    if(name1.length > 0 )
-    {
-        sql = sql +  " and a.name like '" +  name1 + "%'";
-    }
+        if(name1.length > 0 )
+        {
+            sql = sql +  " and a.name like @name1 ";
+            request.input('name', mssql.VarChar, `%${name1}%`); 
+        }
 
-    if(sheet_1.length > 0 )
-    {
-        if (sheet_1 != '') {
-            let sheet_2 = '';
-            let sheet_3 = '';
+        if(sheet_1.length > 0 )
+        {
+            if (sheet_1 != '') {
+                let sheet_2 = '';
+                let sheet_3 = '';
 
-            if (sheet_1 == 'AMLALL') {
-                sheet_2 = 'AMLALL';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'MDS') {  // MDS/MPN 
-                sheet_2 = 'MDS';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'lymphoma') {  // 악성림프종
-                sheet_2 = 'LYM';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'genetic') {  // 유전성유전질환
-                sheet_2 = 'Genetic';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'Sequencing') {  // Sequencing
-                sheet_2 = 'SEQ';
-                sheet_3 = 'type';
-                
-            } else if (sheet_1 == 'MLPA') {  // MLPA
-                sheet_2 = 'MLPA';
-                sheet_3 = 'type';
-            } else if (sheet_1 == 'igctr') {  // igctr
-                sheet_2 = 'IGTCR';
-                sheet_3 = 'type';
-            }
-            else
-            {
-                sheet_2 = sheet_1;
-            }
+                if (sheet_1 == 'AMLALL') {
+                    sheet_2 = 'AMLALL';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'MDS') {  // MDS/MPN 
+                    sheet_2 = 'MDS';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'lymphoma') {  // 악성림프종
+                    sheet_2 = 'LYM';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'genetic') {  // 유전성유전질환
+                    sheet_2 = 'Genetic';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'Sequencing') {  // Sequencing
+                    sheet_2 = 'SEQ';
+                    sheet_3 = 'type';
+                    
+                } else if (sheet_1 == 'MLPA') {  // MLPA
+                    sheet_2 = 'MLPA';
+                    sheet_3 = 'type';
+                } else if (sheet_1 == 'igctr') {  // igctr
+                    sheet_2 = 'IGTCR';
+                    sheet_3 = 'type';
+                }
+                else
+                {
+                    sheet_2 = sheet_1;
+                }
 
-            if (sheet_3 == 'type') {
-                sql = sql +  " and test_code in (select code from codedefaultvalue where type = '"+  sheet_2 + "')";
+                if (sheet_3 == 'type') {
+                    sql = sql +  " and test_code in (select code from codedefaultvalue where type = @sheet )";
+                    request.input('sheet', mssql.VarChar, sheet_2); 
+                } else {
+                    sql = sql +  ` and test_code = @sheet `;
+                    request.input('sheet', mssql.VarChar, sheet_1); 
+                }
+                
             } else {
-                sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+                sql = sql +  ` and test_code = @sheet `;
+                request.input('sheet', mssql.VarChar, sheet_1); 
             }
-            
-        } else {
-            sql = sql +  ` and test_code = '` + sheet_1 + `'`;
+                
         }
-             
-    }
 
-    if(status_1.length == 1 )
-    {
-        sql = sql +  " and a.screenstatus = '" +  status_1 + "'";
-    } else if (status_1.length === 2) {
-        sql = sql +  " and isnull(a.screenstatus, '') = ''";
-    } 
+        if(status_1.length == 1 )
+        {
+            sql = sql +  " and a.screenstatus = @status ";
+            request.input('status', mssql.VarChar, status_1); 
+        } else if (status_1.length === 2) {
+            sql = sql +  " and isnull(a.screenstatus, '') = ''";
+        } 
 
-    if (research1.length > 0) {
-        if (research1 === 'RESEARCH') {
-            sql = sql +  " and a.gbn = 'RESEARCH'";
-        } else {
-            sql = sql +  " and a.gbn = ''";
+        if (research1.length > 0) {
+            if (research1 === 'RESEARCH') {
+                sql = sql +  " and a.gbn = 'RESEARCH'";
+            } else {
+                sql = sql +  " and a.gbn = ''";
+            }
         }
-    }
 
-    //sql = sql + " order by accept_date desc, specimenNo desc   ";
-    sql = sql + " order by accept_date2 asc  ";
+        //sql = sql + " order by accept_date desc, specimenNo desc   ";
+        sql = sql + " order by accept_date2 asc  ";
 
-    logger.info("[301][patientinfo_diag list]sql="+sql);
+        logger.info("[301][patientinfo_diag list]sql="+sql);
     
-    try {
         const request = pool.request(); // or: new sql.Request(pool1)
         const result = await request.query(sql)
         console.log( result);

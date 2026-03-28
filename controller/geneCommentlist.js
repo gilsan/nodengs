@@ -15,16 +15,19 @@ const  commentMessageHandler = async (gene, type) => {
   logger.info("[15][getCommentLists]gene=" + gene );
   logger.info("[15][getCommentLists]type=" + type );
   
-  const sql ="select * from comments where gene = '" + gene + "' and type = '" + type + "'";
-
-  logger.info("[20][getCommentLists]sql=" + sql );
-
   try {
-      const request = pool.request(); // or: new sql.Request(pool1)
-      const result = await request.query(sql)
-     // console.dir( result);
-      
-      return result.recordset;
+    const request = pool.request(); // or: new sql.Request(pool1)
+
+    const sql ="select * from comments where gene = @gene and type = @type ";
+    request.input('gene', mssql.VarChar, gene); 
+    request.input('type', mssql.VarChar, type); 
+
+    logger.info("[20][getCommentLists]sql=" + sql );
+
+    const result = await request.query(sql)
+    // console.dir( result);
+    
+    return result.recordset;
   } catch (err) {
       logger.error('[30][getCommentLists]error=' + err);
   }

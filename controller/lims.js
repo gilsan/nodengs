@@ -620,8 +620,8 @@ const  limsSelectHandler = async (start, end) => {
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             where isnull(Research_yn, 'N') = 'N' 
-            and left(prescription_date, 8) >= '` + start + `'
-            and left(prescription_date, 8) <= '` + end + `'
+            and left(prescription_date, 8) >= @start 
+            and left(prescription_date, 8) <= @end 
             union all
             SELECT
                 isnull(a.pathology_num, '') pathology_num 
@@ -672,8 +672,8 @@ const  limsSelectHandler = async (start, end) => {
             on a.pathology_num  = b.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             where isnull(Research_yn, 'N') = 'N' 
-            and left(prescription_date, 8) >= '` + start + `'
-            and left(prescription_date, 8) <= '` + end + `'
+            and left(prescription_date, 8) >= @start 
+            and left(prescription_date, 8) <= @end '
             ) a1 
             ORDER BY dna_rna_gbn, id `;
 
@@ -681,7 +681,9 @@ const  limsSelectHandler = async (start, end) => {
     
     try {
 
-        const request = pool.request();
+        const request = pool.request()
+            .input('start', mssql.VarChar, start) 
+            .input('end', mssql.VarChar, end);  
 
         const result = await request.query(qry);
         return result.recordset; 
@@ -808,9 +810,9 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '0') = '0'
             and isnull(b.del_flag, 'N') ='N'
-            where left(b.report_date, 10) = '` + start + `'
-            and b.examin = '` + examin + `'
-            and b.recheck = '` + recheck + `'
+            where left(b.report_date, 10) = @start 
+            and b.examin = @examin 
+            and b.recheck = @recheck 
             union all
             SELECT
                 isnull(a.pathology_num, '') pathology_num 
@@ -860,9 +862,9 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
             on b.pathology_num  = a.pathology_num
             and ISNULL(b.dna_rna_gbn, '1') = '1'
             and isnull(b.del_flag, 'N') ='N'
-            where left(b.report_date, 10) = '` + start + `'
-            and b.examin = '` + examin + `'
-            and b.recheck = '` + recheck + `'
+            where left(b.report_date, 10) = @start
+            and b.examin = @examin 
+            and b.recheck = @recheck 
             ) a1 
             ORDER BY dna_rna_gbn, id  `;
 
@@ -870,7 +872,10 @@ const  limsSelectHandler2 = async (start, examin, recheck) => {
     
     try {
 
-        const request = pool.request();
+        const request = pool.request()
+        .input('start', mssql.VarChar, start) 
+        .input('examin', mssql.VarChar, examin)
+        .input('recheck', mssql.VarChar, recheck);  
 
         const result = await request.query(qry);
         return result.recordset; 

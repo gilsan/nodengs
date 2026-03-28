@@ -35,24 +35,34 @@ const listHandler = async (req) => {
                 + ", aminoacidchange= " + aminoacidchange
                 + ", nucleotidechange=" + nucleotidechange );
 	
-	let sql =`select id, gene, 
-                isnull(amino_acid_change, '') amino_acid_change, 
-                isnull(nucleotide_change, '') nucleotide_change, 
-                isnull(reason, '') reason 
-            from polymorphism 
-            where 1 = 1 `;
-
-	if(gene != "") 
-		sql = sql + " and gene like '%"+gene+"%'";
-    if(aminoacidchange != "") 
-        sql = sql + " and amino_acid_change like '%"+aminoacidchange+"%'";
-    if(nucleotidechange != "") 
-        sql = sql + " and nucleotide_change like '%"+nucleotidechange+"%'";
-    sql = sql + " order by id";
-
-	logger.info('[34]BlackList listHandler sql=' + sql);
     try {
-       const request = pool.request(); 
+        const request = pool.request(); 
+        let sql =`select id, gene, 
+                    isnull(amino_acid_change, '') amino_acid_change, 
+                    isnull(nucleotide_change, '') nucleotide_change, 
+                    isnull(reason, '') reason 
+                from polymorphism 
+                where 1 = 1 `;
+
+        if(gene != "") {
+            sql = sql + " and gene like '%"+gene+"%'";
+            request.input('gene', mssql.VarChar, `%${gene}%`)
+        }
+        
+        if(aminoacidchange != "") {
+            sql = sql + " and amino_acid_change like '%"+aminoacidchange+"%'";
+            request.input('aminoacidchange', mssql.VarChar, `%${aminoacidchange}%`)
+        }
+        
+        if(nucleotidechange != "") {
+            sql = sql + " and nucleotide_change like '%"+nucleotidechange+"%'";
+            request.input('nucleotidechange', mssql.VarChar, `%${nucleotidechange}%`)
+        }
+
+        sql = sql + " order by id";
+
+        logger.info('[34]BlackList listHandler sql=' + sql);
+
        const result = await request.query(sql) 
        return result.recordset;
     } catch (error) {

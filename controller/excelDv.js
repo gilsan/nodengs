@@ -182,8 +182,12 @@ exports.excelDvSave = (req, res, next) => {
 const  excelDvSelectHandler = async (start, end ,type) => {
     await poolConnect; // ensures that the pool has been created
     logger.error('[184] excelDvSelectHandler =' + start + ', ' + end + ', '+ type);
+    try {
+
+        const request = pool.request();
+
     //select Query 생성
-        let qry = `SELECT
+    let qry = `SELECT
             isnull( tsvname, '') tsvname
             , isnull( patientID, '') patientID
             , isnull(specimenNo, '') specimenNo
@@ -204,8 +208,11 @@ const  excelDvSelectHandler = async (start, end ,type) => {
             , isnull(accept_date,  '') acceptdate
             , isnull(report_date,  '') reportdate
         FROM NGS_DATA.dbo.excelDV 
-        where left(report_date, 10) >= '` + start + "'" 
-             + " and left(report_date, 10) <= '" + end + "'";
+        where left(report_date, 10) >= @start  
+        and left(report_date, 10) <= @end`;
+
+        request.input('start', mssql.VarChar, start); 
+        request.input('end', mssql.VarChar, end); 
 
         if (type.length > 0) {
 
@@ -215,15 +222,13 @@ const  excelDvSelectHandler = async (start, end ,type) => {
             }
             else
             {
-                qry = qry +  " and test_code = '" +  type + "'";
+                qry = qry +  " and test_code = @type "; 
+                request.input('type', mssql.VarChar, type); 
             }
         }
 
         logger.info('[214]excelDvSelect sql=' + qry);
     
-    try {
-
-        const request = pool.request();
 
         const result = await request.query(qry);
         return result.recordset; 

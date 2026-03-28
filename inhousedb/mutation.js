@@ -124,65 +124,65 @@ async function processData() {
     console.log(rowCount);
     if (rowCount >= 0) {
 
-        var buccal = nvl(row[0], "");
+        var buccal = nvl(row[1], "");
         logger.info('[84][msmutation2]buccal=' + buccal);
 
-        var patient_name = nvl(row[1], "");
+        var patient_name = nvl(row[2], "");
         logger.info('[87][msmutation2]patient_name=' + patient_name);
 
-        var temp_data = nvl(row[2], "");
+        var temp_data = nvl(row[3], "");
         var register_number = findChar(temp_data);        
         logger.info('[91][msmutation2]register_number=' + register_number);
 
-        temp_data = nvl(row[3], "");
+        temp_data = nvl(row[4], "");
         var fusion = findChar(temp_data);
         logger.info('[95][msmutation2]fusion=' + fusion);
 
-        temp_data = nvl(row[4], "");
+        temp_data = nvl(row[5], "");
         var gene = findChar(temp_data);      
         logger.info('[99][msmutation2]gene=' + gene);
 
-        temp_data = nvl(row[5], "");
+        temp_data = nvl(row[6], "");
         var functional_impact = findChar(temp_data);     
         logger.info('[103][msmutation2]functional_impact=' + functional_impact);
       
-        temp_data = nvl(row[6], "");
+        temp_data = nvl(row[7], "");
         var transcript = findChar(temp_data);      
         logger.info('[107][msmutation2]transcript=' + transcript);
 
-        temp_data = nvl(row[7], "");
+        temp_data = nvl(row[8], "");
         var exon_intro = findChar(temp_data);      
         logger.info('[111][msmutation2]exon_intro=' + exon_intro);
 
-        temp_data = nvl(row[8], "");
+        temp_data = nvl(row[9], "");
         var nucleotide_change = findChar(temp_data);
         logger.info('[115][msmutation2]nucleotide_change=' + nucleotide_change);
 
-        temp_data = nvl(row[9], "");
+        temp_data = nvl(row[10], "");
         var amino_acid_change = findChar(temp_data);      
         logger.info('[119][msmutation2]amino_acid_change=' + amino_acid_change);
 
-        temp_data = nvl(row[10], "");
+        temp_data = nvl(row[11], "");
         var zygosity = findChar(temp_data);
         logger.info('[123][msmutation2]zygosity=' + zygosity);
 
-        temp_data = nvl(row[11], "");
+        temp_data = nvl(row[12], "");
         var vaf = findChar(temp_data);
         logger.info('[127][msmutation2]vaf=' + vaf);
 
-        temp_data = nvl(row[12], "");
+        temp_data = nvl(row[13], "");
         var reference = findChar(temp_data);
         logger.info('[131][msmutation2]reference=' + reference);
 
-        temp_data = nvl(row[13], "");
+        temp_data = nvl(row[14], "");
         var cosmic_id = findChar(temp_data);
         logger.info('[135][msmutation2]cosmic_id=' + cosmic_id);
 
-        temp_data = nvl(row[14], "");
+        temp_data = nvl(row[15], "");
         var sift_polyphen_mutation_taster = findChar(temp_data);
         logger.info('[139][msmutation2]sift_polyphen_mutation_taster=' + sift_polyphen_mutation_taster);
 
-        temp_data = nvl(row[15], "");
+        temp_data = nvl(row[16], "");
         var buccal2 = findChar(temp_data);
         logger.info('[142][msmutation2]buccal2=' + buccal2);
               

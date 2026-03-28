@@ -111,10 +111,11 @@ const  messageHandler = async (today) => {
     isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver \
      from [dbo].[patientinfo_path] \
      where isnull(Research_yn, 'N') = 'N' \
-     and  left(prescription_date, 8) = '" + today + "'";
+     and  left(prescription_date, 8) = @today ";
     logger.info("[81][patientinfo_path select]sql=" + sql);
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
+        request.input('today', mssql.VarChar, today); 
         const result = await request.query(sql)
       //  console.dir( result.recordset);
         
@@ -147,84 +148,90 @@ const messageHandler2 = async (start, end, patientID, pathology_num) => {
     logger.info("[112][patientinfo_path select]start=" + start);
     logger.info("[112][patientinfo_path select]end=" + end);
     
-    let sql = `select isnull(FLT3ITD, '') FLT3ITD, 
-    isnull(accept_date, '') accept_date, 
-    isnull(age, '') age, 
-    isnull(appoint_doc, '') appoint_doc, 
-    isnull(bamFilename, '') bamFilename, 
-    case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, 
-    isnull(dna_rna_ext, '') dna_rna_ext,     isnull(examin, '') examin, 
-    isnull(gender, '') gender,     isnull(id, '') id, 
-    isnull(irpath, '') irpath,  isnull(key_block, '') key_block, 
-    isnull(management, '') management,     isnull(msiscore, '') msiscore, 
-    isnull(name, '') name, 
-    isnull(organ, '') organ, 
-    isnull(orpath, '')  orpath, 
-    isnull(pathological_dx, '') pathological_dx, 
-    isnull(pathology_num, '') pathology_num, 
-    isnull(patientID, '') patientID, 
-    isnull(prescription_code, '') prescription_code, 
-    isnull(prescription_date, '') prescription_date, 
-    isnull(prescription_no, '') prescription_no, 
-    isnull(recheck, '') recheck, 
-    isnull(rel_pathology_num, '') rel_pathology_num, 
-    isnull(img1, '') img1,
-    isnull(img2, '') img2,
-    isnull(img3, '') img3,
-    case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, 
-    isnull(screenstatus, '') screenstatus, 
-    isnull(sendEMR, '') sendEMR, 
-    case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, 
-    isnull(test_code, '') test_code, \
-    case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, 
-    isnull(tsvFilteredFilename, '') tsvFilteredFilename, 
-    isnull(tsvFilteredStatus, '') tsvFilteredStatus, 
-    isnull(tsvirfilename, '') tsvirfilename, 
-    isnull(tsvorfilename, '') tsvorfilename, 
-    isnull(tumor_cell_per, '') tumor_cell_per, 
-    isnull(tumor_type, '') tumor_type, 
-    isnull(tumorburden, '') tumorburden, 
-    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
-               where isnull(Research_yn, 'N') = 'N' 
-               and left(prescription_date, 8) >= '` + start + `' 
-               and left(prescription_date, 8) <= '` + end + "' ";
-    
-    sql = sql + ` and prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
-                        'PMO11020',	'PMO11042',	'PMO12054',	
-                        'PMO12057',	'PMO12059',	'PMO12060', 
-                        'PMO12071',	'PMO12098') `;
-
-    let patient =  nvl(patientID, "");
-    let pathology =  nvl(pathology_num, "");
-
-    logger.info("[112][patientinfo_path select]patient=" + patient);
-    logger.info("[112][patientinfo_path select]pathology=" + pathology);
-    
-    if(patient.length > 0 )
-    {
-        sql = sql +  " and patientID = '" +  patient + "'";
-    }
-
-    if(pathology.length > 0 )
-    {
-        //20-12-26 = -> like 변경
-        //sql = sql +  " and pathology_num = '" +  pathology + "'";
-        sql = sql +  " and pathology_num like '%" +  pathology + "%'";
-    }
-
-    sql = sql + " order by prescription_date desc, pathology_num desc ";
-    logger.info("[137][patientinfo_path select]sql=" + sql);
-        
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
+
+        let sql = `select isnull(FLT3ITD, '') FLT3ITD, 
+                isnull(accept_date, '') accept_date, 
+                isnull(age, '') age, 
+                isnull(appoint_doc, '') appoint_doc, 
+                isnull(bamFilename, '') bamFilename, 
+                case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+                    then '' 
+                    else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, 
+                isnull(dna_rna_ext, '') dna_rna_ext,     isnull(examin, '') examin, 
+                isnull(gender, '') gender,     isnull(id, '') id, 
+                isnull(irpath, '') irpath,  isnull(key_block, '') key_block, 
+                isnull(management, '') management,     isnull(msiscore, '') msiscore, 
+                isnull(name, '') name, 
+                isnull(organ, '') organ, 
+                isnull(orpath, '')  orpath, 
+                isnull(pathological_dx, '') pathological_dx, 
+                isnull(pathology_num, '') pathology_num, 
+                isnull(patientID, '') patientID, 
+                isnull(prescription_code, '') prescription_code, 
+                isnull(prescription_date, '') prescription_date, 
+                isnull(prescription_no, '') prescription_no, 
+                isnull(recheck, '') recheck, 
+                isnull(rel_pathology_num, '') rel_pathology_num, 
+                isnull(img1, '') img1,
+                isnull(img2, '') img2,
+                isnull(img3, '') img3,
+                case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
+                    then '' 
+                    else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, 
+                isnull(screenstatus, '') screenstatus, 
+                isnull(sendEMR, '') sendEMR, 
+                case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  
+                    then '' 
+                    else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, 
+                isnull(test_code, '') test_code, \
+                case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+                    then '' 
+                    else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, 
+                isnull(tsvFilteredFilename, '') tsvFilteredFilename, 
+                isnull(tsvFilteredStatus, '') tsvFilteredStatus, 
+                isnull(tsvirfilename, '') tsvirfilename, 
+                isnull(tsvorfilename, '') tsvorfilename, 
+                isnull(tumor_cell_per, '') tumor_cell_per, 
+                isnull(tumor_type, '') tumor_type, 
+                isnull(tumorburden, '') tumorburden, 
+                isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
+            where isnull(Research_yn, 'N') = 'N' 
+            and left(prescription_date, 8) >= @start   
+            and left(prescription_date, 8) <= @end  `;
+
+        request.input('start', mssql.VarChar, start); 
+        request.input('end', mssql.VarChar, end); 
+        
+        sql = sql + ` and prescription_code  not in ('PMO11007',	'PMO11017',	'PMO11019',
+                            'PMO11020',	'PMO11042',	'PMO12054',	
+                            'PMO12057',	'PMO12059',	'PMO12060', 
+                            'PMO12071',	'PMO12098') `;
+
+        let patient =  nvl(patientID, "");
+        let pathology =  nvl(pathology_num, "");
+
+        logger.info("[112][patientinfo_path select]patient=" + patient);
+        logger.info("[112][patientinfo_path select]pathology=" + pathology);
+        
+        if(patient.length > 0 )
+        {
+            sql = sql +  " and patientID = @patient ";
+            request.input('patient', mssql.VarChar, patient); 
+        }
+
+        if(pathology.length > 0 )
+        {
+            //20-12-26 = -> like 변경
+            //sql = sql +  " and pathology_num = '" +  pathology + "'";
+            sql = sql +  " and pathology_num like @pathology ";
+            request.input('pathology', mssql.VarChar, `%${pathology}%`); 
+        }
+
+        sql = sql + " order by prescription_date desc, pathology_num desc ";
+        logger.info("[137][patientinfo_path select]sql=" + sql);
+        
         const result = await request.query(sql)
        // console.dir( result);
         
@@ -324,8 +331,11 @@ const messageSeqHandler2 = async (start, end, patientID, pathology_num) => {
     isnull(tumorburden, '') tumorburden, 
     isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
                where isnull(Research_yn, 'N') = 'N' 
-               and left(prescription_date, 8) >= '` + start + `' 
-               and left(prescription_date, 8) <= '` + end + "' ";
+               and left(prescription_date, 8) >= @start   
+               and left(prescription_date, 8) <= @end  `;
+   
+    request.input('start', mssql.VarChar, start); 
+    request.input('end', mssql.VarChar, end); 
 
     sql = sql + `and prescription_code  in ('PMO11007',	'PMO11017',	'PMO11019',
                         'PMO11020',	'PMO11042',	'PMO12054',	
@@ -340,14 +350,16 @@ const messageSeqHandler2 = async (start, end, patientID, pathology_num) => {
     
     if(patient.length > 0 )
     {
-        sql = sql +  " and patientID = '" +  patient + "'";
+        sql = sql +  " and patientID = @patient ";
+        request.input('patient', mssql.VarChar, patient); 
     }
 
     if(pathology.length > 0 )
     {
         //20-12-26 = -> like 변경
         //sql = sql +  " and pathology_num = '" +  pathology + "'";
-        sql = sql +  " and pathology_num like '%" +  pathology + "%'";
+        sql = sql +  " and pathology_num like @pathology ";
+        request.input('pathology', mssql.VarChar, `%${pathology}%`); 
     }
 
     sql = sql + " order by prescription_date desc, pathology_num desc ";
@@ -524,50 +536,50 @@ const getPatientInfo = async (pathologyNum) => {
     await poolConnect; // ensures that the pool has been created
     
     let sql = `select isnull(FLT3ITD, '') FLT3ITD, 
-    isnull(accept_date, '') accept_date, 
-    isnull(age, '') age, 
-    isnull(appoint_doc, '') appoint_doc, 
-    isnull(bamFilename, '') bamFilename, 
-    case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, 
-    isnull(dna_rna_ext, '') dna_rna_ext,     isnull(examin, '') examin, 
-    isnull(gender, '') gender,     isnull(id, '') id, 
-    isnull(irpath, '') irpath,  isnull(key_block, '') key_block, 
-    isnull(management, '') management,     isnull(msiscore, '') msiscore, 
-    isnull(name, '') name, 
-    isnull(organ, '') organ, 
-    isnull(orpath, '')  orpath, 
-    isnull(pathological_dx, '') pathological_dx, 
-    isnull(pathology_num, '') pathology_num, 
-    isnull(patientID, '') patientID, 
-    isnull(prescription_code, '') prescription_code, 
-    isnull(prescription_date, '') prescription_date, 
-    isnull(prescription_no, '') prescription_no, 
-    isnull(recheck, '') recheck, 
-    isnull(rel_pathology_num, '') rel_pathology_num, 
-    case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, 
-    isnull(screenstatus, '') screenstatus, 
-    isnull(sendEMR, '') sendEMR, 
-    case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, 
-    isnull(test_code, '') test_code, \
-    case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
-        then '' 
-        else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, 
-    isnull(tsvFilteredFilename, '') tsvFilteredFilename, 
-    isnull(tsvFilteredStatus, '') tsvFilteredStatus, 
-    isnull(tsvirfilename, '') tsvirfilename, 
-    isnull(tsvorfilename, '') tsvorfilename, 
-    isnull(tumor_cell_per, '') tumor_cell_per, 
-    isnull(tumor_type, '') tumor_type, 
-    isnull(tumorburden, '') tumorburden, 
-    isnull(worker, '') workerr, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
-               where  pathology_num=@pathologyNum 
-               and screenstatus != '5'`;
+            isnull(accept_date, '') accept_date, 
+            isnull(age, '') age, 
+            isnull(appoint_doc, '') appoint_doc, 
+            isnull(bamFilename, '') bamFilename, 
+            case when IsNULL( CONVERT(VARCHAR(4), createDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), createDate, 126 ), '' ) end createDate, 
+            isnull(dna_rna_ext, '') dna_rna_ext,     isnull(examin, '') examin, 
+            isnull(gender, '') gender,     isnull(id, '') id, 
+            isnull(irpath, '') irpath,  isnull(key_block, '') key_block, 
+            isnull(management, '') management,     isnull(msiscore, '') msiscore, 
+            isnull(name, '') name, 
+            isnull(organ, '') organ, 
+            isnull(orpath, '')  orpath, 
+            isnull(pathological_dx, '') pathological_dx, 
+            isnull(pathology_num, '') pathology_num, 
+            isnull(patientID, '') patientID, 
+            isnull(prescription_code, '') prescription_code, 
+            isnull(prescription_date, '') prescription_date, 
+            isnull(prescription_no, '') prescription_no, 
+            isnull(recheck, '') recheck, 
+            isnull(rel_pathology_num, '') rel_pathology_num, 
+            case when IsNULL( CONVERT(VARCHAR(4), report_date, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), report_date, 126 ), '' ) end report_date, 
+            isnull(screenstatus, '') screenstatus, 
+            isnull(sendEMR, '') sendEMR, 
+            case when IsNULL( CONVERT(VARCHAR(4), sendEMRDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), sendEMRDate, 126 ), '' ) end sendEMRDate, 
+            isnull(test_code, '') test_code, \
+            case when IsNULL( CONVERT(VARCHAR(4), tsvFilteredDate, 126 ), '' ) = '1900'  
+                then '' 
+                else IsNULL( CONVERT(VARCHAR(10), tsvFilteredDate, 126 ), '' ) end tsvFilteredDate, 
+            isnull(tsvFilteredFilename, '') tsvFilteredFilename, 
+            isnull(tsvFilteredStatus, '') tsvFilteredStatus, 
+            isnull(tsvirfilename, '') tsvirfilename, 
+            isnull(tsvorfilename, '') tsvorfilename, 
+            isnull(tumor_cell_per, '') tumor_cell_per, 
+            isnull(tumor_type, '') tumor_type, 
+            isnull(tumorburden, '') tumorburden, 
+            isnull(worker, '') workerr, isnull(sw_ver, '1') sw_ver  from [dbo].[patientinfo_path] 
+        where  pathology_num=@pathologyNum 
+        and screenstatus != '5'`;
 
     try {
         const request = pool.request()

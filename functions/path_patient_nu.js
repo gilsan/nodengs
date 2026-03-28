@@ -52,12 +52,14 @@ const messageHandler2 = async (pathology_num) => {
     let sql = "select isnull(prescription_date, '') prescription_date, \
     				isnull(patientID, '') patientID  \
     		from [dbo].[patientinfo_path] \
-            where pathology_num = '" +  pathology_num + "'";
+            where pathology_num = @pathology_num ";
     
     logger.info("[69][patientinfo_path select]sql=" + sql);
         
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
+		request.input('pathology_num', mssql.VarChar, pathology_num); 
+
         const result = await request.query(sql)
        // console.dir( result);
         

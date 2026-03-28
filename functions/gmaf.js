@@ -64,27 +64,27 @@ function convert(sample) {
 // genes == TMPT coding  coding == 'c.719A>G'
 function gmafprocess(gmafVal, val, genes, coding) {
 
-	logger.info('67][gmafVal=' + gmafVal);
+	logger.info('[67][gmafVal=' + gmafVal);
 	logger.info('[68][genes=' + genes);
 	logger.info('[69][coding=' + coding);
 	const gmafLength = gmafVal.toString().length;
 	 
-   if (gmafLength > 0) {			
-		   if(parseFloat(gmafVal) > parseFloat(val)) {
-				//return false;
-				if ((genes === 'TPMT') && (coding === 'c.719A>G'))
-					{
-						return true;
-					}
-					else {
-			        	return false;
-					}
-			} else {
+	if (gmafLength > 0) {			
+		if(parseFloat(gmafVal) > parseFloat(val)) {
+			//return false;
+			if ((genes === 'TPMT') && (coding === 'c.719A>G'))
+			{
 				return true;
 			}
-   } else if (gmafLength === 0) {
-	   return true;
-   } 
+			else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	} else if (gmafLength === 0) {
+		return true;
+	} 
 }
 
 /***
@@ -249,23 +249,23 @@ exports.gmafProcess = (gmaf, val, genes, coding) => {
 
  exports.gmafProcess2 = (gmaf, val) => {
      
-	   const result_gmaf = gmaf.indexOf('E');
-	   
-	    if (result_gmaf !== -1 && gmaf.length) {
-		    gmaf = convert(gmaf); // 7.0E-4 같은 경우처리 
+	const result_gmaf = gmaf.indexOf('E');
+	
+	if (result_gmaf !== -1 && gmaf.length) {
+		gmaf = convert(gmaf); // 7.0E-4 같은 경우처리 
 
-			//gmaf = Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(gmaf);
-			
-			logger.info('[45][gmaf]' + gmaf);
+		//gmaf = Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(gmaf);
+		
+		logger.info('[45][gmaf]' + gmaf);
 
-			 const result = gmafprocess(gmaf, val);
-            return  { gmaf, result };
-	    } else {
-			if (gmaf.toString().length === 0) { // 길이가 0 이면 false
-				return true;
-			} else {
-               const result = gmafprocess(gmaf, val);
-               return { gmaf, result };
-			}            
-		}
+		const result = gmafprocess(gmaf, val);
+		return  { gmaf, result };
+	} else {
+		if (gmaf.toString().length === 0) { // 길이가 0 이면 false
+			return true;
+		} else {
+			const result = gmafprocess(gmaf, val);
+			return { gmaf, result };
+		}            
+	}
  }

@@ -101,6 +101,7 @@ const  messageHandler = async (today) => {
     
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
+        request.input('today', mssql.VarChar, today); 
         const result = await request.query(sql)
        // console.dir( result);
         
@@ -175,13 +176,18 @@ const  messageHandler2 = async (start, end) => {
                     isnull(tumor_cell_per, '') tumor_cell_per, \
                     isnull(tumor_type, '') tumor_type, \
                     isnull(tumorburden, '') tumorburden, \
-                    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver from [dbo].[patientinfo_path]"
-               + " where left(prescription_date, 8) >= '" + start 
-               + "' and left(prescription_date, 8) <= '" + end + "'";
+                    isnull(worker, '') worker, isnull(sw_ver, '1') sw_ver \
+            from [dbo].[patientinfo_path] \
+            and left(prescription_date, 8) >= @start \
+            and left(prescription_date, 8) <= @end  ";
     logger.info('[58][patientinfo_path select2]sql=' + sql);
   
     try {
         const request = pool.request(); // or: new sql.Request(pool1)
+          
+        request.input('start', mssql.VarChar, start); 
+        request.input('end', mssql.VarChar, end); 
+        
         const result = await request.query(sql)
         console.dir( result);
  

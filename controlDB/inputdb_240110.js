@@ -2,6 +2,7 @@
 // select  id, locus, locations, variant_effect, gmaf, phred_qual_score, type,info, krgdb_622_lukemia, krgdb_1100_leukemia from filtered_raw_tsv
 //  select  id, locus, locations, variant_effect, gmaf, phred_qual_score, type,info, krgdb_622_lukemia, krgdb_1100_leukemia from filtered_raw_tsv where type != 'REF' and info != 'HS'
 //  select   count(*) as cnt from filtered_raw_tsv where type != 'REF' and info != 'HS'
+// select   count(*) as cnt from filtered_raw_tsv where type != 'REF' and info != 'HS'
 
 const fs = require('fs');
 const mssql = require('mssql');

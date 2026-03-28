@@ -1923,11 +1923,12 @@ const SequencingCountHandler = async (type) => {
  
   logger.info('[1726][screenList]get SequencingCountHandler type=' + type);
   const sql ="select count(1) as count from sequncing_list \
-           where report_type = '" + type + "'";
+           where report_type = @type ";
   logger.info('[1741][screenList]get SequencingCountHandler sql=' + sql);  
 
   try {
     const request = pool.request(); 
+    request.input('type', mssql.VarChar, type); 
     const result = await request.query(sql)
     // console.dir( result);
     

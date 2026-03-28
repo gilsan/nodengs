@@ -8,16 +8,30 @@ fileupload: file: [
 const fs = require('fs');
 const express = require('express');
 const router = express.Router();
- 
+const site = process.env.SITE || 'default';
+
+let main_mod;
+
+try {
+  main_mod = require(`../functions/main_${site}`);
+} catch (err) {
+  main_mod = require('../functions/main');
+}
+
+
 // const inputDB      = require('../controlDB/inputdb');
-const main_mod     = require('../functions/main');
+//const main_mod     = require('../functions/main');
 const main_form6   = require('../functions/main_form6');
 const main_nu      = require('../functions/patient_nu');
 const loadData_mod = require('../functions/readData');
 const loadData_xlsx = require('../functions/readData_xlsx');
 const loadData_xlsx_gen = require('../functions/readData_xlsx_gen');
+const loadData_xlsx_AMLL = require('../functions/readData_xlsx_AMLL');
+const loadData_xlsx_mds = require('../functions/readData_xlsx_mds');
 const main_xlsx   = require('../functions/main_xlsx');
 const main_xlsx_gen   = require('../functions/main_xlsx_gen');
+const main_xlsx_AMLL   = require('../functions/main_xlsx_AMLL');
+const main_xlsx_mds   = require('../functions/main_xlsx_mds');
 const logger = require('../common/winston');
 
 var multer = require('multer');
@@ -493,6 +507,7 @@ router.post('/upload', function (req, res) {
                       logger.info('[497][fileupload]필터링한 화일 XLSX'+ item.originalname + "  === " + patient_id + ", " + test_code );
 
                         //main_nu.patient_nu(testedID);
+                        const AMLL = ['LPE471', 'LPE472'];
                         const LYM = ['LPE474', 'LPE475'];
                         const MDS = ['LPE473'];
 
@@ -500,10 +515,15 @@ router.post('/upload', function (req, res) {
                           logger.info ('pas_data_lym.test_code='+ test_code);
                           main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID,patient_id);
                         }		
+                        else if (AMLL.includes(test_code) > 0) {
+                          logger.info ('pas_data.test_code='+ test_code);
+                          main_xlsx_AMLL.main_AMLL(loadData_xlsx_AMLL.loadData_xlsx_AMLL(item.path),item.originalname,testedID,patient_id);
+                          
+                        }		
                         else if (MDS.includes(test_code) > 0) {
                           logger.info ('pas_data_mds.test_code='+ test_code);
-                          main_xlsx.main(loadData_xlsx.loadData_xlsx(item.path),item.originalname,testedID,patient_id);
-                        }		
+                          main_xlsx_mds.main(loadData_xlsx_mds.loadData_xlsx_mds(item.path),item.originalname,testedID,patient_id);
+                        }	
                         else {
                           logger.info ('pas_data.test_code='+ test_code);
                           main_xlsx_gen.main(loadData_xlsx_gen.loadData_xlsx_gen(item.path),item.originalname,testedID,patient_id);

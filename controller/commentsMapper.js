@@ -28,29 +28,34 @@ const listHandler = async (req) => {
     let sheet =  nvl(req.body.sheet, "");
     logger.info('[13][get comments list]genes=' + genes+ ", sheet=" + sheet);
 	
-	let sql ="select id, type, gene, comment, reference, isnull(variant_id, '') variant_id, isnull(sheet, 'AMLALL') sheet ";
-    sql = sql + " from comments ";
-    sql = sql + " where 1=1 " 
-	if(genes != "") 
-		sql = sql + " and gene like '%"+genes+"%'";
-
-    if(sheet.length > 0 )
-    {
-        if (sheet !== "AMLALL") {
-            sql = sql +  " and type = '"+ sheet + "'";
-        }
-    }
-
-    sql = sql + " order by id";
-    logger.info('[20][get comments list]sql=' + sql);
-    
     try {
-       const request = pool.request()
-         .input('genes', mssql.VarChar, genes)
-         .input('sheet', mssql.VarChar, sheet); 
-       const result = await request.query(sql) 
-       return result.recordset;
+        const request = pool.request()
+ 
+        let sql ="select id, type, gene, comment, reference, isnull(variant_id, '') variant_id, isnull(sheet, 'AMLALL') sheet ";
+        sql = sql + " from comments ";
+        sql = sql + " where 1=1 " 
 
+        if(genes != "") { 
+            sql = sql + " and gene like @genes";
+            request.input('genes', mssql.VarChar, `%${genes}%`)
+        }
+  
+        if(sheet.length > 0 )
+        {
+            if (sheet !== "AMLALL") {
+                sql = sql +  " and type = @sheet";
+                request.input('sheet', mssql.VarChar, sheet); 
+            }
+        }
+
+        sql = sql + " order by id";
+        
+        logger.info('[20][get comments list]sql=' + sql);
+
+        const result = await request.query(sql) 
+        
+        return result.recordset;
+    
    } catch (error) {
     logger.error('[28][get comments list]err=' + error.message);
    }

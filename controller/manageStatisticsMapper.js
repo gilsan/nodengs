@@ -16,35 +16,45 @@ const listHandler = async (req) => {
 	
 	logger.info('[17][manageStatistics list]data=' + userId + ", " + userNm + ", "  + startDay + ", "  + endDay + ", " +  dept);
   
-	let sql =" select a.seq, a.patientID, a.name, substring(a.accept_date,1,4) + '-' + " ;
-	sql = sql +" + substring(a.accept_date,5,2) +'-' + substring(a.accept_date,7,2)  accept_date , " ;
-	sql = sql +" CONVERT(CHAR(19), send_time, 120) send_time, a.dept , b.user_nm  sender, send_result  " ;
-	sql = sql +"  from stat_Log  a  " ;
-	sql = sql +"  inner join  (select user_id, user_nm from users b where  dept = @dept )  b " ;
-	sql = sql +" on a.sender = b.user_id  " ; 
-	sql = sql + " where 1=1 ";
-	if(userId != "") 
-		sql = sql + " and a.patientID like '%"+userId+"%'";
-	if(userNm != "") 
-		sql = sql + " and a.name like '%"+userNm+"%'";
-
-	if(startDay != "") 
-		sql = sql + " and a.send_time >= '"+startDay+"'";
-	if(endDay != "") 
-		sql = sql + " and a.send_time <= DATEADD(d, 1, '"+endDay+ "')";
-
-    sql = sql + " order by a.seq desc";
-
-	logger.info('[17][manageStatistics sql' + sql);
     try {
-       const request = pool.request()
-         .input('userId', mssql.VarChar, userId)
-		 .input('userNm', mssql.VarChar, userNm) 
-		 .input('startDay', mssql.VarChar, startDay) 
-		 .input('endDay', mssql.VarChar, endDay) 
-		 .input('dept', mssql.VarChar, dept)   ; 
-       const result = await request.query(sql) 
-       return result.recordset;
+		const request = pool.request()
+
+		let sql =" select a.seq, a.patientID, a.name, substring(a.accept_date,1,4) + '-' + " ;
+		sql = sql +" + substring(a.accept_date,5,2) +'-' + substring(a.accept_date,7,2)  accept_date , " ;
+		sql = sql +" CONVERT(CHAR(19), send_time, 120) send_time, a.dept , b.user_nm  sender, send_result  " ;
+		sql = sql +"  from stat_Log  a  " ;
+		sql = sql +"  inner join  (select user_id, user_nm from users b where  dept = @dept )  b " ;
+		sql = sql +" on a.sender = b.user_id  " ; 
+		sql = sql + " where 1=1 ";
+
+		request.input('dept', mssql.VarChar, dept)   ; 
+		
+		if(userId != "") {
+			sql = sql + " and a.patientID like '%"+userId+"%'";
+			request.input('userId', mssql.VarChar, userId)
+		}
+		
+		if(userNm != "") {
+			sql = sql + " and a.name like '%"+userNm+"%'";
+			request.input('userNm', mssql.VarChar, userNm) 
+		}
+
+		if(startDay != "") { 
+			sql = sql + " and a.send_time >= '"+startDay+"'";
+			request.input('startDay', mssql.VarChar, startDay) 
+		}
+		
+		if(endDay != "") {
+			sql = sql + " and a.send_time <= DATEADD(d, 1, '"+endDay+ "')";
+			request.input('endDay', mssql.VarChar, endDay) 
+		}	
+
+		sql = sql + " order by a.seq desc";
+
+		logger.info('[17][manageStatistics sql' + sql);
+    	
+		 const result = await request.query(sql) 
+    	return result.recordset;
     } catch (error) {
 		logger.error('[49][manageStatistics list]err=' + error.message);
     }

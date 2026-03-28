@@ -133,7 +133,9 @@ exports.update = (req,res, next) => {
     const type     = req.body.type;   
     logger.info('[61][resultmanager][listHandelr] type=' + type);
 
-    const sql=`select   isnull(type, '') type, isnull(checker, '') checker, isnull(reader, '') reader  from resultmanager  where type =@type`;
+    const sql=`select   isnull(type, '') type, isnull(checker, '') checker, isnull(reader, '') reader
+      from resultmanager  
+      where type =@type`;
     logger.info('[64][resultmanager][listHandelr] sql=' + sql);
 
     try {

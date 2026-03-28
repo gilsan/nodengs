@@ -14,29 +14,36 @@ const listHandler = async (req) => {
     
     logger.info('[15][manageFunction list]data=' + functionName + ", " + startDay + ", " + endDay);
 	 
-	let sql =" select a.function_id, a.function_name, a.service_status,    " ; 
-	sql = sql +" CONVERT(CHAR(19), create_date, 120) create_date,  " ;
-	sql = sql +" CONVERT(CHAR(19), update_date, 120) update_date   " ;
-	sql = sql +"  from diag_function a  " ;  
-	sql = sql + " where 1 = 1 ";
-	 
-	if(functionName != "") 
-		sql = sql + " and a.function_name like '%"+functionName+"%'";
-
-	if(startDay != "") 
-		sql = sql + " and CONVERT(CHAR(8), update_date, 112) >= '"+startDay+"'";
-	if(endDay != "") 
-		sql = sql + " and CONVERT(CHAR(8), update_date, 112) <= '"+endDay+"'"; 
-    sql = sql + " order by a.function_id desc";
-
-	logger.info('[32][manageFunction list]sql=' + sql);
     try {
-       const request = pool.request() 
-		 .input('functionName', mssql.VarChar, functionName) 
-		 .input('startDay', mssql.VarChar, startDay) 
-		 .input('endDay', mssql.VarChar, endDay)   ; 
-       const result = await request.query(sql) 
-       return result.recordset;
+        const request = pool.request() 
+
+        let sql =" select a.function_id, a.function_name, a.service_status,    " ; 
+        sql = sql +" CONVERT(CHAR(19), create_date, 120) create_date,  " ;
+        sql = sql +" CONVERT(CHAR(19), update_date, 120) update_date   " ;
+        sql = sql +"  from diag_function a  " ;  
+        sql = sql + " where 1 = 1 ";
+        
+        if(functionName != "") {
+            sql = sql + " and a.function_name like @functionName";
+            request.input('functionName', mssql.VarChar, `%${functionName}%`) 
+        }
+
+        if(startDay != "") {
+            sql = sql + " and CONVERT(CHAR(8), update_date, 112) >= @startDay";
+            request.input('startDay', mssql.VarChar, startDay) 
+        }
+        if(endDay != "") {
+            sql = sql + " and CONVERT(CHAR(8), update_date, 112) <= @endDay "; 
+            request.input('endDay', mssql.VarChar, endDay)   ; 
+        } 
+        
+        sql = sql + " order by a.function_id desc";
+
+        logger.info('[32][manageFunction list]sql=' + sql);
+
+
+        const result = await request.query(sql) 
+        return result.recordset;
     } catch (error) {
         logger.error('[41][manageFunction list]err=' + error.message);
     }

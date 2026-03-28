@@ -14,8 +14,8 @@ const  messageHandler_del = async (testedID) => {
 
     const sql_del =`delete from report_detected_variants where specimenNo = @testedID`;
 
-    logger.info("[17][inputdb_form6 del][sql_del]" + sql_del);
-    logger.info("[17][inputdb_form6 del][testedId]" + testedID);
+    logger.info("[17][inputdb_xlsx del][sql_del]" + sql_del);
+    logger.info("[17][inputdb_xlsx del][testedId]" + testedID);
 
     try {
         const request = pool.request()

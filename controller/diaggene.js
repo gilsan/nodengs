@@ -35,17 +35,23 @@ const listHandler = async (type, test_code) => {
     let test_cd = nvl(test_code, '');
 
     logger.info('[20][diaggene]type=' + type + ', test_code=' + test_cd) ;
-    let sql =`select isnull(gene, '') gene  from genediag where type ='` + type + `'`;
-    if (test_cd != '') {
-        sql = sql + ` and test_code = '` + test_cd + `'`;
-    }
-    sql = sql + ' order by gene'
-
-    logger.info('[20][diaggene]sql=' + sql);
+    
     try {
         const request = pool.request()
-          const result = await request.query(sql) 
-          return result.recordset;
+        let sql =`select isnull(gene, '') gene  from genediag where type =@type`;
+        request.input('type', mssql.VarChar, type)
+
+        if (test_cd != '') {
+            sql = sql + ` and test_code = @test_cd`;
+            request.input('test_cd', mssql.VarChar, test_cd)
+        }
+        
+        sql = sql + ' order by gene'
+
+        logger.info('[20][diaggene]sql=' + sql);
+
+        const result = await request.query(sql) 
+        return result.recordset;
     } catch(error) {
         logger.error('[28]selectDiagGene err=' + error.message);
     }
@@ -76,16 +82,20 @@ const listTargeHandler = async (type, test_code) => {
     let test_cd = nvl(test_code, '');
 
     logger.info('[20][diseasediag]type=' + type + ', test_code=' + test_cd) ;
-    let sql =`select isnull(disease, '') disease  from diseasediag where type ='` + type + `'`;
-    if (test_cd != '') {
-        sql = sql + ` and test_code = '` + test_cd + `'`;
-    }
 
-    logger.info('[20][diseasediag]sql=' + sql);
     try {
         const request = pool.request()
-          const result = await request.query(sql) 
-          return result.recordset;
+        let sql =`select isnull(disease, '') disease  from diseasediag where type = @type `;
+        request.input('type', mssql.VarChar, type)
+        
+        if (test_cd != '') {
+            sql = sql + ` and test_code = @test_cd `;
+            request.input('test_cd', mssql.VarChar, test_cd)
+        }
+
+        logger.info('[20][diseasediag]sql=' + sql);
+        const result = await request.query(sql) 
+        return result.recordset;
     } catch(error) {
         logger.error('[28]diseasediag err=' + error.message);
     }
@@ -326,16 +336,16 @@ const counterHandler = async (gene, nucleotide_change, specimenNo) => {
                       and nucleotide_change=@nucleotide_change`;
     logger.info('[286]mutation gene amino-acid controller sql=' + sql );
   
-      try {
-          const request = pool.request()
-               .input('gene',mssql.VarChar, gene)
-               .input('specimenNo',mssql.VarChar, specimenNo)
-               .input('nucleotide_change',mssql.VarChar, nucleotide_change);           
-               const result = await request.query(sql);
-               return result.recordsets[0];
-      } catch (error) {
-          logger.error('[295][mutation gene amino-acid count err=' +  error.message);
-      } 
+    try {
+        const request = pool.request()
+            .input('gene',mssql.VarChar, gene)
+            .input('specimenNo',mssql.VarChar, specimenNo)
+            .input('nucleotide_change',mssql.VarChar, nucleotide_change);           
+            const result = await request.query(sql);
+            return result.recordsets[0];
+    } catch (error) {
+        logger.error('[295][mutation gene amino-acid count err=' +  error.message);
+    } 
 }
 
 exports.count = (req,res, next) => {
