@@ -755,7 +755,7 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 } else if (sheet_1 == 'igctr') {  // igctr
                     sheet_2 = 'IGTCR';
                     sheet_3 = 'type';
-                } else if (sheet_1 == 'cma') {  // CMA
+                } else if (sheet_1 == 'CMA') {  // CMA
                     sheet_2 = 'CMA';
                     sheet_3 = 'type';
                 }
