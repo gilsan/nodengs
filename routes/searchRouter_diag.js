@@ -21,6 +21,8 @@ router.post('/listSequencing', searchPatientDiagController.getPatientDiagListsSe
 router.post('/listMlpa', searchPatientDiagController.getPatientDiagListsMlpa);
 // igtcr
 router.post('/listigtcr', searchPatientDiagController.getPatientDiagListsigtcr);
+// igtcr
+router.post('/listCma', searchPatientDiagController.getPatientDiagListsCma);
 // Mutatio gene count 검색 
 router.post('/count', searchPatientDiagController.count);
  

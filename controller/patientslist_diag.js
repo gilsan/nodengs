@@ -755,6 +755,9 @@ const  messageHandler2 = async (start, end, patientID, specimenNo, sheet, status
                 } else if (sheet_1 == 'igctr') {  // igctr
                     sheet_2 = 'IGTCR';
                     sheet_3 = 'type';
+                } else if (sheet_1 == 'cma') {  // CMA
+                    sheet_2 = 'CMA';
+                    sheet_3 = 'type';
                 }
                 else
                 {
@@ -1431,6 +1434,53 @@ exports.getPatientDiagListsigtcr = (req, res,next) => {
     res.sendStatus(500);
   }); 
 }
+
+
+
+// diag 날자별 유전성유전질환 환자ID, 검사ID 로 검사자 조회  
+exports.getPatientDiagListsCma = (req, res,next) => {
+
+    logger.info('[731][patientslist_diag][getPatientDiagListsCma] data=' + JSON.stringify( req.body));
+     //console.log(req);
+    let start =  req.body.start; //.replace("-", "");
+    let end   =  req.body.end; //.replace("-", "");
+    let patientID   =  req.body.patientID; // 환자 id
+    let name   = nvl(req.body.name, ''); // 연구용
+    let specimenNo   =  req.body.specimenNo; // 검채 번호
+    let status   =  req.body.status; // 상태
+    let sheet   =  nvl(req.body.sheet, 'igctr'); // 결과지
+ 
+    if (sheet === '100') {
+     sheet   =  'igctr'; 
+    }   
+ 
+    let research = req.body.research1; // 연구용
+ 
+    console.log('[740][patientslist_diag][getPatientDiagListsCma] 검색', start,end, patientID, specimenNo, sheet, status, name);
+    
+    const  now = new Date();
+    const today = getFormatDate2(now);
+ 
+    const nowTime = new Date().getTime();
+    const requestTime = getFormatDate3(end).getTime();
+ 
+    if (requestTime > nowTime) {
+        end = today; // .replace("-", "");
+        console.log('end=', end);
+    }
+ 
+    const result = messageHandler2(start, end, patientID, specimenNo, sheet, status, research, name);
+    result.then(data => {
+ 
+       res.json(data);
+ 
+       res.end();
+    })
+    .catch( err  => {
+     logger.error('[761][patientinfo_diag][getPatientDiagListsigtcr]SQL error'+ err.message);
+     res.sendStatus(500);
+   }); 
+ }
 
 /**
  * @param 검체자 검사자 기록
